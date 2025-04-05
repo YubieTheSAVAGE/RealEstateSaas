@@ -30,6 +30,7 @@
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.5",
     "react-flatpickr": "^3.10.13",
+    "react-icons": "^5.5.0",
     "simplebar-react": "^3.3.0",
     "swiper": "^11.2.0",
     "tailwind-merge": "^2.6.0",

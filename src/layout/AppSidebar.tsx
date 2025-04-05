@@ -22,6 +22,8 @@ import {
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
+import { BiBuildings, BiBookContent, BiTask, BiBarChartAlt2 } from "react-icons/bi";
+import { FaUsers } from "react-icons/fa";
 
 type NavItem = {
   name: string;
@@ -37,7 +39,7 @@ const navItems: NavItem[] = [
     path: "/",
   },
   {
-    icon: <GridIcon />,
+    icon: <BiBuildings size="1.5em" />,
     name: "Projects",
     subItems: [
       { name: "A Doha-Massira", path: "/D", pro: false },
@@ -49,7 +51,7 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    icon: <CalenderIcon />,
+    icon: <BiBookContent size="1.5em" />,
     name: "Properties",
     path: "/properties",
   },
@@ -60,17 +62,17 @@ const navItems: NavItem[] = [
   },
   {
     name: "Task",
-    icon: <TaskIcon />,
+    icon: <BiTask size="1.5em"/>,
     path: "/task",
   },
   {
     name: "Analytics",
-    icon: <ListIcon />,
+    icon: <BiBarChartAlt2 size="1.5em" />,
     path: "/analytics",
   },
   {
     name: "User Management",
-    icon: <TableIcon />,
+    icon: <FaUsers size="1.5em" />,
     path: "/user-management",
   },
 ];
