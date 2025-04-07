@@ -1,4 +1,6 @@
 "use client";
+import { Md3dRotation } from "react-icons/md";
+import { FaEye, FaPen } from "react-icons/fa";
 
 import { useState, useMemo } from "react";
 import {
@@ -15,7 +17,6 @@ import {
   TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
-import { stat } from "fs";
 
 const tableRowData = [
   {
@@ -111,7 +112,7 @@ const tableRowData = [
 type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status";
 type SortOrder = "asc" | "desc";
 
-export default function DataTableTwo() {
+export default function PropertiesDataTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
@@ -308,11 +309,14 @@ export default function DataTableTwo() {
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2">
-                      <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500">
-                        <TrashBinIcon />
+                      <button className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90">
+                        <FaEye />
                       </button>
-                      <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90">
-                        <PencilIcon />
+                      <button className="text-gray-500 hover:text-success-500 dark:text-gray-400 dark:hover:text-error-500">
+                        <Md3dRotation />
+                      </button>
+                      <button className="text-gray-500 hover:text-warning-600 dark:text-gray-400 dark:hover:text-white/90">
+                        <FaPen />
                       </button>
                     </div>
                   </TableCell>
