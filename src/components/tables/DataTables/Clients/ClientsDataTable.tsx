@@ -1,6 +1,4 @@
 "use client";
-import { Md3dRotation } from "react-icons/md";
-import { FaEye, FaPen } from "react-icons/fa";
 
 import { useState, useMemo } from "react";
 import {
@@ -17,105 +15,87 @@ import {
   TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
+import { stat } from "fs";
 
 const tableRowData = [
   {
-    id: "RGD-901",
-    project: "Royal Gardens Residences",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
+    id: 1,
+    name: "John Doe",
+    email: "johndoe@mail.me",
+    phone: "+212 234 567 890",
+    interest: "Royal Gardens Residences",
+  },
+  {
+    id: 2,
+    name: "Jane Smith",
+    email: "janesmith@mail.me",
+    phone: "+212 987 654 321",
+    interest: "Ocean View Apartments",
+  },
+  {
+    id: 3,
+    name: "Alice Johnson",
+    email: "alicejohnson@mail.me",
+    phone: "+212 456 789 012",
+    interest: "Mountain Heights Villas",
+  },
+  {
+    id: 4,
+    name: "Bob Brown",
+    email: "bobbrown@mail.me",
+    phone: "+212 321 654 987",
+    interest: "City Center Condos",
+  },
+  {
+    id: 5,
+    name: "Charlie Davis",
+    email: "charliedavis@mail.me",
+    phone: "+212 654 321 789",
+    interest: "Lakeside Residences",
+  },
+  {
+    id: 6,
+    name: "Diana Prince",
+    email: "dianaprince@mail.me",
+    phone: "+212 789 012 345",
+    interest: "Sunset Boulevard Estates",
+  },
+  {
+    id: 7,
+    name: "Clark Kent",
+    email: "clarkkent@mail.me",
+    phone: "+212 567 890 123",
+    interest: "Metropolis Towers",
+  },
+  {
+    id: 8,
+    name: "Bruce Wayne",
+    email: "brucewayne@mail.me",
+    phone: "+212 345 678 901",
+    interest: "Gotham Heights",
+  },
+  {
+    id: 9,
+    name: "Selina Kyle",
+    email: "selinakyle@mail.me",
+    phone: "+212 234 567 890",
+    interest: "Catwalk Condos",
+  },
+  {
+    id: 10,
+    name: "Barry Allen",
+    email: "barryallen@mail.me",
+    phone: "+212 123 456 789",
+    interest: "Speedster Residences",
   }
-  ,
-  {
-    id: "RGD-902",
-    project: "Marina heights",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-903",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-904",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Canceled",
-  },
-  {
-    id: "RGD-905",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-906",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-907",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-908",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Canceled",
-  },
-  {
-    id: "RGD-909",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-910",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-911",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
 ];
-type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status";
+type SortKey = "id" | "name" | "email" | "phone" | "interest";
 type SortOrder = "asc" | "desc";
 
-export default function PropertiesDataTable() {
+export default function ClientsDataTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortKey, setSortKey] = useState<SortKey>("status");
+  const [sortKey, setSortKey] = useState<SortKey>("id");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -129,10 +109,10 @@ export default function PropertiesDataTable() {
         )
       )
       .sort((a, b) => {
-        if (sortKey === "status") {
-          const statusA = Number.parseInt(a[sortKey].replace(/\$|,/g, ""));
-          const statusB = Number.parseInt(b[sortKey].replace(/\$|,/g, ""));
-          return sortOrder === "asc" ? statusA - statusB : statusB - statusA;
+        if (sortKey === "id") {
+          const idA = typeof a[sortKey] === "number" ? a[sortKey] : Number.parseInt(String(a[sortKey]).replace(/\$|,/g, ""));
+          const idB = typeof b[sortKey] === "number" ? b[sortKey] : Number.parseInt(String(b[sortKey]).replace(/\$|,/g, ""));
+          return sortOrder === "asc" ? idA - idB : idB - idA;
         }
         return sortOrder === "asc"
           ? String(a[sortKey]).localeCompare(String(b[sortKey]))
@@ -237,11 +217,10 @@ export default function PropertiesDataTable() {
             <TableHeader className="border-t border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {[
-                  { key: "project", label: "Project" },
-                  { key: "type", label: "Type" },
-                  { key: "superficie", label: "Superficie" },
-                  { key: "price", label: "Price" },
-                  { key: "status", label: "Status" },
+                  { key: "name", label: "Project" },
+                  { key: "email", label: "email" },
+                  { key: "number", label: "number" },
+                  { key: "interest", label: "interest" },
                 ].map(({ key, label }) => (
                   <TableCell
                     key={key}
@@ -288,35 +267,24 @@ export default function PropertiesDataTable() {
               {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
-                    {item.project}
+                    {item.name}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.type}
+                    {item.email}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.superficie}
-                  </TableCell>
-                  <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.price.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "MAD",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })}
+                    {item.phone}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.status}
+                    {item.interest}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
-                      <button className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-600">
-                        <FaEye />
-                      </button>
-                      <button className="text-gray-500 hover:text-success-500 dark:text-gray-400 dark:hover:text-success-500">
-                        <Md3dRotation />
+                      <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500">
+                        <TrashBinIcon />
                       </button>
                       <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400">
-                        <FaPen />
+                        <PencilIcon />
                       </button>
                     </div>
                   </TableCell>
