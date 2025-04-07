@@ -130,6 +130,9 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
+            {/* <!-- Notification Input --> */}
+            <NotificationDropdown />
+            {/* <!-- Notification Dropdown --> */}
           </div>
           {/* <!-- User Area --> */}
           <UserDropdown />

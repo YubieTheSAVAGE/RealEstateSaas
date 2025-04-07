@@ -3,7 +3,7 @@ import { ApexOptions } from "apexcharts";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
-
+import navigator from "next/navigation";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 // Dynamically import the ReactApexChart component
@@ -120,7 +120,10 @@ export default function MonthlyTarget() {
           </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You earn $3287 today, it&apos;s higher than last month. Keep up your
+          You earn {(75000).toLocaleString("en-us", {
+            style: "currency",
+            currency: "MAD",
+          })} today, it&apos;s higher than last month. Keep up your
           good work!
         </p>
       </div>
@@ -131,7 +134,7 @@ export default function MonthlyTarget() {
             Target
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
+            1M MAD
             <svg
               width="16"
               height="16"
@@ -156,7 +159,7 @@ export default function MonthlyTarget() {
             Revenue
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
+            700K MAD
             <svg
               width="16"
               height="16"
@@ -181,7 +184,7 @@ export default function MonthlyTarget() {
             Today
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
+            250K MAD
             <svg
               width="16"
               height="16"
