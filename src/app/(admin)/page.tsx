@@ -7,9 +7,8 @@ import { StatsCard } from "@/components/ecommerce/StatsCard";
 import PerformingAgents from "@/components/ecommerce/TopPerformingAgents";
 
 export const metadata: Metadata = {
-  title:
-    "Immo360 | Dashboard",
-  description: "This is Next.js Home for TailAdmin Dashboard Template",
+  title: "Immo360 | Dashboard",
+  description: "This is Immo360 Dashboard",
 };
 
 export default function Ecommerce() {

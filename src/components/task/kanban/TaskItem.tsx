@@ -85,7 +85,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
           <h4 className="mb-5 mr-10 text-base text-gray-800 dark:text-white/90">
             {task.title}
           </h4>
-          {task.projectDesc && (
+          {/* {task.projectDesc && (
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {task.projectDesc}
             </p>
@@ -100,7 +100,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
                 className="overflow-hidden w-full rounded-xl border-[0.5px] border-gray-200 dark:border-gray-800"
               />
             </div>
-          )}
+          )} */}
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1 text-sm text-gray-500 cursor-pointer dark:text-gray-400">
               <svg
@@ -118,7 +118,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
                   fill=""
                 />
               </svg>
-              {task.dueDate}
+              {task.dueDate} | {task.dueTime}
             </span>
             <span className="flex items-center gap-1 text-sm text-gray-500 cursor-pointer dark:text-gray-400">
               <svg
@@ -136,9 +136,9 @@ const TaskItem: React.FC<TaskItemProps> = ({
                   strokeLinejoin="round"
                 />
               </svg>
-              {task.comments}
+              {task.comments.length}
             </span>
-            {task.links && (
+            {/* {task.links && (
               <span className="flex items-center gap-1 text-sm text-gray-500 cursor-pointer dark:text-gray-400">
                 <svg
                   className="fill-current"
@@ -157,19 +157,19 @@ const TaskItem: React.FC<TaskItemProps> = ({
                 </svg>
                 {task.links}
               </span>
-            )}
+            )} */}
           </div>
-          <span
+          {/* <span
             className={`mt-3 inline-flex rounded-full px-2 py-0.5 text-theme-xs font-medium ${getCategoryStyles(
               task.category.color
             )}`}
           >
             {task.category.name}
-          </span>
+          </span> */}
         </div>
       </div>
       <div className="h-6 absolute top-5 right-5 top w-full max-w-6 overflow-hidden rounded-full border-[0.5px] border-gray-200 dark:border-gray-800">
-        <Image width={24} height={24} src={task.assignee} alt="user" />
+        {/* <Image width={24} height={24} src={task.assignee} alt="user" /> */}
       </div>
     </div>
   );

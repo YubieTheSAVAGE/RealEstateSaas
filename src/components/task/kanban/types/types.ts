@@ -2,16 +2,10 @@ export interface Task {
   id: string;
   title: string;
   dueDate: string;
-  comments?: number;
-  links?: number;
-  assignee: string;
+  dueTime: string;
+  description: string;
   status: string;
-  projectDesc?: string;
-  projectImg?: string;
-  category: {
-    name: string;
-    color: string;
-  };
+  comments: string[];
 }
 
 export interface DropResult {

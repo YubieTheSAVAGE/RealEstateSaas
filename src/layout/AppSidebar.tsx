@@ -63,17 +63,17 @@ const navItems: NavItem[] = [
   {
     name: "Task",
     icon: <BiTask size="1.5em"/>,
-    path: "/task",
+    path: "/tasks",
   },
-  {
-    name: "Analytics",
-    icon: <BiBarChartAlt2 size="1.5em" />,
-    path: "/analytics",
-  },
+  // {
+  //   name: "Analytics",
+  //   icon: <BiBarChartAlt2 size="1.5em" />,
+  //   path: "/analytics",
+  // },
   {
     name: "User Management",
     icon: <FaUsers size="1.5em" />,
-    path: "/user-management",
+    path: "/agents",
   },
 ];
 
