@@ -10,8 +10,14 @@ import { MdAccessTime } from "react-icons/md";
 import { Task } from "./kanban/types/types";
 import { initialTasks } from "./kanban/KanbanBoard";
 
-export default function TaskHeader() {
-  const [selectedTaskGroup, setSelectedTaskGroup] = useState<string>("All");
+// Define the TaskHeaderProps interface
+interface TaskHeaderProps {
+  selectedTaskGroup: string;
+  setSelectedTaskGroup: (group: string) => void;
+}
+
+export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup }: TaskHeaderProps) {
+  
   const { isOpen, openModal, closeModal } = useModal();
   const [message, setMessage] = useState("");
 
@@ -23,17 +29,17 @@ export default function TaskHeader() {
     },
     { 
       name: "To do", 
-      key: "Todo", 
+      key: "todo", 
       count: initialTasks.filter((task: Task) => task.status === "todo").length 
     },
     { 
       name: "In Progress", 
-      key: "InProgress", 
+      key: "inProgress", 
       count: initialTasks.filter((task: Task) => task.status === "inProgress").length 
     },
     { 
       name: "Completed", 
-      key: "Completed", 
+      key: "completed", 
       count: initialTasks.filter((task: Task) => task.status === "completed").length 
     },
   ];

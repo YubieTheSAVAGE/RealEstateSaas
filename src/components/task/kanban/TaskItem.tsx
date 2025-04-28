@@ -24,7 +24,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     DropResult,
     { handlerId: string | symbol | null }
   >({
-    accept: `task-${task.status}`, // Unique type per column
+    accept: `TASK`, // Unique type per column
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -58,7 +58,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     DropResult,
     { isDragging: boolean }
   >({
-    type: `task-${task.status}`, // Match unique type
+    type: `TASK`, // Match unique type
     item: () => ({ ...task, index }),
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),

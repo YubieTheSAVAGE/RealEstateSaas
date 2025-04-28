@@ -116,9 +116,17 @@ export const initialTasks: Task[] = [
   },
 ];
 
-const KanbanBoard: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+// Define the KanbanBoardProps interface
+interface KanbanBoardProps {
+  selectedTaskGroup: string; // Adjust the type based on your actual data
+}
 
+const KanbanBoard: React.FC<KanbanBoardProps> = ({ selectedTaskGroup }) => {
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const filteredTasks = selectedTaskGroup === "All"
+    ? initialTasks
+    : initialTasks.filter(task => task.status === selectedTaskGroup);
+  // console.log("Filtered Tasks:", filteredTasks);
   const moveTask = useCallback((dragIndex: number, hoverIndex: number) => {
     setTasks((prevTasks) => {
       const newTasks = [...prevTasks];
@@ -140,27 +148,33 @@ const KanbanBoard: React.FC = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="grid grid-cols-1 border-t border-gray-200 divide-x divide-gray-200 dark:divide-white/[0.05] mt-7 dark:border-white/[0.05] sm:mt-0 sm:grid-cols-2 xl:grid-cols-3">
-        <Column
-          title="To Do"
-          tasks={tasks.filter((task) => task.status === "todo")}
-          status="todo"
-          moveTask={moveTask}
-          changeTaskStatus={changeTaskStatus}
-        />
-        <Column
-          title="In Progress"
-          tasks={tasks.filter((task) => task.status === "inProgress")}
-          status="inProgress"
-          moveTask={moveTask}
-          changeTaskStatus={changeTaskStatus}
-        />
-        <Column
-          title="Completed"
-          tasks={tasks.filter((task) => task.status === "completed")}
-          status="completed"
-          moveTask={moveTask}
-          changeTaskStatus={changeTaskStatus}
-        />
+        {filteredTasks.some(task => task.status === "todo") && (
+          <Column
+            title="To Do"
+            tasks={tasks.filter((task) => task.status === "todo")}
+            status="todo"
+            moveTask={moveTask}
+            changeTaskStatus={changeTaskStatus}
+          />
+        )}
+        {filteredTasks.some(task => task.status === "inProgress") && (
+          <Column
+            title="In Progress"
+            tasks={tasks.filter((task) => task.status === "inProgress")}
+            status="inProgress"
+            moveTask={moveTask}
+            changeTaskStatus={changeTaskStatus}
+          />
+        )}
+        {filteredTasks.some(task => task.status === "completed") && (
+          <Column
+            title="Completed"
+            tasks={tasks.filter((task) => task.status === "completed")}
+            status="completed"
+            moveTask={moveTask}
+            changeTaskStatus={changeTaskStatus}
+          />
+        )}
       </div>
     </DndProvider>
   );
