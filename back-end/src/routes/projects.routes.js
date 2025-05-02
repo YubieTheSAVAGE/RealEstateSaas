@@ -45,4 +45,5 @@ module.exports = async function (fastify) {
     },
     controller.deleteProject
   );
+
 };

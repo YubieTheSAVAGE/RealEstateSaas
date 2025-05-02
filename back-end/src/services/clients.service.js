@@ -3,21 +3,27 @@ const prisma = require("../utils/prisma");
 async function findAllClients(user) {
   return prisma.client.findMany({
     include: {
-      createdBy: { select: { id: true, name: true, email: true } },
+      createdBy: {
+        select: { id: true, name: true, email: true },
+      },
+      apartments: {
+        include: {
+          project: {
+            select: { name: true },
+          },
+        },
+      },
     },
   });
 }
 
 async function findClientById(clientId, user) {
- 
-  const client = await prisma.client.findUnique(
-    {
-      where: { id: clientId },
-      include: {
-        createdBy: { select: { id: true, name: true, email: true } },
-      },
-    }
-  );
+  const client = await prisma.client.findUnique({
+    where: { id: clientId },
+    include: {
+      createdBy: { select: { id: true, name: true, email: true } },
+    },
+  });
   if (!client) {
     const err = new Error("Client not found");
     err.statusCode = 404;
@@ -25,7 +31,6 @@ async function findClientById(clientId, user) {
   }
   return client;
 }
-
 
 async function addNewClient(data, user) {
   const existing = await prisma.client.findUnique({

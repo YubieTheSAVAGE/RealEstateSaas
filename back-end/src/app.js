@@ -5,6 +5,7 @@ const authRoutes   = require('./routes/auth.routes');
 const agentRoutes  = require('./routes/agents.routes');
 const clientRoutes = require('./routes/clients.routes');
 const projectRoutes = require('./routes/projects.routes');
+const apartmentRoutes = require('./routes/apartments.routes');
 
 const { jwtPlugin, corsPlugin } = require('./plugins');
 
@@ -50,5 +51,7 @@ app.register(agentRoutes, { prefix: '/api' });
 app.register(clientRoutes, { prefix: '/api' });
 
 app.register(projectRoutes, { prefix: '/api' });
+
+app.register(apartmentRoutes, { prefix: '/api' });
 
 module.exports = app;

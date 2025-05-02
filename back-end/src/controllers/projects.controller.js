@@ -1,4 +1,5 @@
 const projectService = require("../services/projects.service");
+const { isPositiveInt } = require("../utils/helpers");
 
 async function getAllProjects(request, reply) {
   try {
@@ -13,6 +14,12 @@ async function getAllProjects(request, reply) {
 async function getProjectById(request, reply) {
   try {
     const projectId = parseInt(request.params.projectId, 10);
+    if (!isPositiveInt(projectId)) {
+      return reply
+        .code(400)
+        .send({ error: "projectId must be a positive integer" });
+    }
+
     const project = await projectService.findProjectById(projectId);
     return reply.send(project);
   } catch (err) {
@@ -24,13 +31,25 @@ async function getProjectById(request, reply) {
 async function createProject(request, reply) {
   try {
     const { name, numberOfApartments, notes } = request.body;
-    if (!name || numberOfApartments == null) {
+
+    if (typeof name !== "string" || name.trim() === "") {
       return reply
         .code(400)
-        .send({ error: "Name and numberOfApartments are required" });
+        .send({ error: "Name is required and must be a non-empty string" });
     }
+
+    if (!isPositiveInt(numberOfApartments)) {
+      return reply.code(400).send({
+        error: "numberOfApartments is required and must be a positive integer",
+      });
+    }
+
+    if (notes !== undefined && typeof notes !== "string") {
+      return reply.code(400).send({ error: "notes must be a string" });
+    }
+
     const project = await projectService.addNewProject({
-      name,
+      name: name.trim(),
       numberOfApartments,
       notes,
     });
@@ -44,7 +63,47 @@ async function createProject(request, reply) {
 async function updateProject(request, reply) {
   try {
     const projectId = parseInt(request.params.projectId, 10);
-    const data = request.body;
+    if (!isPositiveInt(projectId)) {
+      return reply
+        .code(400)
+        .send({ error: "projectId must be a positive integer" });
+    }
+
+    const allowed = ["name", "numberOfApartments", "notes"];
+    const data = {};
+    for (const key of allowed) {
+      if (request.body[key] !== undefined) {
+        data[key] = request.body[key];
+      }
+    }
+
+    if (Object.keys(data).length === 0) {
+      return reply.code(400).send({
+        error: `At least one of: ${allowed.join(", ")} must be provided`,
+      });
+    }
+
+    if (data.name !== undefined) {
+      if (typeof data.name !== "string" || data.name.trim() === "") {
+        return reply
+          .code(400)
+          .send({ error: "name must be a non-empty string" });
+      }
+      data.name = data.name.trim();
+    }
+
+    if (data.numberOfApartments !== undefined) {
+      if (!isPositiveInt(data.numberOfApartments)) {
+        return reply
+          .code(400)
+          .send({ error: "numberOfApartments must be a positive integer" });
+      }
+    }
+
+    if (data.notes !== undefined && typeof data.notes !== "string") {
+      return reply.code(400).send({ error: "notes must be a string" });
+    }
+
     const updated = await projectService.updateProject(projectId, data);
     return reply.send(updated);
   } catch (err) {
@@ -56,6 +115,12 @@ async function updateProject(request, reply) {
 async function deleteProject(request, reply) {
   try {
     const projectId = parseInt(request.params.projectId, 10);
+    if (!isPositiveInt(projectId)) {
+      return reply
+        .code(400)
+        .send({ error: "projectId must be a positive integer" });
+    }
+
     await projectService.removeProject(projectId);
     return reply.code(204).send();
   } catch (err) {

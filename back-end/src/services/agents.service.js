@@ -19,9 +19,8 @@ async function findAllAgents() {
   })
 }
 
-
 async function findAgentById(agentId) {
-  const agent = await prisma.user.findFirst({
+  const agent = await prisma.user.findUnique({
     where: { id: agentId, role: 'AGENT' },
     select: {
       id: true,
