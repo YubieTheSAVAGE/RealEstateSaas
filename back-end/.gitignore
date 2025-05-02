@@ -1,0 +1,6 @@
+node_modules
+.env
+prisma/dev.db*
+prisma/migrations
+to.do
+seed-admin.js
