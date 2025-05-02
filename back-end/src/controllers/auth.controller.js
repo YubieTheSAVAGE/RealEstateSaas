@@ -10,7 +10,7 @@ async function login(request, reply) {
     const user = await authService.loginUser(email, password);
 
     const token = await reply.jwtSign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, name: user.name },
       { expiresIn: "1h" }
     );
 
