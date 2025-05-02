@@ -41,15 +41,20 @@ const navItems: NavItem[] = [
   {
     icon: <BiBuildings size="1.5em" />,
     name: "Projects",
-    subItems: [
-      { name: "A Doha-Massira", path: "/D", pro: false },
-      { name: "A Doha-Massira 2", path: "/analytics", pro: false },
-      { name: "A Doha-Casablanca 1", path: "/marketing", pro: false },
-      { name: "A Doha-Casablanca 2", path: "/crm", pro: false },
-      { name: "A Doha-Casablanca 3", path: "/stocks", new: false, pro: false },
-      // { name: "+", path: "/saas", new: true, pro: true },
-    ],
+    path: "projects",
   },
+  // {
+  //   icon: <BiBuildings size="1.5em" />,
+  //   name: "Projects",
+  //   subItems: [
+  //     { name: "A Doha-Massira", path: "/D", pro: false },
+  //     { name: "A Doha-Massira 2", path: "/analytics", pro: false },
+  //     { name: "A Doha-Casablanca 1", path: "/marketing", pro: false },
+  //     { name: "A Doha-Casablanca 2", path: "/crm", pro: false },
+  //     { name: "A Doha-Casablanca 3", path: "/stocks", new: false, pro: false },
+  //     // { name: "+", path: "/saas", new: true, pro: true },
+  //   ],
+  // },
   {
     icon: <BiBookContent size="1.5em" />,
     name: "Properties",
