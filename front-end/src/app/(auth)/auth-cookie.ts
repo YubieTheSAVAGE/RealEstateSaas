@@ -1,0 +1,1 @@
+export const AUTHENTICATION_COOKIE = 'auth_token'; 

@@ -1,6 +1,7 @@
-import fastifyCors from "@fastify/cors";
+// import fastifyCors from "@fastify/cors";
+const fastifyCors = require("@fastify/cors");
 
-export default async function (fastify) {
+module.exports = async function (fastify) {
   fastify.register(fastifyCors, {
     origin: (origin, cb) => {
       if (!origin) return cb(null, true);
