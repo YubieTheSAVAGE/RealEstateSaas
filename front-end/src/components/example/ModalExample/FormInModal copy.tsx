@@ -15,7 +15,7 @@ export default function FormInModal() {
     closeModal();
   };
   return (
-    <ComponentCard title="Form In Modal">
+    <>
       <Button size="sm" onClick={openModal}>
         Open Modal
       </Button>
@@ -66,6 +66,6 @@ export default function FormInModal() {
           </div>
         </form>
       </Modal>
-    </ComponentCard>
+    </>
   );
 }

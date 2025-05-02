@@ -61,9 +61,9 @@ async function createClient(request, reply) {
       }
       clientStatus = status;
     }
-    if (notes !== undefined && typeof notes !== "string") {
-      return reply.code(400).send({ error: "notes must be a string" });
-    }
+    // if (notes !== undefined && typeof notes !== "string") {
+    //   return reply.code(400).send({ error: "notes must be a string" });
+    // }
 
     const client = await clientService.addNewClient(
       { name: name.trim(), email, phoneNumber, status: clientStatus, notes },

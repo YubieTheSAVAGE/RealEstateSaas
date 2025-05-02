@@ -44,9 +44,9 @@ async function createProject(request, reply) {
       });
     }
 
-    if (notes !== undefined && typeof notes !== "string") {
-      return reply.code(400).send({ error: "notes must be a string" });
-    }
+    // if (notes !== undefined && typeof notes !== "string") {
+    //   return reply.code(400).send({ error: "notes must be a string" });
+    // }
 
     const project = await projectService.addNewProject({
       name: name.trim(),
