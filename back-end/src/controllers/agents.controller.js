@@ -1,5 +1,16 @@
 const agentService = require("../services/agents.service");
 
+async function getAllAgents(request, reply) {
+  const agents = await agentService.findAllAgents()
+  reply.send(agents)
+}
+
+async function getAgentById(request, reply) {
+  const { agentId } = request.params
+  const agent = await agentService.findAgentById(+agentId)
+  reply.send(agent)
+}
+
 async function createAgent(request, reply) {
   try {
     const { name, email, phoneNumber, password, role } = request.body;
@@ -36,6 +47,24 @@ async function createAgent(request, reply) {
   }
 }
 
+async function updateAgent(request, reply) {
+  const { agentId } = request.params
+  const data = request.body
+  const updated = await agentService.updateAgent(+agentId, data)
+  reply.send(updated)
+}
+
+async function deleteAgent(request, reply) {
+  const { agentId } = request.params
+  await agentService.removeAgent(+agentId)
+  reply.code(204).send()
+}
+
+
 module.exports = {
+  getAllAgents,
+  getAgentById,
   createAgent,
-};
+  updateAgent,
+  deleteAgent,
+}
