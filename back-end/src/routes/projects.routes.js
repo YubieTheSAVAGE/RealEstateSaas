@@ -1,48 +1,48 @@
-const controller = require("../controllers/agents.controller");
+const controller = require("../controllers/projects.controller");
 
 module.exports = async function (fastify) {
   fastify.get(
-    "/agents",
+    "/projects",
     {
       onRequest: [fastify.authenticate],
-      preHandler: [fastify.isAdmin],
+      preHandler: [fastify.isAgentOrAdmin],
     },
-    controller.getAllAgents
+    controller.getAllProjects
   );
 
   fastify.get(
-    "/agents/:agentId",
+    "/projects/:projectId",
     {
       onRequest: [fastify.authenticate],
-      preHandler: [fastify.isAdmin],
+      preHandler: [fastify.isAgentOrAdmin],
     },
-    controller.getAgentById
+    controller.getProjectById
   );
 
   fastify.post(
-    "/agents",
+    "/projects",
     {
       onRequest: [fastify.authenticate],
       preHandler: [fastify.isAdmin],
     },
-    controller.createAgent
+    controller.createProject
   );
 
   fastify.put(
-    "/agents/:agentId",
+    "/projects/:projectId",
     {
       onRequest: [fastify.authenticate],
       preHandler: [fastify.isAdmin],
     },
-    controller.updateAgent
+    controller.updateProject
   );
 
   fastify.delete(
-    "/agents/:agentId",
+    "/projects/:projectId",
     {
       onRequest: [fastify.authenticate],
       preHandler: [fastify.isAdmin],
     },
-    controller.deleteAgent
+    controller.deleteProject
   );
 };

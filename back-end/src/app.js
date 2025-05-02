@@ -4,6 +4,7 @@ const multipart = require('@fastify/multipart');
 const authRoutes   = require('./routes/auth.routes');
 const agentRoutes  = require('./routes/agents.routes');
 const clientRoutes = require('./routes/clients.routes');
+const projectRoutes = require('./routes/projects.routes');
 
 const { jwtPlugin, corsPlugin } = require('./plugins');
 
@@ -47,5 +48,7 @@ app.register(authRoutes, { prefix: '/auth' });
 app.register(agentRoutes, { prefix: '/api' });
 
 app.register(clientRoutes, { prefix: '/api' });
+
+app.register(projectRoutes, { prefix: '/api' });
 
 module.exports = app;
