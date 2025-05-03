@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -52,35 +52,58 @@ const tableRowData = [
 type SortKey = "id" | "project" | "totalSales";
 type SortOrder = "asc" | "desc";
 
+import getProperties from "./getProperties";
+
 export default function DataTableTwo() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("project");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  type ProjectData = {
+    id: string;
+    project: string;
+    totalSales: number;
+  };
+  
+  const [projectData, setProjectData] = useState<ProjectData[]>([]);
 
-  const filteredAndSortedData = useMemo(() => {
-    return tableRowData
-      .filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            typeof value === "string" &&
-            value.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
-      .sort((a, b) => {
-        if (sortKey === "project") {
-          const statusA = Number.parseInt(a[sortKey].replace(/\$|,/g, ""));
-          const statusB = Number.parseInt(b[sortKey].replace(/\$|,/g, ""));
-          return sortOrder === "asc" ? statusA - statusB : statusB - statusA;
-        }
-        return sortOrder === "asc"
-          ? String(a[sortKey]).localeCompare(String(b[sortKey]))
-          : String(b[sortKey]).localeCompare(String(a[sortKey]));
-      });
-  }, [sortKey, sortOrder, searchTerm]);
 
-  const totalItems = filteredAndSortedData.length;
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getProperties();
+      console.log("Data fetched:", data);
+      setProjectData(data);
+    };
+    fetchData();
+  }, []);
+
+  // const filteredAndSortedData = useMemo(() => {
+  //   return projectData
+  //     .filter((item) =>
+  //       Object.values(item).some(
+  //         (value) =>
+  //         const statusA = typeof a[sortKey] === "string" 
+  //           ? Number.parseInt(a[sortKey].replace(/\$|,/g, "")) 
+  //           : a[sortKey];
+  //         const statusB = typeof b[sortKey] === "string" 
+  //           ? Number.parseInt(b[sortKey].replace(/\$|,/g, "")) 
+  //           : b[sortKey];
+  //       )
+  //     )
+  //     .sort((a, b) => {
+  //       if (sortKey === "project") {
+  //         const statusA = Number.parseInt(a[sortKey].replace(/\$|,/g, ""));
+  //         const statusB = Number.parseInt(b[sortKey].replace(/\$|,/g, ""));
+  //         return sortOrder === "asc" ? statusA - statusB : statusB - statusA;
+  //       }
+  //       return sortOrder === "asc"
+  //         ? String(a[sortKey]).localeCompare(String(b[sortKey]))
+  //         : String(b[sortKey]).localeCompare(String(a[sortKey]));
+  //     });
+  // }, [sortKey, sortOrder, searchTerm]);
+
+  const totalItems = projectData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -98,7 +121,7 @@ export default function DataTableTwo() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = filteredAndSortedData.slice(startIndex, endIndex);
+  const currentData = projectData.slice(startIndex, endIndex);
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
@@ -227,10 +250,10 @@ export default function DataTableTwo() {
               {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
-                    {item.project}
+                    {item.name}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.totalSales}
+                    {item.totalSales || 0}
                   </TableCell>
                   {/* <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.status}

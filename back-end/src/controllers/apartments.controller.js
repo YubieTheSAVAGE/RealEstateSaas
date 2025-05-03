@@ -41,7 +41,7 @@ async function createApartment(request, reply) {
 
     const { number, floor, type, area, threeDViewUrl, price, status, notes } =
       request.body;
-
+    
     if (!isPositiveInt(number)) {
       return reply
         .code(400)
