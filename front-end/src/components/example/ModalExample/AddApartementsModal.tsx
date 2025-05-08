@@ -11,8 +11,11 @@ import addApartments from "@/app/(admin)/properties/addApartments";
 import getProperties from "@/components/tables/DataTables/Projects/getProperties";
 import Select from "../../form/Select";
 
+interface AddProjectModalProps {
+  onApartementsAdded?: () => void; // Callback to refresh project list
+}
 
-export default function AddProjectModal() {
+export default function AddProjectModal({ onApartementsAdded }: AddProjectModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -73,6 +76,9 @@ export default function AddProjectModal() {
     // console.log("Saving project with data:", formData);
     // closeModal();
     console.log("Saving project with data:", formData);
+    if (onApartementsAdded) {
+      onApartementsAdded(); // Call the refresh callback to update the project list
+    }
     closeModal();
   };
 

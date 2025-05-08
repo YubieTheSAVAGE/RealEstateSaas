@@ -1,15 +1,23 @@
-import React from "react"
+"use client";
+import React, {useCallback, useState, useEffect} from "react"
 import PropertiesDataTable from "@/components/tables/DataTables/Properties/PropertiesDataTable"
 import PageBreadcrumb from "@/components/common/PageBreadCrumb"
 import { Metadata } from "next";
 import AddApartementsModal from "@/components/example/ModalExample/AddApartementsModal"
-
-export const metadata: Metadata = {
-  title: "Immo360 | Properties",
-  description: "This is Immo360 Properties Page",
-};
+import getApartements from "@/components/tables/DataTables/Properties/getApartements";
 
 export default function Properties() {
+    const [apartementsData, setApartementsData] = useState([]);
+    
+    const fetchApartements = useCallback(async () => {
+        // API call to fetch projects
+        const data = await getApartements();
+        setApartementsData(data);
+    }, []);
+    
+    useEffect(() => {
+        fetchApartements();
+    }, [fetchApartements]);
     return (
         <>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
@@ -19,11 +27,11 @@ export default function Properties() {
                 >
                     Properties
                 </h2>
-                <AddApartementsModal/>
+                <AddApartementsModal onApartementsAdded={fetchApartements}/>
             </div>
             {/* <PageBreadcrumb pageTitle="Properties" /> */}
             <div className="col-span-12">
-                <PropertiesDataTable />
+                <PropertiesDataTable apartmentsData={apartementsData} />
             </div>
         </>
     )

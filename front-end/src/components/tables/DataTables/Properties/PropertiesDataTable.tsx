@@ -114,71 +114,42 @@ type SortOrder = "asc" | "desc";
 
 import getApartements from "./getApartements";
 
+type ProjectData = {
+  id: string;
+  project: string;
+  type: string;
+  superficie: string;
+  price: number;
+  status: string;
+};
 
-export default function PropertiesDataTable() {
+export default function PropertiesDataTable({ apartmentsData }: { apartmentsData: ProjectData[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
     // Define the ProjectData type
-    type ProjectData = {
-      id: string;
-      project: string;
-      type: string;
-      superficie: string;
-      price: number;
-      status: string;
-    };
+
     
-    const [apartementsData, setApartementsData] = useState<ProjectData[]>([]);
-    useEffect(() => {
-      const fetchData = async () => {
-        const data = await getApartements();
-        console.log("Data fetched:", data);
-        
-        // Map the received data to match your expected structure
-        const formattedData = data.map((item: any) => ({
-          id: item.id || '',
-          project: item.project.name || '',
-          type: "Apartement", // Set default or extract from your data
-          superficie: `${item.area || 0} units`,
-          price: item.price, // Set default or extract from your data 
-          status: item.status || 'Available'
-        }));
-        
-        setApartementsData(formattedData);
-      };
-      fetchData();
-    }, []);
-
-  // const filteredAndSortedData = useMemo(() => {
-  //   return apartementsData
-  //     .filter((item) =>
-  //       Object.values(item).some(
-  //         (value) =>
-  //           typeof value === "string" &&
-  //           value.toLowerCase().includes(searchTerm.toLowerCase())
-  //       )
-  //     )
-  //     .sort((a, b) => {
-  //       const valueA = a[sortKey];
-  //       const valueB = b[sortKey];
-
-  //       if (typeof valueA === "string" && typeof valueB === "string") {
-  //         return sortOrder === "asc"
-  //           ? valueA.localeCompare(valueB)
-  //           : valueB.localeCompare(valueA);
-  //       }
-
-  //       if (typeof valueA === "number" && typeof valueB === "number") {
-  //         return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
-  //       }
-
-  //       return 0;
-  //     });
-  // }, [apartementsData, sortKey, sortOrder, searchTerm]);
-
+  const [apartementsData, setApartementsData] = useState<ProjectData[]>([]);
+  useEffect(() => {
+      // Check if data exists and is an array before mapping
+      if (apartmentsData && Array.isArray(apartmentsData)) {
+          const formattedData = apartmentsData.map((item: any) => ({
+              id: item.id || '',
+              project: item.project?.name || '', // Use optional chaining
+              type: "Apartement", // Set default or extract from your data
+              superficie: `${item.area || 0} units`,
+              price: item.price || 0, // Add fallback for price
+              status: item.status || 'Available'
+          }));
+          setApartementsData(formattedData);
+      } else {
+          // If data is undefined or not an array, set empty array
+          setApartementsData([]);
+      }
+  }, [apartmentsData]);
   const totalItems = apartementsData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
