@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -15,46 +15,13 @@ import {
   TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
-import { stat } from "fs";
 
-const tableRowData = [
-  {
-    id: "dh1",
-    project: "Project 1",
-    totalSales: 100,
-  },
-  {
-    id: "dh2",
-    project: "Project 2",
-    totalSales: 200,
-  },
-  {
-    id: "dh3",
-    project: "Project 3",
-    totalSales: 300,
-  },
-  {
-    id: "dh4",
-    project: "Project 4",
-    totalSales: 400,
-  },
-  {
-    id: "dh5",
-    project: "Project 5",
-    totalSales: 500,
-  },
-  {
-    id: "dh6",
-    project: "Project 6",
-    totalSales: 600,
-  }
-];
 type SortKey = "id" | "project" | "totalSales";
 type SortOrder = "asc" | "desc";
 
-import getProperties from "./getProperties";
+import deleteProperties from "./deleteProperties";
 
-export default function DataTableTwo() {
+export default function DataTableTwo({ projects }: any) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("project");
@@ -72,64 +39,62 @@ export default function DataTableTwo() {
       status: string;
     }[];
   };
-  
+
   const [projectData, setProjectData] = useState<ProjectData[]>([]);
 
+  // Calculate total sales for a project based on sold apartments
+  const calculateTotalSales = (projectItem: any) => {
+    // Check if apartments array exists
+    if (!projectItem.apartments || !Array.isArray(projectItem.apartments)) {
+      return 0;
+    }
+
+    // Count sold apartments
+    const soldCount = projectItem.apartments.filter(
+      (apartment: { status: string }) => apartment.status === "SOLD"
+    ).length;
+
+    return soldCount;
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getProperties();
-        console.log("Data fetched:", data);
-  
-        const processedData = data.map((item: ProjectData) => {
-          // Count how many appartements are SOLD
-          console.log("Appartements:", item.apartments);
-          const soldCount = Array.isArray(item.apartments)
-            ? item.apartments.filter(
-                (apart: { status: string }) => apart.status === "SOLD"
-              ).length
-            : 0;
-  
-          return {
-            ...item,
-            totalSales: soldCount,
-          };
-        });
-  
-        setProjectData(processedData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-  
-    fetchData();
-  }, []);
+    if (projects && Array.isArray(projects)) {
+      // Process projects to include total sales data
+      const processedProjects = projects.map((project) => ({
+        ...project,
+        totalSales: calculateTotalSales(project),
+      }));
 
-  // const filteredAndSortedData = useMemo(() => {
-  //   return projectData
-  //     .filter((item) =>
-  //       Object.values(item).some(
-  //         (value) =>
-  //         const statusA = typeof a[sortKey] === "string" 
-  //           ? Number.parseInt(a[sortKey].replace(/\$|,/g, "")) 
-  //           : a[sortKey];
-  //         const statusB = typeof b[sortKey] === "string" 
-  //           ? Number.parseInt(b[sortKey].replace(/\$|,/g, "")) 
-  //           : b[sortKey];
-  //       )
-  //     )
-  //     .sort((a, b) => {
-  //       if (sortKey === "project") {
-  //         const statusA = Number.parseInt(a[sortKey].replace(/\$|,/g, ""));
-  //         const statusB = Number.parseInt(b[sortKey].replace(/\$|,/g, ""));
-  //         return sortOrder === "asc" ? statusA - statusB : statusB - statusA;
-  //       }
-  //       return sortOrder === "asc"
-  //         ? String(a[sortKey]).localeCompare(String(b[sortKey]))
-  //         : String(b[sortKey]).localeCompare(String(a[sortKey]));
-  //     });
-  // }, [sortKey, sortOrder, searchTerm]);
+      setProjectData(processedProjects);
+    } else {
+      setProjectData([]);
+    }
+  }, [projects]);
+
+  const handleDelete = async (id: string) => {
+    // Show confirmation dialog
+    if (confirm("Are you sure you want to delete this project?")) {
+      const success: boolean = await deleteProperties(id);
+
+      if (success) {
+        setProjectData((prevData) =>
+          prevData.filter((project) => project.id !== id)
+        );
+        const remainingItems = projectData.filter(
+          (project) => project.id !== id
+        ).length;
+        if (
+          remainingItems <= (currentPage - 1) * itemsPerPage &&
+          currentPage > 1
+        ) {
+          setCurrentPage(currentPage - 1);
+        }
+      } else {
+        // Show error message if deletion failed
+        alert("Failed to delete project. Please try again.");
+      }
+    }
+  };
 
   const totalItems = projectData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -289,7 +254,7 @@ export default function DataTableTwo() {
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">
                       <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500">
-                        <TrashBinIcon />
+                        <TrashBinIcon onClick={() => handleDelete(item.id)} />
                       </button>
                       <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90">
                         <PencilIcon />

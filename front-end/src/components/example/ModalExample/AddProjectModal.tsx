@@ -9,7 +9,11 @@ import { useModal } from "@/hooks/useModal";
 import { API_URL } from "@/app/common/constants/api";
 import addProject from "@/app/(admin)/projects/addProjects";
 
-export default function AddProjectModal() {
+interface AddProjectModalProps {
+  onProjectAdded?: () => void; // Callback to refresh project list
+}
+
+export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -57,9 +61,28 @@ export default function AddProjectModal() {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("numberOfApartments", formData.numberOfApartments);
     formDataToSend.append("note", formData.note);
-    addProject(formDataToSend);
-    console.log("Saving project with data:", formData);
-    closeModal();
+    
+    try {
+      await addProject(formDataToSend);
+      console.log("Saving project with data:", formData);
+      
+      // Reset form data
+      setFormData({
+        name: "",
+        numberOfApartments: "",
+        note: "",
+      });
+      
+      // Call the refresh callback to update the project list
+      if (onProjectAdded) {
+        onProjectAdded();
+      }
+      
+      closeModal();
+    } catch (error) {
+      console.error("Error adding project:", error);
+      // You could add error handling UI here if needed
+    }
   };
 
   return (

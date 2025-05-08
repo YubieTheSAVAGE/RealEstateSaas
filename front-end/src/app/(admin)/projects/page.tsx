@@ -1,9 +1,23 @@
+"use client";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import AddProjectModal from "@/components/example/ModalExample/AddProjectModal";
 import ProjectsDataTable from "@/components/tables/DataTables/Projects/ProjectsDataTable";
-import React from "react";
+import React, {useState, useEffect, useCallback} from "react";
+import getProjects from "@/components/tables/DataTables/Projects/getProperties";
 
 export default function Projects() {
+    const [projects, setProjects] = useState([]);
+  
+    const fetchProjects = useCallback(async () => {
+      // API call to fetch projects
+      const data = await getProjects();
+      setProjects(data);
+    }, []);
+    
+    useEffect(() => {
+      fetchProjects();
+    }, [fetchProjects]);
+    
     return (
         <>
             {/* <PageBreadcrumb pageTitle="Projects" /> */}
@@ -14,9 +28,9 @@ export default function Projects() {
                 >
                     Projects
                 </h2>
-                <AddProjectModal/>
+                <AddProjectModal onProjectAdded={fetchProjects}/>
             </div>
-            <ProjectsDataTable />
+            <ProjectsDataTable projects={projects}/>
         </>
     )
 }
