@@ -18,6 +18,7 @@ export default function AddProjectModal() {
   // State for form fields
   const [formData, setFormData] = useState({
     floor: "",
+    number: "",
     type: "",
     area: "",
     threeDViewUrl: "",
@@ -156,6 +157,16 @@ export default function AddProjectModal() {
               />
             </div>
 
+            <div className="col-span-1">
+              <Label>Number</Label>
+              <Input
+                name="number"
+                type="number"
+                placeholder="e.g. 10"
+                onChange={handleChange}
+              />
+            </div>
+
             <div className="col-span-1 sm:col-span-2">
               <Label>Type</Label>
               <Select
@@ -196,7 +207,6 @@ export default function AddProjectModal() {
               <Label>Status</Label>
               <Select
                 options={status}
-                defaultValue="1"
                 name="status"
                 placeholder=""
                 onChange={(value, name) => handleSelectChange(value, name)}

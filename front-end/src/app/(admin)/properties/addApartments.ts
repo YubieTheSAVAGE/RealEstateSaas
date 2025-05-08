@@ -14,7 +14,8 @@ export default async function addApartments(formData: FormData)
             method: "POST",
             headers: { "Content-Type": "application/json",  "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
             body: JSON.stringify({
-                floor: formData.get("floor"),
+                number: parseInt(formData.get("number") as string, 10),
+                floor: parseInt(formData.get("floor") as string, 10),
                 type: formData.get("type"),
                 area: parseInt(formData.get("area") as string, 10),
                 threeDViewUrl: formData.get("threeDViewUrl"),
