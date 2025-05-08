@@ -63,7 +63,14 @@ export default function DataTableTwo() {
   type ProjectData = {
     id: string;
     project: string;
+    name: string;
     totalSales: number;
+    apartments: {
+      id: string;
+      name: string;
+      price: string;
+      status: string;
+    }[];
   };
   
   const [projectData, setProjectData] = useState<ProjectData[]>([]);
@@ -71,10 +78,31 @@ export default function DataTableTwo() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getProperties();
-      console.log("Data fetched:", data);
-      setProjectData(data);
+      try {
+        const data = await getProperties();
+        console.log("Data fetched:", data);
+  
+        const processedData = data.map((item: ProjectData) => {
+          // Count how many appartements are SOLD
+          console.log("Appartements:", item.apartments);
+          const soldCount = Array.isArray(item.apartments)
+            ? item.apartments.filter(
+                (apart: { status: string }) => apart.status === "SOLD"
+              ).length
+            : 0;
+  
+          return {
+            ...item,
+            totalSales: soldCount,
+          };
+        });
+  
+        setProjectData(processedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
+  
     fetchData();
   }, []);
 
@@ -253,7 +281,7 @@ export default function DataTableTwo() {
                     {item.name}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.totalSales || 0}
+                    {item.totalSales}
                   </TableCell>
                   {/* <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.status}
