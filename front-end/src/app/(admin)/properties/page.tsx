@@ -17,11 +17,11 @@ export default function Properties() {
                     className="text-xl font-semibold text-gray-800 dark:text-white/90"
                     x-text="pageName"
                 >
-                    {/* Apartements */}
+                    Properties
                 </h2>
                 <AddApartementsModal/>
             </div>
-            <PageBreadcrumb pageTitle="Properties" />
+            {/* <PageBreadcrumb pageTitle="Properties" /> */}
             <div className="col-span-12">
                 <PropertiesDataTable />
             </div>

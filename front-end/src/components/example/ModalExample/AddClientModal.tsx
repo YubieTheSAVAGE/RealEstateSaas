@@ -12,7 +12,7 @@ import getProperties from "@/components/tables/DataTables/Projects/getProperties
 import Select from "../../form/Select";
 
 
-export default function AddProjectModal() {
+export default function AddClientModal() {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -123,7 +123,7 @@ export default function AddProjectModal() {
   return (
     <>
       <Button size="sm" onClick={openModal}>
-        Add Property
+        Add Client
       </Button>
       <Modal
         isOpen={isOpen}
