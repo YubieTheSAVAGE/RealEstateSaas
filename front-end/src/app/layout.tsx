@@ -23,10 +23,10 @@ export default function RootLayout({
         {/* <NextTopLoader /> */}
       <body suppressHydrationWarning={true} className={`${outfit.variable} dark:bg-gray-900`}>
         {/* <NextTopLoader /> */}
+        <NextTopLoader />
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           <ThemeProvider>
             <SidebarProvider>
-            <NextTopLoader />
               {children}
             </SidebarProvider>
           </ThemeProvider>
