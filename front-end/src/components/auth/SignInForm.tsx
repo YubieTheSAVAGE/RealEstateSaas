@@ -6,9 +6,10 @@ import Button from "@/components/ui/button/Button";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import login from "@/app/(auth)/signin/login";
 import { useActionState } from "react";
+import SigninSpinner from "../ui/spinners/SigninSpinner";
 
 type FormState = { 
   error: string; 
@@ -21,10 +22,10 @@ export default function SignInForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState<FormState, FormPayload>(
     async (state, payload) => {
       try {
-        console.log(payload);
         const result = await login(state, payload);
         return { ...result, error: result.error || '' };
       } catch (error) {
@@ -40,17 +41,13 @@ export default function SignInForm() {
     }
   }, [state, router]);
 
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+    startTransition(() => {
+    });
+  };
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-      {/* <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
-        <Link
-          href="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeftIcon />
-          Back to dashboard
-        </Link>
-      </div> */}
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -62,7 +59,7 @@ export default function SignInForm() {
             </p>
           </div>
           <div>
-            <form action={formAction}>
+            <form action={formAction} onSubmit={handleSubmit}>
               {state?.error && (
                 <div className="p-3 mb-4 text-sm text-red-500 bg-red-100 rounded-lg">
                   {state.error}
@@ -118,27 +115,20 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <button 
-                    className="w-full" 
-                    type="submit"
-                  >
-                    Sign in
-                  </button>
+                  {isPending ? (
+                    <SigninSpinner />
+                  ) : (
+                    <Button
+                      className="w-full"
+                      type="submit"
+                      disabled={isPending}
+                    >
+                      Sign In
+                    </Button>
+                  )}
                 </div>
               </div>
             </form>
-
-            {/* <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
-                <Link
-                  href="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
-                  Sign Up
-                </Link>
-              </p>
-            </div> */}
           </div>
         </div>
       </div>
