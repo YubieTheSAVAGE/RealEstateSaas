@@ -59,6 +59,9 @@ async function removeProject(projectId) {
     err.statusCode = 404;
     throw err;
   }
+  await prisma.apartment.deleteMany({
+    where: { projectId },
+  });
   await prisma.project.delete({ where: { id: projectId } });
 }
 

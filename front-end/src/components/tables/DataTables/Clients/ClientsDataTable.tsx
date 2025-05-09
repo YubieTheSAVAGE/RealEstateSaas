@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -92,35 +92,59 @@ const tableRowData = [
 type SortKey = "id" | "name" | "email" | "phone" | "interest";
 type SortOrder = "asc" | "desc";
 
-export default function ClientsDataTable() {
+export default function ClientsDataTable({clients}: any) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("id");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredAndSortedData = useMemo(() => {
-    return tableRowData
-      .filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            typeof value === "string" &&
-            value.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
-      .sort((a, b) => {
-        if (sortKey === "id") {
-          const idA = typeof a[sortKey] === "number" ? a[sortKey] : Number.parseInt(String(a[sortKey]).replace(/\$|,/g, ""));
-          const idB = typeof b[sortKey] === "number" ? b[sortKey] : Number.parseInt(String(b[sortKey]).replace(/\$|,/g, ""));
-          return sortOrder === "asc" ? idA - idB : idB - idA;
-        }
-        return sortOrder === "asc"
-          ? String(a[sortKey]).localeCompare(String(b[sortKey]))
-          : String(b[sortKey]).localeCompare(String(a[sortKey]));
-      });
-  }, [sortKey, sortOrder, searchTerm]);
+  type ClientData = {
+    name: string;
+    email: string;
+    phone: string;
+    interest: string;
+  };
 
-  const totalItems = filteredAndSortedData.length;
+  const [clientsData, setClientsData] = useState<ClientData[]>([]);
+  useEffect(() => {
+      console.log("clientData", clients);
+      // Check if data exists and is an array before mapping
+      if (clients && Array.isArray(clients)) {
+          const formattedData = clients.map((item: any) => ({
+              name: item.name,
+              email: item.email,
+              phone:item. phoneNumber,
+              interest: item.interest || "",
+          }));
+          setClientsData(formattedData);
+      } else {
+          // If data is undefined or not an array, set empty array
+          setClientsData([]);
+      }
+  }, [clients]);
+  // const filteredAndSortedData = useMemo(() => {
+  //   return clientData
+  //     .filter((item) =>
+  //       Object.values(item).some(
+  //         (value) =>
+  //           typeof value === "string" &&
+  //           value.toLowerCase().includes(searchTerm.toLowerCase())
+  //       )
+  //     )
+  //     .sort((a, b) => {
+  //       if (sortKey === "id") {
+  //         const idA = typeof a[sortKey] === "number" ? a[sortKey] : Number.parseInt(String(a[sortKey]).replace(/\$|,/g, ""));
+  //         const idB = typeof b[sortKey] === "number" ? b[sortKey] : Number.parseInt(String(b[sortKey]).replace(/\$|,/g, ""));
+  //         return sortOrder === "asc" ? idA - idB : idB - idA;
+  //       }
+  //       return sortOrder === "asc"
+  //         ? String(a[sortKey]).localeCompare(String(b[sortKey]))
+  //         : String(b[sortKey]).localeCompare(String(a[sortKey]));
+  //     });
+  // }, [sortKey, sortOrder, searchTerm]);
+
+  const totalItems = clientsData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -138,7 +162,7 @@ export default function ClientsDataTable() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = filteredAndSortedData.slice(startIndex, endIndex);
+  const currentData = clientsData.slice(startIndex, endIndex);
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
@@ -276,7 +300,7 @@ export default function ClientsDataTable() {
                     {item.phone}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.interest}
+                    {item.interest || "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
