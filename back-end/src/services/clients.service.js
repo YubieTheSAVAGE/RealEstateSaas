@@ -45,8 +45,9 @@ async function addNewClient(data, user) {
       name: data.name,
       email: data.email,
       phoneNumber: data.phoneNumber,
-      status: data.status || "ACTIVE",
+      status: data.status || "CLIENT",
       notes: data.notes,
+      provenance: data.provenance,
       createdById: user.id,
     },
   });

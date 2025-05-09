@@ -5,7 +5,7 @@ const {
   isPositiveInt,
 } = require("../utils/helpers");
 
-const ALLOWED_STATUSES = ["ACTIVE", "INACTIVE"];
+const ALLOWED_STATUSES = ["CLIENT", "LEAD"];
 
 async function getAllClients(request, reply) {
   try {
@@ -36,7 +36,7 @@ async function getClientById(request, reply) {
 
 async function createClient(request, reply) {
   try {
-    const { name, email, phoneNumber, status, notes } = request.body;
+    const { name, email, phoneNumber, status, notes, provenance } = request.body;
 
     if (typeof name !== "string" || name.trim() === "") {
       return reply
@@ -50,6 +50,11 @@ async function createClient(request, reply) {
       return reply.code(400).send({ error: "Valid phoneNumber is required" });
     }
 
+    if (provenance !== undefined && typeof provenance !== "string") {
+      return reply
+        .code(400)
+        .send({ error: "provenance must be a string" });
+    }
     let clientStatus = "ACTIVE";
     if (status !== undefined) {
       if (!ALLOWED_STATUSES.includes(status)) {
@@ -66,7 +71,7 @@ async function createClient(request, reply) {
     // }
 
     const client = await clientService.addNewClient(
-      { name: name.trim(), email, phoneNumber, status: clientStatus, notes },
+      { name: name.trim(), email, phoneNumber, status: clientStatus, notes, provenance },
       request.user
     );
     return reply.code(201).send(client);

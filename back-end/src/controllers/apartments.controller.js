@@ -39,7 +39,7 @@ async function createApartment(request, reply) {
         .send({ error: "projectId must be a positive integer" });
     }
 
-    const { number, floor, type, area, threeDViewUrl, price, status, notes } =
+    const { number, floor, type, area, threeDViewUrl, price, status, notes, pricePerM2, zone } =
       request.body;
     
     if (!isPositiveInt(number)) {
@@ -91,6 +91,16 @@ async function createApartment(request, reply) {
         .send({ error: "notes, if provided, must be a string" });
     }
 
+    if (pricePerM2 !== undefined && (typeof pricePerM2 !== "number" || pricePerM2 <= 0)) {
+        return reply
+          .code(400)
+          .send({ error: "pricePerM2, if provided, must be a positive number" });
+    }
+    if (zone !== undefined && typeof zone !== "string") {
+        return reply
+          .code(400)
+          .send({ error: "zone, if provided, must be a string" });
+    }
     const newApartment = await apartmentService.create(projectId, {
       number,
       floor,
@@ -100,6 +110,8 @@ async function createApartment(request, reply) {
       price,
       status,
       notes,
+      pricePerM2,
+      zone,
     });
     return reply.code(201).send(newApartment);
   } catch (err) {

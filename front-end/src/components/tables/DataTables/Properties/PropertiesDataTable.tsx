@@ -121,6 +121,9 @@ type ProjectData = {
   superficie: string;
   price: number;
   status: string;
+  pricePerM2 ?: number;
+  zone ?: string;
+  etage ?: string;
 };
 
 export default function PropertiesDataTable({ apartmentsData }: { apartmentsData: ProjectData[] }) {
@@ -142,7 +145,9 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
               type: "Apartement", // Set default or extract from your data
               superficie: `${item.area || 0} units`,
               price: item.price || 0, // Add fallback for price
-              status: item.status || 'Available'
+              status: item.status || 'Available',
+              pricePerM2: item.pricePerM2 || 0,
+              zone: item.zone || 'Unknown',
           }));
           setApartementsData(formattedData);
       } else {
@@ -250,6 +255,8 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                   { key: "project", label: "Project" },
                   { key: "type", label: "Type" },
                   { key: "superficie", label: "Superficie" },
+                  { key: "pricePerM2", label: "Price Per M²" },
+                  { key: "zone", label: "Zone" },
                   { key: "price", label: "Price" },
                   { key: "status", label: "Status" },
                 ].map(({ key, label }) => (
@@ -305,6 +312,17 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.superficie}
+                  </TableCell>
+                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
+                    {(item.pricePerM2 ?? 0).toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "MAD",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    })}
+                  </TableCell>
+                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
+                    {item.zone}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.price.toLocaleString("en-US", {

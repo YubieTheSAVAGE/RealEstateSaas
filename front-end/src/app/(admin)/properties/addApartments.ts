@@ -22,6 +22,8 @@ export default async function addApartments(formData: FormData)
                 price: parseInt(formData.get("price") as string, 10),
                 status: formData.get("status"),
                 notes: formData.get("notes"),
+                pricePerM2: parseInt(formData.get("pricePerM2") as string, 10),
+                zone: formData.get("zone"),
             }),
         });
 
@@ -31,7 +33,6 @@ export default async function addApartments(formData: FormData)
 
         const data = await res.json();
         console.log("Project added successfully:", data);
-    } finally
-    {
+    } finally {
     }
 };

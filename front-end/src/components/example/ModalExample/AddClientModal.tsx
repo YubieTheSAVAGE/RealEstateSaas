@@ -26,6 +26,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     phoneNumber: "",
     status  : "",
     notes : "",
+    provenance : "",
   });
 
   // State for validation errors
@@ -68,8 +69,8 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   ]);
 
   const status = [
-    { value: "ACTIVE", label: "Active" },
-    { value: "INACTIVE", label: "Inactive" },
+    { value: "CLIENT", label: "Client" },
+    { value: "LEAD", label: "Lead" },
   ]
 
 
@@ -152,6 +153,15 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 name="status"
                 placeholder=""
                 onChange={(value, name) => handleSelectChange(value, name)}
+              />
+            </div>
+            <div className="col-span-1 sm:col-span-2">
+              <Label>Provenance</Label>
+              <Input
+                name="provenance"
+                type="text"
+                placeholder="Provenance"
+                onChange={handleChange}
               />
             </div>
             <div className="col-span-1 sm:col-span-2">

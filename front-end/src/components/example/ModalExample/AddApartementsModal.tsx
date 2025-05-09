@@ -28,6 +28,8 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
     price: "",
     status: "",
     notes: "",
+    pricePerM2 : "",
+    zone : "",
   });
 
   // State for validation errors
@@ -95,7 +97,6 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
     { value: "AVAILABLE", label: "Available" },
     { value: "RESERVED", label: "Reserved" },
     { value: "SOLD", label: "Sold" },
-    { value: "CANCELLED", label: "Cancelled" },
   ]
 
 
@@ -172,7 +173,24 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
                 onChange={handleChange}
               />
             </div>
-
+            <div className="col-span-1">
+              <Label>Zone</Label>
+              <Input
+                name="zone"
+                type="text"
+                placeholder="e.g. Zone 1"
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-span-1">
+              <Label>Price Per M²</Label>
+              <Input
+                name="pricePerM2"
+                type="number"
+                placeholder="e.g. 10"
+                onChange={handleChange}
+              />
+            </div>
             <div className="col-span-1 sm:col-span-2">
               <Label>Type</Label>
               <Select

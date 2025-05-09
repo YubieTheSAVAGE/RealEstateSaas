@@ -15,6 +15,7 @@ async function loginUser(email, password) {
   return user;
 }
 
+
 module.exports = {
   loginUser,
 };

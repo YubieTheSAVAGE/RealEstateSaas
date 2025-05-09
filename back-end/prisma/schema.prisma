@@ -13,10 +13,6 @@ enum Role {
   AGENT
 }
 
-enum Status {
-  ACTIVE
-  INACTIVE
-}
 
 enum PropertyType {
   APARTMENT
@@ -28,7 +24,16 @@ enum ApartmentStatus {
   AVAILABLE   
   RESERVED
   SOLD
-  CANCELLED
+}
+
+enum ClientStatus {
+  LEAD
+  CLIENT
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
 }
 
 model User {
@@ -49,8 +54,9 @@ model Client {
   name         String
   email        String   @unique
   phoneNumber  String
-  status       Status   @default(ACTIVE)
   notes        String?
+  provenance   String
+  status       ClientStatus   @default(LEAD)
 
   createdBy    User     @relation(fields: [createdById], references: [id])
   createdById  Int
@@ -75,6 +81,8 @@ model Apartment {
   area          Float             
   threeDViewUrl String?          
   price         Float
+  pricePerM2    Float
+  zone          String
   status        ApartmentStatus   @default(AVAILABLE)
   notes         String?
 

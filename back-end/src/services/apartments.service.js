@@ -33,6 +33,8 @@ async function create(projectId, data) {
       price: data.price,
       status: data.status,
       notes: data.notes,
+      pricePerM2: data.pricePerM2,
+      zone: data.zone,
       projectId,
     },
   });

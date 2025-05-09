@@ -19,6 +19,7 @@ export default async function addClient(formData: FormData)
                 phoneNumber: formData.get("phoneNumber"),
                 status: formData.get("status"),
                 notes: formData.get("notes"),
+                provenance: formData.get("provenance"),
             }),
         });
 
