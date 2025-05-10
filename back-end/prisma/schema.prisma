@@ -18,6 +18,8 @@ enum PropertyType {
   APARTMENT
   DUPLEX
   VILLA
+  STORE
+  LAND
 }
 
 enum ApartmentStatus {

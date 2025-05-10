@@ -10,6 +10,8 @@ import { API_URL } from "@/app/common/constants/api";
 import addApartments from "@/app/(admin)/properties/addApartments";
 import getProperties from "@/components/tables/DataTables/Projects/getProperties";
 import Select from "../../form/Select";
+import TextArea from "@/components/form/input/TextArea";
+import FileInput from "@/components/form/input/FileInput";
 
 interface AddProjectModalProps {
   onApartementsAdded?: () => void; // Callback to refresh project list
@@ -91,6 +93,8 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
     { value: "APARTMENT", label: "Apartement" },
     { value: "DUPLEX", label: "Duplax" },
     { value: "VILLA", label: "Villa" },
+    { value: "STORE", label: "Shop" },
+    { value: "LAND", label: "Land" },
   ]
 
   const status = [
@@ -127,6 +131,13 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
     }));
   }
 
+  function handleTextAreaChange(value: string): void {
+    setFormData((prev) => ({
+      ...prev,
+      notes: value,
+    }));
+  }
+
   return (
     <>
       <Button size="sm" onClick={openModal}>
@@ -139,12 +150,12 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Project Information
+            Property Information
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
-              <Label>Project Id</Label>
+              <Label>Project <span className="text-red-500">*</span></Label>
               <Select
                 name="id"
                 options={options}
@@ -153,46 +164,8 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
                 className="dark:bg-dark-900"
               />
             </div>
-
             <div className="col-span-1">
-              <Label>Floor</Label>
-              <Input
-                name="floor"
-                type="number"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="col-span-1">
-              <Label>Number</Label>
-              <Input
-                name="number"
-                type="number"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-span-1">
-              <Label>Zone</Label>
-              <Input
-                name="zone"
-                type="text"
-                placeholder="e.g. Zone 1"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-span-1">
-              <Label>Price Per M²</Label>
-              <Input
-                name="pricePerM2"
-                type="number"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Type</Label>
+              <Label>Type <span className="text-red-500">*</span></Label>
               <Select
                 name="type"
                 options={type}
@@ -200,8 +173,28 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Area</Label>
+
+            <div className="col-span-1">
+              <Label>Floor <span className="text-red-500">*</span></Label>
+              <Input
+                name="floor"
+                type="number"
+                placeholder="e.g. 10"
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-span-1">
+              <Label>Number <span className="text-red-500">*</span></Label>
+              <Input
+                name="number"
+                type="number"
+                placeholder="e.g. 10"
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="col-span-1">
+              <Label>Area <span className="text-red-500">*</span></Label>
               <Input
                 name="area"
                 type="number"
@@ -209,7 +202,27 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
                 onChange={handleChange}
               />
             </div>
-            <div className="col-span-1 sm:col-span-2">
+            <div className="col-span-1">
+              <Label>Price Per M² <span className="text-red-500">*</span></Label>
+              <Input
+                name="pricePerM2"
+                type="number"
+                placeholder="e.g. 10"
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="col-span-1">
+              <Label>Zone <span className="text-red-500">*</span></Label>
+              <Input
+                name="zone"
+                type="text"
+                placeholder="e.g. Zone 1"
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div className="col-span-1">
               <Label>3D Link</Label>
               <Input
                 name="threeDViewUrl"
@@ -218,8 +231,9 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
                 onChange={handleChange}
               />
             </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Price</Label>
+
+            <div className="col-span-1">
+              <Label>Total Price <span className="text-red-500">*</span></Label>
               <Input
                 name="price"
                 type="number"
@@ -227,22 +241,30 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
                 onChange={handleChange}
               />
             </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Status</Label>
+            <div className="col-span-1">
+              <Label>Status <span className="text-red-500">*</span></Label>
               <Select
                 options={status}
                 name="status"
                 placeholder=""
+                defaultValue={status[0].value}
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
+
+            <div className="col-span-2">
+              <Label>Plan</Label>
+              <FileInput
+                onChange={handleChange}
+              />
+            </div>
+
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
-              <Input
-                name="notes"
-                type="text"
-                placeholder="Notes"
-                onChange={handleChange}
+              <TextArea
+                rows={3}
+                placeholder="Add notes here"
+                onChange={handleTextAreaChange}
               />
             </div>
           </div>
