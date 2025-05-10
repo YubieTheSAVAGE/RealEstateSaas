@@ -10,6 +10,7 @@ import { API_URL } from "@/app/common/constants/api";
 import addProject from "@/app/(admin)/projects/addProjects";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
+import Alert from "@/components/ui/alert/Alert";
 
 interface AddProjectModalProps {
   onProjectAdded?: () => void; // Callback to refresh project list
@@ -108,6 +109,19 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
             Project Information
           </h4>
+          {/* // gad hadi a chaka w khdem 3la l error ytjm3 f var wa7d
+          // replace with the correct error handling
+          // copier coller hadchy w diru f ga3 l modals */}
+          {errors.numberOfApartments && (
+            <div className="mb-4">
+              <Alert 
+                title="Error"
+                message={errors.numberOfApartments}
+                variant="error"
+                showLink={false}
+              />
+            </div>
+          )}
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
