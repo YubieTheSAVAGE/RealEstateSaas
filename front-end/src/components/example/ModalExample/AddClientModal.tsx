@@ -11,6 +11,7 @@ import EmailContent from "@/components/email/EmailInbox/EmailContent";
 import { stat } from "fs";
 import { Notebook } from "lucide-react";
 import addClient from "@/app/(admin)/clients/addClient";
+import { Textarea } from "@/components/ui/textarea";
 
 interface AddProjectModalProps {
   onClientAdded?: () => void; // Callback to refresh client list
@@ -101,6 +102,20 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     }));
   }
 
+  function handleTextareaChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Clear errors when the user starts typing
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  }
+
   return (
     <>
       <Button size="sm" onClick={openModal}>
@@ -113,17 +128,27 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Project Information
+            Lead Information
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
-              <Label>Name</Label>
+              <Label>Full Name <span className="text-red-500">*</span></Label>
               <Input
                 name="name"
                 type="text"
                 placeholder="e.g. John Doe"
                 onChange={handleChange}
+              />
+            </div>
+            <div className="col-span-1">
+              <Label>Status <span className="text-red-500">*</span></Label>
+              <Select
+                options={status}
+                name="status"
+                placeholder=""
+                defaultValue={status[1].value}
+                onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
 
@@ -138,39 +163,31 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
             </div>
 
             <div className="col-span-1">
-              <Label>Phone Number</Label>
+              <Label>Phone Number <span className="text-red-500">*</span></Label>
               <Input
                 name="phoneNumber"
-                type="text"
+                type="phone"
                 placeholder="e.g. 123-456-7890"
                 onChange={handleChange}
               />
             </div>
+            
             <div className="col-span-1 sm:col-span-2">
-              <Label>Status</Label>
-              <Select
-                options={status}
-                name="status"
-                placeholder=""
-                onChange={(value, name) => handleSelectChange(value, name)}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Provenance</Label>
+              <Label>How did you hear about us? <span className="text-red-500">*</span></Label>
               <Input
                 name="provenance"
                 type="text"
-                placeholder="Provenance"
+                placeholder="e.g. Google, Referral"
                 onChange={handleChange}
               />
             </div>
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
-              <Input
+              <Textarea
+                rows={3}
                 name="notes"
-                type="text"
-                placeholder="Notes"
-                onChange={handleChange}
+                placeholder="e.g. Notes about the client"
+                onChange={handleTextareaChange}
               />
             </div>
           </div>
