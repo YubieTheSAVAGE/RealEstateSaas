@@ -11,13 +11,17 @@ import addProject from "@/app/(admin)/projects/addProjects";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import Alert from "@/components/ui/alert/Alert";
+import { PencilIcon } from "@/icons";
 
-interface AddProjectModalProps {
+interface EditProjectModalProps {
   onProjectAdded?: () => void; // Callback to refresh project list
+  ProjectData?: any; // Add the type for ProjectData if available
 }
 
-export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps) {
+export default function EditProjectModal({ onProjectAdded, ProjectData }: EditProjectModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  console.log("ProjectData", ProjectData);
 
   // State for form fields
   const [formData, setFormData] = useState({
@@ -97,18 +101,19 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
 
   return (
     <>
-      <Button size="sm" onClick={openModal}>
-        Add Project
-      </Button>
+      <PencilIcon onClick={openModal} />
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
         className="max-w-[584px] p-5 lg:p-10"
       >
         <form onSubmit={(e) => e.preventDefault()}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
+          <h4 className="mb-2 text-lg font-medium text-gray-800 dark:text-white/90">
             Project Information
           </h4>
+          <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+            Edit in the project details below.
+          </p>
           {/* // gad hadi a chaka w khdem 3la l error ytjm3 f var wa7d
           // replace with the correct error handling
           // copier coller hadchy w diru f ga3 l modals */}
@@ -127,6 +132,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
             <div className="col-span-1">
               <Label>Name <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={ProjectData?.name}
                 name="name"
                 type="text"
                 placeholder="Project Name"
@@ -137,6 +143,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
             <div className="col-span-1">
               <Label>Total properties <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={ProjectData?.numberOfApartments}
                 name="numberOfApartments"
                 type="number"
                 placeholder="e.g. 10"
@@ -152,6 +159,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
             <div className="col-span-1">
               <Label>Total surface <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={ProjectData?.totalSurface}
                 name="totalSurface"
                 type="number"
                 placeholder="e.g. 1000 m²"
@@ -162,6 +170,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
             <div className="col-span-1">
               <Label>Address <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={ProjectData?.address}
                 name="Address"
                 type="text"
                 placeholder="e.g. 123 Main St"
@@ -182,6 +191,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
             <div className="col-span-1 sm:col-span-2">
               <Label>Note</Label>
               <TextArea
+                defaultValue={ProjectData?.note}
                 value={formData.note}
                 placeholder="Type a note here..."
                 rows={6}

@@ -20,6 +20,9 @@ type SortKey = "id" | "project" | "totalSales";
 type SortOrder = "asc" | "desc";
 
 import deleteProperties from "./deleteProperties";
+import { FaEye } from "react-icons/fa";
+import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
+import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 
 export default function DataTableTwo({ projects }: any) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,7 +76,6 @@ export default function DataTableTwo({ projects }: any) {
 
   const handleDelete = async (id: string) => {
     // Show confirmation dialog
-    if (confirm("Are you sure you want to delete this project?")) {
       const success: boolean = await deleteProperties(id);
 
       if (success) {
@@ -89,10 +91,6 @@ export default function DataTableTwo({ projects }: any) {
         ) {
           setCurrentPage(currentPage - 1);
         }
-      } else {
-        // Show error message if deletion failed
-        alert("Failed to delete project. Please try again.");
-      }
     }
   };
 
@@ -115,7 +113,7 @@ export default function DataTableTwo({ projects }: any) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const currentData = projectData.slice(startIndex, endIndex);
-
+  console.log("Current Data:", projectData);
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
@@ -248,17 +246,22 @@ export default function DataTableTwo({ projects }: any) {
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.totalSales}
                   </TableCell>
-                  {/* <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.status}
-                  </TableCell> */}
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">
-                      <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500">
-                        <TrashBinIcon onClick={() => handleDelete(item.id)} />
+                      <button className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90">
+                        <FaEye />
                       </button>
-                      <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90">
-                        <PencilIcon />
-                      </button>
+                      <span className="text-gray-500 hover:text-error-600 dark:text-gray-400 dark:hover:text-error-500 cursor-pointer">
+                        <DeleteModal onDelete={() => handleDelete(item.id)} itemId={item.id} heading="Delete Project" description="Are you sure you want to delete this project?" />
+                      </span>
+                      {/* <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500"> */}
+                        {/* <TrashBinIcon onClick={() => handleDelete(item.id)} /> */}
+                      {/* </button> */}
+                      {/* <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90"> */}
+                      <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
+                        <EditProjectModal ProjectData={item} />
+                      </span>
+                      {/* </button> */}
                     </div>
                   </TableCell>
                 </TableRow>
