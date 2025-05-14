@@ -262,6 +262,7 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
               <TextArea
+                value={formData.notes}
                 rows={3}
                 placeholder="Add notes here"
                 onChange={handleTextAreaChange}
