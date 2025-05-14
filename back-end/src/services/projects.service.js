@@ -25,6 +25,7 @@ async function addNewProject(data) {
       name: data.name,
       numberOfApartments: data.numberOfApartments,
       notes: data.notes,
+      image: data.image,
     },
   });
   return project;

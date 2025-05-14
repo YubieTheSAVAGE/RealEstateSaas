@@ -101,6 +101,24 @@ async function createApartment(request, reply) {
           .code(400)
           .send({ error: "zone, if provided, must be a string" });
     }
+
+    const { mimetype, buffer, filename } = threeDViewUrl;
+
+    const uniqueName = `${Date.now()}-${filename}`;
+
+
+    if (!ALLOWED.includes(mimetype)) {
+      return rep.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+    }
+
+    const uploadsDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+
+    const dest = path.join(uploadsDir, uniqueName);
+    await fs.promises.writeFile(dest, buffer);
+
+    threeDViewUrl = process.env.BACKEND_URL + path.join('/uploads', uniqueName);
+
     const newApartment = await apartmentService.create(projectId, {
       number,
       floor,
