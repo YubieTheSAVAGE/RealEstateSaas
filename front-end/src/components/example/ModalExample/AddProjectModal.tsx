@@ -11,6 +11,7 @@ import addProject from "@/app/(admin)/projects/addProjects";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import Alert from "@/components/ui/alert/Alert";
+import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 
 interface AddProjectModalProps {
   onProjectAdded?: () => void; // Callback to refresh project list
@@ -23,7 +24,10 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
   const [formData, setFormData] = useState({
     name: "",
     numberOfApartments: "",
-    note: "",
+    notes: "",
+    totalSurface: "",
+    address: "",
+    image: null as File | null, // Store as File object instead of string
   });
 
   // State for validation errors
@@ -45,6 +49,18 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
       [name]: "",
     }));
   };
+  
+  // Special handler for file inputs
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      if (!file) return;
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+      }));
+    }
+  };
 
   const handleSave = async () => {
     // Validation for numberOfApartments
@@ -59,21 +75,30 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
       }));
       return;
     }
-
+    console.log("Form data to send:", formData);
     const formDataToSend = new FormData();
     formDataToSend.append("name", formData.name);
     formDataToSend.append("numberOfApartments", formData.numberOfApartments);
-    formDataToSend.append("note", formData.note);
+    formDataToSend.append("totalSurface", formData.totalSurface);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("notes", formData.notes);
+    
+    // Only append image if it exists
+    if (formData.image) {
+      formDataToSend.append("image", formData.image as File);
+    }
     
     try {
       await addProject(formDataToSend);
-      console.log("Saving project with data:", formData);
       
       // Reset form data
       setFormData({
         name: "",
         numberOfApartments: "",
-        note: "",
+        notes: "",
+        totalSurface: "",
+        address: "",
+        image: null,
       });
       
       // Call the refresh callback to update the project list
@@ -83,16 +108,17 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
       
       closeModal();
     } catch (error) {
-      console.error("Error adding project:", error);
       // You could add error handling UI here if needed
     }
   };
 
   const handleTextareaChange = (value: string) => {
+    // console.log("Textarea value:", value);
     setFormData((prev) => ({
       ...prev,
-      note: value,
+      notes: value,
     }));
+    // console.log("Form data after textarea change:", formData);
   };
 
   return (
@@ -162,7 +188,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
             <div className="col-span-1">
               <Label>Address <span className="text-red-500">*</span></Label>
               <Input
-                name="Address"
+                name="address" // Fixed the field name
                 type="text"
                 placeholder="e.g. 123 Main St"
                 onChange={handleChange}
@@ -176,14 +202,21 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
             <div className="col-span-1 sm:col-span-2">
               <Label>Plan</Label>
               <FileInput
-                onChange={handleChange}
+                name="image"
+                onChange={handleFileChange} // Use the specialized handler
               />
+              {formData.image && (
+                <p className="mt-1 text-xs text-green-600">
+                  File selected: {formData.image.name}
+                </p>
+              )}
             </div>
             <div className="col-span-1 sm:col-span-2">
-              <Label>Note</Label>
+              <Label>Notes</Label>
               <TextArea
-                value={formData.note}
-                placeholder="Type a note here..."
+                value={formData.notes}
+                name="notes"
+                placeholder="Type your notes here..."
                 rows={6}
                 onChange={handleTextareaChange}
               />

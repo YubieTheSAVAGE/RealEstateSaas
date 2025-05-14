@@ -30,7 +30,7 @@ export default function Projects() {
                 </h2>
                 <AddProjectModal onProjectAdded={fetchProjects}/>
             </div>
-            <ProjectsDataTable projects={projects}/>
+            <ProjectsDataTable projects={projects} onRefresh={fetchProjects}/>
         </>
     )
 }

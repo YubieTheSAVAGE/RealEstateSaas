@@ -23,7 +23,9 @@ async function addNewProject(data) {
   const project = await prisma.project.create({
     data: {
       name: data.name,
-      numberOfApartments: data.numberOfApartments,
+      numberOfApartments: parseInt(data.numberOfApartments, 10),
+      totalSurface: parseInt(data.totalSurface, 10),
+      address: data.address,
       notes: data.notes,
       image: data.image,
     },
@@ -44,8 +46,11 @@ async function updateProject(projectId, data) {
     where: { id: projectId },
     data: {
       name: data.name,
-      numberOfApartments: data.numberOfApartments,
+      numberOfApartments: parseInt(data.numberOfApartments, 10),
       notes: data.notes,
+      totalSurface: parseInt(data.totalSurface, 10),
+      address: data.address,
+      image: data.image,
     },
   });
   return updated;

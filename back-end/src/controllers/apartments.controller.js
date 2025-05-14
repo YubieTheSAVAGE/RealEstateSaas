@@ -1,8 +1,12 @@
 const apartmentService = require("../services/apartments.service");
 const { isPositiveInt } = require("../utils/helpers");
 
+const path = require("path");
+const fs = require("fs");
+
 const ALLOWED_TYPES = ["APARTMENT", "DUPLEX", "VILLA"];
 const ALLOWED_STATUSES = ["AVAILABLE", "RESERVED", "SOLD", "CANCELLED"];
+const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 
 async function getAllApartments(request, reply) {
   try {
@@ -39,19 +43,8 @@ async function createApartment(request, reply) {
         .send({ error: "projectId must be a positive integer" });
     }
 
-    const { number, floor, type, area, threeDViewUrl, price, status, notes, pricePerM2, zone } =
+    const { number, floor, type, area, threeDViewUrl, price, status, notes, pricePerM2, zone, image } =
       request.body;
-    
-    if (!isPositiveInt(number)) {
-      return reply
-        .code(400)
-        .send({ error: "number is required and must be a positive integer" });
-    }
-    if (!isPositiveInt(floor)) {
-      return reply
-        .code(400)
-        .send({ error: "floor is required and must be a positive integer" });
-    }
 
     if (typeof type !== "string" || !ALLOWED_TYPES.includes(type)) {
       return reply.code(400).send({
@@ -59,17 +52,6 @@ async function createApartment(request, reply) {
           ", "
         )}`,
       });
-    }
-
-    if (typeof area !== "number" || area <= 0) {
-      return reply
-        .code(400)
-        .send({ error: "area is required and must be a positive number" });
-    }
-    if (typeof price !== "number" || price < 0) {
-      return reply
-        .code(400)
-        .send({ error: "price is required and must be a non-negative number" });
     }
 
     if (typeof status !== "string" || !ALLOWED_STATUSES.includes(status)) {
@@ -90,25 +72,19 @@ async function createApartment(request, reply) {
         .code(400)
         .send({ error: "notes, if provided, must be a string" });
     }
-
-    if (pricePerM2 !== undefined && (typeof pricePerM2 !== "number" || pricePerM2 <= 0)) {
-        return reply
-          .code(400)
-          .send({ error: "pricePerM2, if provided, must be a positive number" });
-    }
     if (zone !== undefined && typeof zone !== "string") {
         return reply
           .code(400)
           .send({ error: "zone, if provided, must be a string" });
     }
 
-    const { mimetype, buffer, filename } = threeDViewUrl;
+    const { mimetype, buffer, filename } = image;
 
     const uniqueName = `${Date.now()}-${filename}`;
 
 
     if (!ALLOWED.includes(mimetype)) {
-      return rep.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+      return reply.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
     }
 
     const uploadsDir = path.join(__dirname, '../uploads');
@@ -117,18 +93,19 @@ async function createApartment(request, reply) {
     const dest = path.join(uploadsDir, uniqueName);
     await fs.promises.writeFile(dest, buffer);
 
-    threeDViewUrl = process.env.BACKEND_URL + path.join('/uploads', uniqueName);
+    const uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
 
     const newApartment = await apartmentService.create(projectId, {
-      number,
-      floor,
+      number : parseInt(number, 10),
+      floor : parseInt(floor, 10),
       type,
-      area,
+      area: parseInt(area, 10),
       threeDViewUrl,
-      price,
+      price : parseInt(area, 10),
       status,
       notes,
-      pricePerM2,
+      pricePerM2: parseInt(pricePerM2, 10),
+      image: uploadedImage,
       zone,
     });
     return reply.code(201).send(newApartment);

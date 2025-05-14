@@ -70,6 +70,8 @@ model Project {
   id                  Int         @id @default(autoincrement())
   name                String
   image               String
+  address             String
+  totalSurface        Int
   numberOfApartments  Int
   notes               String?
 
@@ -86,6 +88,7 @@ model Apartment {
   price         Float
   pricePerM2    Float
   zone          String
+  image         String
   status        ApartmentStatus   @default(AVAILABLE)
   notes         String?
 

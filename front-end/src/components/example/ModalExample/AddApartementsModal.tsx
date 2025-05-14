@@ -12,6 +12,7 @@ import getProperties from "@/components/tables/DataTables/Projects/getProperties
 import Select from "../../form/Select";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
+import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 
 interface AddProjectModalProps {
   onApartementsAdded?: () => void; // Callback to refresh project list
@@ -31,6 +32,7 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
     status: "",
     notes: "",
     pricePerM2 : "",
+    image: null as File | null, // Store as File object instead of string
     zone : "",
   });
 
@@ -74,7 +76,13 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
     // formDataToSend.append("note", formData.note);
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
+      if (value !== null) {
+        if (value instanceof File) {
+          formDataToSend.append(key, value);
+        } else {
+          formDataToSend.append(key, String(value));
+        }
+      }
     });
     await addApartments(formDataToSend);
     // console.log("Saving project with data:", formData);
@@ -130,6 +138,17 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
       [name]: selectedValue, // Adjust the key based on the field being updated
     }));
   }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      if (!file) return;
+      setFormData((prev) => ({
+        ...prev,
+        image: file,
+      }));
+    }
+  };
 
   function handleTextAreaChange(value: string): void {
     setFormData((prev) => ({
@@ -247,7 +266,6 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
                 options={status}
                 name="status"
                 placeholder=""
-                defaultValue={status[0].value}
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
@@ -255,8 +273,14 @@ export default function AddProjectModal({ onApartementsAdded }: AddProjectModalP
             <div className="col-span-2">
               <Label>Plan</Label>
               <FileInput
-                onChange={handleChange}
+                name="image"
+                onChange={handleFileChange} // Use the specialized handler
               />
+              {formData.image && (
+                <p className="mt-1 text-xs text-green-600">
+                  File selected: {formData.image.name}
+                </p>
+              )}
             </div>
 
             <div className="col-span-1 sm:col-span-2">

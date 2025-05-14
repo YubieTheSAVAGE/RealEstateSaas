@@ -7,9 +7,18 @@ const clientRoutes = require('./routes/clients.routes');
 const projectRoutes = require('./routes/projects.routes');
 const apartmentRoutes = require('./routes/apartments.routes');
 
+const static = require('@fastify/static');
+const path = require('path');
+
+
 const { jwtPlugin, corsPlugin } = require('./plugins');
 
 const app = Fastify({ logger: true });
+
+app.register(static, {
+  root: path.join(__dirname, 'uploads'),
+  prefix: '/uploads/', 
+});
 
 app.register(require('./middleware/auth.middleware'))
 

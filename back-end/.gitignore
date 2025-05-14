@@ -3,4 +3,5 @@ node_modules
 prisma/dev.db*
 prisma/migrations
 to.do
+uploads/
 seed-admin.js

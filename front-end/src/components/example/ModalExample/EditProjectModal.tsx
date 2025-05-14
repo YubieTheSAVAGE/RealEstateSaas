@@ -7,32 +7,37 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
 import { API_URL } from "@/app/common/constants/api";
-import addProject from "@/app/(admin)/projects/addProjects";
+import editProject from "@/app/(admin)/projects/editProjects";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import Alert from "@/components/ui/alert/Alert";
 import { PencilIcon } from "@/icons";
+import { identity } from "@fullcalendar/core/internal";
+import { redirect } from "next/dist/server/api-utils";
 
 interface EditProjectModalProps {
-  onProjectAdded?: () => void; // Callback to refresh project list
   ProjectData?: any; // Add the type for ProjectData if available
+  onRefresh?: () => void; // Callback to refresh project list after editing
 }
 
-export default function EditProjectModal({ onProjectAdded, ProjectData }: EditProjectModalProps) {
+export default function EditProjectModal({ ProjectData, onRefresh }: EditProjectModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
-
-  console.log("ProjectData", ProjectData);
-
   // State for form fields
   const [formData, setFormData] = useState({
-    name: "",
-    numberOfApartments: "",
-    note: "",
+    id : ProjectData?.id || "",
+    name: ProjectData?.name || "",
+    numberOfApartments: ProjectData?.numberOfApartments || "",
+    notes: ProjectData?.notes || "",
+    totalSurface: ProjectData?.totalSurface || "",
+    address: ProjectData?.address || "",
   });
 
   // State for validation errors
   const [errors, setErrors] = useState({
     numberOfApartments: "",
+    totalSurface: "",
+    address: "",
+    notes: "",
   });
 
   // Update form field values
@@ -65,29 +70,23 @@ export default function EditProjectModal({ onProjectAdded, ProjectData }: EditPr
     }
 
     const formDataToSend = new FormData();
+    formDataToSend.append("id", formData.id);
     formDataToSend.append("name", formData.name);
     formDataToSend.append("numberOfApartments", formData.numberOfApartments);
-    formDataToSend.append("note", formData.note);
+    formDataToSend.append("totalSurface", formData.totalSurface);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("notes", formData.notes);
     
     try {
-      await addProject(formDataToSend);
-      console.log("Saving project with data:", formData);
+      await editProject(formDataToSend);
       
-      // Reset form data
-      setFormData({
-        name: "",
-        numberOfApartments: "",
-        note: "",
-      });
-      
-      // Call the refresh callback to update the project list
-      if (onProjectAdded) {
-        onProjectAdded();
+      // Call the callback to refresh project list if provided
+      if (onRefresh) {
+        onRefresh();
       }
-      
+            
       closeModal();
     } catch (error) {
-      console.error("Error adding project:", error);
       // You could add error handling UI here if needed
     }
   };
@@ -95,7 +94,7 @@ export default function EditProjectModal({ onProjectAdded, ProjectData }: EditPr
   const handleTextareaChange = (value: string) => {
     setFormData((prev) => ({
       ...prev,
-      note: value,
+      notes: value,
     }));
   };
 
@@ -191,8 +190,8 @@ export default function EditProjectModal({ onProjectAdded, ProjectData }: EditPr
             <div className="col-span-1 sm:col-span-2">
               <Label>Note</Label>
               <TextArea
-                defaultValue={ProjectData?.note}
-                value={formData.note}
+                value={formData.notes}
+                name="notes"
                 placeholder="Type a note here..."
                 rows={6}
                 onChange={handleTextareaChange}

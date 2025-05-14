@@ -13,8 +13,7 @@ async function loginUser(email, password) {
   }
   delete user.passwordHash;
   return user;
-}
-
+} 
 
 module.exports = {
   loginUser,

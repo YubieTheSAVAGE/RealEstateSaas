@@ -24,7 +24,12 @@ import { FaEye } from "react-icons/fa";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 
-export default function DataTableTwo({ projects }: any) {
+interface DataTableTwoProps {
+  projects: any[];
+  onRefresh?: () => void; // Callback to refresh projects data
+}
+
+export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("project");
@@ -113,7 +118,6 @@ export default function DataTableTwo({ projects }: any) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const currentData = projectData.slice(startIndex, endIndex);
-  console.log("Current Data:", projectData);
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
@@ -259,7 +263,7 @@ export default function DataTableTwo({ projects }: any) {
                       {/* </button> */}
                       {/* <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90"> */}
                       <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
-                        <EditProjectModal ProjectData={item} />
+                        <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
                       </span>
                       {/* </button> */}
                     </div>

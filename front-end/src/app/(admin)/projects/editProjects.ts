@@ -5,14 +5,14 @@ import { cookies } from "next/headers";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
 
 
-export default async function addProject(formData: FormData)
+export default async function editProject(formData: FormData)
 {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get(AUTHENTICATION_COOKIE)?.value;
         // Use FormData directly to properly upload the image file
-        const res = await fetch(`${API_URL}/api/projects`, {
-            method: "POST",
+        const res = await fetch(`${API_URL}/api/projects/${formData.get("id")}`, {
+            method: "PUT",
             headers: {
             "Authorization": `Bearer ${token}`
             },
@@ -20,7 +20,7 @@ export default async function addProject(formData: FormData)
         });
 
         if (!res.ok) {
-            console.log("Error adding project:", res);
+            console.log("Error editing project:", res);
         }
 
         const data = await res.json();
