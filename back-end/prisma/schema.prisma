@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+enum Role {
+  ADMIN
+  AGENT
+}
+
+
+enum PropertyType {
+  APARTMENT
+  DUPLEX
+  VILLA
+  STORE
+  LAND
+}
+
+enum ApartmentStatus {
+  AVAILABLE   
+  RESERVED
+  SOLD
+}
+
+enum ClientStatus {
+  LEAD
+  CLIENT
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  phoneNumber  String
+  status       Status   @default(ACTIVE)
+  notes        String?
+  role         Role     @default(AGENT)
+  passwordHash  String
+
+  clients      Client[] 
+}
+
+model Client {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  phoneNumber  String
+  notes        String?
+  provenance   String
+  status       ClientStatus   @default(LEAD)
+
+  createdBy    User     @relation(fields: [createdById], references: [id])
+  createdById  Int
+
+  apartments   Apartment[]
+}
+
+model Project {
+  id                  Int         @id @default(autoincrement())
+  name                String
+  image               String
+  address             String
+  totalSurface        Int
+  numberOfApartments  Int
+  notes               String?
+
+  apartments          Apartment[]
+}
+
+model Apartment {
+  id            Int              @id @default(autoincrement())
+  number        Int
+  floor         Int
+  type          PropertyType     @default(APARTMENT)
+  area          Float             
+  threeDViewUrl String?          
+  price         Float
+  pricePerM2    Float
+  zone          String
+  image         String
+  status        ApartmentStatus   @default(AVAILABLE)
+  notes         String?
+
+  project       Project           @relation(fields: [projectId], references: [id])
+  projectId     Int
+
+  client        Client?           @relation(fields: [clientId], references: [id])
+  clientId      Int?
+}
