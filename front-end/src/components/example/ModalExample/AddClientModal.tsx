@@ -12,6 +12,9 @@ import { stat } from "fs";
 import { Notebook } from "lucide-react";
 import addClient from "@/app/(admin)/clients/addClient";
 import { Textarea } from "@/components/ui/textarea";
+import getProperties from "@/components/tables/DataTables/Projects/getProperties";
+import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements";
+import getApartements from "@/components/task/kanban/getTask";
 
 interface AddProjectModalProps {
   onClientAdded?: () => void; // Callback to refresh client list
@@ -25,9 +28,11 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     name: "",
     email: "",
     phoneNumber: "",
-    status  : "",
+    status  : "LEAD",
     notes : "",
     provenance : "",
+    projectId : "",
+    apartmentId : "",
   });
 
   // State for validation errors
@@ -56,6 +61,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     Object.entries(formData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
+    console.log("Form data to send:", formDataToSend);
     await addClient(formDataToSend);
     if (onClientAdded) {
       onClientAdded(); // Call the refresh callback to update the client list
@@ -66,13 +72,66 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     closeModal();
   };
 
-  const [options, setOptions] = useState([
-  ]);
+    const [options, setOptions] = useState([
+    ]);
 
-  const status = [
-    { value: "CLIENT", label: "Client" },
-    { value: "LEAD", label: "Lead" },
-  ]
+    const status = [
+      { value: "CLIENT", label: "Client" },
+      { value: "LEAD", label: "Lead" },
+    ]
+
+    useEffect(() => {
+      const fetchProperties = async () => {
+        try {
+          const response = await getProperties();
+          // Assuming response is an array of properties
+          const formattedOptions = response.map((property: any) => ({
+            value: property.id,
+            label: property.name,
+          }));
+          setOptions(formattedOptions);
+          console.log("Formatted options:", formattedOptions);
+        } catch (error) {
+          console.error("Error fetching properties:", error);
+        }
+      };
+  
+      fetchProperties();
+    }
+    , []);
+
+    // State for storing apartment options
+    const [apartmentOptions, setApartmentOptions] = useState([]);
+
+    // Function to fetch apartments for a specific project
+    const fetchApartmentsForProject = async (projectId: string) => {
+      try {
+        console.log("Fetching apartments for project ID:", projectId);
+        // Assuming you have an API endpoint for fetching apartments by project ID
+        // const response = await fetch(`/api/projects/${projectId}/apartments`);
+        const data = await getProjectApartements(projectId);
+
+        const formattedOptions = data.map((apartment: any) => ({
+          value: apartment.id,
+          label: apartment.name || `Apartment ${apartment.number || apartment.id}`,
+        }));
+        
+        setApartmentOptions(formattedOptions);
+
+      } catch (error) {
+        console.error("Error fetching apartments:", error);
+        setApartmentOptions([]);
+      }
+    };
+
+    // Update apartments when project changes
+    useEffect(() => {
+      if (formData.projectId) {
+        fetchApartmentsForProject(formData.projectId);
+      } else {
+        setApartmentOptions([]);
+      }
+    }, [formData.projectId]);
 
 
   // useEffect(() => {
@@ -151,7 +210,26 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
-
+            <div className="col-span-1">
+              <Label>Project <span className="text-red-500">*</span></Label>
+              <Select
+                options={options}
+                name="projectId"
+                placeholder=""
+                onChange={(value, name) => handleSelectChange(value, name)}
+              />
+            </div>
+            {formData.projectId && (
+              <div className="col-span-1">
+                <Label>Apartments<span className="text-red-500">*</span></Label>
+                <Select
+                  options={apartmentOptions}
+                  name="apartmentId"
+                  placeholder=""
+                  onChange={(value, name) => handleSelectChange(value, name)}
+                />
+              </div>
+            )}
             <div className="col-span-1">
               <Label>Email</Label>
               <Input

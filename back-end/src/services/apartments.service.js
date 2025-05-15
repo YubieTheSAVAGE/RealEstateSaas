@@ -25,15 +25,15 @@ async function create(projectId, data) {
   }
   const apartment = await prisma.apartment.create({
     data: {
-      number: data.number,
-      floor: data.floor,
+      number: parseInt(data.number, 10),
+      floor: parseInt(data.floor, 10),
       type: data.type,
-      area: data.area,
+      area: parseFloat(data.area),
       threeDViewUrl: data.threeDViewUrl,
-      price: data.price,
+      price: parseFloat(data.price),
       status: data.status,
       notes: data.notes,
-      pricePerM2: data.pricePerM2,
+      pricePerM2: parseFloat(data.pricePerM2),
       zone: data.zone,
       image: data.image,
       projectId,
@@ -54,14 +54,16 @@ async function update(apartmentId, data) {
   const updated = await prisma.apartment.update({
     where: { id: apartmentId },
     data: {
-      number: data.number,
-      floor: data.floor,
+      number: parseInt(data.number, 10),
+      floor: parseInt(data.floor, 10),
       type: data.type,
-      area: data.area,
+      area: parseInt(data.area, 10),
       threeDViewUrl: data.threeDViewUrl,
-      price: data.price,
+      price: parseInt(data.price, 10),
       status: data.status,
       notes: data.notes,
+      pricePerM2: parseInt(data.pricePerM2, 10),
+      zone: data.zone,
     },
   });
   return updated;

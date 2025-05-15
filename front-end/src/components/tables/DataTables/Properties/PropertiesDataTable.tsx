@@ -144,12 +144,18 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           const formattedData = apartmentsData.map((item: any) => ({
               id: item.id || '',
               project: item.project?.name || '', // Use optional chaining
+              projectId: item.project?.id || '', // Use optional chaining
               type: "Apartement", // Set default or extract from your data
               superficie: `${item.area || 0} units`,
               price: item.price || 0, // Add fallback for price
               status: item.status || 'Available',
               pricePerM2: item.pricePerM2 || 0,
               zone: item.zone || 'Unknown',
+              floor: item.floor || 'Unknown',
+              number: item.number || 'Unknown',
+              threeDViewUrl: item.threeDViewUrl || '',
+              notes: item.notes || '',
+              area:  item.area || 0,
           }));
           setApartementsData(formattedData);
       } else {

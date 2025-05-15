@@ -7,7 +7,7 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
 import { API_URL } from "@/app/common/constants/api";
-import addApartments from "@/app/(admin)/properties/addApartments";
+import editApartements from "@/app/(admin)/properties/editApartements";
 import getProperties from "@/components/tables/DataTables/Projects/getProperties";
 import Select from "../../form/Select";
 import TextArea from "@/components/form/input/TextArea";
@@ -25,19 +25,28 @@ interface EditPropertyModalProps {
 export default function EditPropertyModal({ PropertyData }: EditPropertyModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
+    const type = [
+    { value: "APARTMENT", label: "Apartement" },
+    { value: "DUPLEX", label: "Duplax" },
+    { value: "VILLA", label: "Villa" },
+    { value: "STORE", label: "Shop" },
+    { value: "LAND", label: "Land" },
+  ]
+
   // State for form fields
   const [formData, setFormData] = useState({
-    floor: "",
-    number: "",
-    type: "",
-    area: "",
-    threeDViewUrl: "",
-    price: "",
-    status: "AVAILABLE",
-    notes: "",
-    pricePerM2 : "",
+    id: PropertyData?.id || "",
+    floor: PropertyData?.floor || "",
+    number: PropertyData?.number || "",
+    type: type.find(t => t.label === PropertyData?.type)?.value || "",    
+    area: PropertyData?.area || 0,
+    threeDViewUrl: PropertyData?.threeDViewUrl || "",
+    price: PropertyData?.price || 0,
+    status: PropertyData?.status || "AVAILABLE",
+    notes: PropertyData?.notes || "",
+    pricePerM2 : PropertyData?.pricePerM2 || 0,
     image: null as File | null, // Store as File object instead of string
-    zone : "",
+    zone : PropertyData?.zone || "",
   });
 
   // State for validation errors
@@ -88,7 +97,7 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
         }
       }
     });
-    await addApartments(formDataToSend);
+    await editApartements(formDataToSend);
     // console.log("Saving project with data:", formData);
     // closeModal();
     console.log("Saving project with data:", formData);
@@ -101,13 +110,7 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
   const [options, setOptions] = useState([
   ]);
 
-  const type = [
-    { value: "APARTMENT", label: "Apartement" },
-    { value: "DUPLEX", label: "Duplax" },
-    { value: "VILLA", label: "Villa" },
-    { value: "STORE", label: "Shop" },
-    { value: "LAND", label: "Land" },
-  ]
+
 
   const status = [
     { value: "AVAILABLE", label: "Available" },
@@ -300,8 +303,7 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
               <TextArea
-                defaultValue={PropertyData?.notes}
-                value={formData.notes}
+                value={PropertyData.notes}
                 rows={3}
                 placeholder="Add notes here"
                 onChange={handleTextAreaChange}

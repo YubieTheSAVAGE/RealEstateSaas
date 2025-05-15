@@ -104,6 +104,12 @@ export default function ClientsDataTable({clients}: any) {
     email: string;
     phone: string;
     interest: string;
+    apartments: {
+      id: string;
+      floor: number;
+      number: number;
+      projectName: string;
+    }
   };
 
   const [clientsData, setClientsData] = useState<ClientData[]>([]);
@@ -116,6 +122,12 @@ export default function ClientsDataTable({clients}: any) {
               email: item.email,
               phone:item. phoneNumber,
               interest: item.interest || "",
+              apartments: {
+                  id: item.apartments[0]?.id || "",
+                  floor: item.apartments[0]?.floor || 0,
+                  number: item.apartments[0]?.number || 0,
+                  projectName: item.apartments[0]?.project?.name || "",
+              },
           }));
           setClientsData(formattedData);
       } else {
@@ -300,7 +312,7 @@ export default function ClientsDataTable({clients}: any) {
                     {item.phone}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.interest || "N/A"}
+                    {`${item.apartments.projectName} - Apartment ${item.apartments.number} (${item.apartments.floor} floor)`}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">

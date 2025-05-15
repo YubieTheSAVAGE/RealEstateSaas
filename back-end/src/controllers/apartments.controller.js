@@ -133,6 +133,8 @@ async function updateApartment(request, reply) {
       "price",
       "status",
       "notes",
+      "pricePerM2",
+      "zone",
     ];
     const data = {};
     for (const key of allowed) {
@@ -145,37 +147,12 @@ async function updateApartment(request, reply) {
         error: `At least one of: ${allowed.join(", ")} must be provided`,
       });
     }
-
-    if (data.number !== undefined && !isPositiveInt(data.number)) {
-      return reply
-        .code(400)
-        .send({ error: "number must be a positive integer" });
-    }
-    if (data.floor !== undefined && !isPositiveInt(data.floor)) {
-      return reply
-        .code(400)
-        .send({ error: "floor must be a positive integer" });
-    }
     if (data.type !== undefined) {
       if (typeof data.type !== "string" || !ALLOWED_TYPES.includes(data.type)) {
         return reply
           .code(400)
           .send({ error: `type must be one of: ${ALLOWED_TYPES.join(", ")}` });
       }
-    }
-    if (
-      data.area !== undefined &&
-      (typeof data.area !== "number" || data.area <= 0)
-    ) {
-      return reply.code(400).send({ error: "area must be a positive number" });
-    }
-    if (
-      data.price !== undefined &&
-      (typeof data.price !== "number" || data.price < 0)
-    ) {
-      return reply
-        .code(400)
-        .send({ error: "price must be a non-negative number" });
     }
     if (data.status !== undefined) {
       if (
