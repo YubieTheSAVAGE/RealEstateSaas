@@ -262,9 +262,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                         {/* <TrashBinIcon onClick={() => handleDelete(item.id)} /> */}
                       {/* </button> */}
                       {/* <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90"> */}
-                      <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
-                        <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
-                      </span>
+                      <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
                       {/* </button> */}
                     </div>
                   </TableCell>

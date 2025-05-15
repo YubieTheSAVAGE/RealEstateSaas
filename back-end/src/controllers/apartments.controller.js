@@ -101,7 +101,7 @@ async function createApartment(request, reply) {
       type,
       area: parseInt(area, 10),
       threeDViewUrl,
-      price : parseInt(area, 10),
+      price : parseInt(price, 10),
       status,
       notes,
       pricePerM2: parseInt(pricePerM2, 10),

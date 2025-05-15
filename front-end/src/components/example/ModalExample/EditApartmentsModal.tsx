@@ -13,12 +13,16 @@ import Select from "../../form/Select";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import { imageConfigDefault } from "next/dist/shared/lib/image-config";
+import { FaPen } from "react-icons/fa";
+import { PencilIcon } from "@/icons";
 
-interface AddPropertyModalProps {
-  onApartementsAdded?: () => void; // Callback to refresh project list
+interface EditPropertyModalProps {
+  // onApartementsAdded?: () => void; // Callback to refresh project list
+  PropertyData ?: any; // Add the type for PropertyData if available
+
 }
 
-export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModalProps) {
+export default function EditPropertyModal({ PropertyData }: EditPropertyModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -88,9 +92,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     // console.log("Saving project with data:", formData);
     // closeModal();
     console.log("Saving project with data:", formData);
-    if (onApartementsAdded) {
-      onApartementsAdded(); // Call the refresh callback to update the project list
-    }
+    // if (onApartementsAdded) {
+    //   onApartementsAdded(); // Call the refresh callback to update the project list
+    // }
     closeModal();
   };
 
@@ -159,9 +163,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
   return (
     <>
-      <Button size="sm" onClick={openModal}>
-        Add Property
-      </Button>
+      <span className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer">
+        <PencilIcon onClick={openModal} />
+      </span>
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
@@ -176,6 +180,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Project <span className="text-red-500">*</span></Label>
               <Select
+                defaultValue={PropertyData?.id}
                 name="id"
                 options={options}
                 placeholder="Select Option"
@@ -186,6 +191,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Type <span className="text-red-500">*</span></Label>
               <Select
+                defaultValue={PropertyData?.type}
                 name="type"
                 options={type}
                 placeholder="Type"
@@ -196,6 +202,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Floor <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={PropertyData?.floor}
                 name="floor"
                 type="number"
                 placeholder="e.g. 10"
@@ -205,6 +212,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Number <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={PropertyData?.number}
                 name="number"
                 type="number"
                 placeholder="e.g. 10"
@@ -215,6 +223,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Area <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={PropertyData?.area}
                 name="area"
                 type="number"
                 placeholder="e.g. 10"
@@ -224,6 +233,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Price Per M² <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={PropertyData?.pricePerM2}
                 name="pricePerM2"
                 type="number"
                 placeholder="e.g. 10"
@@ -234,6 +244,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Zone <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={PropertyData?.zone}
                 name="zone"
                 type="text"
                 placeholder="e.g. Zone 1"
@@ -244,6 +255,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>3D Link</Label>
               <Input
+                defaultValue={PropertyData?.threeDViewUrl}
                 name="threeDViewUrl"
                 type="text"
                 placeholder="e.g. 10"
@@ -254,6 +266,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Total Price <span className="text-red-500">*</span></Label>
               <Input
+                defaultValue={PropertyData?.price}
                 name="price"
                 type="number"
                 placeholder="e.g. 10"
@@ -263,7 +276,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1">
               <Label>Status <span className="text-red-500">*</span></Label>
               <Select
-                defaultValue={status[0].value}
+                defaultValue={PropertyData?.status}
                 options={status}
                 name="status"
                 placeholder=""
@@ -287,6 +300,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
               <TextArea
+                defaultValue={PropertyData?.notes}
                 value={formData.notes}
                 rows={3}
                 placeholder="Add notes here"

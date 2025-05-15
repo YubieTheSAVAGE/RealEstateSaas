@@ -100,7 +100,9 @@ export default function EditProjectModal({ ProjectData, onRefresh }: EditProject
 
   return (
     <>
-      <PencilIcon onClick={openModal} />
+      <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
+        <PencilIcon onClick={openModal} />
+      </span>
       <Modal
         isOpen={isOpen}
         onClose={closeModal}

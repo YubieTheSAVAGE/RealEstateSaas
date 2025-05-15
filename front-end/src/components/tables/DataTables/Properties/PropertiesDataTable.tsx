@@ -113,6 +113,7 @@ type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status";
 type SortOrder = "asc" | "desc";
 
 import getApartements from "./getApartements";
+import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
 
 type ProjectData = {
   id: string;
@@ -136,6 +137,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
 
     
   const [apartementsData, setApartementsData] = useState<ProjectData[]>([]);
+  console.log("apartementsData", apartementsData);
   useEffect(() => {
       // Check if data exists and is an array before mapping
       if (apartmentsData && Array.isArray(apartmentsData)) {
@@ -155,6 +157,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           setApartementsData([]);
       }
   }, [apartmentsData]);
+  console.log("formatted data", apartementsData);
   const totalItems = apartementsData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -343,9 +346,11 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                       <button className="text-gray-500 hover:text-success-500 dark:text-gray-400 dark:hover:text-success-500">
                         <Md3dRotation />
                       </button>
-                      <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400">
-                        <FaPen />
-                      </button>
+                      {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
+                      <EditPropertyModal
+                        PropertyData={item}
+                      />
+                      {/* </button> */}
                     </div>
                   </TableCell>
                 </TableRow>

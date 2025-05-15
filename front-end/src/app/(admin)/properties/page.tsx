@@ -5,6 +5,7 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb"
 import { Metadata } from "next";
 import AddApartementsModal from "@/components/example/ModalExample/AddApartementsModal"
 import getApartements from "@/components/tables/DataTables/Properties/getApartements";
+import AddPropertyModal from "@/components/example/ModalExample/AddApartementsModal";
 
 export default function Properties() {
     const [apartementsData, setApartementsData] = useState([]);
@@ -12,6 +13,7 @@ export default function Properties() {
     const fetchApartements = useCallback(async () => {
         // API call to fetch projects
         const data = await getApartements();
+        console.log("data", data);
         setApartementsData(data);
     }, []);
     
@@ -27,7 +29,7 @@ export default function Properties() {
                 >
                     Properties
                 </h2>
-                <AddApartementsModal onApartementsAdded={fetchApartements}/>
+                <AddPropertyModal onApartementsAdded={fetchApartements}/>
             </div>
             {/* <PageBreadcrumb pageTitle="Properties" /> */}
             <div className="col-span-12">
