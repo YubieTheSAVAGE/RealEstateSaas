@@ -23,6 +23,7 @@ import deleteProperties from "./deleteProperties";
 import { FaEye } from "react-icons/fa";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
+import { useRouter } from "next/navigation";
 
 interface DataTableTwoProps {
   projects: any[];
@@ -30,6 +31,7 @@ interface DataTableTwoProps {
 }
 
 export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("project");
@@ -78,6 +80,8 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
       setProjectData([]);
     }
   }, [projects]);
+
+  console.log("Project Data:", projectData);
 
   const handleDelete = async (id: string) => {
     // Show confirmation dialog
@@ -278,18 +282,14 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">
-                      <button className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90">
+                      <button 
+                        className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90"
+                        onClick={() => { router.push(`/projects/${item.id}`) }}
+                      >
                         <FaEye />
                       </button>
-                      <span className="text-gray-500 hover:text-error-600 dark:text-gray-400 dark:hover:text-error-500 cursor-pointer">
-                        <DeleteModal onDelete={() => handleDelete(item.id)} itemId={item.id} heading="Delete Project" description="Are you sure you want to delete this project?" />
-                      </span>
-                      {/* <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500"> */}
-                        {/* <TrashBinIcon onClick={() => handleDelete(item.id)} /> */}
-                      {/* </button> */}
-                      {/* <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90"> */}
+                      <DeleteModal onDelete={() => handleDelete(item.id)} itemId={item.id} heading="Delete Project" description="Are you sure you want to delete this project?" />
                       <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
-                      {/* </button> */}
                     </div>
                   </TableCell>
                 </TableRow>
