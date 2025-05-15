@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use, useCallback } from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
@@ -12,6 +12,8 @@ import { stat } from "fs";
 import { Notebook } from "lucide-react";
 import addClient from "@/app/(admin)/clients/addClient";
 import { Textarea } from "@/components/ui/textarea";
+import getProjects from "@/components/tables/DataTables/Projects/getProperties";
+
 
 interface AddProjectModalProps {
   onClientAdded?: () => void; // Callback to refresh client list
@@ -19,6 +21,42 @@ interface AddProjectModalProps {
 
 export default function AddClientModal({ onClientAdded }: AddProjectModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  type ProjectData = {
+    id: string;
+    project: string;
+    name: string;
+    totalSales: number;
+    apartments: {
+      id: string;
+      name: string;
+      price: string;
+      status: string;
+    }[];
+  };
+  const [projectData, setProjectData] = useState<ProjectData[]>([]);
+  const [projectOptions, setProjectOptions] = useState<{ value: string; label: string }[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [selectedApartment, setSelectedApartment] = useState<string | null>(null);
+
+  // Fetch project data from the API
+  const fetchProjectData = useCallback(async () => {
+    const data = await getProjects();
+    setProjectData(data);
+    const formattedData = data.map((project: ProjectData) => ({
+      value: project.id,
+      label: project.name,
+    }));
+    setProjectOptions(formattedData);
+  }, []);
+
+  // Fetch project data when the component mount
+  useEffect(() => {
+    fetchProjectData();
+  }, [fetchProjectData]);
+
+  console.log("Project Data:", projectData);
+  console.log("Project Options:", projectOptions);
 
   // State for form fields
   const [formData, setFormData] = useState({
@@ -72,28 +110,8 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   const status = [
     { value: "CLIENT", label: "Client" },
     { value: "LEAD", label: "Lead" },
-  ]
+  ];
 
-
-  // useEffect(() => {
-  //   const fetchProperties = async () => {
-  //     try {
-  //       const response = await getProperties();
-  //       // Assuming response is an array of properties
-  //       const formattedOptions = response.map((property: any) => ({
-  //         value: property.id,
-  //         label: property.name,
-  //       }));
-  //       setOptions(formattedOptions);
-  //       console.log("Formatted options:", formattedOptions);
-  //     } catch (error) {
-  //       console.error("Error fetching properties:", error);
-  //     }
-  //   };
-
-  //   fetchProperties();
-  // }
-  // , []);
   const handleSelectChange = (selectedValue: string, name:string) => {
     console.log("Selected value:", selectedValue, name);
     setFormData((prev) => ({
@@ -171,6 +189,18 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 onChange={handleChange}
               />
             </div>
+
+            <div className="col-span-1">
+              <Label>Project <span className="text-red-500">*</span></Label>
+              <Select
+                options={projectOptions}
+                defaultValue="Choose Project"
+                name="project"
+                placeholder=""
+                onChange={(value, name) => handleSelectChange(value, name)}
+              />
+            </div>
+
             
             <div className="col-span-1 sm:col-span-2">
               <Label>How did you hear about us? <span className="text-red-500">*</span></Label>
