@@ -25,7 +25,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     name: "",
     email: "",
     phoneNumber: "",
-    status  : "",
+    status  : "LEAD",
     notes : "",
     provenance : "",
   });
