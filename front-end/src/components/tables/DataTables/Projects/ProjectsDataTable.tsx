@@ -99,9 +99,6 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
     }
   };
 
-  const totalItems = projectData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -115,9 +112,35 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
     }
   };
 
+  // Filter data based on search term
+  const filteredData = projectData.filter((item) => {
+    const searchValue = searchTerm.toLowerCase();
+    return (
+      item.name?.toLowerCase().includes(searchValue)
+    );
+  });
+
+  // Sort filtered data
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortKey === "totalSales") {
+      return sortOrder === "asc" 
+        ? a.totalSales - b.totalSales 
+        : b.totalSales - a.totalSales;
+    } else {
+      const valueA = String(a[sortKey] || "").toLowerCase();
+      const valueB = String(b[sortKey] || "").toLowerCase();
+      return sortOrder === "asc"
+        ? valueA.localeCompare(valueB)
+        : valueB.localeCompare(valueA);
+    }
+  });
+
+  const totalItems = filteredData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = projectData.slice(startIndex, endIndex);
+  const currentData = sortedData.slice(startIndex, endIndex);
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
@@ -182,7 +205,10 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page when search term changes
+            }}
             placeholder="Search..."
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
           />

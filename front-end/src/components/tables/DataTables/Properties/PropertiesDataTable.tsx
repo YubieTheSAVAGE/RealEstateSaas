@@ -109,7 +109,7 @@ const tableRowData = [
     status: "Sold",
   },
 ];
-type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status";
+type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
 type SortOrder = "asc" | "desc";
 
 import getApartements from "./getApartements";
@@ -174,9 +174,35 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
     }
   };
 
+  // Filter data based on search term
+  const filteredData = apartementsData.filter((item) => {
+    const searchValue = searchTerm.toLowerCase();
+    return (
+      item.project?.toLowerCase().includes(searchValue)
+    );
+  });
+
+  // Sort filtered data
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortKey === "price" || sortKey === "pricePerM2") {
+      const valueA = a[sortKey] || 0;
+      const valueB = b[sortKey] || 0;
+      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+    } else {
+      const valueA = String(a[sortKey] || "").toLowerCase();
+      const valueB = String(b[sortKey] || "").toLowerCase();
+      return sortOrder === "asc"
+        ? valueA.localeCompare(valueA)
+        : valueB.localeCompare(valueB);
+    }
+  });
+
+  const totalFilteredItems = filteredData.length;
+  const totalFilteredPages = Math.ceil(totalFilteredItems / itemsPerPage);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = apartementsData.slice(startIndex, endIndex);
+  const endIndex = Math.min(startIndex + itemsPerPage, totalFilteredItems);
+  const currentData = sortedData.slice(startIndex, endIndex);
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
@@ -242,7 +268,10 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page when search term changes
+            }}
             placeholder="Search..."
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
           />
@@ -305,7 +334,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
               </TableRow>
             </TableHeader>
             <TableBody>
-              {apartementsData.map((item, i) => (
+              {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
                     {item.project}

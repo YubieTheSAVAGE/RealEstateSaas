@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, use } from "react";
 import {
   Table,
   TableBody,
@@ -16,6 +16,8 @@ import {
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
 import { stat } from "fs";
+import getAgent from "./getAgents";
+import { useEffect } from "react";
 
 const tableRowData = [
   {
@@ -100,29 +102,43 @@ export default function AgentsDataTable() {
   const [sortKey, setSortKey] = useState<SortKey>("status");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const [data, setData] = useState<any[]>([]);
 
-  const filteredAndSortedData = useMemo(() => {
-    return tableRowData
-      .filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            typeof value === "string" &&
-            value.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
-      .sort((a, b) => {
-        if (sortKey === "status") {
-          const statusA = Number.parseInt(a[sortKey].replace(/\$|,/g, ""));
-          const statusB = Number.parseInt(b[sortKey].replace(/\$|,/g, ""));
-          return sortOrder === "asc" ? statusA - statusB : statusB - statusA;
-        }
-        return sortOrder === "asc"
-          ? String(a[sortKey]).localeCompare(String(b[sortKey]))
-          : String(b[sortKey]).localeCompare(String(a[sortKey]));
-      });
-  }, [sortKey, sortOrder, searchTerm]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAgent();
+        setData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  const totalItems = filteredAndSortedData.length;
+    fetchData();
+  }, []);
+
+  // const filteredAndSortedData = useMemo(() => {
+  //   return data
+  //     .filter((item) =>
+  //       Object.values(item).some(
+  //         (value) =>
+  //           typeof value === "string" &&
+  //           value.toLowerCase().includes(searchTerm.toLowerCase())
+  //       )
+  //     )
+  //     .sort((a, b) => {
+  //       if (sortKey === "status") {
+  //         const statusA = Number.parseInt(a[sortKey].replace(/\$|,/g, ""));
+  //         const statusB = Number.parseInt(b[sortKey].replace(/\$|,/g, ""));
+  //         return sortOrder === "asc" ? statusA - statusB : statusB - statusA;
+  //       }
+  //       return sortOrder === "asc"
+  //         ? String(a[sortKey]).localeCompare(String(b[sortKey]))
+  //         : String(b[sortKey]).localeCompare(String(a[sortKey]));
+  //     });
+  // }, [sortKey, sortOrder, searchTerm]);
+
+  const totalItems = data.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -140,7 +156,7 @@ export default function AgentsDataTable() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = filteredAndSortedData.slice(startIndex, endIndex);
+  const currentData = data.slice(startIndex, endIndex);
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
@@ -268,7 +284,7 @@ export default function AgentsDataTable() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentData.map((item, i) => (
+              {data.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
                     {item.name}
@@ -277,21 +293,16 @@ export default function AgentsDataTable() {
                     {item.email}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.phone}
+                    {item.phoneNumber}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.status}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.totalSales.toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "MAD",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })}
+                    {item.totalSales || 0}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.monthlySales}
+                    {item.monthlySales || 0}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2">

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, JSX } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { Task, DropResult } from "./types/types";
 import Image from "next/image";
@@ -118,7 +118,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
                   fill=""
                 />
               </svg>
-              {task.dueDate} | {task.dueTime}
+                {new Date(task.dueDate).toLocaleString("en-US", {dateStyle: "medium", timeStyle: "short"})}
             </span>
             <span className="flex items-center gap-1 text-sm text-gray-500 cursor-pointer dark:text-gray-400">
               <svg

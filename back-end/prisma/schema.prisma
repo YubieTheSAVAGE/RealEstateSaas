@@ -97,4 +97,30 @@ model Apartment {
 
   client        Client?           @relation(fields: [clientId], references: [id])
   clientId      Int?
+  updatedAt   DateTime @updatedAt
+}
+
+model Task {
+  id          Int   @id @default(autoincrement())
+  title       String
+  description String?
+  dueDate     DateTime
+  status      TodoStatus   @default(TODO)
+  comments    Comment[] // Assuming you'll have a Comment model
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Comment {
+  id        Int   @id @default(autoincrement())
+  content   String
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+enum TodoStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
 }
