@@ -137,8 +137,9 @@ const addComment = async (taskId, content) => {
  */
 const getTaskComments = async (taskId) => {
   // First check if the task exists
+  const id = parseInt(taskId, 10);
   const existingTask = await prisma.task.findUnique({
-    where: { id: taskId },
+    where: { id: id },
   });
 
   if (!existingTask) {
@@ -146,7 +147,7 @@ const getTaskComments = async (taskId) => {
   }
 
   return prisma.comment.findMany({
-    where: { taskId },
+    where: { taskId: id },
     orderBy: { createdAt: 'desc' },
   });
 };

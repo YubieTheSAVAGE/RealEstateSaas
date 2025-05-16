@@ -113,12 +113,12 @@ const getTaskComments = async (req, res) => {
   try {
     const { taskId } = req.params;
     const comments = await taskService.getTaskComments(taskId);
-    res.json(comments);
+    res.send(comments);
   } catch (error) {
     if (error.message === 'Task not found') {
-      return res.status(404).json({ message: error.message });
+      return res.status(404).send({ message: error.message });
     }
-    res.status(500).json({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 

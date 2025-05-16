@@ -8,6 +8,20 @@ const {
 const ALLOWED_ROLES = ["ADMIN", "AGENT"];
 const ALLOWED_STATUS = ["ACTIVE", "INACTIVE"];
 
+/**
+ * Get top performing agents based on sales metrics
+ */
+async function getTopPerformingAgents(request, reply) {
+  try {
+    const limit = request.query.limit ? parseInt(request.query.limit, 10) : 5;
+    const agents = await agentService.getTopPerformingAgents(limit);
+    return reply.send(agents);
+  } catch (err) {
+    request.log.error(err);
+    return reply.code(err.statusCode || 500).send({ error: err.message });
+  }
+}
+
 async function getAllAgents(request, reply) {
   try {
     const agents = await agentService.findAllAgents();
@@ -181,4 +195,5 @@ module.exports = {
   createAgent,
   updateAgent,
   deleteAgent,
+  getTopPerformingAgents,
 };

@@ -3,6 +3,96 @@ const bcrypt = require("bcrypt");
 
 const SALT_ROUNDS = 10;
 
+/**
+ * Get top performing agents based on the number of clients and apartments sold
+ * @param {number} limit - Maximum number of agents to return
+ * @returns {Promise<Array>} - Top performing agents with their metrics
+ */
+async function getTopPerformingAgents(limit = 5) {
+  // Get all agents
+  const agents = await prisma.user.findMany({
+    where: { role: 'AGENT' },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      status: true,
+      role: true,
+      clients: {
+        select: {
+          id: true,
+          apartments: {
+            select: {
+              id: true,
+              price: true,
+              status: true,
+              project: {
+                select: {
+                  id: true,
+                  name: true,
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Calculate performance metrics for each agent
+  const agentsWithMetrics = agents.map(agent => {
+    const clientCount = agent.clients.length;
+    
+    // Flatten apartments across all clients
+    const allApartments = agent.clients.flatMap(client => client.apartments || []);
+    
+    // Get sold apartments only
+    const soldApartments = allApartments.filter(apt => apt.status === 'SOLD');
+    
+    // Calculate total revenue from sold apartments
+    const salesRevenue = soldApartments.reduce((total, apt) => total + apt.price, 0);
+    
+    // Get most active project (project with most sales)
+    const projectCounts = {};
+    soldApartments.forEach(apt => {
+      const projectName = apt.project.name;
+      projectCounts[projectName] = (projectCounts[projectName] || 0) + 1;
+    });
+    
+    // Find the project with the most sales
+    let topProject = "N/A";
+    let maxSales = 0;
+    
+    Object.entries(projectCounts).forEach(([project, count]) => {
+      if (count > maxSales) {
+        topProject = project;
+        maxSales = count;
+      }
+    });
+    
+    // Calculate month-over-month sales growth (placeholder logic, would need transaction dates)
+    // For now, we'll generate a random growth percentage between -15 and +20
+    const monthlySales = Math.random() * 35 - 15;
+    
+    return {
+      id: agent.id,
+      name: agent.name,
+      level: clientCount > 5 ? "Senior Agent" : "Junior Agent",
+      project: topProject,
+      salesRevenue,
+      monthlySales,
+      // Use a placeholder image for now, in production would come from a user profile
+      image: `/images/user/user-0${(agent.id % 5) + 1}.jpg`,
+    };
+  });
+  
+  // Sort by sales revenue (highest first)
+  agentsWithMetrics.sort((a, b) => b.salesRevenue - a.salesRevenue);
+  
+  // Return limited number of agents
+  return agentsWithMetrics.slice(0, limit);
+}
+
 
 async function findAllAgents() {
   return prisma.user.findMany({
@@ -116,5 +206,6 @@ module.exports = {
   addNewAgent,
   updateAgent,
   removeAgent,
-}; 
+  getTopPerformingAgents,
+};
 

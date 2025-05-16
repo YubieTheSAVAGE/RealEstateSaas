@@ -9,6 +9,25 @@ async function getAllApartments() {
   });
 }
 
+/**
+ * Get recent activity related to apartments
+ * Shows the most recently updated apartments with their status
+ * @param {number} limit - Maximum number of activities to return
+ * @returns {Promise<Array>} - Recent apartment activities
+ */
+async function getRecentActivity(limit = 5) {
+  return prisma.apartment.findMany({
+    take: limit,
+    orderBy: {
+      updatedAt: 'desc',
+    },
+    include: {
+      project: true,
+      client: true,
+    },
+  });
+}
+
 async function listByProject(projectId) {
   return prisma.apartment.findMany({
     where: { projectId },
@@ -111,4 +130,5 @@ module.exports = {
   update,
   remove,
   assignToClient,
+  getRecentActivity
 };

@@ -5,7 +5,7 @@ export interface Task {
   dueTime: string;
   description: string;
   status: string;
-  comments: string[];
+  comments: [];
 }
 
 export interface DropResult {

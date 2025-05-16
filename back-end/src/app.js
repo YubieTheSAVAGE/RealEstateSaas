@@ -7,6 +7,7 @@ const clientRoutes = require('./routes/clients.routes');
 const projectRoutes = require('./routes/projects.routes');
 const apartmentRoutes = require('./routes/apartments.routes');
 const taskRoutes = require('./routes/tasks.routes');
+const activityRoutes = require('./routes/activity.routes');
 
 const static = require('@fastify/static');
 const path = require('path');
@@ -65,5 +66,7 @@ app.register(projectRoutes, { prefix: '/api' });
 app.register(apartmentRoutes, { prefix: '/api' });
 
 app.register(taskRoutes, { prefix: '/api' });
+
+app.register(activityRoutes, { prefix: '/api' });
 
 module.exports = app;

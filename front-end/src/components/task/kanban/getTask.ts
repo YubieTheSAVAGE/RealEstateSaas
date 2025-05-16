@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
 
 
-export default async function getApartements()
+export default async function getTasks()
 {
     try {
         const cookieStore = await cookies();
