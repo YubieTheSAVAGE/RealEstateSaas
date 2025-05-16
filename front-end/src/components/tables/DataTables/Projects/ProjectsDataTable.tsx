@@ -24,6 +24,7 @@ import { FaEye } from "react-icons/fa";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import { useRouter } from "next/navigation";
+import { table } from "console";
 
 interface DataTableTwoProps {
   projects: any[];
@@ -272,6 +273,16 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
               </TableRow>
             </TableHeader>
             <TableBody>
+              {currentData.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
+                  >
+                    No data available
+                  </TableCell>
+                </TableRow>
+              )}
               {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
@@ -299,10 +310,10 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
         </div>
       </div>
 
+          {currentData.length > 0 && (
       <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
-        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
           {/* Left side: Showing entries */}
-
           <PaginationWithButton
             totalPages={totalPages}
             initialPage={currentPage}
@@ -315,6 +326,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
           </div>
         </div>
       </div>
+          )}
     </div>
   );
 }
