@@ -175,10 +175,14 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
         className="max-w-[584px] p-5 lg:p-10"
       >
         <form onSubmit={(e) => e.preventDefault()}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Property Information
+          <h4 className="mb-2 text-lg font-medium text-gray-800 dark:text-white/90">
+            Edit Property
           </h4>
-
+          <div className="mb-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Edit the property details below.
+            </p>
+          </div>
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
               <Label>Project <span className="text-red-500">*</span></Label>

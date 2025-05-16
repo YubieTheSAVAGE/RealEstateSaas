@@ -99,9 +99,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
   const type = [
     { value: "APARTMENT", label: "Apartement" },
-    { value: "DUPLEX", label: "Duplax" },
+    { value: "DUPLEX", label: "Duplex" },
     { value: "VILLA", label: "Villa" },
-    { value: "STORE", label: "Shop" },
+    { value: "STORE", label: "Store" },
     { value: "LAND", label: "Land" },
   ]
 
@@ -300,7 +300,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               Close
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Save
             </Button>
           </div>
         </form>

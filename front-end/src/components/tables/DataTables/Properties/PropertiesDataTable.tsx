@@ -17,98 +17,8 @@ import {
   TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
+import Badge from "@/components/ui/badge/Badge";
 
-const tableRowData = [
-  {
-    id: "RGD-901",
-    project: "Royal Gardens Residences",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  }
-  ,
-  {
-    id: "RGD-902",
-    project: "Marina heights",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-903",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-904",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Canceled",
-  },
-  {
-    id: "RGD-905",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-906",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-907",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-908",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Canceled",
-  },
-  {
-    id: "RGD-909",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-910",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-911",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-];
 type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
 type SortOrder = "asc" | "desc";
 
@@ -381,7 +291,75 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                     })}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.status}
+                    <Badge
+                      variant="light"
+                      color={
+                        item.status === "AVAILABLE"
+                          ? "success"
+                          : item.status === "RESERVED"
+                          ? "warning"
+                          : "error"
+                      }
+                      size="sm"
+                      className="text-xs"
+                    >
+                      {item.status === "AVAILABLE" && (
+                        <span className="text-success-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {item.status === "RESERVEDw" && (
+                        <span className="text-warning-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {item.status === "SOLD" && (
+                        <span className="text-error-500">   
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                    // {item.status.toLowerCase()}
+                      )}
+                      {item.status.toLowerCase()}
+                    </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
