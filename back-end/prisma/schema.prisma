@@ -69,7 +69,7 @@ model Client {
 model Project {
   id                  Int         @id @default(autoincrement())
   name                String
-  image               String
+  image               String?
   address             String
   totalSurface        Int
   numberOfApartments  Int
@@ -88,7 +88,7 @@ model Apartment {
   price         Float
   pricePerM2    Float
   zone          String
-  image         String
+  image         String?
   status        ApartmentStatus   @default(AVAILABLE)
   notes         String?
 

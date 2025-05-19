@@ -25,6 +25,11 @@ type SortOrder = "asc" | "desc";
 import getApartements from "./getApartements";
 import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
 
+interface PropertiesDataTable {
+  projects: any[];
+  onRefresh?: () => void; // Callback to refresh projects data
+}
+
 type ProjectData = {
   id: string;
   project: string;
@@ -37,13 +42,22 @@ type ProjectData = {
   etage ?: string;
 };
 
-export default function PropertiesDataTable({ apartmentsData }: { apartmentsData: ProjectData[] }) {
+export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: ProjectData[]; onRefresh?: () => void; }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
     // Define the ProjectData type
+
+  const type =
+  {
+    "APARTMENT": "Appartement",
+    "VILLA": "Villa",
+    "BUREAU": "Bureau",
+    "LAND": "Terrain",
+    "AUTRE": "Autre",
+  }
 
     
   const [apartementsData, setApartementsData] = useState<ProjectData[]>([]);
@@ -55,7 +69,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
               project: item.project?.name || '', // Use optional chaining
               projectId: item.project?.id || '', // Use optional chaining
               type: "Apartement", // Set default or extract from your data
-              superficie: `${item.area || 0} m²`, // Add fallback for area
+              superficie: `${item.area || 0} units`,
               price: item.price || 0, // Add fallback for price
               status: item.status || 'Available',
               pricePerM2: item.pricePerM2 || 0,
@@ -370,6 +384,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                       {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
                       <EditPropertyModal
                         PropertyData={item}
+                        onRefresh={onRefresh}
                       />
                       {/* </button> */}
                     </div>

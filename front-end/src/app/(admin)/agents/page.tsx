@@ -16,7 +16,7 @@ export default function AgentsPage() {
               className="text-xl font-semibold text-gray-800 dark:text-white/90"
               x-text="pageName"
           >
-              Properties
+              Agents
           </h2>
           <AddAgentModal />
       </div>

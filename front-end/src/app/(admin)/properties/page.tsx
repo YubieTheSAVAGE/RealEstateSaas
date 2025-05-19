@@ -33,7 +33,7 @@ export default function Properties() {
             </div>
             {/* <PageBreadcrumb pageTitle="Properties" /> */}
             <div className="col-span-12">
-                <PropertiesDataTable apartmentsData={apartementsData} />
+                <PropertiesDataTable apartmentsData={apartementsData} onRefresh={fetchApartements}/>
             </div>
         </>
     )

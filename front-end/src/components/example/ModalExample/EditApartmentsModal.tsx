@@ -19,12 +19,13 @@ import { PencilIcon } from "@/icons";
 interface EditPropertyModalProps {
   // onApartementsAdded?: () => void; // Callback to refresh project list
   PropertyData ?: any; // Add the type for PropertyData if available
+  onRefresh?: () => void; // Callback to refresh project list after editing
 
 }
 
-export default function EditPropertyModal({ PropertyData }: EditPropertyModalProps) {
+export default function EditPropertyModal({ PropertyData, onRefresh }: EditPropertyModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
-  console.log("PropertyData", PropertyData);
+
     const type = [
     { value: "APARTMENT", label: "Apartement" },
     { value: "DUPLEX", label: "Duplax" },
@@ -34,25 +35,36 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
   ]
 
   // State for form fields
-  const [formData, setFormData] = useState({
+  interface FormDataState {
+    id: any;
+    floor: any;
+    number: any;
+    type: any;
+    area: any;
+    threeDViewUrl: any;
+    price: any;
+    status: any;
+    notes: any;
+    pricePerM2: any;
+    image: File | null;
+    zone: any;
+  }
+
+  const [formData, setFormData] = useState<FormDataState>({
     id: PropertyData?.id || "",
     floor: PropertyData?.floor || "",
     number: PropertyData?.number || "",
-    type: type.find(t => t.label === PropertyData?.type)?.value || "",    
-    area: PropertyData?.area || 0,
+    type:  PropertyData?.type || "",    
+    area: PropertyData?.area || "",
     threeDViewUrl: PropertyData?.threeDViewUrl || "",
-    price: PropertyData?.price || 0,
+    price: PropertyData?.price || "",
     status: PropertyData?.status || "AVAILABLE",
     notes: PropertyData?.notes || "",
-    pricePerM2 : PropertyData?.pricePerM2 || 0,
-    image: null as File | null, // Store as File object instead of string
-    zone : PropertyData?.zone || "",
+    pricePerM2: PropertyData?.pricePerM2 || "",
+    image: null, // Default to null for image
+    zone: PropertyData?.zone || "",
   });
 
-  // State for validation errors
-  const [errors, setErrors] = useState({
-    numberOfApartments: "",
-  });
 
   // Update form field values
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +81,52 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
     }));
   };
 
+  // Added a function to handle validation errors dynamically
+  const validateForm = () => {
+    const newErrors = { ...errors };
+    let hasErrors = false;
+
+    const validations = [
+      { field: "id", test: (v : string) => !v, message: "Project is required" },
+      { field: "number", test: (v: string) => !v, message: "Number is required" },
+      { field: "type", test: (v: string) => !v, message: "Type is required" },
+      { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Area must be a positive number or required" },
+      { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price must be a positive number or required" },
+      { field: "status", test: (v: string) => !v, message: "Status is required" },
+      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Floor must be a positive number or required" },
+      { field: "zone", test: (v: string) => !v, message: "Zone is required" },
+      { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price per M² must be a positive number or required" },
+    ];
+
+    validations.forEach(({ field, test, message }) => {
+      if (test(formData[field as keyof typeof formData] as string)) {
+        newErrors[field as keyof typeof newErrors] = message;
+        hasErrors = true;
+      }
+    });
+
+    setErrors(newErrors);
+    return hasErrors;
+  };
+
   const handleSave = async () => {
+    // Validation for numberOfApartments
+    // if (
+    //   !formData.numberOfApartments ||
+    //   isNaN(Number(formData.numberOfApartments)) ||
+    //   Number(formData.numberOfApartments) <= 0
+    // ) {
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     numberOfApartments: "Number of properties is required and must be a positive integer",
+    //   }));
+    //   return;
+    // }
+
+    // const formDataToSend = new FormData();
+    // formDataToSend.append("name", formData.name);
+    // formDataToSend.append("numberOfApartments", formData.numberOfApartments);
+    // formDataToSend.append("note", formData.note);
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null) {
@@ -81,6 +138,12 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
       }
     });
     await editApartements(formDataToSend);
+    // console.log("Saving project with data:", formData);
+    // closeModal();
+    console.log("Saving project with data:", formData);
+    // if (onApartementsAdded) {
+    //   onApartementsAdded(); // Call the refresh callback to update the project list
+    // }
     closeModal();
   };
 
@@ -171,16 +234,26 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 onChange={(value, name) => handleSelectChange(value, name)}
                 className="dark:bg-dark-900"
               />
+              {errors.id && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.id}
+                </p>
+              )}
             </div>
             <div className="col-span-1">
               <Label>Type <span className="text-red-500">*</span></Label>
               <Select
-                defaultValue={PropertyData?.type}
+                defaultValue={type[PropertyData?.type as keyof typeof type]}
                 name="type"
-                options={type}
+                options={typeOptions}
                 placeholder="Type"
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
+              {errors.type && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.type}
+                </p>
+              )}
             </div>
 
             <div className="col-span-1">
@@ -192,6 +265,11 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 placeholder="e.g. 10"
                 onChange={handleChange}
               />
+              {errors.floor && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.floor}
+                </p>
+              )}
             </div>
             <div className="col-span-1">
               <Label>Number <span className="text-red-500">*</span></Label>
@@ -202,6 +280,11 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 placeholder="e.g. 10"
                 onChange={handleChange}
               />
+              {errors.number && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.number}
+                </p>
+              )}
             </div>
 
             <div className="col-span-1">
@@ -213,6 +296,11 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 placeholder="e.g. 10"
                 onChange={handleChange}
               />
+              {errors.area && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.area}
+                </p>
+              )}
             </div>
             <div className="col-span-1">
               <Label>Price Per M² <span className="text-red-500">*</span></Label>
@@ -223,6 +311,11 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 placeholder="e.g. 10"
                 onChange={handleChange}
               />
+              {errors.pricePerM2 && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.pricePerM2}
+                </p>
+              )}
             </div>
 
             <div className="col-span-1">
@@ -234,6 +327,11 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 placeholder="e.g. Zone 1"
                 onChange={handleChange}
               />
+              {errors.zone && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.zone}
+                </p>
+              )}
             </div>
             
             <div className="col-span-1">
@@ -256,6 +354,11 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 placeholder="e.g. 10"
                 onChange={handleChange}
               />
+              {errors.price && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.price}
+                </p>
+              )}
             </div>
             <div className="col-span-1">
               <Label>Status <span className="text-red-500">*</span></Label>
@@ -266,6 +369,11 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
                 placeholder=""
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
+              {errors.status && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.status}
+                </p>
+              )}
             </div>
 
             <div className="col-span-2">

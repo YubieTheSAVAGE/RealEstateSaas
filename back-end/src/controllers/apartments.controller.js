@@ -4,7 +4,7 @@ const { isPositiveInt } = require("../utils/helpers");
 const path = require("path");
 const fs = require("fs");
 
-const ALLOWED_TYPES = ["APARTMENT", "DUPLEX", "VILLA"];
+const ALLOWED_TYPES = ["APARTMENT", "DUPLEX", "VILLA", "STORE", "LAND"];
 const ALLOWED_STATUSES = ["AVAILABLE", "RESERVED", "SOLD", "CANCELLED"];
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 
@@ -77,7 +77,8 @@ async function createApartment(request, reply) {
           .code(400)
           .send({ error: "zone, if provided, must be a string" });
     }
-
+    let uploadedImage = null;
+    if (image && image.buffer) {
     const { mimetype, buffer, filename } = image;
 
     const uniqueName = `${Date.now()}-${filename}`;
@@ -93,8 +94,8 @@ async function createApartment(request, reply) {
     const dest = path.join(uploadsDir, uniqueName);
     await fs.promises.writeFile(dest, buffer);
 
-    const uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
-
+     uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
+    }
     const newApartment = await apartmentService.create(projectId, {
       number : parseInt(number, 10),
       floor : parseInt(floor, 10),
@@ -137,6 +138,26 @@ async function updateApartment(request, reply) {
       "zone",
     ];
     const data = {};
+
+    let uploadedImage = null;
+    if (image && image.buffer) {
+    const { mimetype, buffer, filename } = image;
+
+    const uniqueName = `${Date.now()}-${filename}`;
+
+
+    if (!ALLOWED.includes(mimetype)) {
+      return reply.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+    }
+
+    const uploadsDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+
+    const dest = path.join(uploadsDir, uniqueName);
+    await fs.promises.writeFile(dest, buffer);
+
+     uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
+    }
     for (const key of allowed) {
       if (request.body[key] !== undefined) {
         data[key] = request.body[key];
@@ -174,7 +195,20 @@ async function updateApartment(request, reply) {
       return reply.code(400).send({ error: "notes must be a string" });
     }
 
-    const updated = await apartmentService.update(apartmentId, data);
+    const updated = await apartmentService.update(apartmentId, {
+      number : parseInt(number, 10),
+      floor : parseInt(floor, 10),
+      type,
+      area: parseInt(area, 10),
+      threeDViewUrl,
+      price : parseInt(price, 10),
+      status,
+      notes,
+      pricePerM2: parseInt(pricePerM2, 10),
+      image: uploadedImage,
+      zone,
+    });
+    // const updated = await apartmentService.update(apartmentId, data);
     return reply.send(updated);
   } catch (err) {
     request.log.error(err);

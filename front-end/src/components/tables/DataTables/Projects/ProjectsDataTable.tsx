@@ -85,7 +85,6 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
   console.log("Project Data:", projectData);
 
   const handleDelete = async (id: string) => {
-    // Show confirmation dialog
       const success: boolean = await deleteProperties(id);
 
       if (success) {
@@ -116,6 +115,8 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
       setSortOrder("asc");
     }
   };
+
+  let show = false
 
   // Filter data based on search term
   const filteredData = projectData.filter((item) => {

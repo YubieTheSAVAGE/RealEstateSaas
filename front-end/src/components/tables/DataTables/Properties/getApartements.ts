@@ -18,6 +18,7 @@ export default async function getApartements()
             console.log("Error getting apartments:", res);
         }
         const data = await res.json();
+        console.log("Apartments data:", data);
         return data;
     } finally
     {

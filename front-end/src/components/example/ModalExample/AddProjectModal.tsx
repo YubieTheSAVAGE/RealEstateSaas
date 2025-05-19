@@ -35,6 +35,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     numberOfApartments: "",
     totalSurface: "",
     address: "",
+    image:""
   });
   
   // State for API errors
@@ -64,7 +65,15 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
       if (!file) return;
+      if (!allowedTypes.includes(file.type)) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "Only JPEG, PNG, JPG, or WEBP files are allowed",
+        }));
+        return;
+      }
       setFormData((prev) => ({
         ...prev,
         image: file,
@@ -107,8 +116,8 @@ const handleSave = async () => {
 
   // Run validations
   validations.forEach(({ field, test, message }) => {
-    if (test(formData[field])) {
-      newErrors[field] = message;
+    if (test(formData[field as keyof typeof formData] as string)) {
+      newErrors[field as keyof typeof newErrors] = message;
       hasErrors = true;
     }
   });
@@ -143,6 +152,19 @@ const handleSave = async () => {
     }
   };
 
+  // Added logic to reset errors when the modal is closed
+  const handleCloseModal = () => {
+    closeModal();
+    setErrors({
+      name: "",
+      numberOfApartments: "",
+      totalSurface: "",
+      address: "",
+      image: "",
+    });
+    setApiError("");
+  };
+
   return (
     <>
       <Button size="sm" onClick={openModal}>
@@ -150,7 +172,7 @@ const handleSave = async () => {
       </Button>
       <Modal
         isOpen={isOpen}
-        onClose={closeModal}
+        onClose={handleCloseModal} // Use the new handler to reset errors
         className="max-w-[584px] p-5 lg:p-10"
       >
         <form onSubmit={(e) => e.preventDefault()}>          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
@@ -247,6 +269,11 @@ const handleSave = async () => {
               {formData.image && (
                 <p className="mt-1 text-xs text-green-600">
                   File selected: {formData.image.name}
+                </p>
+              )}
+              {errors.image && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.image}
                 </p>
               )}
             </div>
