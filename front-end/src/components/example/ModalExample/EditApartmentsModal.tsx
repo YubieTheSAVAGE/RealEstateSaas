@@ -24,7 +24,7 @@ interface EditPropertyModalProps {
 
 export default function EditPropertyModal({ PropertyData }: EditPropertyModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
-
+  console.log("PropertyData", PropertyData);
     const type = [
     { value: "APARTMENT", label: "Apartement" },
     { value: "DUPLEX", label: "Duplax" },
@@ -70,23 +70,6 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
   };
 
   const handleSave = async () => {
-    // Validation for numberOfApartments
-    // if (
-    //   !formData.numberOfApartments ||
-    //   isNaN(Number(formData.numberOfApartments)) ||
-    //   Number(formData.numberOfApartments) <= 0
-    // ) {
-    //   setErrors((prev) => ({
-    //     ...prev,
-    //     numberOfApartments: "Number of properties is required and must be a positive integer",
-    //   }));
-    //   return;
-    // }
-
-    // const formDataToSend = new FormData();
-    // formDataToSend.append("name", formData.name);
-    // formDataToSend.append("numberOfApartments", formData.numberOfApartments);
-    // formDataToSend.append("note", formData.note);
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null) {
@@ -98,12 +81,6 @@ export default function EditPropertyModal({ PropertyData }: EditPropertyModalPro
       }
     });
     await editApartements(formDataToSend);
-    // console.log("Saving project with data:", formData);
-    // closeModal();
-    console.log("Saving project with data:", formData);
-    // if (onApartementsAdded) {
-    //   onApartementsAdded(); // Call the refresh callback to update the project list
-    // }
     closeModal();
   };
 

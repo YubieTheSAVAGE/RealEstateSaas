@@ -47,7 +47,6 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
 
     
   const [apartementsData, setApartementsData] = useState<ProjectData[]>([]);
-  console.log("apartementsData", apartementsData);
   useEffect(() => {
       // Check if data exists and is an array before mapping
       if (apartmentsData && Array.isArray(apartmentsData)) {
@@ -56,12 +55,12 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
               project: item.project?.name || '', // Use optional chaining
               projectId: item.project?.id || '', // Use optional chaining
               type: "Apartement", // Set default or extract from your data
-              superficie: `${item.area || 0} units`,
+              superficie: `${item.area || 0} m²`, // Add fallback for area
               price: item.price || 0, // Add fallback for price
               status: item.status || 'Available',
               pricePerM2: item.pricePerM2 || 0,
               zone: item.zone || 'Unknown',
-              floor: item.floor || 'Unknown',
+              floor: item.floor || '',
               number: item.number || 'Unknown',
               threeDViewUrl: item.threeDViewUrl || '',
               notes: item.notes || '',
@@ -73,7 +72,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           setApartementsData([]);
       }
   }, [apartmentsData]);
-  console.log("formatted data", apartementsData);
+
   const totalItems = apartementsData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -301,7 +300,6 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                           : "error"
                       }
                       size="sm"
-                      className="text-xs"
                     >
                       {item.status === "AVAILABLE" && (
                         <span className="text-success-500">
@@ -321,7 +319,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                           </svg>
                         </span>
                       )}
-                      {item.status === "RESERVEDw" && (
+                      {item.status === "RESERVED" && (
                         <span className="text-warning-500">
                           <svg
                             className="w-3 h-3 mr-1"
