@@ -140,8 +140,8 @@ async function updateApartment(request, reply) {
     const data = {};
 
     let uploadedImage = null;
-    if (image && image.buffer) {
-    const { mimetype, buffer, filename } = image;
+    if (data.image && data.image.buffer) {
+    const { mimetype, buffer, filename } = data.image;
 
     const uniqueName = `${Date.now()}-${filename}`;
 
@@ -196,17 +196,17 @@ async function updateApartment(request, reply) {
     }
 
     const updated = await apartmentService.update(apartmentId, {
-      number : parseInt(number, 10),
-      floor : parseInt(floor, 10),
-      type,
-      area: parseInt(area, 10),
-      threeDViewUrl,
-      price : parseInt(price, 10),
-      status,
-      notes,
-      pricePerM2: parseInt(pricePerM2, 10),
+      number : parseInt(data.number, 10),
+      floor : parseInt(data.floor, 10),
+      type: data.type,
+      area: parseInt(data.area, 10),
+      threeDViewUrl: data.threeDViewUrl,
+      price : parseInt(data.price, 10),
+      status: data.status,
+      notes: data.notes,
+      pricePerM2: parseInt(data.pricePerM2, 10),
       image: uploadedImage,
-      zone,
+      zone : data.zone,
     });
     // const updated = await apartmentService.update(apartmentId, data);
     return reply.send(updated);

@@ -26,14 +26,30 @@ interface EditPropertyModalProps {
 export default function EditPropertyModal({ PropertyData, onRefresh }: EditPropertyModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
-    const type = [
-    { value: "APARTMENT", label: "Apartement" },
-    { value: "DUPLEX", label: "Duplax" },
-    { value: "VILLA", label: "Villa" },
-    { value: "STORE", label: "Shop" },
-    { value: "LAND", label: "Land" },
-  ]
+  const type = {
+    "APARTMENT": "Apartment",
+    'DUPLEX': "Duplex",
+    'VILLA': "Villa",
+    'STORE': "Store",
+    'LAND': "Land",
+  }
+  const typeOptions = Object.entries(type).map(([value, label]) => ({
+    value,
+    label,
+  }));
 
+    const [errors, setErrors] = useState({
+      id: "",
+      floor: "",
+      number: "",
+      type: "",
+      area: "",
+      price: "",
+      status: "",
+      pricePerM2: "",
+      zone: "",
+      image: "",
+    });
   // State for form fields
   interface FormDataState {
     id: any;
@@ -110,23 +126,8 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
   };
 
   const handleSave = async () => {
-    // Validation for numberOfApartments
-    // if (
-    //   !formData.numberOfApartments ||
-    //   isNaN(Number(formData.numberOfApartments)) ||
-    //   Number(formData.numberOfApartments) <= 0
-    // ) {
-    //   setErrors((prev) => ({
-    //     ...prev,
-    //     numberOfApartments: "Number of properties is required and must be a positive integer",
-    //   }));
-    //   return;
-    // }
+    if (validateForm()) return; // Stop execution if there are validation errors
 
-    // const formDataToSend = new FormData();
-    // formDataToSend.append("name", formData.name);
-    // formDataToSend.append("numberOfApartments", formData.numberOfApartments);
-    // formDataToSend.append("note", formData.note);
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null) {
@@ -137,14 +138,16 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
         }
       }
     });
-    await editApartements(formDataToSend);
-    // console.log("Saving project with data:", formData);
-    // closeModal();
-    console.log("Saving project with data:", formData);
-    // if (onApartementsAdded) {
-    //   onApartementsAdded(); // Call the refresh callback to update the project list
-    // }
-    closeModal();
+
+    try {
+      await editApartements(formDataToSend);
+      if (onRefresh) {
+        onRefresh();
+      }
+      closeModal();
+    } catch (error) {
+      console.error("Error saving project:", error);
+    }
   };
 
   const [options, setOptions] = useState([
@@ -243,7 +246,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
             <div className="col-span-1">
               <Label>Type <span className="text-red-500">*</span></Label>
               <Select
-                defaultValue={type[PropertyData?.type as keyof typeof type]}
+                defaultValue={PropertyData?.type}
                 name="type"
                 options={typeOptions}
                 placeholder="Type"

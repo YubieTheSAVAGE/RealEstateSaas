@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ApexOptions } from "apexcharts";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
@@ -11,11 +11,34 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function PropertiesCategoryPieChart() {
+type Apartements = {
+  id: number;
+  type: string;
+  status: string;
+};
+
+export default function PropertiesCategoryPieChart(projectData : any) {
+  
+  const [apartements, setApartements] = useState<Apartements[]>([]);
+  useEffect(() => {
+    projectData?.apartements?.forEach((apartement: Apartements) => {
+      setApartements((prev) => [...prev, apartement]);
+    }
+    );
+  }, [projectData]);
+  const type =
+  {
+    "APARTMENT": "Appartement",
+    "VILLA": "Villa",
+    "BUREAU": "Bureau",
+    "STORE": "Magasin",
+    "LAND": "Terrain",
+    "AUTRE": "Autre",
+  }
   // ApexCharts configuration
   const options: ApexOptions = {
     colors: ["#3641f5", "#7592ff", "#dde9ff"],
-    labels: ["Affiliate", "Direct", "Adsense"],
+    labels: types,
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "donut",

@@ -55,6 +55,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     "APARTMENT": "Appartement",
     "VILLA": "Villa",
     "BUREAU": "Bureau",
+    "STORE": "Magasin",
     "LAND": "Terrain",
     "AUTRE": "Autre",
   }
@@ -68,7 +69,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               id: item.id || '',
               project: item.project?.name || '', // Use optional chaining
               projectId: item.project?.id || '', // Use optional chaining
-              type: "Apartement", // Set default or extract from your data
+              type: item.type, // Set default or extract from your data
               superficie: `${item.area || 0} units`,
               price: item.price || 0, // Add fallback for price
               status: item.status || 'Available',
@@ -279,7 +280,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                     {item.project}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.type}
+                    {type[item.type as keyof typeof type] || item.type}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.superficie}

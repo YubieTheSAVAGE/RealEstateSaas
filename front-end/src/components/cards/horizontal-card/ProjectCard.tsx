@@ -18,6 +18,22 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
   console.log("ProjectDetails", ProjectDetails);
+  const calculateTotalSales = (ProjectDetails: any) => {
+    // Check if apartments array exists
+    if (!ProjectDetails.apartments || !Array.isArray(ProjectDetails.apartments)) {
+      return 0;
+    }
+
+    // Count sold apartments
+    const soldCount = ProjectDetails.apartments.filter(
+      (apartment: { status: string }) => apartment.status === "SOLD"
+    ).length;
+
+    return soldCount;
+  };
+
+  const totalSales = calculateTotalSales(ProjectDetails);
+
   return (
     <div>
       <div className="flex flex-col gap-5 mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-6">
@@ -92,7 +108,7 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
                 <span className="font-semibold">Total Surface:</span> {ProjectDetails.totalSurface} m²
               </span>
               <span className="text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-semibold">Properties:</span> 0 / {ProjectDetails.numberOfApartments}
+                <span className="font-semibold">Properties:</span> {totalSales} / {ProjectDetails.numberOfApartments}
               </span>
             </span>  
           </CardDescription>
@@ -107,10 +123,10 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
       </div>
       <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
         <div className="col-span-1">
-          <PropertiesCategoryPieChart />
+          <PropertiesCategoryPieChart projectData={ProjectDetails}/>
         </div>
         <div className="col-span-1">
-          <MonthlySalesChart />
+          <MonthlySalesChart projectData={ProjectDetails}/>
         </div>
       </div>
     </div>
