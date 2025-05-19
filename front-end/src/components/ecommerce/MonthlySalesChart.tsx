@@ -1,7 +1,7 @@
 "use client";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
@@ -11,7 +11,70 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function MonthlySalesChart() {
+// Define the Apartment type based on backend schema
+type Apartment = {
+  id: number;
+  number: number;
+  floor: number;
+  type: string;
+  area: number;
+  price: number;
+  pricePerM2?: number;
+  zone?: string;
+  status: "AVAILABLE" | "RESERVED" | "SOLD";
+  updatedAt: string;
+  projectId?: number;
+  project?: {
+    id: number;
+    name: string;
+  };
+};
+
+export default function MonthlySalesChart({ apartements }: { apartements: Apartment[] }) {
+  const [monthlySalesCount, setMonthlySalesCount] = useState<number[]>(Array(12).fill(0));
+  const [monthlySalesValue, setMonthlySalesValue] = useState<number[]>(Array(12).fill(0));
+  const [selectedView, setSelectedView] = useState<'count' | 'value'>('count');
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Process apartment data when it changes
+  useEffect(() => {
+    if (!apartements || !Array.isArray(apartements) || apartements.length === 0) return;
+    
+    // Initialize arrays for each month
+    const salesCountByMonth = Array(12).fill(0);
+    const salesValueByMonth = Array(12).fill(0);
+    
+    // Get current year
+    const currentYear = new Date().getFullYear();
+    
+    // Filter apartments with SOLD status and group by month (for current year only)
+    apartements.forEach(apartment => {
+      if (apartment.status === "SOLD" && apartment.updatedAt) {
+        const updatedDate = new Date(apartment.updatedAt);
+        
+        // Only include sales from current year
+        if (updatedDate.getFullYear() === currentYear) {
+          const month = updatedDate.getMonth(); // 0 for January, 11 for December
+          
+          // Increment count for the month
+          salesCountByMonth[month]++;
+          
+          // Add price to the total value for the month
+          salesValueByMonth[month] += apartment.price || 0;
+        }
+      }
+    });
+    
+    setMonthlySalesCount(salesCountByMonth);
+    setMonthlySalesValue(salesValueByMonth);
+  }, [apartements]);
+  
+  // Current displayed data based on selected view
+  const currentData = useMemo(() => {
+    return selectedView === 'count' ? monthlySalesCount : monthlySalesValue;
+  }, [selectedView, monthlySalesCount, monthlySalesValue]);
+
+  // Chart options
   const options: ApexOptions = {
     colors: ["#465fff"],
     chart: {
@@ -81,23 +144,32 @@ export default function MonthlySalesChart() {
     fill: {
       opacity: 1,
     },
-
     tooltip: {
       x: {
         show: false,
       },
       y: {
-        formatter: (val: number) => `${val}`,
+        formatter: function(val: number) {
+          if (selectedView === 'value') {
+            return `${val.toLocaleString("en-US", {
+              style: "currency",
+              currency: "MAD",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })}`;
+          }
+          return `${val} properties`;
+        }
       },
     },
   };
+  // Chart series data
   const series = [
     {
-      name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+      name: selectedView === 'count' ? "Sold Properties" : "Sales Value",
+      data: currentData,
     },
   ];
-  const [isOpen, setIsOpen] = useState(false);
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -106,12 +178,43 @@ export default function MonthlySalesChart() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  function toggleView() {
+    setSelectedView(prev => prev === 'count' ? 'value' : 'count');
+    closeDropdown();
+  }
+
+  // Function to calculate total sales for the year
+  const calculateTotalSales = () => {
+    if (selectedView === 'count') {
+      return monthlySalesCount.reduce((sum, count) => sum + count, 0);
+    } else {
+      return monthlySalesValue.reduce((sum, value) => sum + value, 0);
+    }
+  };
+
+  // Get current year
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Monthly Sales
-        </h3>
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            {selectedView === 'count' ? 'Monthly Sales (Units)' : 'Monthly Sales (Value)'}
+          </h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {selectedView === 'count' 
+              ? `${calculateTotalSales()} properties sold in ${currentYear}` 
+              : `Total value: ${calculateTotalSales().toLocaleString("en-US", {
+                  style: "currency",
+                  currency: "MAD",
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                })}`
+            }
+          </p>
+        </div>
         <div className="relative h-fit">
           <button onClick={toggleDropdown} className="dropdown-toggle">
             <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
@@ -122,16 +225,16 @@ export default function MonthlySalesChart() {
             className="w-40 p-2"
           >
             <DropdownItem
-              onItemClick={closeDropdown}
+              onItemClick={toggleView}
               className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
-              View More
+              {selectedView === 'count' ? 'Show Value (MAD)' : 'Show Count'}
             </DropdownItem>
             <DropdownItem
               onItemClick={closeDropdown}
               className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
-              Delete
+              Export Data
             </DropdownItem>
           </Dropdown>
         </div>
@@ -139,12 +242,18 @@ export default function MonthlySalesChart() {
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-          <ReactApexChart
-            options={options}
-            series={series}
-            type="bar"
-            height={180}
-          />
+          {apartements && apartements.length > 0 ? (
+            <ReactApexChart
+              options={options}
+              series={series}
+              type="bar"
+              height={180}
+            />
+          ) : (
+            <div className="flex justify-center items-center h-44">
+              <p className="text-gray-500">No sales data available</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

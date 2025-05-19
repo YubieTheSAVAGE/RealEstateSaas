@@ -55,7 +55,9 @@ async function create(projectId, data) {
       pricePerM2: parseFloat(data.pricePerM2),
       zone: data.zone,
       image: data.image,
-      projectId,
+      project: {
+        connect: { id: projectId }
+      }
     },
   });
   return apartment;
@@ -76,12 +78,12 @@ async function update(apartmentId, data) {
       number: parseInt(data.number, 10),
       floor: parseInt(data.floor, 10),
       type: data.type,
-      area: parseInt(data.area, 10),
+      area: parseFloat(data.area),
       threeDViewUrl: data.threeDViewUrl,
-      price: parseInt(data.price, 10),
+      price: parseFloat(data.price),
       status: data.status,
       notes: data.notes,
-      pricePerM2: parseInt(data.pricePerM2, 10),
+      pricePerM2: parseFloat(data.pricePerM2),
       zone: data.zone,
     },
   });

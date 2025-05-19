@@ -123,10 +123,10 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
       </div>
       <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
         <div className="col-span-1">
-          <PropertiesCategoryPieChart projectData={ProjectDetails}/>
+          <PropertiesCategoryPieChart apartements={ProjectDetails.apartments}/>
         </div>
         <div className="col-span-1">
-          <MonthlySalesChart projectData={ProjectDetails}/>
+          <MonthlySalesChart apartements={ProjectDetails.apartments}/>
         </div>
       </div>
     </div>
