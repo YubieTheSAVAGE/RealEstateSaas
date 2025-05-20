@@ -16,9 +16,10 @@ import { PencilIcon } from "@/icons";
 interface EditProjectModalProps {
   ProjectData?: any; // Add the type for ProjectData if available
   onRefresh?: () => void; // Callback to refresh project list after editing
+  details?: boolean
 }
 
-export default function EditProjectModal({ ProjectData, onRefresh }: EditProjectModalProps) {
+export default function EditProjectModal({ ProjectData, onRefresh, details }: EditProjectModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
   // State for form fields
   const [formData, setFormData] = useState({
@@ -152,9 +153,19 @@ export default function EditProjectModal({ ProjectData, onRefresh }: EditProject
 
   return (
     <>
+      {details ? (
+        <button
+          onClick={openModal}
+          type="button"
+            className="inline-flex items-center gap-2 px-4 py-3 mt-4 text-sm font-medium text-white rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600"
+          >
+            Edit
+          </button>
+          ) : (
       <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
         <PencilIcon onClick={openModal} />
       </span>
+          )}
       <Modal
         isOpen={isOpen}
         onClose={closeModal}

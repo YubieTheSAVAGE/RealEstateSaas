@@ -9,6 +9,7 @@ import MonthlySalesBarChart from "@/components/charts/bar/MonthlySalesBarChart";
 import { Component } from "lucide-react";
 import ComponentCard from "@/components/common/ComponentCard";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
+import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 
 
 interface ProjectCardProps {
@@ -110,15 +111,13 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 <span className="font-semibold">Properties:</span> {totalSales} / {ProjectDetails.numberOfApartments}
               </span>
-            </span>  
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                <span className="font-semibold">Total Revenue:</span> {ProjectDetails.totalPrice} MAD
+              </span>
+            </span>
           </CardDescription>
+          <EditProjectModal ProjectData={ProjectDetails}  details={true} />
 
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-4 py-3 mt-4 text-sm font-medium text-white rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600"
-          >
-            Read more
-          </Link>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
