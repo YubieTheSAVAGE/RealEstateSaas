@@ -72,6 +72,7 @@ async function update(apartmentId, data) {
     err.statusCode = 404;
     throw err;
   }
+  const userId = parseInt(data.userId, 10) || null;
   const updated = await prisma.apartment.update({
     where: { id: apartmentId },
     data: {
@@ -85,6 +86,8 @@ async function update(apartmentId, data) {
       notes: data.notes,
       pricePerM2: parseFloat(data.pricePerM2),
       zone: data.zone,
+      userId: userId,
+      clientId: data.clientId ? parseInt(data.clientId, 10) : null,
     },
   });
   return updated;
@@ -125,6 +128,46 @@ async function assignToClient(apartmentId, clientId, user) {
   return updated;
 }
 
+async function getUserApartements(user) {
+  return prisma.apartment.findMany({
+    where: { 
+      userId: user.id 
+    },
+    include: { 
+      client: true,
+      project: true
+    },
+  });
+}
+
+async function assignToUser(apartmentId, userId) {
+  const apartment = await prisma.apartment.findUnique({
+    where: { id: apartmentId },
+  });
+  if (!apartment) {
+    const err = new Error("Apartment not found");
+    err.statusCode = 404;
+    throw err;
+  }
+  
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    const err = new Error("User not found");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const updated = await prisma.apartment.update({
+    where: { id: apartmentId },
+    data: { userId },
+    include: {
+      user: true,
+      project: true,
+    },
+  });
+  return updated;
+}
+
 module.exports = {
   getAllApartments,
   listByProject,
@@ -132,5 +175,7 @@ module.exports = {
   update,
   remove,
   assignToClient,
-  getRecentActivity
+  getUserApartements,
+  getRecentActivity,
+  assignToUser,
 };

@@ -88,7 +88,7 @@ export default function RecentFileTable() {
         </div>
 
         <Link
-          href="/"
+          href="/home"
           className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-500 dark:text-gray-400 dark:hover:text-brand-500"
         >
           View All

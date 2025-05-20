@@ -40,6 +40,7 @@ type ProjectData = {
   pricePerM2 ?: number;
   zone ?: string;
   etage ?: string;
+  client ?: []; 
 };
 
 export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: ProjectData[]; onRefresh?: () => void; }) {
@@ -80,6 +81,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               threeDViewUrl: item.threeDViewUrl || '',
               notes: item.notes || '',
               area:  item.area || 0,
+              client: item.client || [], // Add client data
           }));
           setApartementsData(formattedData);
       } else {

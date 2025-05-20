@@ -7,16 +7,17 @@ import RecentActivity from "@/components/ecommerce/RecentActivity";
 import { StatsCard } from "@/components/ecommerce/StatsCard";
 import PerformingAgents from "@/components/ecommerce/TopPerformingAgents";
 import getApartements from "@/components/tables/DataTables/Properties/getApartements";
+import {getUserRoleFromToken} from "@/app/(auth)/signin/login";
 
 
 export default function Ecommerce() {
 
     const [apartementsData, setApartementsData] = useState([]);
+    const [userRole, setUserRole] = useState("");
     
     const fetchApartements = useCallback(async () => {
         // API call to fetch projects
         const data = await getApartements();
-        console.log("data", data);
         setApartementsData(data);
     }, []);
     

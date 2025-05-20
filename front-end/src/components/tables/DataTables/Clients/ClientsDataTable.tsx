@@ -103,12 +103,14 @@ export default function ClientsDataTable({clients}: any) {
     name: string;
     email: string;
     phone: string;
-    interest: string;
-    apartments: {
+    interestedApartments: {
       id: string;
       floor: number;
       number: number;
       projectName: string;
+      project?: {
+        name: string;
+      }
     }
   };
 
@@ -121,12 +123,11 @@ export default function ClientsDataTable({clients}: any) {
               name: item.name,
               email: item.email,
               phone:item. phoneNumber,
-              interest: item.interest || "",
-              apartments: {
-                  id: item.apartments[0]?.id || "",
-                  floor: item.apartments[0]?.floor || 0,
-                  number: item.apartments[0]?.number || 0,
-                  projectName: item.apartments[0]?.project?.name || "",
+              interestedApartments: {
+                  id: item.interestedApartments[0]?.id || "",
+                  floor: item.interestedApartments[0]?.floor || 0,
+                  number: item.interestedApartments[0]?.number || 0,
+                  projectName: item.interestedApartments[0]?.project?.name || "",
               },
           }));
           setClientsData(formattedData);
@@ -322,7 +323,7 @@ export default function ClientsDataTable({clients}: any) {
                     {item.phone}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {`${item.apartments.projectName} - Apartment ${item.apartments.number} (${item.apartments.floor} floor)`}
+                    {`${item.interestedApartments?.projectName || 'N/A'} - Apartment ${item.interestedApartments?.number || 'N/A'} (${item.interestedApartments?.floor || 'N/A'} floor)`}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">

@@ -111,6 +111,7 @@ export default function AgentsDataTable() {
         setData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setData([]);
       }
     };
 

@@ -8,7 +8,7 @@ export default function ResetPasswordForm() {
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       <div className="w-full max-w-md pt-10 mx-auto">
         <Link
-          href="/"
+          href="/home"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <svg
@@ -68,7 +68,7 @@ export default function ResetPasswordForm() {
             <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
               Wait, I remember my password...
               <Link
-                href="/"
+                href="/home"
                 className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
               >
                 Click here

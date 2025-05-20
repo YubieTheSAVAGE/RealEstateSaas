@@ -15,6 +15,7 @@ import FileInput from "@/components/form/input/FileInput";
 import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 import { FaPen } from "react-icons/fa";
 import { PencilIcon } from "@/icons";
+import getClient from "@/components/tables/DataTables/Clients/getClient";
 
 interface EditPropertyModalProps {
   // onApartementsAdded?: () => void; // Callback to refresh project list
@@ -38,6 +39,34 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
     label,
   }));
 
+  const [clientOptions, setClientOptions] = useState([]);
+  const fetchClients = async () => {
+    try {
+      const response = await getClient();
+      // Assuming response is an array of properties
+      const formattedOptions = response.map((property: any) => ({
+        value: property.id,
+        label: property.name,
+      }));
+      setClientOptions(formattedOptions);
+      console.log("Formatted options:", formattedOptions);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+    }
+  }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (PropertyData.status === "SOLD") {
+        await fetchClients();
+        console.log("PropertyData.status", PropertyData.status);
+        console.log("PropertyData", PropertyData);
+        console.log("clientOptions", clientOptions);
+        console.log("clientOptions2", PropertyData.client?.id);
+      }
+    };
+    fetchData();
+  }, [PropertyData.status]);
+
     const [errors, setErrors] = useState({
       id: "",
       floor: "",
@@ -49,6 +78,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
       pricePerM2: "",
       zone: "",
       image: "",
+      clientId : "",
     });
   // State for form fields
   interface FormDataState {
@@ -64,6 +94,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
     pricePerM2: any;
     image: File | null;
     zone: any;
+    clientId: any;
   }
 
   const [formData, setFormData] = useState<FormDataState>({
@@ -79,6 +110,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
     pricePerM2: PropertyData?.pricePerM2 || "",
     image: null, // Default to null for image
     zone: PropertyData?.zone || "",
+    clientId: PropertyData?.client?.id || "", // Added optional chaining to safely access client.id
   });
 
 
@@ -125,6 +157,8 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
     return hasErrors;
   };
 
+
+
   const handleSave = async () => {
     if (validateForm()) return; // Stop execution if there are validation errors
 
@@ -140,6 +174,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
     });
 
     try {
+      console.log("Form data to send:", formDataToSend);
       await editApartements(formDataToSend);
       if (onRefresh) {
         onRefresh();
@@ -181,7 +216,13 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
     fetchProperties();
   }
   , []);
+
+    
   const handleSelectChange = (selectedValue: string, name:string) => {
+    // console.log("Selected value:", selectedValue, name);
+    if (name === "status" && selectedValue === "SOLD") {
+      fetchClients();
+    }
     console.log("Selected value:", selectedValue, name);
     setFormData((prev) => ({
       ...prev,
@@ -378,6 +419,25 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
                 </p>
               )}
             </div>
+            {formData.status === "SOLD" && (
+              <div className="col-span-1">
+                <Label>Client <span className="text-red-500">*</span></Label>
+                <Select
+                  defaultValue={formData?.clientId || ""}
+                  options={clientOptions}
+                  name="clientId"
+                  placeholder="Select Option"
+                  onChange={(value, name) => handleSelectChange(value, name)}
+                  className="dark:bg-dark-900"
+                />
+                {errors.clientId && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.clientId}
+                  </p>
+                )}
+              </div>
+            )}
+
 
             <div className="col-span-2">
               <Label>Plan</Label>

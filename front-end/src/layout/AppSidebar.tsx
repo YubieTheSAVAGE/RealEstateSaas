@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, { useEffect, useRef, useCallback, useState, useDeferredValue, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -24,11 +24,14 @@ import {
 import SidebarWidget from "./SidebarWidget";
 import { BiBuildings, BiBookContent, BiTask, BiBarChartAlt2 } from "react-icons/bi";
 import { FaUsers } from "react-icons/fa";
-
+import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
+import { decodeToken } from "../utils/decodeToken";
+import {getUserRoleFromToken} from "@/app/(auth)/signin/login";
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
+  roles?: string[];
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
@@ -36,12 +39,14 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    path: "/",
+    path: "/home",
+    roles: ["ADMIN", "AGENT"],
   },
   {
     icon: <BiBuildings size="1.5em" />,
     name: "Projects",
     path: "/projects",
+    roles: ["ADMIN", "AGENT"],
   },
   // {
   //   icon: <BiBuildings size="1.5em" />,
@@ -59,16 +64,19 @@ const navItems: NavItem[] = [
     icon: <BiBookContent size="1.5em" />,
     name: "Properties",
     path: "/properties",
+    roles: ["ADMIN", "AGENT"],
   },
   {
     icon: <UserCircleIcon />,
     name: "Clients",
     path: "/clients",
+    roles: ["ADMIN", "AGENT"],
   },
   {
     name: "Task",
     icon: <BiTask size="1.5em"/>,
     path: "/tasks",
+    roles: ["ADMIN", "AGENT"],
   },
   // {
   //   name: "Analytics",
@@ -79,6 +87,7 @@ const navItems: NavItem[] = [
     name: "User Management",
     icon: <FaUsers size="1.5em" />,
     path: "/agents",
+    roles: ["ADMIN"],
   },
 ];
 
@@ -86,13 +95,29 @@ const navItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
+  const [role, setRole] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchRole = async () => {
+      // You may need to import AUTHENTICATION_COOKIE and provide a suitable prevState (e.g., null or {})
+      const result = await getUserRoleFromToken();
+      console.log("Role fetched from token:", result); 
+      if (result) {
+        setRole(result);
+      } else {
+        console.error("Failed to decode token or role not found");
+      }
+    };
+    fetchRole();
+  }, []);
 
   const renderMenuItems = (
     navItems: NavItem[],
     menuType: "main" | "support" | "others"
   ) => (
     <ul className="flex flex-col gap-4">
-      {navItems.map((nav, index) => (
+      {navItems
+        .filter((nav) => !nav.roles || (role && nav.roles.includes(role)))
+        .map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
             <button
@@ -292,7 +317,7 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link href="/">
+        <Link href="/home">
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image
