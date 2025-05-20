@@ -18,6 +18,9 @@ export default async function getProjectById(id : string) {
         });
 
         const data = await res.json();
+        if (!data) {
+            return null;
+        }
         return data;
     } finally {
     }
