@@ -23,6 +23,8 @@ import deleteProperties from "./deleteProperties";
 import { FaEye } from "react-icons/fa";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
+import { useRouter } from "next/navigation";
+import { table } from "console";
 
 interface DataTableTwoProps {
   projects: any[];
@@ -30,6 +32,7 @@ interface DataTableTwoProps {
 }
 
 export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps) {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("project");
@@ -79,8 +82,9 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
     }
   }, [projects]);
 
+  console.log("Project Data:", projectData);
+
   const handleDelete = async (id: string) => {
-    // Show confirmation dialog
       const success: boolean = await deleteProperties(id);
 
       if (success) {
@@ -99,9 +103,6 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
     }
   };
 
-  const totalItems = projectData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -115,9 +116,37 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
     }
   };
 
+  let show = false
+
+  // Filter data based on search term
+  const filteredData = projectData.filter((item) => {
+    const searchValue = searchTerm.toLowerCase();
+    return (
+      item.name?.toLowerCase().includes(searchValue)
+    );
+  });
+
+  // Sort filtered data
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortKey === "totalSales") {
+      return sortOrder === "asc" 
+        ? a.totalSales - b.totalSales 
+        : b.totalSales - a.totalSales;
+    } else {
+      const valueA = String(a[sortKey] || "").toLowerCase();
+      const valueB = String(b[sortKey] || "").toLowerCase();
+      return sortOrder === "asc"
+        ? valueA.localeCompare(valueB)
+        : valueB.localeCompare(valueA);
+    }
+  });
+
+  const totalItems = filteredData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = projectData.slice(startIndex, endIndex);
+  const currentData = sortedData.slice(startIndex, endIndex);
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
@@ -182,7 +211,10 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page when search term changes
+            }}
             placeholder="Search..."
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
           />
@@ -242,6 +274,16 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
               </TableRow>
             </TableHeader>
             <TableBody>
+              {currentData.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={6}
+                    className="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
+                  >
+                    No data available
+                  </TableCell>
+                </TableRow>
+              )}
               {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
@@ -252,20 +294,14 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">
-                      <button className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90">
+                      <button 
+                        className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90"
+                        onClick={() => { router.push(`/projects/${item.id}`) }}
+                      >
                         <FaEye />
                       </button>
-                      <span className="text-gray-500 hover:text-error-600 dark:text-gray-400 dark:hover:text-error-500 cursor-pointer">
-                        <DeleteModal onDelete={() => handleDelete(item.id)} itemId={item.id} heading="Delete Project" description="Are you sure you want to delete this project?" />
-                      </span>
-                      {/* <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500"> */}
-                        {/* <TrashBinIcon onClick={() => handleDelete(item.id)} /> */}
-                      {/* </button> */}
-                      {/* <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90"> */}
-                      <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
-                        <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
-                      </span>
-                      {/* </button> */}
+                      <DeleteModal onDelete={() => handleDelete(item.id)} itemId={item.id} heading="Delete Project" description="Are you sure you want to delete this project?" />
+                      <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -275,10 +311,10 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
         </div>
       </div>
 
+          {currentData.length > 0 && (
       <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
-        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
           {/* Left side: Showing entries */}
-
           <PaginationWithButton
             totalPages={totalPages}
             initialPage={currentPage}
@@ -291,6 +327,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
           </div>
         </div>
       </div>
+          )}
     </div>
   );
 }

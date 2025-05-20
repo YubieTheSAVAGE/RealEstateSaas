@@ -9,6 +9,25 @@ async function getAllApartments() {
   });
 }
 
+/**
+ * Get recent activity related to apartments
+ * Shows the most recently updated apartments with their status
+ * @param {number} limit - Maximum number of activities to return
+ * @returns {Promise<Array>} - Recent apartment activities
+ */
+async function getRecentActivity(limit = 5) {
+  return prisma.apartment.findMany({
+    take: limit,
+    orderBy: {
+      updatedAt: 'desc',
+    },
+    include: {
+      project: true,
+      client: true,
+    },
+  });
+}
+
 async function listByProject(projectId) {
   return prisma.apartment.findMany({
     where: { projectId },
@@ -25,18 +44,20 @@ async function create(projectId, data) {
   }
   const apartment = await prisma.apartment.create({
     data: {
-      number: data.number,
-      floor: data.floor,
+      number: parseInt(data.number, 10),
+      floor: parseInt(data.floor, 10),
       type: data.type,
-      area: data.area,
+      area: parseFloat(data.area),
       threeDViewUrl: data.threeDViewUrl,
-      price: data.price,
+      price: parseFloat(data.price),
       status: data.status,
       notes: data.notes,
-      pricePerM2: data.pricePerM2,
+      pricePerM2: parseFloat(data.pricePerM2),
       zone: data.zone,
       image: data.image,
-      projectId,
+      project: {
+        connect: { id: projectId }
+      }
     },
   });
   return apartment;
@@ -54,14 +75,16 @@ async function update(apartmentId, data) {
   const updated = await prisma.apartment.update({
     where: { id: apartmentId },
     data: {
-      number: data.number,
-      floor: data.floor,
+      number: parseInt(data.number, 10),
+      floor: parseInt(data.floor, 10),
       type: data.type,
-      area: data.area,
+      area: parseFloat(data.area),
       threeDViewUrl: data.threeDViewUrl,
-      price: data.price,
+      price: parseFloat(data.price),
       status: data.status,
       notes: data.notes,
+      pricePerM2: parseFloat(data.pricePerM2),
+      zone: data.zone,
     },
   });
   return updated;
@@ -109,4 +132,5 @@ module.exports = {
   update,
   remove,
   assignToClient,
+  getRecentActivity
 };

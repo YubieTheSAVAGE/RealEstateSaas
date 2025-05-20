@@ -17,102 +17,18 @@ import {
   TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
+import Badge from "@/components/ui/badge/Badge";
 
-const tableRowData = [
-  {
-    id: "RGD-901",
-    project: "Royal Gardens Residences",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  }
-  ,
-  {
-    id: "RGD-902",
-    project: "Marina heights",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-903",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-904",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Canceled",
-  },
-  {
-    id: "RGD-905",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-906",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-907",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-908",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Canceled",
-  },
-  {
-    id: "RGD-909",
-    project: "Atlas view apartements",
-    type: "Villa",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-  {
-    id: "RGD-910",
-    project: "Marina heights",
-    type: "Apartement",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Reserved",
-  },
-  {
-    id: "RGD-911",
-    project: "Royal Gardens Residences",
-    type: "Duplex",
-    superficie: "120 m²",
-    price: 1912030,
-    status: "Sold",
-  },
-];
-type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status";
+type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
 type SortOrder = "asc" | "desc";
 
 import getApartements from "./getApartements";
+import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
+
+interface PropertiesDataTable {
+  projects: any[];
+  onRefresh?: () => void; // Callback to refresh projects data
+}
 
 type ProjectData = {
   id: string;
@@ -126,13 +42,23 @@ type ProjectData = {
   etage ?: string;
 };
 
-export default function PropertiesDataTable({ apartmentsData }: { apartmentsData: ProjectData[] }) {
+export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: ProjectData[]; onRefresh?: () => void; }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
     // Define the ProjectData type
+
+  const type =
+  {
+    "APARTMENT": "Appartement",
+    "VILLA": "Villa",
+    "BUREAU": "Bureau",
+    "STORE": "Magasin",
+    "LAND": "Terrain",
+    "AUTRE": "Autre",
+  }
 
     
   const [apartementsData, setApartementsData] = useState<ProjectData[]>([]);
@@ -142,12 +68,18 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           const formattedData = apartmentsData.map((item: any) => ({
               id: item.id || '',
               project: item.project?.name || '', // Use optional chaining
-              type: "Apartement", // Set default or extract from your data
+              projectId: item.project?.id || '', // Use optional chaining
+              type: item.type, // Set default or extract from your data
               superficie: `${item.area || 0} units`,
               price: item.price || 0, // Add fallback for price
               status: item.status || 'Available',
               pricePerM2: item.pricePerM2 || 0,
               zone: item.zone || 'Unknown',
+              floor: item.floor || '',
+              number: item.number || 'Unknown',
+              threeDViewUrl: item.threeDViewUrl || '',
+              notes: item.notes || '',
+              area:  item.area || 0,
           }));
           setApartementsData(formattedData);
       } else {
@@ -155,6 +87,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           setApartementsData([]);
       }
   }, [apartmentsData]);
+
   const totalItems = apartementsData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -171,9 +104,35 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
     }
   };
 
+  // Filter data based on search term
+  const filteredData = apartementsData.filter((item) => {
+    const searchValue = searchTerm.toLowerCase();
+    return (
+      item.project?.toLowerCase().includes(searchValue)
+    );
+  });
+
+  // Sort filtered data
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortKey === "price" || sortKey === "pricePerM2") {
+      const valueA = a[sortKey] || 0;
+      const valueB = b[sortKey] || 0;
+      return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+    } else {
+      const valueA = String(a[sortKey] || "").toLowerCase();
+      const valueB = String(b[sortKey] || "").toLowerCase();
+      return sortOrder === "asc"
+        ? valueA.localeCompare(valueA)
+        : valueB.localeCompare(valueB);
+    }
+  });
+
+  const totalFilteredItems = filteredData.length;
+  const totalFilteredPages = Math.ceil(totalFilteredItems / itemsPerPage);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = apartementsData.slice(startIndex, endIndex);
+  const endIndex = Math.min(startIndex + itemsPerPage, totalFilteredItems);
+  const currentData = sortedData.slice(startIndex, endIndex);
 
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
@@ -239,7 +198,10 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1); // Reset to first page when search term changes
+            }}
             placeholder="Search..."
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
           />
@@ -302,13 +264,23 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
               </TableRow>
             </TableHeader>
             <TableBody>
-              {apartementsData.map((item, i) => (
+              {currentData.length === 0 && (
+                <TableRow>
+                  <TableCell
+                    colSpan={8}
+                    className="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
+                  >
+                    No data available
+                  </TableCell>
+                </TableRow>
+              )}
+              {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
                     {item.project}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.type}
+                    {type[item.type as keyof typeof type] || item.type}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.superficie}
@@ -333,7 +305,74 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                     })}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.status}
+                    <Badge
+                      variant="light"
+                      color={
+                        item.status === "AVAILABLE"
+                          ? "success"
+                          : item.status === "RESERVED"
+                          ? "warning"
+                          : "error"
+                      }
+                      size="sm"
+                    >
+                      {item.status === "AVAILABLE" && (
+                        <span className="text-success-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {item.status === "RESERVED" && (
+                        <span className="text-warning-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {item.status === "SOLD" && (
+                        <span className="text-error-500">   
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                    // {item.status.toLowerCase()}
+                      )}
+                      {item.status.toLowerCase()}
+                    </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
@@ -343,9 +382,12 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
                       <button className="text-gray-500 hover:text-success-500 dark:text-gray-400 dark:hover:text-success-500">
                         <Md3dRotation />
                       </button>
-                      <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400">
-                        <FaPen />
-                      </button>
+                      {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
+                      <EditPropertyModal
+                        PropertyData={item}
+                        onRefresh={onRefresh}
+                      />
+                      {/* </button> */}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -355,6 +397,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
         </div>
       </div>
 
+    {currentData.length > 0 && (
       <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
           {/* Left side: Showing entries */}
@@ -371,6 +414,7 @@ export default function PropertiesDataTable({ apartmentsData }: { apartmentsData
           </div>
         </div>
       </div>
+    )}
     </div>
   );
 }

@@ -40,6 +40,8 @@
     "react-dropzone": "^14.3.5",
     "react-flatpickr": "^3.10.13",
     "react-icons": "^5.5.0",
+    "react-modal-image": "^2.6.0",
+    "react-photo-view": "^1.2.7",
     "simplebar-react": "^3.3.0",
     "swiper": "^11.2.0",
     "tailwind-merge": "^2.6.0",

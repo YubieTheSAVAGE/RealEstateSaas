@@ -21,16 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
         {/* <NextTopLoader /> */}
-      <body suppressHydrationWarning={true} className={`${outfit.variable} dark:bg-gray-900`}>
+      <body suppressHydrationWarning={true} className={`${outfit.variable} dark:bg-gray-900 bg-gray-25`}>
         {/* <NextTopLoader /> */}
         <NextTopLoader />
-        <div className="dark:bg-boxdark-2 dark:text-bodydark">
           <ThemeProvider>
             <SidebarProvider>
               {children}
             </SidebarProvider>
           </ThemeProvider>
-        </div>
       </body>
     </html>
   );

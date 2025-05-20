@@ -5,21 +5,20 @@ import { cookies } from "next/headers";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
 
 
-export default async function getProperties()
-{
+export default async function getProperties() {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get(AUTHENTICATION_COOKIE)?.value;
         const res = await fetch(`${API_URL}/api/projects`, {
             method: "GET",
-            headers: { "Content-Type": "application/json",  "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
         });
         if (!res.ok) {
             console.log("Error getting project:", res);
         }
         const data = await res.json();
         return data;
-    } finally
-    {
+    } finally {
     }
-}
+};
+

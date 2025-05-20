@@ -6,6 +6,7 @@ import { MoreDotIcon } from "@/icons";
 import navigator from "next/navigation";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import MonthlyTargetModal from "../example/ModalExample/MonthlyTargetModal";
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -90,18 +91,18 @@ export default function MonthlyTarget() {
               onClose={closeDropdown}
               className="w-40 p-2"
             >
-              <DropdownItem
+              {/* <DropdownItem
                 onItemClick={closeDropdown}
                 className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
                 View More
-              </DropdownItem>
-              <DropdownItem
+              </DropdownItem> */}
+              {/* <DropdownItem
                 onItemClick={closeDropdown}
                 className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-              >
-                Delete
-              </DropdownItem>
+              > */}
+                <MonthlyTargetModal closeDropdown={closeDropdown} />
+              {/* </DropdownItem> */}
             </Dropdown>
           </div>
         </div>

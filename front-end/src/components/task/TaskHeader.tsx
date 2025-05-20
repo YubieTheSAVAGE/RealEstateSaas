@@ -8,41 +8,93 @@ import Input from "../form/input/InputField";
 import TextArea from "../form/input/TextArea";
 import { MdAccessTime } from "react-icons/md";
 import { Task } from "./kanban/types/types";
-import { initialTasks } from "./kanban/KanbanBoard";
+// import { initialTasks } from "./kanban/KanbanBoard";
+import addTask from "@/app/(admin)/tasks/addTask";
 
 // Define the TaskHeaderProps interface
 interface TaskHeaderProps {
   selectedTaskGroup: string;
   setSelectedTaskGroup: (group: string) => void;
+  tasks: Task[];
 }
 
-export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup }: TaskHeaderProps) {
+export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, tasks }: TaskHeaderProps) {
   
   const { isOpen, openModal, closeModal } = useModal();
   const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    title: "",
+    dueDate: "",
+    status: "TODO",
+    description: "",
+  });
+
 
   const taskGroups = [
     { 
       name: "All Tasks", 
       key: "All", 
-      count: initialTasks.length 
+      count: tasks.length 
     },
     { 
       name: "To do", 
-      key: "todo", 
-      count: initialTasks.filter((task: Task) => task.status === "todo").length 
+      key: "TODO", 
+      count: tasks.filter((task: Task) => task.status === "TODO").length 
     },
     { 
       name: "In Progress", 
-      key: "inProgress", 
-      count: initialTasks.filter((task: Task) => task.status === "inProgress").length 
+      key: "IN_PROGRESS", 
+      count: tasks.filter((task: Task) => task.status === "IN_PROGRESS").length 
     },
     { 
       name: "Completed", 
-      key: "completed", 
-      count: initialTasks.filter((task: Task) => task.status === "completed").length 
+      key: "COMPLETED", 
+      count: tasks.filter((task: Task) => task.status === "COMPLETED").length 
     },
   ];
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      status: e.target.value,
+    }));
+  };
+
+  function handleTextAreaChange(value: string): void {
+    setFormData((prev) => ({
+      ...prev,
+      description: value,
+    }));
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+      const formDataToSend = new FormData();
+    // Handle form submission logic here
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null) {
+          formDataToSend.append(key, String(value))
+      }
+    });
+    await addTask(formDataToSend);
+    // Reset form data
+    setFormData({
+      title: "",
+      dueDate: "",
+      status: "TODO",
+      description: "",
+    });
+    closeModal();
+  }
+
+
 
   const handleMessageChange = (value: string) => {
     setMessage(value);
@@ -133,13 +185,13 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup }: 
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <Label>Task Title</Label>
-                <Input type="text" />
+                <Input type="text" onChange={handleChange} name="title" />
               </div>
 
               <div>
                 <Label>Due Date</Label>
                 <div className="relative">
-                  <Input type="date" placeholder="Select date" />
+                  <Input type="datetime-local" onChange={handleChange} name="dueDate" />
                   <span className="absolute right-3.5 top-1/2 -translate-y-1/2">
                     <svg
                       className="fill-gray-700 dark:fill-gray-400"
@@ -159,35 +211,24 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup }: 
                   </span>
                 </div>
               </div>
-
-              <div>
-                <Label>Due time</Label>
-                <div className="relative">
-                  <Input type="time" placeholder="Select time" />
-                <span className="absolute right-3.5 top-1/2 -translate-y-1/2">
-                  <MdAccessTime />
-                </span>
-                </div>
-              </div>
-
               <div>
                 <Label>Status</Label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
-                  <select className="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                  <select onChange={handleStatusChange} name="status" className="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
                     <option
-                      value=""
+                      value="TODO"
                       className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                     >
                       To Do
                     </option>
                     <option
-                      value=""
+                      value="IN_PROGRESS"
                       className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                     >
                       In Progress
-                    </option>
+                    </option>s
                     <option
-                      value=""
+                      value="COMPLETED"
                       className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                     >
                       Completed
@@ -217,10 +258,11 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup }: 
               <div className="sm:col-span-2">
                 <Label>Description</Label>
                 <TextArea
+                  name="description"
+                  value={formData.description}
                   placeholder="Type your message here..."
                   rows={6}
-                  value={message}
-                  onChange={handleMessageChange}
+                  onChange={handleTextAreaChange}
                 />
               </div>
             </div>
@@ -241,7 +283,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup }: 
                 Cancel
               </button>
               <button
-                onClick={closeModal}
+                onClick={handleSubmit}
                 type="button"
                 className="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
               >

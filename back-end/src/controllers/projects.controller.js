@@ -34,31 +34,38 @@ async function getProjectById(request, reply) {
 
 async function createProject(request, reply) {
   try {
-    const { name, numberOfApartments, totalSurface , address, notes, image } = request.body;
+    const { name, numberOfApartments, totalSurface, address, notes, image } = request.body;
 
     if (typeof name !== "string" || name.trim() === "") {
       return reply
         .code(400)
         .send({ error: "Name is required and must be a non-empty string" });
     }
-    const { mimetype, buffer, filename } = image;
-    const uniqueName = `${Date.now()}-${filename}`;
-    if (!ALLOWED.includes(mimetype)) {
-      return reply.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+
+    let uploadedImage = null;
+
+    if (image && image.buffer) {
+      const { mimetype, buffer, filename } = image;
+      const uniqueName = `${Date.now()}-${filename}`;
+      if (!ALLOWED.includes(mimetype)) {
+        return reply.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+      }
+      const uploadsDir = path.join(__dirname, '../uploads');
+      if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
+      const dest = path.join(uploadsDir, uniqueName);
+      await fs.promises.writeFile(dest, buffer);
+      uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
     }
-    const uploadsDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-    const dest = path.join(uploadsDir, uniqueName);
-    await fs.promises.writeFile(dest, buffer);
-    const uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
+
     const project = await projectService.addNewProject({
       name: name.trim(),
       numberOfApartments: parseInt(numberOfApartments, 10),
       totalSurface: parseInt(totalSurface, 10),
       address: address.trim(),
-      notes: notes.trim(),
+      notes: notes ? notes.trim() : null,
       image: uploadedImage,
     });
+
     return reply.code(201).send(project);
   } catch (err) {
     request.log.error(err);
@@ -75,56 +82,39 @@ async function updateProject(request, reply) {
         .send({ error: "projectId must be a positive integer" });
     }
 
-    const allowed = ["name", "numberOfApartments", "notes", "totalSurface", "address", "image"];
-    const data = {};
+    const { name, numberOfApartments, totalSurface, address, notes, image } = request.body;
 
-    for (const key of allowed) {
-      if (request.body[key] !== undefined) {
-        data[key] = request.body[key];
-      }
+    if (typeof name !== "string" || name.trim() === "") {
+      return reply
+        .code(400)
+        .send({ error: "Name is required and must be a non-empty string" });
     }
 
-    if (Object.keys(data).length === 0) {
-      return reply.code(400).send({
-        error: `At least one of: ${allowed.join(", ")} must be provided`,
-      });
-    }
+    let uploadedImage = null;
 
-    // ✅ Name validation
-    if (data.name !== undefined) {
-      if (typeof data.name !== "string" || data.name.trim() === "") {
-        return reply.code(400).send({ error: "name must be a non-empty string" });
-      }
-      data.name = data.name.trim();
-    }
-
-    // ✅ Notes validation
-    if (data.notes !== undefined && typeof data.notes !== "string") {
-      return reply.code(400).send({ error: "notes must be a string" });
-    }
-
-    // ✅ Image handling (if provided)
-    if (request.body.image && request.body.image.buffer) {
-      const { mimetype, buffer, filename } = request.body.image;
-      const ALLOWED = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
-
-      if (!ALLOWED.includes(mimetype)) {
-        return reply.status(400).send({ message: "Only JPEG, PNG, JPG, or WEBP allowed." });
-      }
-
+    if (image && image.buffer) {
+      const { mimetype, buffer, filename } = image;
       const uniqueName = `${Date.now()}-${filename}`;
-      const uploadsDir = path.join(__dirname, "../uploads");
+      if (!ALLOWED.includes(mimetype)) {
+        return reply.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+      }
+      const uploadsDir = path.join(__dirname, '../uploads');
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
-
       const dest = path.join(uploadsDir, uniqueName);
       await fs.promises.writeFile(dest, buffer);
-
-      const uploadedImage = "http://localhost:3001" + path.join("/uploads", uniqueName);
-      data.image = uploadedImage;
+      uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
     }
 
-    const updated = await projectService.updateProject(projectId, data);
-    return reply.send(updated);
+    const project = await projectService.updateProject(projectId, {
+      name: name.trim(),
+      numberOfApartments: parseInt(numberOfApartments, 10),
+      totalSurface: parseInt(totalSurface, 10),
+      address: address.trim(),
+      notes: notes ? notes.trim() : null,
+      image: uploadedImage,
+    });
+
+    return reply.send(project);
   } catch (err) {
     request.log.error(err);
     return reply.code(err.statusCode || 500).send({ error: err.message });

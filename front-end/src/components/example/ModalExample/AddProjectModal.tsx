@@ -29,12 +29,17 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     address: "",
     image: null as File | null, // Store as File object instead of string
   });
-
   // State for validation errors
   const [errors, setErrors] = useState({
+    name: "",
     numberOfApartments: "",
+    totalSurface: "",
+    address: "",
+    image:""
   });
-
+  
+  // State for API errors
+  const [apiError, setApiError] = useState("");
   // Update form field values
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -44,81 +49,120 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     }));
 
     // Clear errors when the user starts typing
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+    
+    // Clear API error when user makes any changes
+    if (apiError) {
+      setApiError("");
+    }
   };
-  
-  // Special handler for file inputs
+    // Special handler for file inputs
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
       if (!file) return;
+      if (!allowedTypes.includes(file.type)) {
+        setErrors((prev) => ({
+          ...prev,
+          image: "Only JPEG, PNG, JPG, or WEBP files are allowed",
+        }));
+        return;
+      }
       setFormData((prev) => ({
         ...prev,
         image: file,
       }));
-    }
-  };
-
-  const handleSave = async () => {
-    // Validation for numberOfApartments
-    if (
-      !formData.numberOfApartments ||
-      isNaN(Number(formData.numberOfApartments)) ||
-      Number(formData.numberOfApartments) <= 0
-    ) {
-      setErrors((prev) => ({
-        ...prev,
-        numberOfApartments: "Number of properties is required and must be a positive integer",
-      }));
-      return;
-    }
-    console.log("Form data to send:", formData);
-    const formDataToSend = new FormData();
-    formDataToSend.append("name", formData.name);
-    formDataToSend.append("numberOfApartments", formData.numberOfApartments);
-    formDataToSend.append("totalSurface", formData.totalSurface);
-    formDataToSend.append("address", formData.address);
-    formDataToSend.append("notes", formData.notes);
-    
-    // Only append image if it exists
-    if (formData.image) {
-      formDataToSend.append("image", formData.image as File);
-    }
-    
-    try {
-      await addProject(formDataToSend);
       
-      // Reset form data
-      setFormData({
-        name: "",
-        numberOfApartments: "",
-        notes: "",
-        totalSurface: "",
-        address: "",
-        image: null,
-      });
-      
-      // Call the refresh callback to update the project list
-      if (onProjectAdded) {
-        onProjectAdded();
+      // Clear API error when user makes any changes
+      if (apiError) {
+        setApiError("");
       }
-      
-      closeModal();
-    } catch (error) {
-      // You could add error handling UI here if needed
     }
   };
+const handleSave = async () => {
+  setApiError("");
+  const newErrors = { ...errors };
+  let hasErrors = false;
 
+  // Validation configuration
+  const validations = [
+    { 
+      field: 'name', 
+      test: (v: string) => !v.trim(), 
+      message: "Project name is required" 
+    },
+    { 
+      field: 'numberOfApartments', 
+      test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0,
+      message: "Number of properties is required and must be a positive integer"
+    },
+    { 
+      field: 'totalSurface', 
+      test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0,
+      message: "Total surface is required and must be a positive number"
+    },
+    { 
+      field: 'address', 
+      test: (v: string) => !v.trim(), 
+      message: "Address is required" 
+    }
+  ];
+
+  // Run validations
+  validations.forEach(({ field, test, message }) => {
+    if (test(formData[field as keyof typeof formData] as string)) {
+      newErrors[field as keyof typeof newErrors] = message;
+      hasErrors = true;
+    }
+  });
+
+  if (hasErrors) return setErrors(newErrors);
+
+  const formDataToSend = new FormData();
+  Object.entries(formData).forEach(([key, value]) => {
+    if (value !== null && !(key === 'image' && !value)) {
+      formDataToSend.append(key, value as string | Blob);
+    }
+  });
+
+  try {
+    await addProject(formDataToSend);
+    setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", image: null });
+    onProjectAdded?.();
+    closeModal();
+  } catch (error) {
+    setApiError(error instanceof Error ? error.message : "Failed to add project");
+  }
+};
   const handleTextareaChange = (value: string) => {
-    // console.log("Textarea value:", value);
     setFormData((prev) => ({
       ...prev,
       notes: value,
     }));
-    // console.log("Form data after textarea change:", formData);
+    
+    // Clear API error when user makes any changes
+    if (apiError) {
+      setApiError("");
+    }
+  };
+
+  // Added logic to reset errors when the modal is closed
+  const handleCloseModal = () => {
+    closeModal();
+    setErrors({
+      name: "",
+      numberOfApartments: "",
+      totalSurface: "",
+      address: "",
+      image: "",
+    });
+    setApiError("");
   };
 
   return (
@@ -128,21 +172,31 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
       </Button>
       <Modal
         isOpen={isOpen}
-        onClose={closeModal}
+        onClose={handleCloseModal} // Use the new handler to reset errors
         className="max-w-[584px] p-5 lg:p-10"
       >
-        <form onSubmit={(e) => e.preventDefault()}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
+        <form onSubmit={(e) => e.preventDefault()}>          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
             Project Information
           </h4>
-          {/* // gad hadi a chaka w khdem 3la l error ytjm3 f var wa7d
-          // replace with the correct error handling
-          // copier coller hadchy w diru f ga3 l modals */}
-          {errors.numberOfApartments && (
+          
+          {/* Show API errors */}
+          {apiError && (
             <div className="mb-4">
               <Alert 
                 title="Error"
-                message={errors.numberOfApartments}
+                message={apiError}
+                variant="error"
+                showLink={false}
+              />
+            </div>
+          )}
+          
+          {/* Show validation errors summary if any */}
+          {Object.values(errors).some(error => error) && (
+            <div className="mb-4">
+              <Alert 
+                title="Validation Error"
+                message="Please correct the errors in the form below."
                 variant="error"
                 showLink={false}
               />
@@ -150,14 +204,18 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
           )}
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            <div className="col-span-1">
-              <Label>Name <span className="text-red-500">*</span></Label>
+            <div className="col-span-1">              <Label>Name <span className="text-red-500">*</span></Label>
               <Input
                 name="name"
                 type="text"
                 placeholder="Project Name"
                 onChange={handleChange}
               />
+              {errors.name && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.name}
+                </p>
+              )}
             </div>
 
             <div className="col-span-1">
@@ -175,27 +233,30 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
               )}
             </div>
 
-            <div className="col-span-1">
-              <Label>Total surface <span className="text-red-500">*</span></Label>
+            <div className="col-span-1">              <Label>Total surface <span className="text-red-500">*</span></Label>
               <Input
                 name="totalSurface"
                 type="number"
                 placeholder="e.g. 1000 m²"
                 onChange={handleChange}
               />
+              {errors.totalSurface && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.totalSurface}
+                </p>
+              )}
             </div>
 
-            <div className="col-span-1">
-              <Label>Address <span className="text-red-500">*</span></Label>
+            <div className="col-span-1">              <Label>Address <span className="text-red-500">*</span></Label>
               <Input
-                name="address" // Fixed the field name
+                name="address"
                 type="text"
                 placeholder="e.g. 123 Main St"
                 onChange={handleChange}
               />
-              {errors.numberOfApartments && (
-                <p className="text-sm text-red-500">
-                  {errors.numberOfApartments}
+              {errors.address && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.address}
                 </p>
               )}
             </div>
@@ -208,6 +269,11 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
               {formData.image && (
                 <p className="mt-1 text-xs text-green-600">
                   File selected: {formData.image.name}
+                </p>
+              )}
+              {errors.image && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.image}
                 </p>
               )}
             </div>

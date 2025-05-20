@@ -1,35 +1,33 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import ComponentCard from "../../common/ComponentCard";
+import React, { useState } from "react";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
-import { API_URL } from "@/app/common/constants/api";
-import addApartments from "@/app/(admin)/properties/addApartments";
-import getProperties from "@/components/tables/DataTables/Projects/getProperties";
 import Select from "../../form/Select";
-
+import addAgents from "@/app/(admin)/agents/addAgents";
 
 export default function AddAgentModal() {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
   const [formData, setFormData] = useState({
-    floor: "",
-    number: "",
-    type: "",
-    area: "",
-    threeDViewUrl: "",
-    price: "",
-    status: "",
+    name: "",
+    email: "",
+    phoneNumber: "",
+    status: "ACTIVE",
     notes: "",
+    role: "AGENT",
+    password: "", // Will be hashed on the server
   });
 
   // State for validation errors
   const [errors, setErrors] = useState({
-    numberOfApartments: "",
+    name: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
   });
 
   // Update form field values
@@ -48,82 +46,70 @@ export default function AddAgentModal() {
   };
 
   const handleSave = async () => {
-    // Validation for numberOfApartments
-    // if (
-    //   !formData.numberOfApartments ||
-    //   isNaN(Number(formData.numberOfApartments)) ||
-    //   Number(formData.numberOfApartments) <= 0
-    // ) {
-    //   setErrors((prev) => ({
-    //     ...prev,
-    //     numberOfApartments: "Number of properties is required and must be a positive integer",
-    //   }));
-    //   return;
-    // }
+    // Validation
+    let valid = true;
+    const newErrors = { ...errors };
+    
+    if (!formData.name) {
+      newErrors.name = "Name is required";
+      valid = false;
+    }
+    
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Valid email is required";
+      valid = false;
+    }
+    
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = "Phone number is required";
+      valid = false;
+    }
+    
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+      valid = false;
+    }
+    
+    if (!valid) {
+      setErrors(newErrors);
+      return;
+    }
 
-    // const formDataToSend = new FormData();
-    // formDataToSend.append("name", formData.name);
-    // formDataToSend.append("numberOfApartments", formData.numberOfApartments);
-    // formDataToSend.append("note", formData.note);
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-    await addApartments(formDataToSend);
-    // console.log("Saving project with data:", formData);
-    // closeModal();
-    console.log("Saving project with data:", formData);
-    closeModal();
+    
+    try {
+      // Replace with your actual API call
+      await addAgents(formDataToSend);
+      console.log("Saving agent with data:", formData);
+      closeModal();
+    } catch (error) {
+      console.error("Error saving agent:", error);
+    }
   };
 
-  const [options, setOptions] = useState([
-  ]);
+  const statusOptions = [
+    { value: "ACTIVE", label: "Active" },
+    { value: "INACTIVE", label: "Inactive" },
+  ];
 
-  const type = [
-    { value: "APARTMENT", label: "Apartement" },
-    { value: "DUPLEX", label: "Duplax" },
-    { value: "VILLA", label: "Villa" },
-  ]
+  const roleOptions = [
+    { value: "AGENT", label: "Agent" },
+  ];
 
-  const status = [
-    { value: "AVAILABLE", label: "Available" },
-    { value: "RESERVED", label: "Reserved" },
-    { value: "SOLD", label: "Sold" },
-    { value: "CANCELLED", label: "Cancelled" },
-  ]
-
-
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await getProperties();
-        // Assuming response is an array of properties
-        const formattedOptions = response.map((property: any) => ({
-          value: property.id,
-          label: property.name,
-        }));
-        setOptions(formattedOptions);
-        console.log("Formatted options:", formattedOptions);
-      } catch (error) {
-        console.error("Error fetching properties:", error);
-      }
-    };
-
-    fetchProperties();
-  }
-  , []);
-  const handleSelectChange = (selectedValue: string, name:string) => {
-    console.log("Selected value:", selectedValue, name);
+  const handleSelectChange = (selectedValue: string, name: string) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: selectedValue, // Adjust the key based on the field being updated
+      [name]: selectedValue,
     }));
-  }
+  };
 
   return (
     <>
       <Button size="sm" onClick={openModal}>
-        Add Client
+        Add Agent
       </Button>
       <Modal
         isOpen={isOpen}
@@ -132,92 +118,71 @@ export default function AddAgentModal() {
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Project Information
+            Agent Information
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+            <div className="col-span-1 sm:col-span-2">
+              <Label>Name</Label>
+              <Input
+                name="name"
+                type="text"
+                placeholder="Full Name"
+                onChange={handleChange}
+              />
+              {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+            </div>
+
+            <div className="col-span-1 sm:col-span-2">
+              <Label>Email</Label>
+              <Input
+                name="email"
+                type="email"
+                placeholder="email@example.com"
+                onChange={handleChange}
+              />
+              {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+            </div>
+
+            <div className="col-span-1 sm:col-span-2">
+              <Label>Phone Number</Label>
+              <Input
+                name="phoneNumber"
+                type="tel"
+                placeholder="+1234567890"
+                onChange={handleChange}
+              />
+              {errors.phoneNumber && <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>}
+            </div>
+
+            <div className="col-span-1 sm:col-span-2">
+              <Label>Password</Label>
+              <Input
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                onChange={handleChange}
+              />
+              {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+            </div>
+
             <div className="col-span-1">
-              <Label>Project Id</Label>
+              <Label>Status</Label>
               <Select
-                name="id"
-                options={options}
-                placeholder="Select Option"
+                name="status"
+                options={statusOptions}
+                placeholder="Select Status"
                 onChange={(value, name) => handleSelectChange(value, name)}
                 className="dark:bg-dark-900"
               />
             </div>
 
-            <div className="col-span-1">
-              <Label>Floor</Label>
-              <Input
-                name="floor"
-                type="number"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="col-span-1">
-              <Label>Number</Label>
-              <Input
-                name="number"
-                type="number"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Type</Label>
-              <Select
-                name="type"
-                options={type}
-                placeholder="Type"
-                onChange={(value, name) => handleSelectChange(value, name)}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Area</Label>
-              <Input
-                name="area"
-                type="number"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>3D Link</Label>
-              <Input
-                name="threeDViewUrl"
-                type="text"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Price</Label>
-              <Input
-                name="price"
-                type="number"
-                placeholder="e.g. 10"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Status</Label>
-              <Select
-                options={status}
-                name="status"
-                placeholder=""
-                onChange={(value, name) => handleSelectChange(value, name)}
-              />
-            </div>
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
               <Input
                 name="notes"
                 type="text"
-                placeholder="Notes"
+                placeholder="Additional notes"
                 onChange={handleChange}
               />
             </div>
@@ -225,10 +190,10 @@ export default function AddAgentModal() {
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              Cancel
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Add Agent
             </Button>
           </div>
         </form>
