@@ -12,6 +12,7 @@ import { ArrowDownIcon, ArrowUpIcon } from "@/icons";
 import { getTopPerformingAgents } from "./agentsService";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 // Define the TypeScript interface for the agent data
 interface Agent {
@@ -46,6 +47,7 @@ export default function PerformingAgents() {
   useEffect(() => {
     fetchAgents();
   }, []);
+  const router = useRouter();
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -65,7 +67,10 @@ export default function PerformingAgents() {
           >
             {loading ? "Refreshing..." : "Refresh Data"}
           </Button>
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          <button
+            onClick={() => router.push("/agents")}
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+          >
             See all
           </button>
         </div>
@@ -101,12 +106,12 @@ export default function PerformingAgents() {
                 >
                   Agent
                 </TableCell>
-                <TableCell
+                {/* <TableCell
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
                   Project
-                </TableCell>
+                </TableCell> */}
                 <TableCell
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -128,7 +133,7 @@ export default function PerformingAgents() {
                 <TableRow key={agent.id} className="">
                   <TableCell className="py-3">
                     <div className="flex items-center gap-3">
-                      <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
+                      {/* <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
                         <Image
                           width={50}
                           height={50}
@@ -136,20 +141,20 @@ export default function PerformingAgents() {
                           className="h-[50px] w-[50px]"
                           alt={agent.name}
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                           {agent.name}
                         </p>
-                        <span className="text-gray-500 text-theme-xs dark:text-gray-400">
+                        {/* <span className="text-gray-500 text-theme-xs dark:text-gray-400">
                           {agent.level}
-                        </span>
+                        </span> */}
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  {/* <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {agent.project}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {agent.salesRevenue.toLocaleString("en-US", {
                       style: "currency",

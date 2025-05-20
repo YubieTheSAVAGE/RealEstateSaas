@@ -11,6 +11,7 @@ import {
 import Badge from "../ui/badge/Badge";
 import Image from "next/image";
 import { getRecentActivity } from "./activityService";
+import { useRouter } from "next/navigation";
 
 // Define the TypeScript interface for the apartment activity
 interface ApartmentActivity {
@@ -80,6 +81,8 @@ export default function RecentActivity() {
     }
   };
 
+  const router = useRouter();
+
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
@@ -87,8 +90,9 @@ export default function RecentActivity() {
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             Recent Activity
           </h3>
-        </div>        <div className="flex items-center gap-3">
-          <button 
+        </div>
+        <div className="flex items-center gap-3">
+          <button
             onClick={() => {
               setLoading(true);
               getRecentActivity(5)
@@ -116,7 +120,10 @@ export default function RecentActivity() {
             </svg>
             Refresh
           </button>
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          <button
+            onClick={() => router.push("/properties")}
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+          >
             See all
           </button>
         </div>
@@ -172,7 +179,7 @@ export default function RecentActivity() {
                 <TableRow key={activity.id} className="">
                   <TableCell className="py-3">
                     <div className="flex items-center gap-3">
-                      {activity.project.image && (
+                      {/* {activity.project.image && (
                         <div className="h-[50px] w-[50px] overflow-hidden rounded-md">                          <Image
                             width={50}
                             height={50}
@@ -181,7 +188,7 @@ export default function RecentActivity() {
                             alt={activity.project.name}
                           />
                         </div>
-                      )}
+                      )} */}
                       <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                           {activity.project.name}
@@ -201,18 +208,74 @@ export default function RecentActivity() {
                       currency: "MAD",
                     })}
                   </TableCell>
-                  <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                  <TableCell className=" py-4 font-normal text-gray-800 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     <Badge
-                      size="sm"
+                      variant="light"
                       color={
-                        mapStatus(activity.status) === "Sold"
+                        activity.status === "AVAILABLE"
                           ? "success"
-                          : mapStatus(activity.status) === "Reserved"
+                          : activity.status === "RESERVED"
                           ? "warning"
-                          : "light"
+                          : "error"
                       }
+                      size="sm"
                     >
-                      {mapStatus(activity.status)}
+                      {activity.status === "AVAILABLE" && (
+                        <span className="text-success-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {activity.status === "RESERVED" && (
+                        <span className="text-warning-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {activity.status === "SOLD" && (
+                        <span className="text-error-500">   
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                    // {activity.status.toLowerCase()}
+                      )}
+                      {activity.status.toLowerCase()}
                     </Badge>
                   </TableCell>
                 </TableRow>

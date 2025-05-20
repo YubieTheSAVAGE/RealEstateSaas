@@ -41,7 +41,7 @@ const navItems: NavItem[] = [
   {
     icon: <BiBuildings size="1.5em" />,
     name: "Projects",
-    path: "projects",
+    path: "/projects",
   },
   // {
   //   icon: <BiBuildings size="1.5em" />,
