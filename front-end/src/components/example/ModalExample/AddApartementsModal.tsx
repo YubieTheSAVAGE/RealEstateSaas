@@ -179,7 +179,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Area must be a positive number or required" },
       { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price must be a positive number or required" },
       { field: "status", test: (v: string) => !v, message: "Status is required" },
-      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Floor must be a positive number or required" },
+      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0, message: "Floor must be a positive number or required" },
       { field: "zone", test: (v: string) => !v, message: "Zone is required" },
       { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price per M² must be a positive number or required" },
     ];

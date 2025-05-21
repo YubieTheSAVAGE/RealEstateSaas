@@ -72,6 +72,7 @@ async function update(apartmentId, data) {
     err.statusCode = 404;
     throw err;
   }
+  const userId = parseInt(data.userId, 10) || null;
   const updated = await prisma.apartment.update({
     where: { id: apartmentId },
     data: {
@@ -85,6 +86,8 @@ async function update(apartmentId, data) {
       notes: data.notes,
       pricePerM2: parseFloat(data.pricePerM2),
       zone: data.zone,
+      userId: userId,
+      clientId: data.clientId ? parseInt(data.clientId, 10) : null,
     },
   });
   return updated;
@@ -125,6 +128,7 @@ async function assignToClient(apartmentId, clientId, user) {
   return updated;
 }
 
+<<<<<<< HEAD
 async function getApartmentById(apartmentId) {
   const apartment = await prisma.apartment.findUnique({
     where: { id: apartmentId },
@@ -132,13 +136,50 @@ async function getApartmentById(apartmentId) {
       project: true,
       client: true,
     },
+=======
+async function getUserApartements(user) {
+  return prisma.apartment.findMany({
+    where: { 
+      userId: user.id 
+    },
+    include: { 
+      client: true,
+      project: true
+    },
+  });
+}
+
+async function assignToUser(apartmentId, userId) {
+  const apartment = await prisma.apartment.findUnique({
+    where: { id: apartmentId },
+>>>>>>> d30cebfd3a821e30eee61858a0593cc15be2c5d6
   });
   if (!apartment) {
     const err = new Error("Apartment not found");
     err.statusCode = 404;
     throw err;
   }
+<<<<<<< HEAD
   return apartment;
+=======
+  
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    const err = new Error("User not found");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const updated = await prisma.apartment.update({
+    where: { id: apartmentId },
+    data: { userId },
+    include: {
+      user: true,
+      project: true,
+    },
+  });
+  return updated;
+>>>>>>> d30cebfd3a821e30eee61858a0593cc15be2c5d6
 }
 
 module.exports = {
@@ -148,6 +189,12 @@ module.exports = {
   update,
   remove,
   assignToClient,
+<<<<<<< HEAD
   getRecentActivity,
   getApartmentById,
+=======
+  getUserApartements,
+  getRecentActivity,
+  assignToUser,
+>>>>>>> d30cebfd3a821e30eee61858a0593cc15be2c5d6
 };

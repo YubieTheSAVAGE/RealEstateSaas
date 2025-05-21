@@ -24,6 +24,8 @@ type SortOrder = "asc" | "desc";
 
 import getApartements from "./getApartements";
 import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
+import DeleteModal from "@/components/example/ModalExample/DeleteModal";
+import { useRouter } from "next/navigation";
 
 interface PropertiesDataTable {
   projects: any[];
@@ -40,6 +42,7 @@ type ProjectData = {
   pricePerM2 ?: number;
   zone ?: string;
   etage ?: string;
+  client ?: []; 
 };
 
 export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: ProjectData[]; onRefresh?: () => void; }) {
@@ -48,6 +51,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   const [sortKey, setSortKey] = useState<SortKey>("status");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
     // Define the ProjectData type
 
   const type =
@@ -70,7 +74,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               project: item.project?.name || '', // Use optional chaining
               projectId: item.project?.id || '', // Use optional chaining
               type: item.type, // Set default or extract from your data
-              superficie: `${item.area || 0} units`,
+              superficie: `${item.area || 0} m²`, // Add fallback for area
               price: item.price || 0, // Add fallback for price
               status: item.status || 'Available',
               pricePerM2: item.pricePerM2 || 0,
@@ -80,6 +84,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               threeDViewUrl: item.threeDViewUrl || '',
               notes: item.notes || '',
               area:  item.area || 0,
+              client: item.client || [], // Add client data
           }));
           setApartementsData(formattedData);
       } else {
@@ -376,12 +381,13 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
-                      <button className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-600">
+                      <button
+                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-600"
+                         onClick={() => {router.push(`/properties/${item.id}`)}}
+                      >
                         <FaEye />
                       </button>
-                      <button className="text-gray-500 hover:text-success-500 dark:text-gray-400 dark:hover:text-success-500">
-                        <Md3dRotation />
-                      </button>
+                      <DeleteModal heading="Delete Property" description="Are you sure you want to delete this property?" />
                       {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
                       <EditPropertyModal
                         PropertyData={item}

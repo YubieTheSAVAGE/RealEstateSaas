@@ -30,7 +30,7 @@ module.exports = async function (fastify) {
     "/apartments/:apartmentId",
     {
       onRequest: [fastify.authenticate],
-      preHandler: [fastify.isAdmin],
+      preHandler: [fastify.isAgentOrAdmin],
     },
     controller.updateApartment
   );
@@ -58,5 +58,12 @@ module.exports = async function (fastify) {
       onRequest: [fastify.authenticate],
     },
     controller.assignApartment
+  );
+  fastify.get(
+    "/apartments/user",
+    {
+      onRequest: [fastify.authenticate],
+    },
+    controller.getAssignedApartment
   );
 };

@@ -6,28 +6,28 @@ export default function DefaultLinkExample() {
   return (
     <ComponentCard title="Colored Links">
       <div className="flex flex-col space-y-3">
-        <CustomLink href="/" variant="colored" color="primary">
+        <CustomLink href="/home" variant="colored" color="primary">
           Primary link
         </CustomLink>
-        <CustomLink href="/" variant="colored" color="secondary">
+        <CustomLink href="/home" variant="colored" color="secondary">
           Secondary link
         </CustomLink>
-        <CustomLink href="/" variant="colored" color="success">
+        <CustomLink href="/home" variant="colored" color="success">
           Success link
         </CustomLink>
-        <CustomLink href="/" variant="colored" color="danger">
+        <CustomLink href="/home" variant="colored" color="danger">
           Danger link
         </CustomLink>
-        <CustomLink href="/" variant="colored" color="warning">
+        <CustomLink href="/home" variant="colored" color="warning">
           Warning link
         </CustomLink>
-        <CustomLink href="/" variant="colored" color="info">
+        <CustomLink href="/home" variant="colored" color="info">
           Info link
         </CustomLink>
-        <CustomLink href="/" variant="colored" color="light">
+        <CustomLink href="/home" variant="colored" color="light">
           Light link
         </CustomLink>
-        <CustomLink href="/" variant="colored" color="dark">
+        <CustomLink href="/home" variant="colored" color="dark">
           Dark link
         </CustomLink>
       </div>

@@ -136,6 +136,7 @@ async function updateApartment(request, reply) {
       "notes",
       "pricePerM2",
       "zone",
+      "clientId"
     ];
     const data = {};
 
@@ -194,7 +195,24 @@ async function updateApartment(request, reply) {
     if (data.notes !== undefined && typeof data.notes !== "string") {
       return reply.code(400).send({ error: "notes must be a string" });
     }
-
+    let userId = null;
+    let client = null;
+    if (data.status == "SOLD")
+    {    
+      if (data.clientId) {
+        const clientId = parseInt(data.clientId, 10);
+        if (!isPositiveInt(clientId)) {
+          return reply
+            .code(400)
+            .send({ error: "clientId must be a positive integer" });
+        }
+        client = clientId;
+        await apartmentService.assignToClient(apartmentId, clientId, request.user);
+      }
+      userId = request.user.id;
+    }
+    console.log("userId", userId);
+    console.log("client", client);
     const updated = await apartmentService.update(apartmentId, {
       number : parseInt(data.number, 10),
       floor : parseInt(data.floor, 10),
@@ -207,7 +225,10 @@ async function updateApartment(request, reply) {
       pricePerM2: parseInt(data.pricePerM2, 10),
       image: uploadedImage,
       zone : data.zone,
+      userId: userId,
+      clientId: client,
     });
+
     // const updated = await apartmentService.update(apartmentId, data);
     return reply.send(updated);
   } catch (err) {
@@ -255,6 +276,7 @@ async function assignApartment(request, reply) {
   }
 }
 
+<<<<<<< HEAD
 async function getApartmentById(request, reply) {
   try {
     const apartmentId = parseInt(request.params.apartmentId, 10);
@@ -265,6 +287,34 @@ async function getApartmentById(request, reply) {
     }
     const apartment = await apartmentService.getApartmentById(apartmentId);
     return reply.send(apartment);
+=======
+async function getAssignedApartment(request, reply) {
+  try {
+    const assignedApartments = await apartmentService.getUserApartements(request.user);
+    return reply.send(assignedApartments);
+  } catch (err) {
+    request.log.error(err);
+    return reply.code(err.statusCode || 500).send({ error: err.message });
+  }
+}
+
+async function assignToUser(request, reply) {
+  try {
+    const apartmentId = parseInt(request.params.apartmentId, 10);
+    const userId = parseInt(request.body.userId, 10);
+
+    if (!isPositiveInt(apartmentId) || !isPositiveInt(userId)) {
+      return reply
+        .code(400)
+        .send({ error: "apartmentId and userId must be positive integers" });
+    }
+
+    const assigned = await apartmentService.assignToUser(
+      apartmentId,
+      userId
+    );
+    return reply.send(assigned);
+>>>>>>> d30cebfd3a821e30eee61858a0593cc15be2c5d6
   } catch (err) {
     request.log.error(err);
     return reply.code(err.statusCode || 500).send({ error: err.message });
@@ -278,5 +328,10 @@ module.exports = {
   updateApartment,
   deleteApartment,
   assignApartment,
+<<<<<<< HEAD
   getApartmentById,
+=======
+  getAssignedApartment,
+  assignToUser,
+>>>>>>> d30cebfd3a821e30eee61858a0593cc15be2c5d6
 };

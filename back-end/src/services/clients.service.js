@@ -13,6 +13,13 @@ async function findAllClients(user) {
           },
         },
       },
+      interestedApartments: {
+        include: {
+          project: {
+            select: { name: true },
+          },
+        },
+      },
     },
   });
 }
@@ -39,18 +46,71 @@ async function addNewClient(data, user) {
   if (existing) {
     throw new Error("Email already in use");
   }
+  
+  // Prepare data for client creation
+  const clientData = {
+    name: data.name,
+    email: data.email,
+    phoneNumber: data.phoneNumber,
+    status: data.status || "CLIENT",
+    notes: data.notes,
+    provenance: data.provenance,
+    createdById: user.id,
+  };
 
+  // Handle the apartment connection if an apartmentId is provided
+  if (data.apartmentId) {
+    clientData.apartments = {
+      connect: { id: parseInt(data.apartmentId) }
+    };
+  }
+
+  // Process interested apartments
+  if (data.interestedApartments) {
+    try {
+      const interestedApartments = JSON.parse(data.interestedApartments);
+      if (Array.isArray(interestedApartments) && interestedApartments.length > 0) {
+        clientData.interestedApartments = {
+          connect: interestedApartments.map(apt => ({ id: parseInt(apt.id) }))
+        };
+      }
+    } catch (err) {
+      console.error("Error parsing interestedApartments:", err);
+    }
+  }
+
+  // Process interested projects
+  if (data.interestedProjects) {
+    try {
+      const interestedProjects = JSON.parse(data.interestedProjects);
+      if (Array.isArray(interestedProjects) && interestedProjects.length > 0) {
+        clientData.interestedProjects = {
+          connect: interestedProjects.map(proj => ({ id: parseInt(proj.id) }))
+        };
+      }
+    } catch (err) {
+      console.error("Error parsing interestedProjects:", err);
+    }
+  }
+  
+  // Create client with all related data
   const client = await prisma.client.create({
-    data: {
-      name: data.name,
-      email: data.email,
-      phoneNumber: data.phoneNumber,
-      status: data.status || "CLIENT",
-      notes: data.notes,
-      provenance: data.provenance,
-      createdById: user.id,
-    },
+    data: clientData,
+    include: {
+      apartments: true,
+      interestedApartments: {
+        include: {
+          project: {
+            select: { id: true, name: true }
+          }
+        }
+      },
+      interestedProjects: {
+        select: { id: true, name: true }
+      }
+    }
   });
+  
   return client;
 }
 
@@ -80,7 +140,7 @@ async function updateClient(clientId, data, user) {
       throw err;
     }
   }
-
+  
   const updated = await prisma.client.update({
     where: { id: clientId },
     data: {
@@ -89,6 +149,10 @@ async function updateClient(clientId, data, user) {
       phoneNumber: data.phoneNumber,
       status: data.status,
       notes: data.notes,
+      provenance: data.provenance,
+      interestedApartments: data.apartmentId ? {
+        connect: { id: parseInt(data.apartmentId) }
+      } : undefined
     },
   });
   return updated;
