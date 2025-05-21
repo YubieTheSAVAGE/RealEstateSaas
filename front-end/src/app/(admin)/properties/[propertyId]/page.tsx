@@ -2,25 +2,26 @@
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
 import React, {useState, useEffect} from "react";
 import getApartmentsById from "../getApartmentsById";
+import PropertyDetails from "@/components/property/PropertyDetails";
 
-export default function ProjectPage({ params }: { params: { propertyId: string } }) {
-    const { propertyId } = params;
+export default function PropertyPage({ params }: { params: Promise<{ propertyId: string }> }) {
+    const { propertyId } = React.use(params);
     const threeLayerItems = [
         { label: "Home", href: "/" },
         { label: "Properties", href: "/properties" },
         { label: propertyId },
     ];
 
-    const [properties, setProperties] = useState<any>(null);
+    // const [properties, setProperties] = useState<any>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const result = await getApartmentsById(propertyId);
-            console.log("Property data:", result);
-            setProperties(result);
-        };
-        fetchData();
-    }, [propertyId]);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const result = await getApartmentsById(propertyId);
+    //         console.log("Property data:", result);
+    //         setProperties(result);
+    //     };
+    //     fetchData();
+    // }, [propertyId]);
 
     return (
         <>
@@ -34,7 +35,7 @@ export default function ProjectPage({ params }: { params: { propertyId: string }
                 <Breadcrumb items={threeLayerItems} variant="withIcon" />
             </div>
             <div className="">
-                
+                <PropertyDetails propertyId={propertyId} />
             </div>
         </>
     );

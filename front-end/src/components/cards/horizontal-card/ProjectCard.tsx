@@ -1,18 +1,12 @@
-import Link from "next/link";
 import { CardDescription, CardTitle } from "../../ui/card";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import 'react-photo-view/dist/react-photo-view.css';
 import PropertiesCategoryPieChart from "@/components/crm/PropertiesCategoryPieChart";
-import MonthlySalesBarChart from "@/components/charts/bar/MonthlySalesBarChart";
-import { Component, Delete } from "lucide-react";
-import ComponentCard from "@/components/common/ComponentCard";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
-import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 
 

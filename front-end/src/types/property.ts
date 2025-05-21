@@ -1,3 +1,5 @@
+import { Project } from "./project";
+
 export type PropertyType = "APARTMENT" | "DUPLEX" | "VILLA" | "STORE" | "LAND";
 export type ApartmentStatus = "AVAILABLE" | "RESERVED" | "SOLD";
 
@@ -17,4 +19,5 @@ export interface Property {
   projectId: number;
   clientId?: number | null;
   userId?: number | null;
+  project: Project;
 }
