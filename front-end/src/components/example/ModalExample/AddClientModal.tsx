@@ -7,35 +7,18 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
 import Select from "../../form/Select";
-import { X } from "lucide-react";
+import EmailContent from "@/components/email/EmailInbox/EmailContent";
+import { stat } from "fs";
+import { Notebook } from "lucide-react";
 import addClient from "@/app/(admin)/clients/addClient";
 import { Textarea } from "@/components/ui/textarea";
 import getProperties from "@/components/tables/DataTables/Projects/getProperties";
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements";
+import getApartements from "@/components/task/kanban/getTask";
+import MultiSelect from "@/components/form/MultiSelect";
 
 interface AddProjectModalProps {
   onClientAdded?: () => void; // Callback to refresh client list
-}
-
-// Define interfaces for type safety
-interface Property {
-  id: string;
-  name: string;
-}
-
-interface Apartment {
-  id: string;
-  name?: string;
-  number?: string;
-}
-
-interface SelectedProject {
-  projectId: string;
-  projectName: string;
-  apartments: {
-    id: string;
-    name: string;
-  }[];
 }
 
 export default function AddClientModal({ onClientAdded }: AddProjectModalProps) {
@@ -46,22 +29,16 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     name: "",
     email: "",
     phoneNumber: "",
-    status: "LEAD",
-    notes: "",
-    provenance: "",
+    status  : "LEAD",
+    notes : "",
+    provenance : "",
+    projectId : "",
+    apartmentId : [] as string[],
   });
-
-  // State for client interests (projects and apartments)
-  const [selectedProjects, setSelectedProjects] = useState<SelectedProject[]>([]);
-  const [currentProjectId, setCurrentProjectId] = useState("");
-  const [currentApartmentIds, setCurrentApartmentIds] = useState<string[]>([]);
 
   // State for validation errors
   const [errors, setErrors] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    provenance: "",
+    numberOfApartments: "",
   });
 
   // Update form field values
@@ -80,247 +57,122 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   };
 
   const handleSave = async () => {
-    // Validation
-    let valid = true;
-    const newErrors = { ...errors };
-    
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-      valid = false;
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-      valid = false;
-    }
-    
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required";
-      valid = false;
-    }
-    
-    if (!formData.provenance.trim()) {
-      newErrors.provenance = "Provenance is required";
-      valid = false;
-    }
-    
-    if (!valid) {
-      setErrors(newErrors);
-      return;
-    }
 
-    // Prepare data for submission
     const formDataToSend = new FormData();
-    
-    // Add basic client information
     Object.entries(formData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          formDataToSend.append(key, item);
+        });
+      } else {
+        formDataToSend.append(key, value);
+      }
     });
-    
-    // Add selected projects and apartments
-    if (selectedProjects.length > 0) {
-      // Collect all apartment IDs
-      const apartmentIds = selectedProjects.flatMap(project => 
-        project.apartments.map(apt => apt.id)
-      );
-      
-      // If there are selected apartments, add the first one as the primary apartmentId
-      if (apartmentIds.length > 0) {
-        formDataToSend.append('apartmentId', apartmentIds[0]);
-      }
-      
-      // Add projects and all apartments as JSON strings for processing on the backend
-      formDataToSend.append('interestedProjects', JSON.stringify(
-        selectedProjects.map(p => ({ 
-          id: p.projectId, 
-          name: p.projectName 
-        }))
-      ));
-      
-      formDataToSend.append('interestedApartments', JSON.stringify(
-        selectedProjects.flatMap(p => 
-          p.apartments.map(apt => ({
-            id: apt.id,
-            name: apt.name,
-            projectId: p.projectId
-          }))
-        )
-      ));
-    }
-
     console.log("Form data to send:", formDataToSend);
-    
-    try {
-      await addClient(formDataToSend);
-      if (onClientAdded) {
-        onClientAdded(); // Call the refresh callback to update the client list
-      }
-      closeModal();
-    } catch (error) {
-      console.error("Error adding client:", error);
+    await addClient(formDataToSend);
+    if (onClientAdded) {
+      onClientAdded(); // Call the refresh callback to update the client list
     }
+    // console.log("Saving project with data:", formData);
+    // closeModal();
+    console.log("Saving project with data:", formData);
+    closeModal();
   };
 
-  const [projectOptions, setProjectOptions] = useState<{ value: string; label: string }[]>([]);
-  const [apartmentOptions, setApartmentOptions] = useState<{ value: string; label: string }[]>([]);
-  const [projectsMap, setProjectsMap] = useState<Map<string, Property>>(new Map());
+    const [options, setOptions] = useState([
+    ]);
 
-  const status = [
-    { value: "CLIENT", label: "Client" },
-    { value: "LEAD", label: "Lead" },
-  ]
+    const status = [
+      { value: "CLIENT", label: "Client" },
+      { value: "LEAD", label: "Lead" },
+    ]
 
-  // Fetch projects on component mount
-  useEffect(() => {
-    const fetchProperties = async () => {
+    useEffect(() => {
+      const fetchProperties = async () => {
+        try {
+          const response = await getProperties();
+          // Assuming response is an array of properties
+          const formattedOptions = response.map((property: any) => ({
+            value: property.id,
+            label: property.name,
+          }));
+          setOptions(formattedOptions);
+          console.log("Formatted options:", formattedOptions);
+        } catch (error) {
+          console.error("Error fetching properties:", error);
+        }
+      };
+  
+      fetchProperties();
+    }
+    , []);
+
+    // State for storing apartment options
+    const [apartmentOptions, setApartmentOptions] = useState([]);
+
+    // Function to fetch apartments for a specific project
+    const fetchApartmentsForProject = async (projectId: string) => {
       try {
-        const response = await getProperties();
-        // Create a map of project IDs to project objects for easy lookup
-        const projectMap = new Map();
-        response.forEach((property: Property) => {
-          projectMap.set(property.id, property);
-        });
-        setProjectsMap(projectMap);
-        
-        // Format options for Select component
-        const formattedOptions = response.map((property: Property) => ({
-          value: property.id,
-          label: property.name,
+        console.log("Fetching apartments for project ID:", projectId);
+        // Assuming you have an API endpoint for fetching apartments by project ID
+        // const response = await fetch(`/api/projects/${projectId}/apartments`);
+        const data = await getProjectApartements(projectId);
+
+        const formattedOptions = data.map((apartment: any) => ({
+          value: apartment.id,
+          text: apartment.name || `Apartment ${apartment.number || apartment.id}`,
         }));
-        setProjectOptions(formattedOptions);
+        
+        setApartmentOptions(formattedOptions);
+
       } catch (error) {
-        console.error("Error fetching properties:", error);
+        console.error("Error fetching apartments:", error);
+        setApartmentOptions([]);
       }
     };
 
-    fetchProperties();
-  }, []);
-
-  // Function to fetch apartments for a specific project
-  const fetchApartmentsForProject = async (projectId: string) => {
-    if (!projectId) return;
-    
-    try {
-      console.log("Fetching apartments for project ID:", projectId);
-      const data = await getProjectApartements(projectId);
-
-      const formattedOptions = data.map((apartment: Apartment) => ({
-        value: apartment.id,
-        label: apartment.name || `Apartment ${apartment.number || apartment.id}`,
-      }));
-      
-      setApartmentOptions(formattedOptions);
-    } catch (error) {
-      console.error("Error fetching apartments:", error);
-      setApartmentOptions([]);
-    }
-  };
-
-  // Handle project selection
-  const handleProjectSelect = (value: string, name: string) => {
-    if (value) {
-      setCurrentProjectId(value);
-      fetchApartmentsForProject(value);
-    }
-  };
-
-  // Handle apartment selection
-  const handleApartmentSelect = (value: string, name: string) => {
-    if (value) {
-      // Clear any previously selected apartment IDs to implement single selection
-      // Comment this line out to enable multi-select
-      // setCurrentApartmentIds([]);
-      
-      // Add apartment to current selection if not already added
-      if (!currentApartmentIds.includes(value)) {
-        setCurrentApartmentIds(prev => [...prev, value]);
-      }
-    }
-  };
-
-  // Add currently selected project and apartments to the selectedProjects list
-  const handleAddProjectInterest = () => {
-    if (!currentProjectId || currentApartmentIds.length === 0) return;
-    
-    const project = projectsMap.get(currentProjectId);
-    if (!project) return;
-    
-    // Get apartment details for selected apartment IDs
-    const selectedApts = currentApartmentIds.map(id => {
-      const apt = apartmentOptions.find(opt => opt.value === id);
-      return {
-        id,
-        name: apt ? apt.label : `Apartment ${id}`
-      };
-    });
-    
-    // Check if this project is already in the list
-    const existingProjectIndex = selectedProjects.findIndex(
-      p => p.projectId === currentProjectId
-    );
-    
-    if (existingProjectIndex >= 0) {
-      // Update existing project
-      const updatedProjects = [...selectedProjects];
-      
-      // Add only new apartments
-      const existingAptIds = new Set(updatedProjects[existingProjectIndex].apartments.map(a => a.id));
-      const newApts = selectedApts.filter(apt => !existingAptIds.has(apt.id));
-      
-      updatedProjects[existingProjectIndex] = {
-        ...updatedProjects[existingProjectIndex],
-        apartments: [...updatedProjects[existingProjectIndex].apartments, ...newApts]
-      };
-      
-      setSelectedProjects(updatedProjects);
-    } else {
-      // Add as new project
-      setSelectedProjects(prev => [
+    const handleMultiSelectChange = (selected: string[]) => {
+      console.log("Selected apartments:", selected);
+      setFormData((prev) => ({
         ...prev,
-        {
-          projectId: currentProjectId,
-          projectName: project.name,
-          apartments: selectedApts
-        }
-      ]);
+        apartmentId: [...prev.apartmentId, ...selected.filter(id => !prev.apartmentId.includes(id))], // Add new values to existing ones
+      }));
     }
-    
-    // Reset current apartment selection
-    setCurrentApartmentIds([]);
-  };
 
-  // Remove a project from the selected list
-  const handleRemoveProject = (projectId: string) => {
-    setSelectedProjects(prev => prev.filter(p => p.projectId !== projectId));
-  };
+    // Update apartments when project changes
+    useEffect(() => {
+      if (formData.projectId) {
+        fetchApartmentsForProject(formData.projectId);
+      } else {
+        setApartmentOptions([]);
+      }
+    }, [formData.projectId]);
 
-  // Remove an apartment from a project
-  const handleRemoveApartment = (projectId: string, apartmentId: string) => {
-    setSelectedProjects(prev => 
-      prev.map(p => {
-        if (p.projectId === projectId) {
-          // Remove the apartment
-          const updatedApartments = p.apartments.filter(a => a.id !== apartmentId);
-          
-          // If no apartments left, remove the whole project
-          if (updatedApartments.length === 0) {
-            return null;
-          }
-          
-          return {
-            ...p,
-            apartments: updatedApartments
-          };
-        }
-        return p;
-      }).filter(Boolean) as SelectedProject[]
-    );
-  };
 
-  const handleSelectChange = (selectedValue: string, name: string) => {
+  // useEffect(() => {
+  //   const fetchProperties = async () => {
+  //     try {
+  //       const response = await getProperties();
+  //       // Assuming response is an array of properties
+  //       const formattedOptions = response.map((property: any) => ({
+  //         value: property.id,
+  //         label: property.name,
+  //       }));
+  //       setOptions(formattedOptions);
+  //       console.log("Formatted options:", formattedOptions);
+  //     } catch (error) {
+  //       console.error("Error fetching properties:", error);
+  //     }
+  //   };
+
+  //   fetchProperties();
+  // }
+  // , []);
+  const handleSelectChange = (selectedValue: string, name:string) => {
+    console.log("Selected value:", selectedValue, name);
     setFormData((prev) => ({
       ...prev,
-      [name]: selectedValue,
+      [name]: selectedValue, // Adjust the key based on the field being updated
     }));
   }
 
@@ -329,6 +181,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+
+    // Clear errors when the user starts typing
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   }
 
@@ -340,7 +198,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
-        className="max-w-[784px] p-5 lg:p-10"
+        className="max-w-[584px] p-5 lg:p-10"
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
@@ -356,7 +214,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 placeholder="e.g. John Doe"
                 onChange={handleChange}
               />
-              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
             </div>
             <div className="col-span-1">
               <Label>Status <span className="text-red-500">*</span></Label>
@@ -369,14 +226,32 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               />
             </div>
             <div className="col-span-1">
-              <Label>Email <span className="text-red-500">*</span></Label>
+              <Label>Project <span className="text-red-500">*</span></Label>
+              <Select
+                options={options}
+                name="projectId"
+                placeholder=""
+                onChange={(value, name) => handleSelectChange(value, name)}
+              />
+            </div>
+            {formData.projectId && (
+              <div className="col-span-1">
+                <Label>Apartments<span className="text-red-500">*</span></Label>
+                <MultiSelect
+                  label="Select Apartments"
+                  options={apartmentOptions}
+                  onChange={(selected) => handleMultiSelectChange(selected)}
+                />
+              </div>
+            )}
+            <div className="col-span-1">
+              <Label>Email</Label>
               <Input
                 name="email"
                 type="text"
                 placeholder="e.g. john.doe@example.com"
                 onChange={handleChange}
               />
-              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
 
             <div className="col-span-1">
@@ -387,7 +262,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 placeholder="e.g. 123-456-7890"
                 onChange={handleChange}
               />
-              {errors.phoneNumber && <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>}
             </div>
             
             <div className="col-span-1 sm:col-span-2">
@@ -398,109 +272,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 placeholder="e.g. Google, Referral"
                 onChange={handleChange}
               />
-              {errors.provenance && <p className="mt-1 text-sm text-red-500">{errors.provenance}</p>}
             </div>
-            
-            <div className="col-span-1 sm:col-span-2">
-              <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">
-                Interested Properties
-              </h5>
-              
-              <div className="p-4 mb-4 border rounded-lg border-gray-200 dark:border-gray-700">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="col-span-1">
-                    <Label>Select Project</Label>
-                    <Select
-                      options={projectOptions}
-                      name="projectId"
-                      placeholder="Select a project"
-                      onChange={handleProjectSelect}
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <Label>Select Apartment(s)</Label>
-                    <Select
-                      options={apartmentOptions}
-                      name="apartmentId"
-                      placeholder="Select an apartment"
-                      onChange={handleApartmentSelect}
-                    />
-                  </div>
-                </div>
-                
-                {currentApartmentIds.length > 0 && (
-                  <div className="mt-3">
-                    <p className="mb-2 text-sm font-medium text-gray-600 dark:text-gray-400">
-                      Currently selected apartments:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {currentApartmentIds.map(id => {
-                        const apt = apartmentOptions.find((a: any) => a.value === id);
-                        return apt ? (
-                          <span key={id} className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-800">
-                            {apt.label}
-                          </span>
-                        ) : null;
-                      })}
-                    </div>
-                  </div>
-                )}
-                
-                <div className="flex justify-end mt-4">
-                  <Button 
-                    size="sm" 
-                    onClick={handleAddProjectInterest}
-                    disabled={!currentProjectId || currentApartmentIds.length === 0}
-                  >
-                    Add to Interests
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Display selected projects and apartments */}
-              {selectedProjects.length > 0 && (
-                <div className="p-4 mt-2 border rounded-lg border-gray-200 dark:border-gray-700">
-                  <h6 className="mb-3 font-medium text-gray-800 dark:text-white/90">
-                    Client's Property Interests:
-                  </h6>
-                  
-                  <div className="space-y-3">
-                    {selectedProjects.map(project => (
-                      <div key={project.projectId} className="p-3 border rounded-md border-gray-200 dark:border-gray-700">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-800 dark:text-white/90">
-                            {project.projectName}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveProject(project.projectId)}
-                            className="p-1 text-gray-500 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-2">
-                          {project.apartments.map(apt => (
-                            <div key={apt.id} className="flex items-center px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-800">
-                              <span>{apt.name}</span>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveApartment(project.projectId, apt.id)}
-                                className="ml-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                              >
-                                <X size={12} />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
               <Textarea

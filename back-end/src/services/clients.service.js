@@ -56,40 +56,27 @@ async function addNewClient(data, user) {
     notes: data.notes,
     provenance: data.provenance,
     createdById: user.id,
+
   };
 
   // Handle the apartment connection if an apartmentId is provided
-  if (data.apartmentId) {
-    clientData.apartments = {
-      connect: { id: parseInt(data.apartmentId) }
-    };
-  }
+  // if (data.apartmentId) {
+  //   clientData.apartments = {
+  //     connect: { id: parseInt(data.apartmentId) }
+  //   };
+  // }
 
   // Process interested apartments
   if (data.interestedApartments) {
     try {
-      const interestedApartments = JSON.parse(data.interestedApartments);
+      const interestedApartments = data.interestedApartments;
       if (Array.isArray(interestedApartments) && interestedApartments.length > 0) {
         clientData.interestedApartments = {
-          connect: interestedApartments.map(apt => ({ id: parseInt(apt.id) }))
+          connect: interestedApartments.map(apt => ({ id: parseInt(apt) }))
         };
       }
     } catch (err) {
       console.error("Error parsing interestedApartments:", err);
-    }
-  }
-
-  // Process interested projects
-  if (data.interestedProjects) {
-    try {
-      const interestedProjects = JSON.parse(data.interestedProjects);
-      if (Array.isArray(interestedProjects) && interestedProjects.length > 0) {
-        clientData.interestedProjects = {
-          connect: interestedProjects.map(proj => ({ id: parseInt(proj.id) }))
-        };
-      }
-    } catch (err) {
-      console.error("Error parsing interestedProjects:", err);
     }
   }
   
@@ -105,9 +92,6 @@ async function addNewClient(data, user) {
           }
         }
       },
-      interestedProjects: {
-        select: { id: true, name: true }
-      }
     }
   });
   

@@ -1,3 +1,4 @@
+// const { setMonthlyTarget } = require("../controllers/activity.controller");
 const prisma = require("../utils/prisma");
 
 async function getAllApartments() {
@@ -57,7 +58,10 @@ async function create(projectId, data) {
       image: data.image,
       project: {
         connect: { id: projectId }
-      }
+      },
+      client: {
+        connect: { id: data.clientId }
+      },
     },
   });
   return apartment;
@@ -85,6 +89,9 @@ async function update(apartmentId, data) {
       notes: data.notes,
       pricePerM2: parseFloat(data.pricePerM2),
       zone: data.zone,
+      client: {
+        connect: { id: data.clientId }
+      },
     },
   });
   return updated;
@@ -141,6 +148,31 @@ async function getApartmentById(apartmentId) {
   return apartment;
 }
 
+async function getMonthlyTarget() {
+  const target = await prisma.monthlyTarget.findFirst({
+    orderBy: { month: 'desc' },
+  });
+  return target;
+}
+
+async function setMonthlyTarget(month, year, target) {
+  const existing = await prisma.monthlyTarget.findFirst({
+    where: { month: String(month), year: Number(year) },
+  });
+  if (existing) {
+    const updated = await prisma.monthlyTarget.update({
+      where: { id: existing.id },
+      data: { target: Number(target) },
+    });
+    return updated;
+  } else {
+    const newTarget = await prisma.monthlyTarget.create({
+      data: { month: String(month), year: Number(year), target: Number(target) },
+    });
+    return newTarget;
+  }
+}
+
 module.exports = {
   getAllApartments,
   listByProject,
@@ -150,4 +182,6 @@ module.exports = {
   assignToClient,
   getRecentActivity,
   getApartmentById,
+  getMonthlyTarget,
+  setMonthlyTarget,
 };

@@ -27,7 +27,7 @@ export async function getRecentActivity(limit = 5) {
       const errorText = await res.text();
       console.error(`Error fetching activity: Status ${res.status} - ${res.statusText}`);
       console.error(`Response body: ${errorText}`);
-      throw new Error(`Failed to fetch activity: ${res.status} ${res.statusText}`);
+      return [];
     }
     
     const data = await res.json();

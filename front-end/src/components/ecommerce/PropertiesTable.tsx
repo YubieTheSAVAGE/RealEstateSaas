@@ -81,20 +81,12 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
                 Status
               </TableCell>
             </TableRow>
-          </TableHeader>          {/* Table Body */}          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+          </TableHeader>
+          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {ProjectDetails && Array.isArray(ProjectDetails) && ProjectDetails.length > 0 ? (
               ProjectDetails.map((product : any) => (                <TableRow key={product.id} className="">
                   <TableCell className="py-3">
                     <div className="flex items-center gap-3">
-                      {/* <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-                        <Image
-                          width={50}
-                          height={50}
-                          src={product.imageUrl || product.image || "/images/product/product-placeholder.jpg"}
-                          className="h-[50px] w-[50px]"
-                          alt={product.title || product.name || "Property"}
-                        />
-                      </div> */}
                       <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                           {(type[product.type as keyof typeof type] || product.name || product.title) + " " + (product.number || "") +  " (" + product.floor + ")"}

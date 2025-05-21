@@ -12,23 +12,13 @@ export default async function addClient(formData: FormData)
         const token = cookieStore.get(AUTHENTICATION_COOKIE)?.value;
         const res = await fetch(`${API_URL}/api/clients`, {
             method: "POST",
-            headers: { "Content-Type": "application/json",  "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
-            body: JSON.stringify({
-                name: formData.get("name"),
-                email: formData.get("email"),
-                phoneNumber: formData.get("phoneNumber"),
-                status: formData.get("status"),
-                notes: formData.get("notes"),
-                provenance: formData.get("provenance"),
-                apartmentId: formData.get("apartmentId"),
-            }),
+            headers: {"Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
+            body: formData,
         });
 
         if (!res.ok) {
             console.log("Error adding client:", res);
         }
-
-        console.log("Client added successfully:", data);
     } finally {
     }
 };

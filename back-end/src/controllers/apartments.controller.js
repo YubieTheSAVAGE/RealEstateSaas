@@ -3,6 +3,7 @@ const { isPositiveInt } = require("../utils/helpers");
 
 const path = require("path");
 const fs = require("fs");
+const { client } = require("../utils/prisma");
 
 const ALLOWED_TYPES = ["APARTMENT", "DUPLEX", "VILLA", "STORE", "LAND"];
 const ALLOWED_STATUSES = ["AVAILABLE", "RESERVED", "SOLD", "CANCELLED"];
@@ -43,7 +44,7 @@ async function createApartment(request, reply) {
         .send({ error: "projectId must be a positive integer" });
     }
 
-    const { number, floor, type, area, threeDViewUrl, price, status, notes, pricePerM2, zone, image } =
+    const { number, floor, type, area, threeDViewUrl, price, status, notes, pricePerM2, zone, image, clientId } =
       request.body;
 
     if (typeof type !== "string" || !ALLOWED_TYPES.includes(type)) {
@@ -107,6 +108,7 @@ async function createApartment(request, reply) {
       notes,
       pricePerM2: parseInt(pricePerM2, 10),
       image: uploadedImage,
+      clientId: parseInt(clientId, 10),
       zone,
     });
     return reply.code(201).send(newApartment);
@@ -136,6 +138,7 @@ async function updateApartment(request, reply) {
       "notes",
       "pricePerM2",
       "zone",
+      "clientId",
     ];
     const data = {};
 
@@ -207,6 +210,7 @@ async function updateApartment(request, reply) {
       pricePerM2: parseInt(data.pricePerM2, 10),
       image: uploadedImage,
       zone : data.zone,
+      clientId: parseInt(data.clientId, 10),
     });
     // const updated = await apartmentService.update(apartmentId, data);
     return reply.send(updated);

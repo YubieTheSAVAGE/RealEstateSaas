@@ -13,6 +13,7 @@ import Select from "../../form/Select";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import { imageConfigDefault } from "next/dist/shared/lib/image-config";
+import getClient from "@/components/tables/DataTables/Clients/getClient";
 
 interface AddPropertyModalProps {
   onApartementsAdded?: () => void; // Callback to refresh project list
@@ -34,6 +35,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     pricePerM2 : "",
     image: null as File | null, // Store as File object instead of string
     zone : "",
+    clientId: "",
   });
 
   // State for validation errors
@@ -48,6 +50,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     pricePerM2: "",
     zone: "",
     image: "",
+    clientId: "",
   });
 
   // Update form field values
@@ -82,6 +85,16 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     { value: "SOLD", label: "Sold" },
   ]
 
+  const [clientOptions, setClientOptions] = useState([]);
+  
+  const fetchClients = async () => {
+    const clients = await getClient();
+    const formattedOptions = clients.map((client: any) => ({
+      value: client.id,
+      label: client.name,
+    }));
+    setClientOptions(formattedOptions);
+  }
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -103,7 +116,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   }
   , []);
   const handleSelectChange = (selectedValue: string, name:string) => {
-    console.log("Selected value:", selectedValue, name);
+    if (name == "status" && selectedValue == "SOLD") {
+      fetchClients();
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: selectedValue, // Adjust the key based on the field being updated
@@ -126,6 +141,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       pricePerM2 : "",
       image: null,
       zone : "",
+      clientId: "",
     });
     setErrors({
       id: "",
@@ -138,6 +154,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       pricePerM2: "",
       zone: "",
       image: "",
+      clientId: "",
     });
     closeModal();
   }
@@ -375,7 +392,24 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
-
+            {
+              formData.status === "SOLD" && (
+                <div className="col-span-1">
+                  <Label>Client <span className="text-red-500">*</span></Label>
+                  <Select
+                    name="clientId"
+                    options={clientOptions}
+                    placeholder="Select Option"
+                    onChange={(value, name) => handleSelectChange(value, name)}
+                    className="dark:bg-dark-900"
+                  />
+                  {errors.clientId && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.clientId}
+                    </p>
+                  )}
+                </div>
+              )}
             <div className="col-span-2">
               <Label>Plan</Label>
               <FileInput
