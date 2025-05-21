@@ -33,7 +33,7 @@ const CardTitle: React.FC<CardTitleProps> = ({ children }) => {
 
 // CardDescription Component
 const CardDescription: React.FC<CardDescriptionProps> = ({ children }) => {
-  return <p className="text-sm text-gray-500 dark:text-gray-400">{children}</p>;
+  return <div className="text-sm text-gray-500 dark:text-gray-400">{children}</div>;
 };
 
 // Named exports for better flexibility

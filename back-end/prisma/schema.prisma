@@ -49,6 +49,7 @@ model User {
   passwordHash  String
 
   clients      Client[] 
+  apartments   Apartment[] @relation("UserApartments")
 }
 
 model Client {
@@ -62,6 +63,8 @@ model Client {
 
   createdBy    User     @relation(fields: [createdById], references: [id])
   createdById  Int
+
+  interestedApartments Apartment[] @relation("InterestedApartments")
 
   apartments   Apartment[]
 }
@@ -91,13 +94,15 @@ model Apartment {
   image         String?
   status        ApartmentStatus   @default(AVAILABLE)
   notes         String?
-
+  
   project       Project           @relation(fields: [projectId], references: [id])
   projectId     Int
 
   client        Client?           @relation(fields: [clientId], references: [id])
   clientId      Int?
-  updatedAt   DateTime @updatedAt
+  user      User? @relation("UserApartments", fields: [userId], references: [id])  
+  userId    Int?   
+  interestedClients Client[] @relation("InterestedApartments")
 }
 
 model Task {

@@ -7,12 +7,15 @@ import { useModal } from "@/hooks/useModal";
 import { TrashBinIcon } from "@/icons";
 import { on } from "events";
 import { Item } from "@radix-ui/react-select";
+import { Dropdown } from "@/components/ui/dropdown/Dropdown";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 interface DeleteModalProps {
   onDelete?: (id: string) => void; // Callback to refresh project list
   itemId?: string; // ID of the item to be deleted
   heading: string;
   description: string;
+  details?: boolean;
 }
 
 
@@ -21,6 +24,7 @@ export default function DeleteModal( {
   heading,
   description,
   itemId, // ID of the item to be deleted
+  details = false, // Optional prop to determine if it's a details page
 }: DeleteModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
   const handleDelete = () => {
@@ -31,9 +35,15 @@ export default function DeleteModal( {
   };
   return (
     <>
-      <span className="text-gray-500 hover:text-error-600 dark:text-gray-400 dark:hover:text-error-500 cursor-pointer">
-        <TrashBinIcon onClick={openModal}/>
-      </span>
+      {details ? (
+        <DropdownItem onItemClick={openModal}>
+          Delete 
+        </DropdownItem>
+      ) : (
+        <span className="text-gray-500 hover:text-error-600 dark:text-gray-400 dark:hover:text-error-500 cursor-pointer">
+          <TrashBinIcon onClick={openModal}/>
+        </span>
+      )}
       <Modal
         isOpen={isOpen}
         onClose={closeModal}

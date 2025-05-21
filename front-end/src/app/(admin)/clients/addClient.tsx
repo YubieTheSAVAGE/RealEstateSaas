@@ -20,23 +20,13 @@ export default async function addClient(formData: FormData)
                 status: formData.get("status"),
                 notes: formData.get("notes"),
                 provenance: formData.get("provenance"),
+                apartmentId: formData.get("apartmentId"),
             }),
         });
 
         if (!res.ok) {
             console.log("Error adding client:", res);
         }
-
-        const data = await res.json();
-        console.log(formData.get("apartmentId"), data.id);
-        const assignRequest = await fetch(`${API_URL}/api/apartments/${formData.get("apartmentId")}/assign`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json",  "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
-            body: JSON.stringify({
-                clientId: data.id,
-            }),
-        });
-        console.log("Assign request response:", assignRequest);
 
         console.log("Client added successfully:", data);
     } finally {

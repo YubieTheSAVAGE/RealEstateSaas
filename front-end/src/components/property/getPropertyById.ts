@@ -10,7 +10,7 @@ export default async function getProjectById(id : string) {
         const cookieStore = await cookies();
         const token = cookieStore.get(AUTHENTICATION_COOKIE)?.value;
 
-        const res = await fetch(`${API_URL}/api/projects/${id}`, {
+        const res = await fetch(`${API_URL}/api/property/${id}`, {
             method: "GET",
             headers: {
             "Authorization": `Bearer ${token}`

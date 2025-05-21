@@ -36,7 +36,7 @@ async function getClientById(request, reply) {
 
 async function createClient(request, reply) {
   try {
-    const { name, email, phoneNumber, status, notes, provenance } = request.body;
+    const { name, email, phoneNumber, status, notes, provenance, apartmentId } = request.body;
 
     if (typeof name !== "string" || name.trim() === "") {
       return reply
@@ -69,9 +69,18 @@ async function createClient(request, reply) {
     // if (notes !== undefined && typeof notes !== "string") {
     //   return reply.code(400).send({ error: "notes must be a string" });
     // }
+    if (apartmentId !== undefined) {
+      const parsedApartmentId = parseInt(apartmentId, 10);
+      if (!isPositiveInt(parsedApartmentId)) {
+        return reply
+          .code(400)
+          .send({ error: "apartmentId must be a positive integer" });
+      }
+    }
+  
 
     const client = await clientService.addNewClient(
-      { name: name.trim(), email, phoneNumber, status: clientStatus, notes, provenance },
+      { name: name.trim(), email, phoneNumber, status: clientStatus, notes, provenance, apartmentId},
       request.user
     );
     return reply.code(201).send(client);

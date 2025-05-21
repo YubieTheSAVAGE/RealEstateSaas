@@ -12,6 +12,7 @@ import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import Alert from "@/components/ui/alert/Alert";
 import { PencilIcon } from "@/icons";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 interface EditProjectModalProps {
   ProjectData?: any; // Add the type for ProjectData if available
@@ -154,13 +155,9 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
   return (
     <>
       {details ? (
-        <button
-          onClick={openModal}
-          type="button"
-            className="inline-flex items-center gap-2 px-4 py-3 mt-4 text-sm font-medium text-white rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600"
-          >
-            Edit
-          </button>
+        <DropdownItem onItemClick={openModal}>
+          Edit
+        </DropdownItem>
           ) : (
       <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
         <PencilIcon onClick={openModal} />
@@ -169,7 +166,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
-        className="max-w-[584px] p-5 lg:p-10"
+        className="max-w-[584px] p-5 lg:p-10 z-99999"
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-2 text-lg font-medium text-gray-800 dark:text-white/90">

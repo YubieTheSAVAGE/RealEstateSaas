@@ -1,51 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UnAuthenticatedRoutes } from "./app/common/constants/routes";
+import { UnAuthenticatedRoutes, AgentRoutes } from "./app/common/constants/routes";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
 import { decodeToken } from "./utils/decodeToken";
 
-// function checkRoleAccess(pathname: string, role: string): boolean {
-//   // console.log('role : ', role, '\n\n');
-//   if (role === 'Admin') {
-//     return true;
-//   } else if (role === 'User') {
-//     return UserRoutes.some(route => pathname.startsWith(route));
-//   } else if (role === 'CallCenter') {
-//     return CallCenterRoutes.some(route => pathname.startsWith(route));
-//   } else if (role === 'DeliveryMan') {
-//     return DeliveryManRoutes.some(route => pathname.startsWith(route));
-//   }
-//   return false;
-// }
+function checkRoleAccess(pathname: string, role: string): boolean {
+  if (role === 'ADMIN') {
+    return true;
+  } else if (role === 'AGENT') {
+    console.log(`User role: ${role}`);
+    console.log(`Requested path: ${pathname}`);
+    console.log(`Agent routes: ${AgentRoutes}`);
+    return AgentRoutes.some(route => pathname.startsWith(route));
+  }
+  return false;
+}
 
 function isAuthenticated(request: NextRequest): boolean {
   const token = request.cookies.get(AUTHENTICATION_COOKIE)?.value;
-  // console.log('middleware token : ', token, '\n\n');
   return !!token;
 }
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const isUnauthenticatedRoute = UnAuthenticatedRoutes.some((route: { path: string }) => path.startsWith(route.path));
+  
+  // Allow access to the unauthorized page
+  if (path === '/unauthorized') {
+    return NextResponse.next();
+  }
 
+  // Check if the route is unauthenticated
+  const isUnauthenticatedRoute = UnAuthenticatedRoutes.some((route: { path: string }) => path.startsWith(route.path));
+  
+  // Handle unauthenticated users
   if (!isAuthenticated(request)) {
-    if (!isUnauthenticatedRoute && path !== '/signin'
-    ) {
+    if (!isUnauthenticatedRoute && path !== '/signin') {
       return NextResponse.redirect(new URL('/signin', request.url));
     }
     return NextResponse.next();
   }
 
-  const token:any = request.cookies.get(AUTHENTICATION_COOKIE)?.value;
-  const decoded = decodeToken(token);
-  if (!decoded && path !== '/signin'
-  ) {
-    return NextResponse.redirect(new URL('/auth/signin', request.url));
+  // Get and validate token
+  const token = request.cookies.get(AUTHENTICATION_COOKIE)?.value;
+  const decoded = decodeToken(token) as { role?: string } | null;
+  
+  // Handle invalid token
+  if (!decoded) {
+    if (!isUnauthenticatedRoute && path !== '/signin') {
+      return NextResponse.redirect(new URL('/signin', request.url));
+    }
+    return NextResponse.next();
   }
 
-  // if (decoded  && path !== '/signin'
-  // ) {
-  //   return NextResponse.redirect(new URL('/unauthorized', request.url));
-  // }
+  // Check role-based access
+  const role = decoded.role;
+  console.log(`User role: ${role}`);
+  console.log(`Requested path: ${path}`);
+  if (role && !checkRoleAccess(path, role)) {
+    console.log(`Unauthorized access attempt by role: ${role} to path: ${path}`);
+    return NextResponse.redirect(new URL('/unauthorized', request.url));
+  }
 
   return NextResponse.next();
 }

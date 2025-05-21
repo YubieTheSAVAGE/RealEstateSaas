@@ -34,7 +34,7 @@ export default async function login(_prevState: FormResponse, formData: FormData
       return { error: getErrorMessage(parsedRes) };
     }
     await setAuthCookie(parsedRes);
-    return { success: true, redirect: '/' };
+    return { success: true, redirect: '/home' };
   } catch (error) {
     console.error('Login error details:', error);
     return { error: error instanceof Error ? error.message : 'An unexpected error occurred during login' };
@@ -56,3 +56,23 @@ const setAuthCookie = async (response: { token: string }) => {
   // const userRole = getUserRoleFromToken(token);
   // redirect("/");
 };
+
+type DecodedToken = {
+  role?: string;
+  [key: string]: any;
+};
+
+export const getUserRoleFromToken = async () => {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(AUTHENTICATION_COOKIE)?.value;
+    if (!token) {
+      return null;
+    }
+    const decodedToken = jwtDecode<DecodedToken>(token);
+    return decodedToken.role;
+  } catch (error) {
+    console.error("Error decoding token:", error);
+    return null;
+  }
+}
