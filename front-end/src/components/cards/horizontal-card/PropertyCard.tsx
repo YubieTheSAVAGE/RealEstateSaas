@@ -169,12 +169,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
                   {property.status || "Unknown"}
                 </Badge>
               </div>
-              <span className="border-b border-gray-200 dark:border-gray-700"></span>
-              {property.notes && (
+            {property.notes && (
+              <>
+                <span className="border-b border-gray-200 dark:border-gray-700"></span>
                 <div className="grid grid-cols-2 gap-2">
                   <span className="font-semibold">Notes:</span> {property.notes}
                 </div>
-              )}
+              </>
+            )}
             </div>
           </CardDescription>
           {/* <EditProjectModal ProjectData={ProjectDetails}  details={true} /> */}
