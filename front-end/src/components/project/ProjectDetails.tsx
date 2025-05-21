@@ -24,12 +24,10 @@ export default function ProjectDetails({ projectId }: ProjectDetailsProps) {
 
     if (!project) {
         return <div>Loading...</div>;
-    }
-
-    return (
+    }    return (
         <div>
             <ProjectCard ProjectDetails={project} />
-            <PropertiesTable />
+            <PropertiesTable ProjectDetails={project.apartments || project.properties || []} />
         </div>
     );
 }

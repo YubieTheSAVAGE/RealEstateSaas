@@ -34,6 +34,14 @@ module.exports = async function (fastify) {
     },
     controller.updateApartment
   );
+    fastify.get(
+    "/apartments/:apartmentId",
+    {
+      onRequest: [fastify.authenticate],
+      preHandler: [fastify.isAgentOrAdmin],
+    },
+    controller.getApartmentById
+  );
 
   fastify.delete(
     "/apartments/:apartmentId",

@@ -125,6 +125,22 @@ async function assignToClient(apartmentId, clientId, user) {
   return updated;
 }
 
+async function getApartmentById(apartmentId) {
+  const apartment = await prisma.apartment.findUnique({
+    where: { id: apartmentId },
+    include: {
+      project: true,
+      client: true,
+    },
+  });
+  if (!apartment) {
+    const err = new Error("Apartment not found");
+    err.statusCode = 404;
+    throw err;
+  }
+  return apartment;
+}
+
 module.exports = {
   getAllApartments,
   listByProject,
@@ -132,5 +148,6 @@ module.exports = {
   update,
   remove,
   assignToClient,
-  getRecentActivity
+  getRecentActivity,
+  getApartmentById,
 };

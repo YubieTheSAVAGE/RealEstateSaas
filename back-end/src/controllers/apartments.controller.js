@@ -255,6 +255,22 @@ async function assignApartment(request, reply) {
   }
 }
 
+async function getApartmentById(request, reply) {
+  try {
+    const apartmentId = parseInt(request.params.apartmentId, 10);
+    if (!isPositiveInt(apartmentId)) {
+      return reply
+        .code(400)
+        .send({ error: "apartmentId must be a positive integer" });
+    }
+    const apartment = await apartmentService.getApartmentById(apartmentId);
+    return reply.send(apartment);
+  } catch (err) {
+    request.log.error(err);
+    return reply.code(err.statusCode || 500).send({ error: err.message });
+  }
+}
+
 module.exports = {
   getAllApartments,
   listByProject,
@@ -262,4 +278,5 @@ module.exports = {
   updateApartment,
   deleteApartment,
   assignApartment,
+  getApartmentById,
 };
