@@ -1,5 +1,7 @@
+"use client";
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
-import React from "react";
+import React, {useState, useEffect} from "react";
+import getApartmentsById from "../getApartmentsById";
 
 export default function ProjectPage({ params }: { params: { propertyId: string } }) {
     const { propertyId } = params;
@@ -8,6 +10,17 @@ export default function ProjectPage({ params }: { params: { propertyId: string }
         { label: "Properties", href: "/properties" },
         { label: propertyId },
     ];
+
+    const [properties, setProperties] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await getApartmentsById(propertyId);
+            console.log("Property data:", result);
+            setProperties(result);
+        };
+        fetchData();
+    }, [propertyId]);
 
     return (
         <>

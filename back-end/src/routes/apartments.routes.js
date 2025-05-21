@@ -59,11 +59,4 @@ module.exports = async function (fastify) {
     },
     controller.assignApartment
   );
-  fastify.get(
-    "/apartments/user",
-    {
-      onRequest: [fastify.authenticate],
-    },
-    controller.getAssignedApartment
-  );
 };

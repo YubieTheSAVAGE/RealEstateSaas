@@ -46,6 +46,23 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
     return soldCount;
   };
 
+  const calculateTotalRevenue = (ProjectDetails: any) => {
+    // Check if apartments array exists
+    if (!ProjectDetails.apartments || !Array.isArray(ProjectDetails.apartments)) {
+      return 0;
+    }
+    // Calculate total revenue from sold apartments
+    const totalRevenue = ProjectDetails.apartments.reduce((acc: number, apartment: { status: string; price: number }) => {
+      if (apartment.status === "SOLD") {
+        return acc + apartment.price;
+      }
+      return acc;
+    }, 0);
+    return totalRevenue;
+  }
+
+  const totalRevenue = calculateTotalRevenue(ProjectDetails);
+
   const totalSales = calculateTotalSales(ProjectDetails);
 
   return (
@@ -144,7 +161,7 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
               </div>
               <div className="flex items-center gap-2">
               <span className="font-semibold text-gray-700 dark:text-gray-200">Total Revenue:</span>
-              <span className="text-green-600 dark:text-green-400 font-bold">{ProjectDetails.totalPrice} MAD</span>
+              <span className="text-green-600 dark:text-green-400 font-bold">{totalRevenue} MAD</span>
               </div>
             </div>
           </CardDescription>
