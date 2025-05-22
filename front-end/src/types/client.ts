@@ -1,3 +1,5 @@
+import { Property } from "./property";
+
 export interface Client {
   id: number;
   name: string;
@@ -7,7 +9,6 @@ export interface Client {
   provenance: string;
   status: 'LEAD' | 'CLIENT';
   createdById: number;
-  // Optionally, you can add these if you want to type relations:
-  // apartments?: Apartment[];
-  // interestedApartments?: Apartment[];
+  properties?: Property[];
+  interestedProperties?: Property[];
 }
