@@ -127,11 +127,9 @@ model Comment {
 
 model monthlyTarget {
   id          Int     @id @default(autoincrement())
-  month       String
-  year        Int
+  startDate   DateTime
+  endDate     DateTime
   target      Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 }
 
 enum TodoStatus {

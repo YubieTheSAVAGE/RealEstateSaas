@@ -155,22 +155,29 @@ async function getMonthlyTarget() {
   return target;
 }
 
-async function setMonthlyTarget(month, year, target) {
-  const existing = await prisma.monthlyTarget.findFirst({
-    where: { month: String(month), year: Number(year) },
+async function setMonthlyTarget(target, startDate, endDate) {
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+  
+  const existingTarget = await prisma.monthlyTarget.findFirst({
+    where: {
+      startDate: { gte: startDateObj, lte: endDateObj },
+    },
   });
-  if (existing) {
-    const updated = await prisma.monthlyTarget.update({
-      where: { id: existing.id },
-      data: { target: Number(target) },
-    });
-    return updated;
-  } else {
-    const newTarget = await prisma.monthlyTarget.create({
-      data: { month: String(month), year: Number(year), target: Number(target) },
-    });
-    return newTarget;
+  if (existingTarget) {
+    const err = new Error("Monthly target already exists for the given date range");
+    err.statusCode = 400;
+    throw err;
   }
+  const newTarget = await prisma.monthlyTarget.create({
+    data: {
+      target,
+      startDate,
+      endDate,
+    },
+  });
+  return newTarget;
+
 }
 
 module.exports = {

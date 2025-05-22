@@ -231,14 +231,14 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 options={options}
                 name="projectId"
                 placeholder=""
-                onChange={(value, name) => handleSelectChange(value, name)}
+                onChange={(value, name) => handleSelectChange(vaue, name)}
               />
             </div>
             {formData.projectId && (
               <div className="col-span-1">
-                <Label>Apartments<span className="text-red-500">*</span></Label>
+                <Label>Properties<span className="text-red-500">*</span></Label>
                 <MultiSelect
-                  label="Select Apartments"
+                  label=""
                   options={apartmentOptions}
                   onChange={(selected) => handleMultiSelectChange(selected)}
                 />

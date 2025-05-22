@@ -5,14 +5,16 @@ import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
 import navigator from "next/navigation";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MonthlyTargetModal from "../example/ModalExample/MonthlyTargetModal";
+import {getUserRoleFromToken} from "@/app/(auth)/signin/login";
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
 export default function MonthlyTarget() {
+  const [role, setRole] = useState<string | null>(null);
   const series = [75.55];
   const options: ApexOptions = {
     colors: ["#465FFF"],
@@ -70,6 +72,20 @@ export default function MonthlyTarget() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      // You may need to import AUTHENTICATION_COOKIE and provide a suitable prevState (e.g., null or {})
+      const result = await getUserRoleFromToken();
+      console.log("Role fetched from token:", result); 
+      if (result) {
+        setRole(result);
+      } else {
+        console.error("Failed to decode token or role not found");
+      }
+    };
+    fetchRole();
+  }, []);
   return (
     <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="px-5 pt-5 bg-white shadow-default rounded-2xl pb-11 dark:bg-gray-900 sm:px-6 sm:pt-6">
@@ -82,29 +98,31 @@ export default function MonthlyTarget() {
               Target you’ve set for each month
             </p>
           </div>
-          <div className="relative h-fit">
-            <button onClick={toggleDropdown} className="dropdown-toggle">
-              <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
-            </button>
-            <Dropdown
-              isOpen={isOpen}
-              onClose={closeDropdown}
-              className="w-40 p-2"
-            >
-              {/* <DropdownItem
-                onItemClick={closeDropdown}
-                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+          {role === "ADMIN" && (
+            <div className="relative h-fit">
+              <button onClick={toggleDropdown} className="dropdown-toggle">
+                <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+              </button>
+              <Dropdown
+                isOpen={isOpen}
+                onClose={closeDropdown}
+                className="w-40 p-2"
               >
-                View More
-              </DropdownItem> */}
-              {/* <DropdownItem
-                onItemClick={closeDropdown}
-                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-              > */}
-                <MonthlyTargetModal closeDropdown={closeDropdown} />
-              {/* </DropdownItem> */}
-            </Dropdown>
-          </div>
+                {/* <DropdownItem
+                  onItemClick={closeDropdown}
+                  className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                >
+                  View More
+                </DropdownItem> */}
+                {/* <DropdownItem
+                  onItemClick={closeDropdown}
+                  className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                > */}
+                  <MonthlyTargetModal closeDropdown={closeDropdown} />
+                {/* </DropdownItem> */}
+              </Dropdown>
+            </div>
+          )}
         </div>
         <div className="relative ">
           <div className="max-h-[330px]" id="chartDarkStyle">

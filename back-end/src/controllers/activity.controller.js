@@ -26,9 +26,12 @@ async function getMonthlyTarget(request, reply) {
 
 async function setMonthlyTarget(request, reply) {
   try {
-    const { month, year, target } = request.body;
-    const newTarget = await apartmentService.setMonthlyTarget(parseInt(month, 10), parseInt(year, 10), parseFloat(target));
-    return reply.code(201).send(newTarget);
+    const { target, startDate, endDate } = request.body;
+    if (typeof target !== "number") {
+      return reply.code(400).send({ error: "Target must be a number" });
+    }
+    const updatedTarget = await apartmentService.setMonthlyTarget(target, startDate, endDate);
+    return reply.send(updatedTarget);
   } catch (err) {
     request.log.error(err);
     return reply.code(err.statusCode || 500).send({ error: err.message });

@@ -41,11 +41,11 @@ module.exports = async function (fastify) {
         body: {
           type: 'object',
           properties: {
-            month: { type: 'integer', minimum: 1, maximum: 12 },
-            year: { type: 'integer', minimum: 2000, maximum: 2100 },
-            target: { type: 'number' }
+            target : { type: 'number' },
+            startDate: {type : 'string', format: 'date'},
+            endDate: {type : 'string', format: 'date'},
           },
-          required: ['month', 'year', 'target']
+          required: ['target', 'startDate', 'endDate']
         }
       }
     },

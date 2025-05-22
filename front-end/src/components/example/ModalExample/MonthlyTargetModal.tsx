@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
@@ -7,6 +7,7 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
+import addMonthlyTarget from "./addMonthlyTarget";
 
 interface MonthlyTargetModalProps {
   closeDropdown: () => void;
@@ -14,11 +15,30 @@ interface MonthlyTargetModalProps {
 
 export default function MonthlyTargetModal({ closeDropdown }: MonthlyTargetModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
+    const [formData, setFormData] = useState({
+      target: "",
+      startDate: "",
+      endDate: "",
+    });
+  const handleSave = async () => {
+    console.log("Form data:", formData);
     // Handle save logic here
-    console.log("Saving changes...");
+    const formDataToSend = new FormData();
+    formDataToSend.append("target", formData.target);
+    formDataToSend.append("startDate", formData.startDate);
+    formDataToSend.append("endDate", formData.endDate);
+    
+    await addMonthlyTarget(formDataToSend);
     closeModal();
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
   
   return (
     <>
@@ -44,7 +64,15 @@ export default function MonthlyTargetModal({ closeDropdown }: MonthlyTargetModal
 
             <div className="col-span-1 sm:col-span-2">
               <Label>Target in MAD</Label>
-              <Input type="number" placeholder="10000000" />
+              <Input name="target" type="number" placeholder="10000000" onChange={handleInputChange} />
+            </div>
+            <div>
+              <Label>Start Date</Label>
+              <Input name="startDate" type="date" placeholder="2023-10-01" onChange={handleInputChange} />
+            </div>
+            <div>
+              <Label>End Date</Label>
+              <Input name="endDate" type="date" placeholder="2023-10-31" onChange={handleInputChange} />
             </div>
           </div>
 
