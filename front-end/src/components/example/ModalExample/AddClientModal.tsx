@@ -306,7 +306,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
             {/* Project and Apartment Selection Section */}
             <div className="col-span-2">
-              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">Property Selection</h5>
+              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">Interested Properties <span className="text-red-500">*</span></h5>
               <div className="flex flex-col gap-4 p-4 border rounded-lg">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="col-span-1">
@@ -321,8 +321,8 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                     />
                   </div>
                   {formData.projectId && (
-                    <div className="col-span-2">
-                      <Label>Apartments</Label>
+                    <div className="col-span-1">
+                      <Label>Apartments <span className="text-red-500">*</span></Label>
                       <MultiSelect
                         label=""
                         options={currentProjectApartments}
