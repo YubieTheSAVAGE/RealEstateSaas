@@ -226,26 +226,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               />
             </div>
             <div className="col-span-1">
-              <Label>Project <span className="text-red-500">*</span></Label>
-              <Select
-                options={options}
-                name="projectId"
-                placeholder=""
-                onChange={(value, name) => handleSelectChange(vaue, name)}
-              />
-            </div>
-            {formData.projectId && (
-              <div className="col-span-1">
-                <Label>Properties<span className="text-red-500">*</span></Label>
-                <MultiSelect
-                  label=""
-                  options={apartmentOptions}
-                  onChange={(selected) => handleMultiSelectChange(selected)}
-                />
-              </div>
-            )}
-            <div className="col-span-1">
-              <Label>Email</Label>
+              <Label>Email <span className="text-red-500">*</span></Label>
               <Input
                 name="email"
                 type="text"
@@ -263,6 +244,25 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 onChange={handleChange}
               />
             </div>
+            <div className="col-span-1">
+              <Label>Project <span className="text-red-500">*</span></Label>
+              <Select
+                options={options}
+                name="projectId"
+                placeholder=""
+                onChange={(value, name) => handleSelectChange(value, name)}
+              />
+            </div>
+            {formData.projectId && (
+              <div className="col-span-1">
+                <Label>Properties<span className="text-red-500">*</span></Label>
+                <MultiSelect
+                  label=""
+                  options={apartmentOptions}
+                  onChange={(selected) => handleMultiSelectChange(selected)}
+                />
+              </div>
+            )}
             
             <div className="col-span-1 sm:col-span-2">
               <Label>How did you hear about us? <span className="text-red-500">*</span></Label>
