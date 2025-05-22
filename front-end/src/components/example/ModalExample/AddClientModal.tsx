@@ -322,7 +322,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   </div>
                   {formData.projectId && (
                     <div className="col-span-1">
-                      <Label>Apartments <span className="text-red-500">*</span></Label>
+                      <Label>Property <span className="text-red-500">*</span></Label>
                       <MultiSelect
                         label=""
                         options={currentProjectApartments}
@@ -335,7 +335,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 {formData.projectId && (
                   <div className="flex justify-end">
                     <Button size="sm" onClick={handleAddApartments} disabled={tempSelectedApartments.length === 0}>
-                      Add Apartments
+                      Add Property
                     </Button>
                   </div>
                 )}
@@ -345,7 +345,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
             {/* Selected Apartments Display */}
             {selectedApartments.length > 0 && (
               <div className="col-span-2 mt-2">
-                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">Selected Apartments</h5>
+                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">Selected Properties</h5>
                 <div className="p-4 border rounded-lg">
                   {selectedApartments.map((project) => (
                     <div key={project.projectId} className="mb-4">
