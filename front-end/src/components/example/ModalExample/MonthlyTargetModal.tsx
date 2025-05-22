@@ -11,25 +11,53 @@ import addMonthlyTarget from "./addMonthlyTarget";
 
 interface MonthlyTargetModalProps {
   closeDropdown: () => void;
+  onTargetAdded?: () => void; // Optional callback for data refresh
 }
 
-export default function MonthlyTargetModal({ closeDropdown }: MonthlyTargetModalProps) {
+export default function MonthlyTargetModal({ closeDropdown, onTargetAdded }: MonthlyTargetModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
-    const [formData, setFormData] = useState({
-      target: "",
-      startDate: "",
-      endDate: "",
-    });
-  const handleSave = async () => {
-    console.log("Form data:", formData);
-    // Handle save logic here
-    const formDataToSend = new FormData();
-    formDataToSend.append("target", formData.target);
-    formDataToSend.append("startDate", formData.startDate);
-    formDataToSend.append("endDate", formData.endDate);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    target: "",
+    startDate: "",
+    endDate: "",
+  });
+
+  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Prevent button default behavior
     
-    await addMonthlyTarget(formDataToSend);
-    closeModal();
+    if (isSubmitting) return;
+    
+    try {
+      setIsSubmitting(true);
+      console.log("Form data:", formData);
+      
+      const formDataToSend = new FormData();
+      formDataToSend.append("target", formData.target);
+      formDataToSend.append("startDate", formData.startDate);
+      formDataToSend.append("endDate", formData.endDate);
+      
+      await addMonthlyTarget(formDataToSend);
+      console.log("Monthly target added successfully");
+      
+      // Call callback if provided
+      if (onTargetAdded) {
+        onTargetAdded();
+      }
+      
+      // Reset form and close modal
+      setFormData({
+        target: "",
+        startDate: "",
+        endDate: ""
+      });
+      
+      closeModal();
+    } catch (error) {
+      console.error("Error adding monthly target:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,48 +68,78 @@ export default function MonthlyTargetModal({ closeDropdown }: MonthlyTargetModal
     }));
   }
   
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent form default submission
+  };
+  
   return (
     <>
       <DropdownItem
         onClick={openModal}
-        // onItemClick={closeDropdown}
         className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
       >
-          Edit
-        {/* </span> */}
+        Edit
       </DropdownItem>
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
         className="max-w-[584px] p-5 lg:p-10"
       >
-        <form className="">
+        <form onSubmit={handleFormSubmit}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
             Monthly Target
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-
             <div className="col-span-1 sm:col-span-2">
               <Label>Target in MAD</Label>
-              <Input name="target" type="number" placeholder="10000000" onChange={handleInputChange} />
+              <Input 
+                name="target" 
+                type="number" 
+                onChange={handleInputChange} 
+                value={formData.target}
+                required 
+              />
             </div>
             <div>
               <Label>Start Date</Label>
-              <Input name="startDate" type="date" placeholder="2023-10-01" onChange={handleInputChange} />
+              <Input 
+                name="startDate" 
+                type="date" 
+                onChange={handleInputChange} 
+                value={formData.startDate}
+                required 
+              />
             </div>
             <div>
               <Label>End Date</Label>
-              <Input name="endDate" type="date" placeholder="2023-10-31" onChange={handleInputChange} />
+              <Input 
+                name="endDate" 
+                type="date" 
+                onChange={handleInputChange} 
+                value={formData.endDate}
+                required 
+              />
             </div>
           </div>
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
-            <Button size="sm" variant="outline" onClick={closeModal}>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={(e) => {
+                e.preventDefault();
+                closeModal();
+              }}
+            >
               Close
             </Button>
-            <Button size="sm" onClick={handleSave}>
-              Save
+            <Button 
+              size="sm" 
+              onClick={handleSave} 
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
           </div>
         </form>

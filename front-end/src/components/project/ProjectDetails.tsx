@@ -15,25 +15,25 @@ export default function ProjectDetails({ projectId }: ProjectDetailsProps) {
     const router = useRouter();
     const [project, setProject] = React.useState<Project | null>(null);
 
-    React.useEffect(() => {
-        const fetchProject = async () => {
-            const data = await getProjectById(projectId);
-            console.log("Project data:", data);
-            if (data.error || !data) {
-                console.log("Error fetching project:", data.error);
-                router.push("/not-found");
-            }
-            setProject(data);
-        };
-
-        fetchProject();
+    const fetchProject = React.useCallback(async () => {
+        const data = await getProjectById(projectId);
+        console.log("Project data:", data);
+        if (data.error || !data) {
+            console.log("Error fetching project:", data.error);
+            router.push("/not-found");
+        }
+        setProject(data);
     }, [projectId, router]);
+
+    React.useEffect(() => {
+        fetchProject();
+    }, [fetchProject]);
 
     if (!project) {
         return <div>Loading...</div>;
     }    return (
         <div>
-            <ProjectCard ProjectDetails={project} />
+            <ProjectCard ProjectDetails={project} onRefresh={fetchProject}  />
             <PropertiesTable ProjectDetails={project.apartments} />
         </div>
     );

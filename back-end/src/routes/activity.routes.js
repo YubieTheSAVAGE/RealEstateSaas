@@ -20,7 +20,7 @@ module.exports = async function (fastify) {
     "/monthly-target",
     {
       onRequest: [fastify.authenticate],
-      preHandler: [fastify.isAdmin],
+      preHandler: [fastify.isAgentOrAdmin],
       schema: {
         querystring: {
           type: 'object',
@@ -50,5 +50,21 @@ module.exports = async function (fastify) {
       }
     },
     controller.setMonthlyTarget
+  );
+  fastify.get(
+    "/activity",
+    {
+      onRequest: [fastify.authenticate],
+      preHandler: [fastify.isAdmin],
+      schema: {
+        querystring: {
+          type: 'object',
+          properties: {
+            limit: { type: 'integer', minimum: 1, maximum: 20 }
+          }
+        }
+      }
+    },
+    controller.getRecentActivity
   );
 };

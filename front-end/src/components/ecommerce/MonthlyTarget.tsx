@@ -1,21 +1,125 @@
 "use client";
 import { ApexOptions } from "apexcharts";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
-import navigator from "next/navigation";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import MonthlyTargetModal from "../example/ModalExample/MonthlyTargetModal";
-import {getUserRoleFromToken} from "@/app/(auth)/signin/login";
+import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
+import getMonthlyTarget from "../example/ModalExample/getMonthlyTarget";
+
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
+interface MonthlyTargetData {
+  id: number;
+  target: number;
+  startDate: string;
+  endDate: string;
+}
+
+interface RevenueData {
+  totalRevenue: number;
+  dailyRevenue: number;
+  growthRate: number;
+}
+
+import getApartements from "../tables/DataTables/Properties/getApartements";
 export default function MonthlyTarget() {
   const [role, setRole] = useState<string | null>(null);
-  const series = [75.55];
+  const [targetData, setTargetData] = useState<MonthlyTargetData | null>(null);
+  const [revenueData, setRevenueData] = useState<RevenueData>({
+    totalRevenue: 0,
+    dailyRevenue: 0,
+    growthRate: 0,
+  });
+  const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [targetDirection, setTargetDirection] = useState<'up' | 'down' | null>(null);
+  const [revenueDirection, setRevenueDirection] = useState<'up' | 'down' | null>(null);
+  const [todayDirection, setTodayDirection] = useState<'up' | 'down' | null>(null);
+
+  const fetchRevenueData = async () => {
+    const data = await getApartements();
+    const today = new Date();
+    
+    // Calculate the first day of current and previous month
+    const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const firstDayPreviousMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const lastDayPreviousMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+    
+    // Calculate today and yesterday
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Current month's revenue (for the monthly calculation)
+    const currentMonthRevenue = data.reduce((acc: number, apartment: any) => {
+      if (apartment.status === "SOLD") {
+        const saleDate = new Date(apartment.updatedAt);
+        if (saleDate >= firstDayCurrentMonth && saleDate <= today) {
+          return acc + apartment.price;
+        }
+      }
+      return acc;
+    }, 0);
+    
+    // Previous month's revenue
+    const previousMonthRevenue = data.reduce((acc: number, apartment: any) => {
+      if (apartment.status === "SOLD") {
+        const saleDate = new Date(apartment.updatedAt);
+        if (saleDate >= firstDayPreviousMonth && saleDate <= lastDayPreviousMonth) {
+          return acc + apartment.price;
+        }
+      }
+      return acc;
+    }, 0);
+    
+    // Today's revenue
+    const dailyRevenue = data.reduce((acc: number, apartment: any) => {
+      if (apartment.status === "SOLD") {
+        const saleDate = new Date(apartment.updatedAt);
+        if (saleDate.toDateString() === today.toDateString()) {
+          return acc + apartment.price;
+        }
+      }
+      return acc;
+    }, 0);
+    
+    // Yesterday's revenue for comparison
+    const yesterdayRevenue = data.reduce((acc: number, apartment: any) => {
+      if (apartment.status === "SOLD") {
+        const saleDate = new Date(apartment.updatedAt);
+        if (saleDate.toDateString() === yesterday.toDateString()) {
+          return acc + apartment.price;
+        }
+      }
+      return acc;
+    }, 0);
+    
+    // Calculate growth rates and directions
+    const monthlyGrowthRate = previousMonthRevenue > 0 
+      ? ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100 
+      : (currentMonthRevenue > 0 ? 100 : 0);
+    
+    setRevenueDirection(currentMonthRevenue >= previousMonthRevenue ? 'up' : 'down');
+    setTodayDirection(dailyRevenue >= yesterdayRevenue ? 'up' : 'down');
+    
+    setRevenueData({
+      totalRevenue: currentMonthRevenue,
+      dailyRevenue: dailyRevenue,
+      growthRate: parseFloat(monthlyGrowthRate.toFixed(1))
+    });
+  }
+  useEffect(() => {
+    fetchRevenueData();
+  }, []);
+
+  // Series for the chart (progress percentage)
+  const series = [progress];
+
   const options: ApexOptions = {
     colors: ["#465FFF"],
     chart: {
@@ -48,7 +152,7 @@ export default function MonthlyTarget() {
             offsetY: -40,
             color: "#1D2939",
             formatter: function (val) {
-              return val + "%";
+              return val.toFixed(1) + "%";
             },
           },
         },
@@ -63,6 +167,7 @@ export default function MonthlyTarget() {
     },
     labels: ["Progress"],
   };
+
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleDropdown() {
@@ -73,19 +178,73 @@ export default function MonthlyTarget() {
     setIsOpen(false);
   }
 
+  // Function to handle data refresh after new target is added
+  const handleTargetAdded = () => {
+    // Increment the refresh trigger to cause a data refetch
+    setRefreshTrigger((prev) => prev + 1);
+  };
+
+  // Fetch user role and target data
   useEffect(() => {
-    const fetchRole = async () => {
-      // You may need to import AUTHENTICATION_COOKIE and provide a suitable prevState (e.g., null or {})
-      const result = await getUserRoleFromToken();
-      console.log("Role fetched from token:", result); 
-      if (result) {
-        setRole(result);
-      } else {
-        console.error("Failed to decode token or role not found");
+    const fetchAllData = async () => {
+      setLoading(true);
+      try {
+        // Fetch user role
+        const userRole = await getUserRoleFromToken();
+        if (userRole) {
+          setRole(userRole);
+        }
+
+        // Fetch monthly target data
+        const monthlyTargetData = await getMonthlyTarget();
+        if (monthlyTargetData) {
+          setTargetData(monthlyTargetData);
+          
+          // Calculate progress percentage when we have both target and revenue data
+          if (monthlyTargetData.target && revenueData.totalRevenue) {
+            const progressPercent = (revenueData.totalRevenue / monthlyTargetData.target) * 100;
+            setProgress(Math.min(progressPercent, 100)); // Cap at 100%
+            
+            // Calculate growth rate as well
+            const chaka = monthlyTargetData.target - revenueData.todayRevenue;
+            const growthRate = ((chaka / monthlyTargetData.target) * 100);
+            setRevenueData(prev => ({
+              ...prev,
+              growthRate: parseFloat(growthRate.toFixed(1))
+            }));
+          }
+        }
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchRole();
-  }, []);
+
+    fetchAllData();
+  }, [refreshTrigger, revenueData.totalRevenue]);
+
+  // Update progress and growth rate whenever revenue or target changes
+  useEffect(() => {
+    if (targetData?.target && revenueData.totalRevenue) {
+      const progressPercent = (revenueData.totalRevenue / targetData.target) * 100;
+      setProgress(Math.min(progressPercent, 100)); // Cap at 100%
+      
+      // Compare revenue to target to set target direction
+      setTargetDirection(revenueData.totalRevenue >= targetData.target ? 'up' : 'down');
+      
+      // Calculate growth rate
+      const remainingToTarget = targetData.target - revenueData.totalRevenue;
+      const growthRate = ((remainingToTarget / targetData.target) * 100);
+      
+      setRevenueData(prev => ({
+        ...prev,
+        growthRate: parseFloat((100 - growthRate).toFixed(1)) // Show achievement percentage instead
+      }));
+    }
+  }, [targetData, revenueData.totalRevenue]);
+
   return (
     <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="px-5 pt-5 bg-white shadow-default rounded-2xl pb-11 dark:bg-gray-900 sm:px-6 sm:pt-6">
@@ -95,7 +254,13 @@ export default function MonthlyTarget() {
               Monthly Target
             </h3>
             <p className="mt-1 font-normal text-gray-500 text-theme-sm dark:text-gray-400">
-              Target you’ve set for each month
+              {targetData
+                ? `Target period: ${new Date(
+                    targetData.startDate
+                  ).toLocaleDateString()} - ${new Date(
+                    targetData.endDate
+                  ).toLocaleDateString()}`
+                : "Target you've set for each month"}
             </p>
           </div>
           {role === "ADMIN" && (
@@ -108,42 +273,45 @@ export default function MonthlyTarget() {
                 onClose={closeDropdown}
                 className="w-40 p-2"
               >
-                {/* <DropdownItem
-                  onItemClick={closeDropdown}
-                  className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                >
-                  View More
-                </DropdownItem> */}
-                {/* <DropdownItem
-                  onItemClick={closeDropdown}
-                  className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                > */}
-                  <MonthlyTargetModal closeDropdown={closeDropdown} />
-                {/* </DropdownItem> */}
+                <MonthlyTargetModal
+                  closeDropdown={closeDropdown}
+                  onTargetAdded={handleTargetAdded}
+                />
               </Dropdown>
             </div>
           )}
         </div>
-        <div className="relative ">
-          <div className="max-h-[330px]" id="chartDarkStyle">
-            <ReactApexChart
-              options={options}
-              series={series}
-              type="radialBar"
-              height={330}
-            />
-          </div>
+        <div className="relative">
+          {loading ? (
+            <div className="flex items-center justify-center h-[330px]">
+              <div className="w-8 h-8 border-4 border-gray-300 rounded-full border-t-brand-500 animate-spin"></div>
+            </div>
+          ) : (
+            <div className="max-h-[330px]" id="chartDarkStyle">
+              <ReactApexChart
+                options={options}
+                series={series}
+                type="radialBar"
+                height={330}
+              />
+            </div>
+          )}
 
           <span className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-[95%] rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-            +10%
+            {revenueData.growthRate > 0 ? "+" : ""}
+            {revenueData.growthRate}%
           </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You earn {(75000).toLocaleString("en-us", {
+          You earn{" "}
+          {revenueData.dailyRevenue.toLocaleString("en-us", {
             style: "currency",
             currency: "MAD",
-          })} today, it&apos;s higher than last month. Keep up your
-          good work!
+          })}{" "}
+          today
+          {revenueData.growthRate > 0
+            ? ", it's higher than last month. Keep up your good work!"
+            : "."}
         </p>
       </div>
 
@@ -153,8 +321,8 @@ export default function MonthlyTarget() {
             Target
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            1M MAD
-            <svg
+            {targetData ? formatCurrency(targetData.target) : "N/A"}
+            {/* <svg
               width="16"
               height="16"
               viewBox="0 0 16 16"
@@ -167,7 +335,7 @@ export default function MonthlyTarget() {
                 d="M7.26816 13.6632C7.4056 13.8192 7.60686 13.9176 7.8311 13.9176C7.83148 13.9176 7.83187 13.9176 7.83226 13.9176C8.02445 13.9178 8.21671 13.8447 8.36339 13.6981L12.3635 9.70076C12.6565 9.40797 12.6567 8.9331 12.3639 8.6401C12.0711 8.34711 11.5962 8.34694 11.3032 8.63973L8.5811 11.36L8.5811 2.5C8.5811 2.08579 8.24531 1.75 7.8311 1.75C7.41688 1.75 7.0811 2.08579 7.0811 2.5L7.0811 11.3556L4.36354 8.63975C4.07055 8.34695 3.59568 8.3471 3.30288 8.64009C3.01008 8.93307 3.01023 9.40794 3.30321 9.70075L7.26816 13.6632Z"
                 fill="#D92D20"
               />
-            </svg>
+            </svg> */}
           </p>
         </div>
 
@@ -178,7 +346,7 @@ export default function MonthlyTarget() {
             Revenue
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            700K MAD
+            {formatCurrency(revenueData.totalRevenue)}
             <svg
               width="16"
               height="16"
@@ -203,7 +371,7 @@ export default function MonthlyTarget() {
             Today
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            250K MAD
+            {formatCurrency(revenueData.dailyRevenue)}
             <svg
               width="16"
               height="16"
@@ -223,4 +391,21 @@ export default function MonthlyTarget() {
       </div>
     </div>
   );
+}
+
+// Helper function to format currency with proper unit (K, M, B)
+function formatCurrency(value: number): string {
+  if (value === 0) return "0 MAD";
+
+  if (value >= 1000000000) {
+    return `${(value / 1000000000).toFixed(1)}B MAD`;
+  }
+  if (value >= 1000000) {
+    return `${(value / 1000000).toFixed(1)}M MAD`;
+  }
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(0)}K MAD`;
+  }
+
+  return `${value.toFixed(0)} MAD`;
 }

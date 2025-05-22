@@ -177,11 +177,47 @@ async function getApartmentById(apartmentId) {
 }
 
 async function getMonthlyTarget() {
-  const target = await prisma.monthlyTarget.findFirst({
-    orderBy: { month: 'desc' },
+  const date = new Date();
+  // If no date is provided, use current date
+  const targetDate = date ? new Date(date) : new Date();
+  
+  // Try to find a target where the provided date falls between startDate and endDate
+  let target = await prisma.monthlyTarget.findFirst({
+    where: {
+      startDate: { lte: targetDate },
+      endDate: { gte: targetDate }
+    }
   });
+  
+  // If no target found for the exact period, find the closest one
+  if (!target) {
+    // Get all targets
+    const allTargets = await prisma.monthlyTarget.findMany({
+      orderBy: { startDate: 'desc' }
+    });
+    
+    if (allTargets.length > 0) {
+      // Find the closest target by date proximity
+      target = allTargets.reduce((closest, current) => {
+        const currentStart = new Date(current.startDate);
+        const closestStart = closest ? new Date(closest.startDate) : null;
+        
+        // If no closest yet, use current
+        if (!closest) return current;
+        
+        // Calculate date differences
+        const currentDiff = Math.abs(currentStart.getTime() - targetDate.getTime());
+        const closestDiff = Math.abs(closestStart.getTime() - targetDate.getTime());
+        
+        // Return the closest one
+        return currentDiff < closestDiff ? current : closest;
+      }, null);
+    }
+  }
+  
   return target;
 }
+
 
 async function setMonthlyTarget(target, startDate, endDate) {
   const startDateObj = new Date(startDate);

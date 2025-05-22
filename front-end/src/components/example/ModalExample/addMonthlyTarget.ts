@@ -17,7 +17,7 @@ export default async function addMonthlyTarget(formData: FormData) {
                 endDate: formData.get("endDate"),
             }),
         });
-
+        
         if (!res.ok) {
             console.log("Error adding monthly target:", res);
         }

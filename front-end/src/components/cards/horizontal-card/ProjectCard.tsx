@@ -13,10 +13,11 @@ import { useRouter } from "next/navigation";
 
 interface ProjectCardProps {
   ProjectDetails: any;
+  onRefresh?: () => void; // Callback to refresh project list after editing
 }
 
 
-export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
+export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleDropdown() {
@@ -47,6 +48,12 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
     ).length;
 
     return soldCount;
+  };
+
+  const handleRefresh = () => {
+    if (onRefresh) {
+      onRefresh();
+    }
   };
 
   const calculateTotalRevenue = (ProjectDetails: any) => {
@@ -133,7 +140,7 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
               onClose={closeDropdown}
               className="w-40 p-2"
             >
-              <EditProjectModal ProjectData={ProjectDetails} details={true} />
+              <EditProjectModal ProjectData={ProjectDetails} details={true} onRefresh={handleRefresh} />
               <DeleteModal
                 itemId={ProjectDetails.id}
                 heading="Delete Project"
