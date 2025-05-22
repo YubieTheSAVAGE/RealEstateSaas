@@ -43,27 +43,36 @@ async function create(projectId, data) {
     err.statusCode = 404;
     throw err;
   }
+  
+  // Prepare the apartment data
+  const apartmentData = {
+    number: parseInt(data.number, 10),
+    floor: parseInt(data.floor, 10),
+    type: data.type,
+    area: parseFloat(data.area),
+    threeDViewUrl: data.threeDViewUrl,
+    price: parseFloat(data.price),
+    status: data.status,
+    notes: data.notes,
+    pricePerM2: parseFloat(data.pricePerM2),
+    zone: data.zone,
+    image: data.image,
+    project: {
+      connect: { id: projectId }
+    }
+  };
+  
+  // Only connect to a client if clientId is provided
+  if (data.clientId) {
+    apartmentData.client = {
+      connect: { id: data.clientId }
+    };
+  }
+
   const apartment = await prisma.apartment.create({
-    data: {
-      number: parseInt(data.number, 10),
-      floor: parseInt(data.floor, 10),
-      type: data.type,
-      area: parseFloat(data.area),
-      threeDViewUrl: data.threeDViewUrl,
-      price: parseFloat(data.price),
-      status: data.status,
-      notes: data.notes,
-      pricePerM2: parseFloat(data.pricePerM2),
-      zone: data.zone,
-      image: data.image,
-      project: {
-        connect: { id: projectId }
-      },
-      client: {
-        connect: { id: data.clientId }
-      },
-    },
+    data: apartmentData
   });
+  
   return apartment;
 }
 
@@ -76,24 +85,43 @@ async function update(apartmentId, data) {
     err.statusCode = 404;
     throw err;
   }
+
+  // Prepare update data
+  const updateData = {
+    number: data.number ? parseInt(data.number, 10) : existing.number,
+    floor: data.floor ? parseInt(data.floor, 10) : existing.floor,
+    type: data.type || existing.type,
+    area: data.area ? parseFloat(data.area) : existing.area,
+    threeDViewUrl: data.threeDViewUrl || existing.threeDViewUrl,
+    price: data.price ? parseFloat(data.price) : existing.price,
+    status: data.status || existing.status,
+    notes: data.notes !== undefined ? data.notes : existing.notes,
+    pricePerM2: data.pricePerM2 ? parseFloat(data.pricePerM2) : existing.pricePerM2,
+    zone: data.zone || existing.zone,
+  };
+
+  // Handle client association based on status
+  if (data.status && data.status !== "SOLD") {
+    // If status is not SOLD, disconnect any client association
+    updateData.client = {
+      disconnect: true
+    };
+  } else if (data.clientId) {
+    // If clientId is provided, connect to that client
+    updateData.client = {
+      connect: { id: parseInt(data.clientId, 10) }
+    };
+  }
+
   const updated = await prisma.apartment.update({
     where: { id: apartmentId },
-    data: {
-      number: parseInt(data.number, 10),
-      floor: parseInt(data.floor, 10),
-      type: data.type,
-      area: parseFloat(data.area),
-      threeDViewUrl: data.threeDViewUrl,
-      price: parseFloat(data.price),
-      status: data.status,
-      notes: data.notes,
-      pricePerM2: parseFloat(data.pricePerM2),
-      zone: data.zone,
-      client: {
-        connect: { id: data.clientId }
-      },
-    },
+    data: updateData,
+    include: {
+      project: true,
+      client: true
+    }
   });
+  
   return updated;
 }
 

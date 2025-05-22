@@ -108,7 +108,7 @@ async function createApartment(request, reply) {
       notes,
       pricePerM2: parseInt(pricePerM2, 10),
       image: uploadedImage,
-      clientId: parseInt(clientId, 10),
+      clientId: parseInt(clientId, 10) || null,
       zone,
     });
     return reply.code(201).send(newApartment);
@@ -210,7 +210,7 @@ async function updateApartment(request, reply) {
       pricePerM2: parseInt(data.pricePerM2, 10),
       image: uploadedImage,
       zone : data.zone,
-      clientId: parseInt(data.clientId, 10),
+      clientId: parseInt(data.clientId, 10) || null,
     });
     // const updated = await apartmentService.update(apartmentId, data);
     return reply.send(updated);
