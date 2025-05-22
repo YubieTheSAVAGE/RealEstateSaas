@@ -31,9 +31,10 @@ export default function ClientsDataTable({clients}: any) {
 
   const [clientsData, setClientsData] = useState<Client[]>([]);
   useEffect(() => {
-      console.log("clientData", clients);
       // Check if data exists and is an array before mapping
-      if (clients && Array.isArray(clients)) {
+      if (clients) {
+          console.log('Fetched clients:', clients);
+
           const formattedData: Client[] = clients.map((item: any) => ({
               id: item.id,
               name: item.name,
@@ -42,10 +43,14 @@ export default function ClientsDataTable({clients}: any) {
               status: item.status,
               provenance: item.provenance || "",
               createdById: item.createdById || "",
+              properties: item.properties || [],
+              interestedApartments: item.interestedApartments || [],
+              notes: item.notes || "",
           }));
+
           setClientsData(formattedData);
       } else {
-          // If data is undefined or not an array, set empty array
+          console.log("No data available");
           setClientsData([]);
       }
   }, [clients]);

@@ -29,6 +29,13 @@ async function findClientById(clientId, user) {
     where: { id: clientId },
     include: {
       createdBy: { select: { id: true, name: true, email: true } },
+      interestedApartments: {
+        include: {
+          project: {
+            select: { id: true, name: true },
+          },
+        },
+      },
     },
   });
   if (!client) {

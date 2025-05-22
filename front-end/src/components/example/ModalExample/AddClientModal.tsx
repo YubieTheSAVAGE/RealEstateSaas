@@ -383,7 +383,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 name="notes"
                 placeholder="e.g. Notes about the client"
                 onChange={handleTextareaChange}
-                
               />
             </div>
           </div>

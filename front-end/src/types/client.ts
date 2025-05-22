@@ -10,5 +10,5 @@ export interface Client {
   status: 'LEAD' | 'CLIENT';
   createdById: number;
   properties?: Property[];
-  interestedProperties?: Property[];
+  interestedApartments?: Property[];
 }
