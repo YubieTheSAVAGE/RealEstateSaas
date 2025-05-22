@@ -5,6 +5,9 @@ import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import Badge from "@/components/ui/badge/Badge";
+import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
+import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
+import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 
 interface PropertyCardProps {
   property: Property;
@@ -99,10 +102,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               onClose={closeDropdown}
               className="w-40 p-2"
             >
-              coucou
-              {/* <EditProjectModal ProjectData={ProjectDetails} details={true} />
+              <EditPropertyModal
+                PropertyData={property}
+                details={true}
+              />
               <DeleteModal
-                itemId={ProjectDetails.id}
+                itemId={property.id.toString()}
                 heading="Delete Project"
                 description="Are you sure you want to delete this project? This action cannot be undone."
                 onDelete={() => {
@@ -110,7 +115,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
                   console.log("Project deleted");
                 }}
                 details={true}
-              /> */}
+              />
             </Dropdown>
           </div>
           {property.project?.name && (

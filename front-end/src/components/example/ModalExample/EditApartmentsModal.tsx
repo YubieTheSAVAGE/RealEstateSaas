@@ -16,15 +16,16 @@ import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 import { FaPen } from "react-icons/fa";
 import { PencilIcon } from "@/icons";
 import getClient from "@/components/tables/DataTables/Clients/getClient";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 interface EditPropertyModalProps {
   // onApartementsAdded?: () => void; // Callback to refresh project list
   PropertyData ?: any; // Add the type for PropertyData if available
   onRefresh?: () => void; // Callback to refresh project list after editing
-
+  details?: boolean;
 }
 
-export default function EditPropertyModal({ PropertyData, onRefresh }: EditPropertyModalProps) {
+export default function EditPropertyModal({ PropertyData, onRefresh, details }: EditPropertyModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   const type = {
@@ -250,9 +251,18 @@ export default function EditPropertyModal({ PropertyData, onRefresh }: EditPrope
 
   return (
     <>
-      <span className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer">
-        <PencilIcon onClick={openModal} />
-      </span>
+      {details ? (
+        <DropdownItem 
+          className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
+          onClick={openModal}
+        >
+          Edit
+        </DropdownItem>
+      ) : (
+        <span className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer">
+          <PencilIcon onClick={openModal} />
+        </span>
+      )}
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
