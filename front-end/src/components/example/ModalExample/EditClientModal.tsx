@@ -13,9 +13,12 @@ import { Textarea } from "@/components/ui/textarea"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
 import MultiSelect from "@/components/form/MultiSelect"
+import { PencilIcon } from "@/icons"
+import { Client } from "@/types/client"
 
-interface AddProjectModalProps {
+interface EditClientModalProps {
   onClientAdded?: () => void // Callback to refresh client list
+  clientData: Client;
 }
 
 interface ProjectApartment {
@@ -27,17 +30,17 @@ interface ProjectApartment {
   }[]
 }
 
-export default function AddClientModal({ onClientAdded }: AddProjectModalProps) {
+export default function EditClientModal({ onClientAdded, clientData }: EditClientModalProps) {
   const { isOpen, openModal, closeModal } = useModal()
 
   // State for form fields
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    status: "LEAD",
-    notes: "",
-    provenance: "",
+    name: clientData.name || "",
+    email: clientData.email || "",
+    phoneNumber: clientData.phoneNumber || "",
+    status: clientData.status || "LEAD",
+    notes: clientData.notes || "",
+    provenance: clientData.provenance || "",
     projectId: "",
     apartmentId: [] as string[],
   })
@@ -264,9 +267,9 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
   return (
     <>
-      <Button size="sm" onClick={openModal}>
-        Add Client
-      </Button>
+      <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
+        <PencilIcon onClick={openModal} />
+      </span>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Lead Information</h4>
@@ -276,7 +279,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Label>
                 Full Name <span className="text-red-500">*</span>
               </Label>
-              <Input name="name" type="text" placeholder="e.g. John Doe" onChange={handleChange} />
+              <Input name="name" type="text" placeholder="e.g. John Doe" onChange={handleChange} defaultValue={clientData.name} />
             </div>
             <div className="col-span-1">
               <Label>
@@ -286,7 +289,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 options={status}
                 name="status"
                 placeholder=""
-                defaultValue={status[1].value}
+                defaultValue={clientData.status}
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
@@ -294,14 +297,14 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Label>
                 Email <span className="text-red-500">*</span>
               </Label>
-              <Input name="email" type="text" placeholder="e.g. john.doe@example.com" onChange={handleChange} />
+              <Input name="email" type="text" placeholder="e.g. john.doe@example.com" onChange={handleChange} defaultValue={clientData.email} />
             </div>
 
             <div className="col-span-1">
               <Label>
                 Phone Number <span className="text-red-500">*</span>
               </Label>
-              <Input name="phoneNumber" type="phone" placeholder="e.g. 123-456-7890" onChange={handleChange} />
+              <Input name="phoneNumber" type="phone" placeholder="e.g. 123-456-7890" onChange={handleChange} defaultValue={clientData.phoneNumber} />
             </div>
 
             {/* Project and Apartment Selection Section */}
@@ -374,7 +377,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Label>
                 How did you hear about us? <span className="text-red-500">*</span>
               </Label>
-              <Input name="provenance" type="text" placeholder="e.g. Google, Referral" onChange={handleChange} />
+              <Input name="provenance" type="text" placeholder="e.g. Google, Referral" onChange={handleChange} defaultValue={clientData.provenance} />
             </div>
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
@@ -383,7 +386,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 name="notes"
                 placeholder="e.g. Notes about the client"
                 onChange={handleTextareaChange}
-                
+                defaultValue={clientData.notes || ""}
               />
             </div>
           </div>

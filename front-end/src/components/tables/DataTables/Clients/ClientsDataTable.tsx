@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { Client } from "@/types/client";
 import {
   Table,
   TableBody,
@@ -15,80 +16,9 @@ import {
   TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
-import { stat } from "fs";
-
-const tableRowData = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "johndoe@mail.me",
-    phone: "+212 234 567 890",
-    interest: "Royal Gardens Residences",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "janesmith@mail.me",
-    phone: "+212 987 654 321",
-    interest: "Ocean View Apartments",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    email: "alicejohnson@mail.me",
-    phone: "+212 456 789 012",
-    interest: "Mountain Heights Villas",
-  },
-  {
-    id: 4,
-    name: "Bob Brown",
-    email: "bobbrown@mail.me",
-    phone: "+212 321 654 987",
-    interest: "City Center Condos",
-  },
-  {
-    id: 5,
-    name: "Charlie Davis",
-    email: "charliedavis@mail.me",
-    phone: "+212 654 321 789",
-    interest: "Lakeside Residences",
-  },
-  {
-    id: 6,
-    name: "Diana Prince",
-    email: "dianaprince@mail.me",
-    phone: "+212 789 012 345",
-    interest: "Sunset Boulevard Estates",
-  },
-  {
-    id: 7,
-    name: "Clark Kent",
-    email: "clarkkent@mail.me",
-    phone: "+212 567 890 123",
-    interest: "Metropolis Towers",
-  },
-  {
-    id: 8,
-    name: "Bruce Wayne",
-    email: "brucewayne@mail.me",
-    phone: "+212 345 678 901",
-    interest: "Gotham Heights",
-  },
-  {
-    id: 9,
-    name: "Selina Kyle",
-    email: "selinakyle@mail.me",
-    phone: "+212 234 567 890",
-    interest: "Catwalk Condos",
-  },
-  {
-    id: 10,
-    name: "Barry Allen",
-    email: "barryallen@mail.me",
-    phone: "+212 123 456 789",
-    interest: "Speedster Residences",
-  }
-];
+import DeleteModal from "@/components/example/ModalExample/DeleteModal";
+import Badge from "@/components/ui/badge/Badge";
+import EditClientModal from "@/components/example/ModalExample/EditClientModal";
 type SortKey = "id" | "name" | "email" | "phone" | "interest";
 type SortOrder = "asc" | "desc";
 
@@ -99,36 +29,19 @@ export default function ClientsDataTable({clients}: any) {
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
 
-  type ClientData = {
-    name: string;
-    email: string;
-    phone: string;
-    interestedApartments: {
-      id: string;
-      floor: number;
-      number: number;
-      projectName: string;
-      project?: {
-        name: string;
-      }
-    }
-  };
-
-  const [clientsData, setClientsData] = useState<ClientData[]>([]);
+  const [clientsData, setClientsData] = useState<Client[]>([]);
   useEffect(() => {
       console.log("clientData", clients);
       // Check if data exists and is an array before mapping
       if (clients && Array.isArray(clients)) {
-          const formattedData = clients.map((item: any) => ({
+          const formattedData: Client[] = clients.map((item: any) => ({
+              id: item.id,
               name: item.name,
               email: item.email,
-              phone:item. phoneNumber,
-              interestedApartments: {
-                  id: item.interestedApartments[0]?.id || "",
-                  floor: item.interestedApartments[0]?.floor || 0,
-                  number: item.interestedApartments[0]?.number || 0,
-                  projectName: item.interestedApartments[0]?.project?.name || "",
-              },
+              phoneNumber: item.phoneNumber,
+              status: item.status,
+              provenance: item.provenance || "",
+              createdById: item.createdById || "",
           }));
           setClientsData(formattedData);
       } else {
@@ -257,7 +170,7 @@ export default function ClientsDataTable({clients}: any) {
                   { key: "name", label: "Project" },
                   { key: "email", label: "email" },
                   { key: "number", label: "number" },
-                  { key: "interest", label: "interest" },
+                  { key: "Status", label: "Status" },
                 ].map(({ key, label }) => (
                   <TableCell
                     key={key}
@@ -320,19 +233,23 @@ export default function ClientsDataTable({clients}: any) {
                     {item.email}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.phone}
+                    {item.phoneNumber}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {`${item.interestedApartments?.projectName || 'N/A'} - Apartment ${item.interestedApartments?.number || 'N/A'} (${item.interestedApartments?.floor || 'N/A'} floor)`}
+                    <Badge size="sm" color={item.status === "CLIENT" ? "primary" : "info"} variant="light">
+                      {item.status.toLocaleLowerCase() === "client" ? "Client" : "Lead"}
+                    </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
-                      <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500">
-                        <TrashBinIcon />
-                      </button>
-                      <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400">
-                        <PencilIcon />
-                      </button>
+                      <DeleteModal  
+                        itemId={item.id.toString()} 
+                        heading={"Delete client"} 
+                        description={`Are you sure you want to delete ${item.name}? this action is irreversible.`} 
+                      />
+                      <EditClientModal 
+                        clientData={item}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
