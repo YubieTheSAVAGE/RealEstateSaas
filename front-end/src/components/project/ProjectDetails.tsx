@@ -34,7 +34,7 @@ export default function ProjectDetails({ projectId }: ProjectDetailsProps) {
     }    return (
         <div>
             <ProjectCard ProjectDetails={project} />
-            <PropertiesTable ProjectDetails={project.properties} />
+            <PropertiesTable ProjectDetails={project.apartments} />
         </div>
     );
 }

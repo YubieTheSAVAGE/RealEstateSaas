@@ -96,7 +96,7 @@ const tableRowData = [
 type SortKey = "id" | "name" | "email" | "phone" | "status" | "totalSales" | "monthlySales";
 type SortOrder = "asc" | "desc";
 
-export default function AgentsDataTable() {
+export default function AgentsDataTable({ refreshTrigger = 0 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
@@ -116,7 +116,7 @@ export default function AgentsDataTable() {
     };
 
     fetchData();
-  }, []);
+  }, [refreshTrigger]); // Add refreshTrigger as a dependency to re-fetch when it changes
 
   // const filteredAndSortedData = useMemo(() => {
   //   return data

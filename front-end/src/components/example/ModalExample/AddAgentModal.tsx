@@ -8,7 +8,11 @@ import { useModal } from "@/hooks/useModal";
 import Select from "../../form/Select";
 import addAgents from "@/app/(admin)/agents/addAgents";
 
-export default function AddAgentModal() {
+interface AddAgentModalProps {
+  onAgentAdded?: () => void; // Callback to refresh agent list
+}
+
+export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -81,9 +85,14 @@ export default function AddAgentModal() {
     });
     
     try {
-      // Replace with your actual API call
       await addAgents(formDataToSend);
       console.log("Saving agent with data:", formData);
+      
+      // Call the callback function to refresh the agent list
+      if (onAgentAdded) {
+        onAgentAdded();
+      }
+      
       closeModal();
     } catch (error) {
       console.error("Error saving agent:", error);

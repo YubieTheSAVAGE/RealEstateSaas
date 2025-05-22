@@ -8,7 +8,8 @@ import EditProjectModal from "@/components/example/ModalExample/EditProjectModal
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
-
+import deleteProperties from "@/components/tables/DataTables/Projects/deleteProperties";
+import { useRouter } from "next/navigation";
 
 interface ProjectCardProps {
   ProjectDetails: any;
@@ -25,6 +26,14 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  const router = useRouter();
+
+  const handleDelete = async (id: string) => {
+      const success: boolean = await deleteProperties(id);
+      router.push("/projects");
+  }
+
 
   const calculateTotalSales = (ProjectDetails: any) => {
     // Check if apartments array exists
@@ -129,10 +138,7 @@ export default function ProjectCard({ ProjectDetails }: ProjectCardProps) {
                 itemId={ProjectDetails.id}
                 heading="Delete Project"
                 description="Are you sure you want to delete this project? This action cannot be undone."
-                onDelete={() => {
-                  // Handle delete action here
-                  console.log("Project deleted");
-                }}
+                onDelete={handleDelete}
                 details={true}
               />
             </Dropdown>

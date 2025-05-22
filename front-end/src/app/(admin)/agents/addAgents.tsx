@@ -23,7 +23,7 @@ export default async function addAgents(formData: FormData)
                 password: formData.get("password"), // Will be hashed on the server
             }),
         });
-
+        console.log(res)
         if (!res.ok) {
             console.log("Error adding agent:", res);
         }
