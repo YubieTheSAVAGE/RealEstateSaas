@@ -17,8 +17,16 @@ export default function Ecommerce() {
     
     const fetchApartements = useCallback(async () => {
         // API call to fetch projects
-        const data = await getApartements();
-        setApartementsData(data);
+        const role = await getUserRoleFromToken();
+        setUserRole(role as string);
+        if (role == "ADMIN") {
+            const data = await getApartements();
+            setApartementsData(data);
+        }else {
+            const data = await getApartements();
+            const filteredData = data.filter((item:any) => item.userId === role);
+            setApartementsData(filteredData);
+        }
     }, []);
     
     useEffect(() => {
@@ -44,10 +52,11 @@ export default function Ecommerce() {
       {/* <div className="col-span-12 xl:col-span-5">
         <DemographicCard />
       </div> */}
-
-      <div className="width-full col-span-full">
-        <PerformingAgents />
-      </div>
+      {userRole == "ADMIN" && (
+        <div className="width-full col-span-full">
+          <PerformingAgents />
+        </div>
+      )}
       <div className="col-span-12">
         <RecentActivity />
       </div>

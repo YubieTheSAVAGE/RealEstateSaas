@@ -92,4 +92,12 @@ module.exports = async function (fastify) {
     },
     controller.deleteComment
   );
+  fastify.get(
+    "/tasks/user/:userId",
+    {
+      onRequest: [fastify.authenticate],
+      preHandler: [fastify.isAgentOrAdmin],
+    },
+    controller.getTaskByUser
+  );
 };

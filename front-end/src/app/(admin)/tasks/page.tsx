@@ -2,34 +2,61 @@
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import KanbanBoard from "@/components/task/kanban/KanbanBoard";
 import TaskHeader from "@/components/task/TaskHeader";
-import { Metadata } from "next";
-import React, { use, useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import getTasks from "@/components/task/kanban/getTask"
+import getTaskByUser from "@/components/task/kanban/getTaskByUser";
 import { Task } from "@/components/task/kanban/types/types";
-  
-
-// export const metadata: Metadata = {
-//   title: "Immo360 | Tasks",
-//   description: "This is Immo360 Tasks Page",
-// };
+import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
 
 export default function TaskKanban() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  useEffect(() => {
-    const fetchTasks = async () => {
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
+  
+  const fetchTasks = async () => {
+    const role = await getUserRoleFromToken();
+    if (role === "ADMIN") {
       const data = await getTasks();
       console.log("Fetched Tasks:", data);
       setTasks(data);
-    };
+    }else
+    {
+      const data = await getTaskByUser();
+      setTasks(data);
+    }
+  };
+  
+  // Fetch tasks whenever refreshTrigger changes
+  useEffect(() => {
     fetchTasks();
+  }, [refreshTrigger]);
+  
+  // Callback to trigger refresh when a task is added
+  const handleTaskAdded = useCallback(() => {
+    setRefreshTrigger(prev => prev + 1);
   }, []);
+  
+  // Handle tasks updates from KanbanBoard
+  const handleTasksUpdated = useCallback((updatedTasks: Task[]) => {
+    setTasks(updatedTasks);
+  }, []);
+  
   const [selectedTaskGroup, setSelectedTaskGroup] = useState<string>("All");
+  
   return (
     <div>
       <PageBreadcrumb pageTitle="Task Kanban" />
       <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-        <TaskHeader selectedTaskGroup={selectedTaskGroup} tasks={tasks} setSelectedTaskGroup={setSelectedTaskGroup}/>
-        <KanbanBoard selectedTaskGroup={selectedTaskGroup} tasks={tasks} />
+        <TaskHeader 
+          selectedTaskGroup={selectedTaskGroup} 
+          tasks={tasks} 
+          setSelectedTaskGroup={setSelectedTaskGroup}
+          onTaskAdded={handleTaskAdded}
+        />
+        <KanbanBoard 
+          selectedTaskGroup={selectedTaskGroup} 
+          tasks={tasks}
+          onTasksUpdated={handleTasksUpdated} 
+        />
       </div>
     </div>
   );

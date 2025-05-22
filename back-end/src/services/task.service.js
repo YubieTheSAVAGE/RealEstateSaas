@@ -4,10 +4,11 @@ const prisma = require("../utils/prisma");
 const getAllTasks = async () => {
     return prisma.task.findMany({
         include: {
-        comments: true,
+          comments: true,
+          createdBy: true, // Include the user who created the task
         },
         orderBy: {
-        createdAt: 'desc',
+          createdAt: 'desc',
         },
     });
 };
@@ -22,7 +23,8 @@ const getTaskById = async (id, includeComments = true) => {
   const task = await prisma.task.findUnique({
     where: { id },
     include: { 
-      comments: includeComments 
+      comments: includeComments,
+      createdBy: true // Include the user who created the task
     },
   });
 
@@ -34,8 +36,29 @@ const getTaskById = async (id, includeComments = true) => {
 };
 
 
+/**
+ * Get all tasks created by a specific user
+ * @param {number} userId - User ID
+ * @returns {Promise<Array>} List of tasks created by the user
+ */
+const getTaskByUser = async (userId) => {
+  return prisma.task.findMany({
+    where: {
+      createdById: userId
+    },
+    include: {
+      comments: true,
+      createdBy: true // Include the user who created the task
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+};
+
+
 const createTask = async (data) => {
-  const { title, description, dueDate, status } = data;
+  const { title, description, dueDate, status, createdBy } = data;
   
   return prisma.task.create({
     data: {
@@ -43,6 +66,10 @@ const createTask = async (data) => {
       description,
       dueDate: new Date(dueDate),
       status: status || 'TODO',
+      createdById: createdBy, // Add the user ID as createdById
+    },
+    include: {
+      createdBy: true, // Include the user who created the task
     },
   });
 };
@@ -202,7 +229,7 @@ const updateTaskStatus = async (id, status) => {
 
 /**
  * Count tasks by status
- * @returns {Promise<Object>} Count of tasks by status
+ * @returns {Promise<Object} Count of tasks by status
  */
 const getTasksCount = async () => {
   const counts = await prisma.task.groupBy({
@@ -238,6 +265,7 @@ module.exports = {
   getTaskComments,
   deleteComment,
   updateTaskStatus,
+  getTaskByUser,
   getTasksCount
 };
 

@@ -16,9 +16,10 @@ interface TaskHeaderProps {
   selectedTaskGroup: string;
   setSelectedTaskGroup: (group: string) => void;
   tasks: Task[];
+  onTaskAdded?: () => void; // Add this callback prop
 }
 
-export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, tasks }: TaskHeaderProps) {
+export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, tasks, onTaskAdded }: TaskHeaderProps) {
   
   const { isOpen, openModal, closeModal } = useModal();
   const [message, setMessage] = useState("");
@@ -92,6 +93,9 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
       description: "",
     });
     closeModal();
+    if (onTaskAdded) {
+      onTaskAdded(); // Call the callback if provided
+    }
   }
 
 

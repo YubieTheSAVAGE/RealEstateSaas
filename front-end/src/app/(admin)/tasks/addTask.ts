@@ -19,12 +19,15 @@ export default async function addTask(formData: FormData)
         });
 
         if (!res.ok) {
-            console.log("Error adding task:", res);
+            console.error("Error adding task:", res);
+            return null;
         }
 
         const data = await res.json();
         console.log("Task added successfully:", data);
-    } finally
-    {
+        return data; // Return the newly created task
+    } catch (error) {
+        console.error("Error in addTask:", error);
+        return null;
     }
 };

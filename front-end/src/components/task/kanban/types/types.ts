@@ -5,6 +5,7 @@ export interface Task {
   dueTime: string;
   description: string;
   status: string;
+  createdBy?: { name: string };
   comments: [];
 }
 

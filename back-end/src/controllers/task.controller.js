@@ -10,6 +10,17 @@ async function getAllTasks(request, reply) {
   }
 }
 
+async function getTaskByUser(request, reply) {
+    try {
+        const userId = request.user?.id;
+        const tasks = await taskService.getTaskByUser(userId);
+        return reply.send(tasks);
+    } catch (err) {
+        request.log.error(err);
+        return reply.code(err.statusCode || 500).send({ error: err.message });
+    }
+}
+
 async function getTaskById(request, reply) {
     try {
         const taskId = request.params.id;
@@ -30,11 +41,15 @@ const createTask = async (req, res) => {
             return res.code(400).send({ message: 'Title and description are required' });
         }
         
+        // Get the user ID from the authenticated request
+        const userId = req.user?.id;
+        
         const task = await taskService.createTask({
-        title,
-        description,
-        dueDate,
-        status,
+            title,
+            description,
+            dueDate,
+            status,
+            createdBy: userId, // Add the user ID as createdBy
         });
         
         return res.code(200).send(task);
@@ -186,5 +201,6 @@ module.exports = {
   getTaskComments,
   deleteComment,
   updateTaskStatus,
-  getTasksCount
+  getTasksCount,
+  getTaskByUser
 };

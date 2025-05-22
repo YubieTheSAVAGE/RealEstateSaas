@@ -1,10 +1,10 @@
-import React, { useRef, useState, JSX } from "react";
+import React, { useRef, useState, JSX, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { Task, DropResult } from "./types/types";
 import Image from "next/image";
 import TaskDetailModal from "../detail/TaskDetailModal";
 import { updateTask, addComment, getTaskComments } from "../detail/taskDetailActions";
-
+import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
 interface TaskItemProps {
   task: Task;
   index: number;
@@ -32,6 +32,15 @@ const TaskItem: React.FC<TaskItemProps> = ({
       setIsModalOpen(true);
     }
   };
+  const [role, setRole] = useState<string>("");
+  useEffect(() => {
+    const fetchRole = async () => {
+      const userRole = await getUserRoleFromToken();
+      setRole(userRole as string);
+    };
+    fetchRole();
+  }, []);
+    
   
   // Handle task updates from the modal
   const handleTaskUpdate = async (updatedTask: Task) => {
@@ -113,9 +122,15 @@ const TaskItem: React.FC<TaskItemProps> = ({
       >
         <div className="space-y-4">
           <div>
+            {role === "ADMIN" && (
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                {currentTask.createdBy?.name}
+              </p>
+            )}
             <h4 className="mb-5 mr-10 text-base text-gray-800 dark:text-white/90">
               {currentTask.title}
             </h4>
+
             {/* Task description preview - show first 60 characters if available */}
             {currentTask.description && (
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
