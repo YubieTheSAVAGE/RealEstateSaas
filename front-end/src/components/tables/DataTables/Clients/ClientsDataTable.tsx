@@ -19,6 +19,8 @@ import PaginationWithButton from "./PaginationWithButton";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import Badge from "@/components/ui/badge/Badge";
 import EditClientModal from "@/components/example/ModalExample/EditClientModal";
+import { FaEye } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 type SortKey = "id" | "name" | "email" | "phone" | "interest";
 type SortOrder = "asc" | "desc";
 
@@ -28,6 +30,7 @@ export default function ClientsDataTable({clients}: any) {
   const [sortKey, setSortKey] = useState<SortKey>("id");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   const [clientsData, setClientsData] = useState<Client[]>([]);
   useEffect(() => {
@@ -247,6 +250,13 @@ export default function ClientsDataTable({clients}: any) {
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
+                      <button
+                          className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-600"
+                          onClick={() => {router.push(`/clients/${item.id}`)}}
+                      >
+                        <FaEye />
+                      </button> 
+                      
                       <DeleteModal  
                         itemId={item.id.toString()} 
                         heading={"Delete client"} 
