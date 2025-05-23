@@ -6,11 +6,11 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import PropertiesListDropdownFilter from "../example/DropdownExample/PropertiesListDropdownFilter";
-import { useEffect, useState } from "react";
+import PropertiesListDropdownFilter, { PropertyFilters } from "../example/DropdownExample/PropertiesListDropdownFilter";
+import { useEffect, useMemo, useState } from "react";
 import PaginationWithIcon from "../ui/pagination/PaginationWitIcon";
 
-const type = {
+const typeMap = {
   APARTMENT: "Appartement",
   VILLA: "Villa",
   PENTHOUSE: "Penthouse",
@@ -28,13 +28,51 @@ const PAGE_SIZE = 10;
 
 export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: any[] }) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState<PropertyFilters>({
+    available: false,
+    reserved: false,
+    sold: false,
+    apartment: false,
+    villa: false,
+    duplex: false,
+    store: false,
+    land: false,
+  });
 
-  const availableProperties = ProjectDetails || [];
-  const totalPages = Math.ceil(availableProperties.length / PAGE_SIZE);
-  const currentData = availableProperties.slice(
+  // Apply filters to properties
+  const filteredProperties = useMemo(() => {
+    return ProjectDetails.filter((property) => {
+      const matchStatus =
+        (!filters.available && !filters.reserved && !filters.sold) ||
+        (filters.available && property.status?.toUpperCase() === "AVAILABLE") ||
+        (filters.reserved && property.status?.toUpperCase() === "RESERVED") ||
+        (filters.sold && property.status?.toUpperCase() === "SOLD");
+
+      const matchType =
+        (!filters.apartment &&
+          !filters.villa &&
+          !filters.duplex &&
+          !filters.store &&
+          !filters.land) ||
+        (filters.apartment && property.type === "APARTMENT") ||
+        (filters.villa && property.type === "VILLA") ||
+        (filters.duplex && property.type === "DUPLEX") ||
+        (filters.store && property.type === "STORE") ||
+        (filters.land && property.type === "LAND");
+
+      return matchStatus && matchType;
+    });
+  }, [ProjectDetails, filters]);
+
+  const totalPages = Math.ceil(filteredProperties.length / PAGE_SIZE);
+  const currentData = filteredProperties.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to page 1 whenever filters change
+  }, [filters]);
 
   return (
     <div className="h-full rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -45,7 +83,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
           </h3>
         </div>
         <div className="flex items-center gap-3">
-          <PropertiesListDropdownFilter />
+          <PropertiesListDropdownFilter onFilterChange={setFilters} initialFilters={filters} />
         </div>
       </div>
 
@@ -68,16 +106,16 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
                     <div className="flex items-center gap-3">
                       <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {(type[product.type as keyof typeof type] || product.name || product.title) + " " + (product.number || "") + " (" + product.floor + ")"}
+                          {(typeMap[product.type as keyof typeof typeMap] || product.name || product.title) + " " + (product.number || "") + " (" + product.floor + ")"}
                         </p>
                         <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                          {type[product.type as keyof typeof type] || product.variants || "Standard"}
+                          {typeMap[product.type as keyof typeof typeMap] || product.variants || "Standard"}
                         </span>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {type[product.type as keyof typeof type] || product.type || "Residential"}
+                    {typeMap[product.type as keyof typeof typeMap] || product.type || "Residential"}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {product.price ? `$${product.price}` : "N/A"}
@@ -101,18 +139,19 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
             ) : (
               <TableRow>
                 <TableCell colSpan={4} className="py-6 text-center text-gray-500 dark:text-gray-400">
-                  No properties available
+                  No properties match the selected filters
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-
-        <PaginationWithIcon
-          totalPages={totalPages}
-          initialPage={1}
-          onPageChange={setCurrentPage}
-        />
+        <div className="flex items-center text-center justify-between mt-4">
+          <PaginationWithIcon
+            totalPages={totalPages}
+            initialPage={1}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
     </div>
   );
