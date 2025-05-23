@@ -34,7 +34,7 @@ export default function ProjectDetails({ projectId }: ProjectDetailsProps) {
     }    return (
         <div>
             <ProjectCard ProjectDetails={project} onRefresh={fetchProject}  />
-            <PropertiesTable ProjectDetails={project.apartments} />
+            <PropertiesTable ProjectDetails={project.properties || []} />
         </div>
     );
 }
