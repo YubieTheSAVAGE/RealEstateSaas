@@ -41,9 +41,11 @@ export default function ClientNoteCard({ clientNote }: { clientNote: string }) {
             </Dropdown>
           </div>
           {!clientNote && (
-            <CardDescription>
-              No notes available
-            </CardDescription>
+            <div className="text-center mt-16">
+              <CardDescription>
+                No notes available
+              </CardDescription>
+            </div>
           )}
           {clientNote && (
             <CardDescription>
