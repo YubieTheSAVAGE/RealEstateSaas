@@ -6,9 +6,9 @@ import Badge from "@/components/ui/badge/Badge";
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
-import EditClientModal from "@/components/example/ModalExample/EditClientModal";
+import ClientNoteModal from "@/components/example/ModalExample/ClientNoteModal";
 
-export default function ClientCard({ client }: { client: Client }) {
+export default function ClientNoteCard({ clientNote }: { clientNote: string }) {
   const [isOpen, setIsOpen] = useState(false);
   
     function toggleDropdown() {
@@ -22,14 +22,11 @@ export default function ClientCard({ client }: { client: Client }) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
       <div className="relative">
-        <div className="mb-5 flex h-14 max-w-14 items-center justify-center rounded-[10.5px] bg-brand-50 text-brand-500 dark:bg-brand-500/10">
+        {/* <div className="mb-5 flex h-14 max-w-14 items-center justify-center rounded-[10.5px] bg-brand-50 text-brand-500 dark:bg-brand-500/10">
           <CgProfile size={28} />
-        </div>
+        </div> */}
         <CardTitle>
-          {client.name} 
-          <Badge className="ml-4" size="md" color={client.status === "CLIENT" ? "primary" : "info"} variant="light">
-            {client.status.toLocaleLowerCase() === "client" ? "Client" : "Lead"}
-          </Badge>
+          Note
         </CardTitle>
         <div className="absolute right-0 top-0 h-fit">
             <button onClick={toggleDropdown} className="dropdown-toggle">
@@ -40,22 +37,20 @@ export default function ClientCard({ client }: { client: Client }) {
               onClose={closeDropdown}
               className="w-40 p-2"
             >
-              <EditClientModal clientData={client} details={true} />
-              <DeleteModal
-                itemId={String(client.id)}
-                heading="Delete Client"
-                description="Are you sure you want to delete this client? This action cannot be undone."
-                onDelete={() => {}}
-                details={true}
-              />
+              <ClientNoteModal clientNote={clientNote} />
             </Dropdown>
           </div>
-        <div>
-          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Email: <span className="font-normal">{client.email}</span></p>
-          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Phone: <span className="font-normal">{client.phoneNumber}</span></p>
-
+          {!clientNote && (
+            <CardDescription>
+              No notes available
+            </CardDescription>
+          )}
+          {clientNote && (
+            <CardDescription>
+              {clientNote}
+            </CardDescription>
+          )}
         </div>
-      </div>
     </div>
   );
 }

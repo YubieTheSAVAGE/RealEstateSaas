@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { get } from "http";
 import getClientById from "./getClientById";
 import ClientCard from "../cards/card-with-icon/ClientCard";
+import ClientNoteCard from "../cards/card-with-icon/ClientNoteCard";
 
 interface ClientDetailsProps {
     clientId: string;
@@ -32,6 +33,7 @@ export default function ClientDetails({ clientId }: ClientDetailsProps) {
         <div>
             <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
                 <ClientCard client={client} />
+                <ClientNoteCard clientNote={client.notes || ""} />
             </div>
         </div>
     );

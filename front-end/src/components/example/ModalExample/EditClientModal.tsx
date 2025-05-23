@@ -15,6 +15,7 @@ import MultiSelect from "@/components/form/MultiSelect"
 import { PencilIcon } from "@/icons"
 import type { Client } from "@/types/client"
 import { Property } from "@/types/property"
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem"
 
 // Custom textarea component to replace shadcn/ui textarea
 const CustomTextarea = ({
@@ -45,6 +46,7 @@ const CustomTextarea = ({
 interface EditClientModalProps {
   onClientUpdated?: () => void // Callback to refresh client list
   clientData: Client
+  details?: boolean
 }
 
 interface ProjectApartment {
@@ -56,7 +58,7 @@ interface ProjectApartment {
   }[]
 }
 
-export default function EditClientModal({ onClientUpdated, clientData }: EditClientModalProps) {
+export default function EditClientModal({ onClientUpdated, clientData, details }: EditClientModalProps) {
   const { isOpen, openModal, closeModal } = useModal()
 
   // State for form fields
@@ -363,9 +365,18 @@ export default function EditClientModal({ onClientUpdated, clientData }: EditCli
 
   return (
     <>
-      <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
-        <PencilIcon onClick={openModal} />
-      </span>
+      {details ? (
+        <DropdownItem 
+          className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
+          onClick={openModal}
+        >
+          Edit
+        </DropdownItem>
+      ) : (
+        <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
+          <PencilIcon onClick={openModal} />
+        </span>
+      )}
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Edit Client Information</h4>
