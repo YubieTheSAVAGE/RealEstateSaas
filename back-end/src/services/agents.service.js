@@ -11,7 +11,6 @@ const SALT_ROUNDS = 10;
 async function getTopPerformingAgents(limit = 5) {
   // Get all agents
   const agents = await prisma.user.findMany({
-    where: { role: 'AGENT' },
     select: {
       id: true,
       name: true,
@@ -26,6 +25,7 @@ async function getTopPerformingAgents(limit = 5) {
               id: true,
               price: true,
               status: true,
+              updatedAt: true,
               project: {
                 select: {
                   id: true,
@@ -69,10 +69,37 @@ async function getTopPerformingAgents(limit = 5) {
         maxSales = count;
       }
     });
-    
-    // Calculate month-over-month sales growth (placeholder logic, would need transaction dates)
-    // For now, we'll generate a random growth percentage between -15 and +20
-    const monthlySales = Math.random() * 35 - 15;
+      const date = new Date();
+    // If no date is provided, use current date
+
+    // Calculate month-over-month sales growth based on the apartment updatedAt dates
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const previousMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+    // Get apartments sold in current month and previous month
+    const currentMonthSales = soldApartments.filter(apt => {
+      const aptDate = new Date(apt.updatedAt);
+      return aptDate.getMonth() === currentMonth && aptDate.getFullYear() === currentYear;
+    });
+
+    const previousMonthSales = soldApartments.filter(apt => {
+      const aptDate = new Date(apt.updatedAt);
+      return aptDate.getMonth() === previousMonth && aptDate.getFullYear() === previousMonthYear;
+    });
+
+    // Calculate total revenue for each month
+    const currentMonthRevenue = currentMonthSales.reduce((total, apt) => total + apt.price, 0);
+    const previousMonthRevenue = previousMonthSales.reduce((total, apt) => total + apt.price, 0);
+
+    // Calculate month-over-month growth percentage
+    let monthlySales = 0;
+    if (previousMonthRevenue > 0) {
+      monthlySales = ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
+    } else if (currentMonthRevenue > 0) {
+      monthlySales = 100; // If no sales in previous month but sales in current month, 100% growth
+    }
     
     return {
       id: agent.id,

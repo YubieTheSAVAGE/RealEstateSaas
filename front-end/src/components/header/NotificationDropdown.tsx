@@ -6,6 +6,7 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import getTasks, { TaskNotification, TaskNotifications, getTaskNotifications } from "../task/notifications/taskNotifications";
 import TaskNotificationItem from "../task/notifications/TaskNotificationItem";
+import getTaskByUser from "../task/kanban/getTaskByUser";
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +20,7 @@ export default function NotificationDropdown() {
     const fetchTasks = async () => {
       try {
         setLoading(true);
-        const tasksData = await getTasks();
+        const tasksData = await getTaskByUser();
         setTasks(tasksData);
         
         const notificationsData = await getTaskNotifications(tasksData);

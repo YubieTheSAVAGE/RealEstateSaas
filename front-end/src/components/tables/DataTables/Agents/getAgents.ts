@@ -16,6 +16,7 @@ export default async function getAgent()
         });
         if (!res.ok) {
             console.log("Error getting agents:", res);
+            return [];
         }
         const data = await res.json();
         console.log("agents data:", data);
