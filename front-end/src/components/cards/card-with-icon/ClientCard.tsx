@@ -51,9 +51,9 @@ export default function ClientCard({ client }: { client: Client }) {
             </Dropdown>
           </div>
         <div>
-          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Email: <span className="font-normal">{client.email}</span></p>
-          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Phone: <span className="font-normal">{client.phoneNumber}</span></p>
-
+          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Email: <span className="ml-2 font-normal">{client.email}</span></p>
+          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Phone: <span className="ml-2 font-normal">{client.phoneNumber}</span></p>
+          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Provenance: <span className="ml-2 font-normal">{client.provenance}</span></p>
         </div>
       </div>
     </div>
