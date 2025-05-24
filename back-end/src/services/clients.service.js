@@ -36,6 +36,13 @@ async function findClientById(clientId, user) {
           },
         },
       },
+      apartments: {
+        include: {
+          project: {
+            select: { id: true, name: true },
+          },
+        },
+      },
     },
   });
   if (!client) {

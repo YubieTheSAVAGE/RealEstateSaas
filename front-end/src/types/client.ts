@@ -9,6 +9,6 @@ export interface Client {
   provenance: string;
   status: 'LEAD' | 'CLIENT';
   createdById: number;
-  properties?: Property[];
+  apartments?: Property[];
   interestedApartments?: Property[];
 }

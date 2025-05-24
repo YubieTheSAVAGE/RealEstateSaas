@@ -9,7 +9,9 @@ import Badge from "../ui/badge/Badge";
 import PropertiesListDropdownFilter, { PropertyFilters } from "../example/DropdownExample/PropertiesListDropdownFilter";
 import { useEffect, useMemo, useState } from "react";
 import PaginationWithIcon from "../ui/pagination/PaginationWitIcon";
+import { Property } from "@/types/property";
 import { FaEye } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const typeMap = {
   APARTMENT: "Appartement",
@@ -27,7 +29,7 @@ const typeMap = {
 
 const PAGE_SIZE = 10;
 
-export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: any[] }) {
+export default function InterestTable({ ProjectDetails }: { ProjectDetails: Property[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<PropertyFilters>({
     available: false,
@@ -39,6 +41,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
     store: false,
     land: false,
   });
+  const router = useRouter();
 
   // Apply filters to properties
   const filteredProperties = useMemo(() => {
@@ -80,7 +83,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Available Properties
+            Interested Properties
           </h3>
         </div>
         <div className="flex items-center gap-3">
@@ -120,7 +123,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
                     {typeMap[product.type as keyof typeof typeMap] || product.type || "Residential"}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {product.price ? `${product.price} MAD` : "N/A"}
+                    {product.price ? `$${product.price}` : "N/A"}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     <Badge
@@ -138,7 +141,10 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     <div className="flex items-center gap-2">
-                      <button className="text-blue-500 hover:underline">
+                      <button className="text-gray-600 hover:text-blue-600 dark:hover:text-gray-300 cursor-pointer" onClick={() => {
+                        router.push(`/properties/${product.id}`);
+                      }
+                      }>
                         <FaEye />
                       </button>
                     </div>

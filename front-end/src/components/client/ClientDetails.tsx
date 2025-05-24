@@ -7,6 +7,7 @@ import getClientById from "./getClientById";
 import ClientCard from "../cards/card-with-icon/ClientCard";
 import ClientNoteCard from "../cards/card-with-icon/ClientNoteCard";
 import ClientPropertiesCard from "../cards/card-with-icon/ClientPropertiesCard";
+import InterestTable from "../ecommerce/InterestTable";
 
 interface ClientDetailsProps {
     clientId: string;
@@ -30,13 +31,17 @@ export default function ClientDetails({ clientId }: ClientDetailsProps) {
     if (!client) {
         return <div>Loading...</div>;
     }
+    console.log("Client details:", client.apartments);
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
                 <ClientCard client={client} />
                 <ClientNoteCard clientNote={client.notes || ""} />
-                <ClientPropertiesCard ClientProperties={client.properties || []} />
+                <ClientPropertiesCard ClientProperties={client.apartments || []} />
+                <div className="col-span-2">
+                </div>
             </div>
+                    <InterestTable ProjectDetails={client.interestedApartments || []} />
         </div>
     );
 }

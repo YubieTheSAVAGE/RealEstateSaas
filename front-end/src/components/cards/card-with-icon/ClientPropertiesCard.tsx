@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { CardDescription, CardTitle } from "../../ui/card";
 import { Property } from "@/types/property";
+import { FaEye } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function ClientPropertiesCard({ ClientProperties }: { ClientProperties: Property[] }) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   
     function toggleDropdown() {
       setIsOpen(!isOpen);
@@ -42,10 +45,18 @@ export default function ClientPropertiesCard({ ClientProperties }: { ClientPrope
             </div>
           )}
           {ClientProperties.map((property) => (
-            <CardDescription key={property.id}>
-              {property.project.name} - {property.type} - {property.price ? `${property.price.toLocaleString()}` : "Price not available"}
-            </CardDescription>
-          ))}
+            <div className="flex items-center justify-between mb-4" key={property.id}>
+              <CardDescription key={property.id}>
+                {property.project.name} - {property.type} ({property.number}) - {property.price ? <span className="text-success-500">{`${property.price.toLocaleString()} MAD`}</span> : "Price not available"}
+              </CardDescription>
+              <FaEye 
+               className="inline-block ml-2 text-gray-600 hover:text-blue-600 dark:hover:text-gray-300 cursor-pointer" 
+                onClick={() => {
+                  router.push(`/properties/${property.id}`);
+                }}
+              />
+            </div>
+            ))}
         </div>
     </div>
   );
