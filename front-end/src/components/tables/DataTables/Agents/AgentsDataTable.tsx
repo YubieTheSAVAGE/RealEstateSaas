@@ -22,6 +22,7 @@ import { FaEye } from "react-icons/fa";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import EditAgentModal from "@/components/example/ModalExample/EditAgentModal";
 import { useRouter } from "next/navigation";
+import deleteAgent from "./deleteAgent";
 
 const tableRowData = [
   {
@@ -100,7 +101,7 @@ const tableRowData = [
 type SortKey = "id" | "name" | "email" | "phone" | "status" | "totalSales" | "monthlySales";
 type SortOrder = "asc" | "desc";
 
-export default function AgentsDataTable({ refreshTrigger = 0 }) {
+export default function   AgentsDataTable({ agents, onClientEdit }: { agents: any[], onClientEdit: (id: number) => void }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
@@ -112,16 +113,29 @@ export default function AgentsDataTable({ refreshTrigger = 0 }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getAgent();
-        setData(data);
+        setData(agents);
       } catch (error) {
         console.error("Error fetching data:", error);
         setData([]);
       }
     };
-
     fetchData();
-  }, [refreshTrigger]); // Add refreshTrigger as a dependency to re-fetch when it changes
+  }); // Add refreshTrigger as a dependency to re-fetch when it changes
+
+
+  const handleDelete = async (id: string) => {
+    // Implement the delete logic here
+    // For example, you might call an API to delete the agent
+    const success: boolean = await deleteAgent(id);
+    if (success) {
+      // Optionally, you can refresh the data after deletion
+      if (onClientEdit) {
+        onClientEdit(Number(id)); // Convert string id to number since onClientEdit expects a number
+      }
+    } else {
+      console.error("Failed to delete agent with id:", id);
+    }
+  }
 
   // const filteredAndSortedData = useMemo(() => {
   //   return data
@@ -327,7 +341,7 @@ export default function AgentsDataTable({ refreshTrigger = 0 }) {
                         onClick={() => router.push(`/agents/${item.id}`)}
                       />
                       <DeleteModal itemId={item.id} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {}} />
-                      <EditAgentModal AgentDetails={item} />
+                      <EditAgentModal AgentDetails={item} onAgentEdited={() => onClientEdit(item.id)} />
                     </div>
                   </TableCell>
                 </TableRow>

@@ -4,16 +4,20 @@ import AgentsDataTable from "@/components/tables/DataTables/Agents/AgentsDataTab
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { Metadata } from "next";
 import AddAgentModal from "@/components/example/ModalExample/AddAgentModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import getAgents from "@/components/tables/DataTables/Agents/getAgents";
 
 export default function AgentsPage() {
   // State to trigger a refresh of agent data
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  // Function to increment the refresh trigger, causing the data to reload
-  const handleAgentAdded = () => {
-    setRefreshTrigger((prev) => prev + 1);
-  };
+  const [agents, setAgents] = useState([]);
+  const fetchAgents = async () => {
+    const data = await getAgents();
+    setAgents(data);
+  }
+  useEffect(() => {
+    fetchAgents();
+  }
+  , []);
 
   return (
     <>
@@ -24,9 +28,9 @@ export default function AgentsPage() {
         >
           Agents
         </h2>
-        <AddAgentModal onAgentAdded={handleAgentAdded} />
+        <AddAgentModal onAgentAdded={fetchAgents} />
       </div>
-      <AgentsDataTable refreshTrigger={refreshTrigger} />
+      <AgentsDataTable agents={agents} onClientEdit={fetchAgents} />
     </>
   );
 }

@@ -12,24 +12,26 @@ import { User } from "@/types/user";
 import { PencilIcon } from "@/icons";
 import { Agent } from "@/types/Agent";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
+import updateAgent from "@/app/(admin)/agents/updateAgent";
 
 interface AddAgentModalProps {
-  onAgentAdded?: () => void; // Callback to refresh agent list
+  // onAgentAdded?: () => void; // Callback to refresh agent list
+  onAgentEdited?: () => void; // Callback to refresh agent list after editing
   AgentDetails: Agent;
-  details?: boolean; // Optional prop to indicate if it's in details mode
+  // details?: boolean; // Optional prop to indicate if it's in details mode
 }
 
-export default function EditAgentModal({ onAgentAdded, AgentDetails, details }: AddAgentModalProps) {
+export default function EditAgentModal({AgentDetails , onAgentEdited}: AddAgentModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
   const [formData, setFormData] = useState({
+    id: AgentDetails.id,
     name: AgentDetails.name,
     email: AgentDetails.email,
     phoneNumber: AgentDetails.phoneNumber,
     status: AgentDetails.status,
     notes: AgentDetails.notes,
-    role: AgentDetails.role,
     password: "", // Will be hashed on the server
   });
 
@@ -38,7 +40,6 @@ export default function EditAgentModal({ onAgentAdded, AgentDetails, details }: 
     name: "",
     email: "",
     phoneNumber: "",
-    password: "",
   });
 
   // Update form field values
@@ -77,11 +78,7 @@ export default function EditAgentModal({ onAgentAdded, AgentDetails, details }: 
       newErrors.phoneNumber = "Phone number is required";
       valid = false;
     }
-    
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-      valid = false;
-    }
+  
     
     if (!valid) {
       setErrors(newErrors);
@@ -94,12 +91,13 @@ export default function EditAgentModal({ onAgentAdded, AgentDetails, details }: 
     });
     
     try {
-      await addAgents(formDataToSend);
+      // await addAgents(formDataToSend);
+      await updateAgent(formDataToSend);
       console.log("Saving agent with data:", formData);
       
       // Call the callback function to refresh the agent list
-      if (onAgentAdded) {
-        onAgentAdded();
+      if (onAgentEdited) {
+        onAgentEdited();
       }
       
       closeModal();
@@ -126,7 +124,7 @@ export default function EditAgentModal({ onAgentAdded, AgentDetails, details }: 
 
   return (
     <>
-      {details ? (
+      {AgentDetails ? (
         <DropdownItem 
           className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
           onClick={openModal}
@@ -198,13 +196,12 @@ export default function EditAgentModal({ onAgentAdded, AgentDetails, details }: 
             <div className="col-span-1">
               <Label>Password <span className="text-red-500">*</span></Label>
               <Input
-                defaultValue={"************"}
+                // defaultValue={"************"}
                 name="password"
                 type="password"
                 placeholder="••••••••"
                 onChange={handleChange}
               />
-              {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
             </div>
 
 

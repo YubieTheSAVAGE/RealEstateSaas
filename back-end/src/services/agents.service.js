@@ -191,10 +191,20 @@ async function updateAgent(agentId, data) {
     err.statusCode = 403
     throw err
   }
+  const agentData = {
+    name: data.name,
+    email: data.email,
+    phoneNumber: data.phoneNumber,
+    status: data.status,
+    notes: data.notes,
+  }
+  if (data.password) {
+    agentData.passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
+  }
 
   const updated = await prisma.user.update({
     where: { id: agentId },
-    data,
+    data: agentData,
     select: {
       id: true,
       name: true,
