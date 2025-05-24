@@ -8,12 +8,15 @@ import Badge from "@/components/ui/badge/Badge";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
+import deleteApartement from "@/components/tables/DataTables/Properties/deleteApartement";
+import { useRouter } from "next/navigation";
 
 interface PropertyCardProps {
   property: Property;
+  onRefresh?: () => void; // Callback to refresh property list after editing
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
   const [isOpen, setIsOpen] = useState(false);
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -29,7 +32,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
       </div>
     );
   }
-   
+
+  const router = useRouter();
+
+  const handleDelete = async (id: string) => {
+    // Implement delete logic here
+      const success: boolean = await deleteApartement(id);
+      router.push("/properties");// Call the delete function and handle success or error
+  }
+  
+  const handleRefresh = () => {
+    if (onRefresh) {
+      onRefresh();
+    }
+  };
   
   return (
      <div>
@@ -105,15 +121,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               <EditPropertyModal
                 PropertyData={property}
                 details={true}
+                onRefresh={handleRefresh}
               />
               <DeleteModal
                 itemId={property.id.toString()}
                 heading="Delete Project"
                 description="Are you sure you want to delete this project? This action cannot be undone."
-                onDelete={() => {
-                  // Handle delete action here
-                  console.log("Project deleted");
-                }}
+                onDelete={() => handleDelete(property.id.toString())}
                 details={true}
               />
             </Dropdown>

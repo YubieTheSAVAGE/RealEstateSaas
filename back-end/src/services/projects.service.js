@@ -42,16 +42,21 @@ async function updateProject(projectId, data) {
     err.statusCode = 404;
     throw err;
   }
+  const apartmentData = {
+    numberOfApartments: parseInt(data.numberOfApartments, 10),
+    totalSurface: parseInt(data.totalSurface, 10),
+    address: data.address,
+    notes: data.notes,
+  }
+  if (data.name) {
+    apartmentData.name = data.name;
+  }
+  if (data.image) {
+    apartmentData.image = data.image;
+  }
   const updated = await prisma.project.update({
     where: { id: projectId },
-    data: {
-      name: data.name,
-      numberOfApartments: parseInt(data.numberOfApartments, 10),
-      notes: data.notes,
-      totalSurface: parseInt(data.totalSurface, 10),
-      address: data.address,
-      image: data.image,
-    },
+    data: apartmentData,
   });
   return updated;
 }

@@ -35,6 +35,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
       router.push("/projects");
   }
 
+  
 
   const calculateTotalSales = (ProjectDetails: any) => {
     // Check if apartments array exists
