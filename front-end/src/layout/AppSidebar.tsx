@@ -249,7 +249,20 @@ const AppSidebar: React.FC = () => {
 
   // const isActive = (path: string) => path === pathname;
 
-  const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  const isActive = useCallback((path: string) => {
+    // Exact path match
+    if (path === pathname) {
+      return true;
+    }
+    
+    // Special case for projects with ID: /projects/123 should mark the Projects menu as active
+    if (path === '/projects' && pathname.startsWith('/projects/')) {
+      // This handles routes like /projects/1, /projects/abc, etc.
+      return true;
+    }
+    
+    return false;
+  }, [pathname]);
 
   useEffect(() => {
     // Check if the current path matches any submenu item
