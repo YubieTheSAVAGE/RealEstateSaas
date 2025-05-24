@@ -11,13 +11,14 @@ export default async function deleteApartement(apartmentId: string) {
         const token = cookieStore.get(AUTHENTICATION_COOKIE)?.value;
         const res = await fetch(`${API_URL}/api/apartments/${apartmentId}`, {
             method: "DELETE",
-            headers: { "Content-Type": "application/json",  "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
+            headers: { "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
         });
+
         if (!res.ok) {
             console.log("Error deleting apartment:", res);
+            return false; // Return false if the deletion failed
         }
-        const data = await res.json();
-        return data;
+        return true;
     } finally
     {
     }

@@ -8,7 +8,7 @@ import Input from "../../form/input/InputField"
 import { useModal } from "@/hooks/useModal"
 import Select from "../../form/Select"
 import { Trash2 } from "lucide-react"
-// import updateClient from "@/app/(admin)/clients/updateClient"
+import updateClient from "@/app/(admin)/clients/updateClient"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
 import MultiSelect from "@/components/form/MultiSelect"
@@ -195,7 +195,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     console.log("Form data to send:", formDataToSend)
 
     try {
-      // await updateClient(formDataToSend)
+      await updateClient(formDataToSend)
 
       if (onClientUpdated) {
         onClientUpdated() // Call the refresh callback to update the client list

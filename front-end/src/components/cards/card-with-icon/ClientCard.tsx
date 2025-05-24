@@ -7,18 +7,28 @@ import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import EditClientModal from "@/components/example/ModalExample/EditClientModal";
+import { useRouter } from "next/navigation";
+import deleteClient from "@/components/tables/DataTables/Clients/deleteClient";
 
-export default function ClientCard({ client }: { client: Client }) {
+export default function ClientCard({ client, onRefresh }: { client: Client, onRefresh?: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
-  
-    function toggleDropdown() {
-      setIsOpen(!isOpen);
+
+  function toggleDropdown() {
+    setIsOpen(!isOpen);
+  }
+
+  function closeDropdown() {
+    setIsOpen(false);
+  }
+  const router = useRouter();
+  const handleDelete = async (id: string) => {
+    const success: boolean = await deleteClient(id);
+    if (success) {
+      router.push("/clients");
+
     }
-  
-    function closeDropdown() {
-      setIsOpen(false);
-    }
-  
+  };
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
       <div className="relative">
@@ -40,12 +50,12 @@ export default function ClientCard({ client }: { client: Client }) {
               onClose={closeDropdown}
               className="w-40 p-2"
             >
-              <EditClientModal clientData={client} details={true} />
+              <EditClientModal clientData={client} details={true} onClientUpdated={onRefresh} />
               <DeleteModal
                 itemId={String(client.id)}
                 heading="Delete Client"
                 description="Are you sure you want to delete this client? This action cannot be undone."
-                onDelete={() => {}}
+                onDelete={() => handleDelete(String(client.id))}
                 details={true}
               />
             </Dropdown>

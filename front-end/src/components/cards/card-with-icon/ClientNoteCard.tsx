@@ -29,7 +29,7 @@ export default function ClientNoteCard({ clientNote }: { clientNote: string }) {
           Note
         </CardTitle>
         <div className="absolute right-0 top-0 h-fit">
-            <button onClick={toggleDropdown} className="dropdown-toggle">
+            {/* <button onClick={toggleDropdown} className="dropdown-toggle">
               <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
             </button>
             <Dropdown
@@ -38,7 +38,7 @@ export default function ClientNoteCard({ clientNote }: { clientNote: string }) {
               className="w-40 p-2"
             >
               <ClientNoteModal clientNote={clientNote} />
-            </Dropdown>
+            </Dropdown> */}
           </div>
           {!clientNote && (
             <div className="text-center mt-16">

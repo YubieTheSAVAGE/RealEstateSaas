@@ -30,7 +30,7 @@ export default function Clients() {
                 <AddClientModal onClientAdded={fetchClients} />
             </div>
             <div className="col-span-12">
-                <ClientsDataTable clients={clients} />
+                <ClientsDataTable clients={clients} onClientAdded={fetchClients} />
             </div>
         </>
     );

@@ -21,10 +21,11 @@ import Badge from "@/components/ui/badge/Badge";
 import EditClientModal from "@/components/example/ModalExample/EditClientModal";
 import { FaEye } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import deleteClient from "./deleteClient"; // Assuming you have a delete function
 type SortKey = "id" | "name" | "email" | "phone" | "interest";
 type SortOrder = "asc" | "desc";
 
-export default function ClientsDataTable({clients}: any) {
+export default function ClientsDataTable({clients, onClientAdded}: any) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("id");
@@ -57,6 +58,24 @@ export default function ClientsDataTable({clients}: any) {
           setClientsData([]);
       }
   }, [clients]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      const success: boolean = await deleteClient(id);
+      if (success) {
+        // Optionally, you can refresh the client list or show a success message
+        console.log("Client deleted successfully");
+        if (onClientAdded) {
+          onClientAdded(); // Call the callback to refresh the client list
+        }
+      }
+    } finally {
+      // setCurrentPage(1);
+      setSearchTerm("");
+    }
+  };
+
+
   // const filteredAndSortedData = useMemo(() => {
   //   return clientData
   //     .filter((item) =>
@@ -261,9 +280,11 @@ export default function ClientsDataTable({clients}: any) {
                         itemId={item.id.toString()} 
                         heading={"Delete client"} 
                         description={`Are you sure you want to delete ${item.name}? this action is irreversible.`} 
+                        onDelete={() => handleDelete(item.id)}
                       />
                       <EditClientModal 
                         clientData={item}
+                        onClientUpdated={onClientAdded}
                       />
                     </div>
                   </TableCell>

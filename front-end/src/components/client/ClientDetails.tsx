@@ -35,7 +35,7 @@ export default function ClientDetails({ clientId }: ClientDetailsProps) {
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-3">
-                <ClientCard client={client} />
+                <ClientCard client={client} onRefresh={fetchClient} />
                 <ClientNoteCard clientNote={client.notes || ""} />
                 <ClientPropertiesCard ClientProperties={client.apartments || []} />
                 <div className="col-span-2">

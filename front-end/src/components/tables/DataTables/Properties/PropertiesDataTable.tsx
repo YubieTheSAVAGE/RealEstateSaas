@@ -26,6 +26,7 @@ import getApartements from "./getApartements";
 import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import { useRouter } from "next/navigation";
+import deleteApartement from "./deleteApartement";
 
 interface PropertiesDataTable {
   projects: any[];
@@ -108,6 +109,16 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
       setSortOrder("asc");
     }
   };
+
+  const handleDelete = async (id: string) => {
+    // Implement delete logic here
+    console.log("Delete item with id:", id);
+    await deleteApartement(id)
+    // Call onRefresh if provided to refresh the data after deletion
+    if (onRefresh) {
+      onRefresh();
+    }
+  };  
 
   // Filter data based on search term
   const filteredData = apartementsData.filter((item) => {
@@ -387,7 +398,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                       >
                         <FaEye />
                       </button>
-                      <DeleteModal heading="Delete Property" description="Are you sure you want to delete this property?" />
+                      <DeleteModal heading="Delete Property" itemId={item.id} description="Are you sure you want to delete this property?" onDelete={() => handleDelete(item.id)} />
                       {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
                       <EditPropertyModal
                         PropertyData={item}
