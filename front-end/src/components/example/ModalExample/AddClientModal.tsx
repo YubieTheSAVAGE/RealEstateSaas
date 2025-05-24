@@ -29,6 +29,7 @@ interface ProjectApartment {
 
 export default function AddClientModal({ onClientAdded }: AddProjectModalProps) {
   const { isOpen, openModal, closeModal } = useModal()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // State for form fields
   const [formData, setFormData] = useState({
@@ -44,7 +45,14 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
   // State for validation errors
   const [errors, setErrors] = useState({
-    numberOfApartments: "",
+    name: "",
+    email: "",
+    phoneNumber: "",
+    status: "LEAD",
+    notes: "",
+    provenance: "",
+    projectId: "",
+    apartmentId: [] as string[],
   })
 
   // State for projects and their apartments
@@ -76,6 +84,13 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   }
 
   const handleSave = async () => {
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
     // Flatten all selected apartments into a single array of IDs
     const allApartmentIds = selectedApartments.flatMap((project) => project.apartments.map((apt) => apt.id))
 
@@ -93,15 +108,76 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       formDataToSend.append("apartmentId", id)
     })
 
-    console.log("Form data to send:", formDataToSend)
-    await addClient(formDataToSend)
+    try {
+      console.log("Form data to send:", formDataToSend)
+      await addClient(formDataToSend)
 
-    if (onClientAdded) {
-      onClientAdded() // Call the refresh callback to update the client list
+      if (onClientAdded) {
+        onClientAdded() // Call the refresh callback to update the client list
+      }
+
+      // Reset form on successful submission
+      setFormData({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        status: "LEAD",
+        notes: "",
+        provenance: "",
+        projectId: "",
+        apartmentId: [],
+      });
+      setSelectedApartments([]);
+      
+      closeModal()
+    } catch (error) {
+      console.error("Error adding client:", error);
+      // You could add a toast notification here
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  // Validate form data
+  const validateForm = (): boolean => {
+    let valid = true;
+    const newErrors = { ...errors };
+    
+    // Required field validation
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+      valid = false;
     }
 
-    closeModal()
-  }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+      valid = false;
+    }
+
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Phone number is required";
+      valid = false;
+    } else if (!/^[+\d\s\-()]{7,20}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Please enter a valid phone number";
+      valid = false;
+    }
+
+    if (!formData.provenance.trim()) {
+      newErrors.provenance = "This field is required";
+      valid = false;
+    }
+
+    if (selectedApartments.length === 0) {
+      newErrors.apartmentId = ["At least one property must be selected"];
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   // Fetch projects on component mount
   useEffect(() => {
@@ -157,6 +233,10 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     setFormData((prev) => ({
       ...prev,
       [name]: selectedValue,
+    }))
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
     }))
   }
 
@@ -218,6 +298,10 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       ...prev,
       projectId: "", // Reset project selection
     }))
+    setErrors((prev) => ({
+      ...prev,
+      projectId: "",
+    }))
     setCurrentProjectName("")
     setCurrentProjectApartments([])
   }
@@ -276,7 +360,14 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Label>
                 Full Name <span className="text-red-500">*</span>
               </Label>
-              <Input name="name" type="text" placeholder="e.g. John Doe" onChange={handleChange} />
+              <Input 
+                name="name" 
+                type="text" 
+                placeholder="e.g. John Doe" 
+                onChange={handleChange} 
+                error={!!errors.name}
+              />
+              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
             </div>
             <div className="col-span-1">
               <Label>
@@ -294,14 +385,28 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Label>
                 Email <span className="text-red-500">*</span>
               </Label>
-              <Input name="email" type="text" placeholder="e.g. john.doe@example.com" onChange={handleChange} />
+              <Input
+                name="email"
+                type="text"
+                placeholder="e.g. john.doe@example.com"
+                onChange={handleChange}
+                error={!!errors.email}
+              />
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
             </div>
 
             <div className="col-span-1">
               <Label>
                 Phone Number <span className="text-red-500">*</span>
               </Label>
-              <Input name="phoneNumber" type="phone" placeholder="e.g. 123-456-7890" onChange={handleChange} />
+              <Input
+                name="phoneNumber"
+                type="phone"
+                placeholder="e.g. 123-456-7890"
+                onChange={handleChange}
+                error={!!errors.phoneNumber}
+              />
+              {errors.phoneNumber && <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>}
             </div>
 
             {/* Project and Apartment Selection Section */}
@@ -319,6 +424,9 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                       placeholder="Select a project"
                       onChange={(value, name) => handleSelectChange(value, name)}
                     />
+                    {errors.apartmentId && errors.apartmentId.length > 0 && selectedApartments.length === 0 && (
+                      <p className="mt-1 text-sm text-red-500">{errors.apartmentId[0]}</p>
+                    )}
                   </div>
                   {formData.projectId && (
                     <div className="col-span-1">
@@ -374,7 +482,14 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Label>
                 How did you hear about us? <span className="text-red-500">*</span>
               </Label>
-              <Input name="provenance" type="text" placeholder="e.g. Google, Referral" onChange={handleChange} />
+              <Input
+                name="provenance"
+                type="text"
+                placeholder="e.g. Google, Referral"
+                onChange={handleChange}
+                error={!!errors.provenance}
+              />
+              {errors.provenance && <p className="mt-1 text-sm text-red-500">{errors.provenance}</p>}
             </div>
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
@@ -388,11 +503,20 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
           </div>
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
-            <Button size="sm" variant="outline" onClick={closeModal}>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={closeModal}
+              disabled={isSubmitting}
+            >
               Close
             </Button>
-            <Button size="sm" onClick={handleSave} disabled={selectedApartments.length === 0}>
-              Save Changes
+            <Button 
+              size="sm" 
+              onClick={handleSave} 
+              disabled={isSubmitting || selectedApartments.length === 0}
+            >
+              {isSubmitting ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
         </form>

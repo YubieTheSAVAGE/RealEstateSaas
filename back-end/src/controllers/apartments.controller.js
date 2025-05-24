@@ -54,7 +54,9 @@ async function createApartment(request, reply) {
         )}`,
       });
     }
-
+    if (!isPositiveInt(parseInt(floor, 10))) {
+      return reply.code(400).send({ error: "floor must be a positive integer" });
+    }
     if (typeof status !== "string" || !ALLOWED_STATUSES.includes(status)) {
       return reply.code(400).send({
         error: `status is required and must be one of: ${ALLOWED_STATUSES.join(

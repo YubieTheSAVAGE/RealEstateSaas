@@ -11,6 +11,9 @@ const SALT_ROUNDS = 10;
 async function getTopPerformingAgents(limit = 5) {
   // Get all agents
   const agents = await prisma.user.findMany({
+    where: {
+      role: 'AGENT',
+    },
     select: {
       id: true,
       name: true,

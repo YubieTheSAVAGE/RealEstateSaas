@@ -29,7 +29,16 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
     status: "TODO",
     description: "",
   });
-
+  
+  // State for validation errors
+  const [errors, setErrors] = useState({
+    title: "",
+    dueDate: "",
+    description: "",
+  });
+  
+  // State for form submission status
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const taskGroups = [
     { 
@@ -59,6 +68,14 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
       ...prev,
       [name]: value,
     }));
+    
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
   }
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -73,28 +90,55 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
       ...prev,
       description: value,
     }));
+    
+    // Clear error when user starts typing
+    if (errors.description) {
+      setErrors((prev) => ({
+        ...prev,
+        description: "",
+      }));
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      return; // Stop submission if validation fails
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
       const formDataToSend = new FormData();
-    // Handle form submission logic here
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null) {
-          formDataToSend.append(key, String(value))
+      // Handle form submission logic here
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null) {
+            formDataToSend.append(key, String(value))
+        }
+      });
+      
+      await addTask(formDataToSend);
+      
+      // Reset form data
+      setFormData({
+        title: "",
+        dueDate: "",
+        status: "TODO",
+        description: "",
+      });
+      
+      closeModal();
+      
+      if (onTaskAdded) {
+        onTaskAdded(); // Call the callback if provided
       }
-    });
-    await addTask(formDataToSend);
-    // Reset form data
-    setFormData({
-      title: "",
-      dueDate: "",
-      status: "TODO",
-      description: "",
-    });
-    closeModal();
-    if (onTaskAdded) {
-      onTaskAdded(); // Call the callback if provided
+    } catch (error) {
+      console.error("Error adding task:", error);
+      // You could add error handling here
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -103,6 +147,33 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
   const handleMessageChange = (value: string) => {
     setMessage(value);
   };
+
+  // Function to validate form data
+  const validateForm = (): boolean => {
+    let isValid = true;
+    const newErrors = {
+      title: "",
+      dueDate: "",
+      description: "",
+    };
+
+    // Validate title (required)
+    if (!formData.title.trim()) {
+      newErrors.title = "Task title is required";
+      isValid = false;
+    }
+
+    // Validate due date (required)
+    if (!formData.dueDate.trim()) {
+      newErrors.dueDate = "Due date is required";
+      isValid = false;
+    }
+
+    // Update errors state
+    setErrors(newErrors);
+    return isValid;
+  };
+  
   return (
     <>
       <div className="flex flex-col items-center px-4 py-5 xl:px-6 xl:py-6">
@@ -188,14 +259,26 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
           <div className="custom-scrollbar h-[350px] sm:h-[450px] overflow-y-auto px-2">
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <Label>Task Title</Label>
-                <Input type="text" onChange={handleChange} name="title" />
+                <Label>Task Title <span className="text-red-500">*</span></Label>
+                <Input 
+                  type="text" 
+                  onChange={handleChange} 
+                  name="title" 
+                  error={!!errors.title}
+                  hint={errors.title || ""}
+                />
               </div>
 
               <div>
-                <Label>Due Date</Label>
+                <Label>Due Date <span className="text-red-500">*</span></Label>
                 <div className="relative">
-                  <Input type="datetime-local" onChange={handleChange} name="dueDate" />
+                  <Input 
+                    type="datetime-local" 
+                    onChange={handleChange} 
+                    name="dueDate" 
+                    error={!!errors.dueDate}
+                    hint={errors.dueDate || ""}
+                  />
                   <span className="absolute right-3.5 top-1/2 -translate-y-1/2">
                     <svg
                       className="fill-gray-700 dark:fill-gray-400"
@@ -267,6 +350,8 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                   placeholder="Type your message here..."
                   rows={6}
                   onChange={handleTextAreaChange}
+                  error={!!errors.description}
+                  hint={errors.description || ""}
                 />
               </div>
             </div>
@@ -282,16 +367,18 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
               <button
                 onClick={closeModal}
                 type="button"
-                className="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto"
+                disabled={isSubmitting}
+                className="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 type="button"
-                className="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                disabled={isSubmitting}
+                className="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Task
+                {isSubmitting ? "Creating..." : "Create Task"}
               </button>
             </div>
           </div>
