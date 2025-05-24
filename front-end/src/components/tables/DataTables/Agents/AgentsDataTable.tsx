@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { FaEye } from "react-icons/fa";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import EditAgentModal from "@/components/example/ModalExample/EditAgentModal";
+import { useRouter } from "next/navigation";
 
 const tableRowData = [
   {
@@ -106,6 +107,7 @@ export default function AgentsDataTable({ refreshTrigger = 0 }) {
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -320,7 +322,10 @@ export default function AgentsDataTable({ refreshTrigger = 0 }) {
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">
-                      <FaEye className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer" />
+                      <FaEye
+                        className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer"
+                        onClick={() => router.push(`/agents/${item.id}`)}
+                      />
                       <DeleteModal itemId={item.id} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {}} />
                       <EditAgentModal AgentDetails={item} />
                     </div>
