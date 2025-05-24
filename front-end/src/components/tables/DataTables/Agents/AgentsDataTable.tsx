@@ -18,6 +18,9 @@ import PaginationWithButton from "./PaginationWithButton";
 import { stat } from "fs";
 import getAgent from "./getAgents";
 import { useEffect } from "react";
+import { FaEye } from "react-icons/fa";
+import DeleteModal from "@/components/example/ModalExample/DeleteModal";
+import EditAgentModal from "@/components/example/ModalExample/EditAgentModal";
 
 const tableRowData = [
   {
@@ -316,13 +319,10 @@ export default function AgentsDataTable({ refreshTrigger = 0 }) {
                     {item.monthlySales || 0}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
-                    <div className="flex items-center w-full gap-2">
-                      <button className="text-gray-500 hover:text-error-500 dark:text-gray-400 dark:hover:text-error-500">
-                        <TrashBinIcon />
-                      </button>
-                      <button className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90">
-                        <PencilIcon />
-                      </button>
+                    <div className="flex items-center justify-center w-full gap-2">
+                      <FaEye className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer" />
+                      <DeleteModal itemId={item.id} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {}} />
+                      <EditAgentModal AgentDetails={item} />
                     </div>
                   </TableCell>
                 </TableRow>
