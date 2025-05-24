@@ -1,35 +1,35 @@
 'use client';
-
 import React from 'react';
 import Breadcrumb from '@/components/ui/breadcrumb/Breadcrumb';
 import ClientDetails from '@/components/client/ClientDetails';
+import AgentDetails from '@/components/agent/AgentDetails';
 
-interface ClientDetailsPageProps {
+interface AgentDetailsPageProps {
   params: {
-    clientId: string;
+    agentId: string;
   };
 }
 
-export default function ClientDetailsPage({ params }: ClientDetailsPageProps) {
-  const { clientId } = params;
+export default function AgentDetailsPage({ params }: AgentDetailsPageProps) {
+  const { agentId } = params;
 
   const threeLayerItems = [
     { label: 'Home', href: '/' },
-    { label: 'Clients', href: '/clients' },
-    { label: clientId },
+    { label: 'Agents', href: '/agents' },
+    { label: agentId },
   ];
 
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
-          Client Details
+          Agent Details
         </h2>
         <Breadcrumb items={threeLayerItems} variant="withIcon" />
       </div>
 
       <div>
-        <ClientDetails clientId={clientId} />
+        <AgentDetails agentId={agentId} />
       </div>
     </>
   );

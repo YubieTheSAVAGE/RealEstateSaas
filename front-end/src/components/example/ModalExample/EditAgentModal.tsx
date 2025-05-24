@@ -10,13 +10,16 @@ import addAgents from "@/app/(admin)/agents/addAgents";
 import { Textarea } from "@/components/ui/textarea";
 import { User } from "@/types/user";
 import { PencilIcon } from "@/icons";
+import { Agent } from "@/types/Agent";
+import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 interface AddAgentModalProps {
   onAgentAdded?: () => void; // Callback to refresh agent list
-  AgentDetails: User;
+  AgentDetails: Agent;
+  details?: boolean; // Optional prop to indicate if it's in details mode
 }
 
-export default function EditAgentModal({ onAgentAdded, AgentDetails }: AddAgentModalProps) {
+export default function EditAgentModal({ onAgentAdded, AgentDetails, details }: AddAgentModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -123,9 +126,18 @@ export default function EditAgentModal({ onAgentAdded, AgentDetails }: AddAgentM
 
   return (
     <>
-      <span className="text-gray-500 hover:text-warning-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer" onClick={openModal}>
-        <PencilIcon />
-      </span>
+      {details ? (
+        <DropdownItem 
+          className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
+          onClick={openModal}
+        >
+          Edit
+        </DropdownItem>
+      ) : (
+        <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
+          <PencilIcon onClick={openModal} />
+        </span>
+      )}
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
@@ -186,7 +198,7 @@ export default function EditAgentModal({ onAgentAdded, AgentDetails }: AddAgentM
             <div className="col-span-1">
               <Label>Password <span className="text-red-500">*</span></Label>
               <Input
-                defaultValue={AgentDetails.passwordHash ? "********" : ""}
+                defaultValue={"************"}
                 name="password"
                 type="password"
                 placeholder="••••••••"

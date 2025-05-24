@@ -41,7 +41,7 @@ export default function ClientDetails({ clientId }: ClientDetailsProps) {
                 <div className="col-span-2">
                 </div>
             </div>
-                    <InterestTable ProjectDetails={client.interestedApartments || []} />
+            <InterestTable ProjectDetails={client.interestedApartments || []} />
         </div>
     );
 }
