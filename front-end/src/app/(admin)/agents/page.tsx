@@ -1,8 +1,6 @@
 "use client";
 
 import AgentsDataTable from "@/components/tables/DataTables/Agents/AgentsDataTable";
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import { Metadata } from "next";
 import AddAgentModal from "@/components/example/ModalExample/AddAgentModal";
 import { useState } from "react";
 

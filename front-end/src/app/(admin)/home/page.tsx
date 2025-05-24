@@ -1,5 +1,4 @@
 "use client";
-import type { Metadata } from "next";
 import React, {useState, useEffect, useCallback} from "react";
 import MonthlyTarget from "@/components/ecommerce/MonthlyTarget";
 import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";

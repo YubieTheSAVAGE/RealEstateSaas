@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import Breadcrumb from '@/components/ui/breadcrumb/Breadcrumb';
-import ClientDetails from '@/components/client/ClientDetails';
 import AgentDetails from '@/components/agent/AgentDetails';
 
 interface AgentDetailsPageProps {
