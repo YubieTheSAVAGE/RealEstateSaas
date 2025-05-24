@@ -7,6 +7,7 @@ import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
 import Select from "../../form/Select";
 import addAgents from "@/app/(admin)/agents/addAgents";
+import { Textarea } from "@/components/ui/textarea";
 
 interface AddAgentModalProps {
   onAgentAdded?: () => void; // Callback to refresh agent list
@@ -35,7 +36,9 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
   });
 
   // Update form field values
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -131,8 +134,8 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Name</Label>
+            <div className="col-span-2">
+              <Label>Name <span className="text-red-500">*</span></Label>
               <Input
                 name="name"
                 type="text"
@@ -141,20 +144,19 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
               />
               {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
             </div>
-
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Email</Label>
-              <Input
-                name="email"
-                type="email"
-                placeholder="email@example.com"
-                onChange={handleChange}
+            <div className="col-span-1">
+              <Label>Status <span className="text-red-500">*</span></Label>
+              <Select
+                defaultValue={statusOptions[0].value}
+                name="status"
+                options={statusOptions}
+                placeholder="Select Status"
+                onChange={(value, name) => handleSelectChange(value, name)}
+                className="dark:bg-dark-900"
               />
-              {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
             </div>
-
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Phone Number</Label>
+            <div className="col-span-1">
+              <Label>Phone Number <span className="text-red-500">*</span></Label>
               <Input
                 name="phoneNumber"
                 type="tel"
@@ -164,8 +166,19 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
               {errors.phoneNumber && <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>}
             </div>
 
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Password</Label>
+            <div className="col-span-1">
+              <Label>Email <span className="text-red-500">*</span></Label>
+              <Input
+                name="email"
+                type="email"
+                placeholder="email@example.com"
+                onChange={handleChange}
+              />
+              {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+            </div>
+
+            <div className="col-span-1">
+              <Label>Password <span className="text-red-500">*</span></Label>
               <Input
                 name="password"
                 type="password"
@@ -175,22 +188,12 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
               {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
             </div>
 
-            <div className="col-span-1">
-              <Label>Status</Label>
-              <Select
-                name="status"
-                options={statusOptions}
-                placeholder="Select Status"
-                onChange={(value, name) => handleSelectChange(value, name)}
-                className="dark:bg-dark-900"
-              />
-            </div>
 
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
-              <Input
+              <Textarea
+                className="h-24"
                 name="notes"
-                type="text"
                 placeholder="Additional notes"
                 onChange={handleChange}
               />
