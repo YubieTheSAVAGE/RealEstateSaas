@@ -26,7 +26,7 @@ type Agent = BaseAgent & {
 type SortKey = "id" | "name" | "email" | "phone" | "status" | "totalSales" | "monthlySales";
 type SortOrder = "asc" | "desc";
 
-export default function AgentsDataTable({ agents, onClientEdit }: { agents: any[], onClientEdit: (id: number) => void }) {
+export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agent[], onClientEdit: (id: number) => void }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
