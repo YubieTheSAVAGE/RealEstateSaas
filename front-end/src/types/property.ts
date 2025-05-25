@@ -1,3 +1,4 @@
+import { Client } from "./client";
 import { Project } from "./project";
 
 export type PropertyType = "APARTMENT" | "DUPLEX" | "VILLA" | "STORE" | "LAND";
@@ -17,7 +18,7 @@ export interface Property {
   status: ApartmentStatus;
   notes?: string | null;
   projectId: number;
-  clientId?: number | null;
+  client?: Client | null;
   userId?: number | null;
   project: Project;
 }

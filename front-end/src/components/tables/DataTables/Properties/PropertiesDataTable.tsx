@@ -1,8 +1,6 @@
 "use client";
-import { Md3dRotation } from "react-icons/md";
-import { FaEye, FaPen } from "react-icons/fa";
-
-import { useState, useMemo, useEffect } from "react";
+import { FaEye } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -13,40 +11,19 @@ import {
 import {
   AngleDownIcon,
   AngleUpIcon,
-  PencilIcon,
-  TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
 import Badge from "@/components/ui/badge/Badge";
-
-type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
-type SortOrder = "asc" | "desc";
-
-import getApartements from "./getApartements";
 import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import { useRouter } from "next/navigation";
 import deleteApartement from "./deleteApartement";
+import { Property } from "@/types/property";
 
-interface PropertiesDataTable {
-  projects: any[];
-  onRefresh?: () => void; // Callback to refresh projects data
-}
+type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
+type SortOrder = "asc" | "desc";
 
-type ProjectData = {
-  id: string;
-  project: string;
-  type: string;
-  superficie: string;
-  price: number;
-  status: string;
-  pricePerM2 ?: number;
-  zone ?: string;
-  etage ?: string;
-  client ?: []; 
-};
-
-export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: ProjectData[]; onRefresh?: () => void; }) {
+export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: Property[]; onRefresh?: () => void; }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
@@ -66,26 +43,25 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   }
 
     
-  const [apartementsData, setApartementsData] = useState<ProjectData[]>([]);
+  const [apartementsData, setApartementsData] = useState<Property[]>([]);
   useEffect(() => {
       // Check if data exists and is an array before mapping
       if (apartmentsData && Array.isArray(apartmentsData)) {
-          const formattedData = apartmentsData.map((item: any) => ({
-              id: item.id || '',
-              project: item.project?.name || '', // Use optional chaining
-              projectId: item.project?.id || '', // Use optional chaining
-              type: item.type, // Set default or extract from your data
-              superficie: `${item.area || 0} m²`, // Add fallback for area
-              price: item.price || 0, // Add fallback for price
-              status: item.status || 'Available',
-              pricePerM2: item.pricePerM2 || 0,
-              zone: item.zone || 'Unknown',
-              floor: item.floor || '',
-              number: item.number || 'Unknown',
-              threeDViewUrl: item.threeDViewUrl || '',
-              notes: item.notes || '',
-              area:  item.area || 0,
-              client: item.client || [], // Add client data
+          const formattedData: Property[] = apartmentsData.map((item: Property) => ({
+              id: item.id ?? "",
+              number: item.number ?? "",
+              floor: item.floor ?? "",
+              type: item.type ?? "",
+              area: item.area ?? 0 ,
+              price: item.price ?? 0,
+              status: item.status ?? "",
+              pricePerM2: item.pricePerM2 ?? 0,
+              zone: item.zone ?? "",
+              project: item.project ?? { id: "", name: "" },
+              projectId: item.projectId ?? item.project?.id ?? "",
+              threeDViewUrl: item.threeDViewUrl ?? "",
+              notes: item.notes ?? "",
+              client: item.client ?? null,
           }));
           setApartementsData(formattedData);
       } else {
@@ -124,27 +100,54 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   const filteredData = apartementsData.filter((item) => {
     const searchValue = searchTerm.toLowerCase();
     return (
-      item.project?.toLowerCase().includes(searchValue)
+      item.project.name?.toLowerCase().includes(searchValue)
     );
   });
 
+  // Helper to get the value for sorting
+  const getSortValue = (item: Property, key: SortKey): string | number => {
+    switch (key) {
+      case "project":
+        return item.project?.name || "";
+      case "type":
+        return item.type || "";
+      case "superficie":
+        return item.area || "";
+      case "price":
+        return item.price ?? 0;
+      case "status":
+        return item.status || "";
+      case "pricePerM2":
+        return item.pricePerM2 ?? 0;
+      case "zone":
+        return item.zone || "";
+      case "etage":
+        return item.floor || "";
+      case "id":
+        return item.id || "";
+      default:
+        return "";
+    }
+  };
+
   // Sort filtered data
   const sortedData = [...filteredData].sort((a, b) => {
-    if (sortKey === "price" || sortKey === "pricePerM2") {
-      const valueA = a[sortKey] || 0;
-      const valueB = b[sortKey] || 0;
+    const valueA = getSortValue(a, sortKey);
+    const valueB = getSortValue(b, sortKey);
+
+    if (typeof valueA === "number" && typeof valueB === "number") {
       return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
     } else {
-      const valueA = String(a[sortKey] || "").toLowerCase();
-      const valueB = String(b[sortKey] || "").toLowerCase();
+      const strA = String(valueA).toLowerCase();
+      const strB = String(valueB).toLowerCase();
       return sortOrder === "asc"
-        ? valueA.localeCompare(valueA)
-        : valueB.localeCompare(valueB);
+        ? strA.localeCompare(strB)
+        : strB.localeCompare(strA);
     }
   });
 
   const totalFilteredItems = filteredData.length;
-  const totalFilteredPages = Math.ceil(totalFilteredItems / itemsPerPage);
+  // const totalFilteredPages = Math.ceil(totalFilteredItems / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalFilteredItems);
@@ -293,13 +296,13 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
-                    {item.project}
+                    {item.project.name}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {type[item.type as keyof typeof type] || item.type}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.superficie}
+                    {item.area} m²
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {(item.pricePerM2 ?? 0).toLocaleString("en-US", {
@@ -398,7 +401,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                       >
                         <FaEye />
                       </button>
-                      <DeleteModal heading="Delete Property" itemId={item.id} description="Are you sure you want to delete this property?" onDelete={() => handleDelete(item.id)} />
+                      <DeleteModal heading="Delete Property" itemId={item.id.toString()} description="Are you sure you want to delete this property?" onDelete={() => handleDelete(item.id.toString())} />
                       {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
                       <EditPropertyModal
                         PropertyData={item}

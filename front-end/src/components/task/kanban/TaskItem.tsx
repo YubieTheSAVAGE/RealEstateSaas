@@ -1,10 +1,10 @@
-import React, { useRef, useState, JSX, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { Task, DropResult } from "./types/types";
-import Image from "next/image";
 import TaskDetailModal from "../detail/TaskDetailModal";
-import { updateTask, addComment, getTaskComments } from "../detail/taskDetailActions";
+import { updateTask } from "../detail/taskDetailActions";
 import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
+
 interface TaskItemProps {
   task: Task;
   index: number;
@@ -46,7 +46,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
   const handleTaskUpdate = async (updatedTask: Task) => {
     try {
       // Call the API to update the task
-      const result = await updateTask(updatedTask);
+      await updateTask(updatedTask);
       
       // Update the local task state
       setCurrentTask(updatedTask);
@@ -70,7 +70,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
         handlerId: monitor.getHandlerId(),
       };
     },
-    drop: (item, monitor) => ({ name: task.status }),
+    drop: () => ({ name: task.status }),
     hover(item, monitor) {
       if (!ref.current) return;
 
@@ -108,7 +108,9 @@ const TaskItem: React.FC<TaskItemProps> = ({
         changeTaskStatus(item.id, dropResult.name);
       }
     },
-  });  const opacity = isDragging ? 0.3 : 0.8;
+  });  
+
+  const opacity = isDragging ? 0.3 : 0.8;
   drag(drop(ref));
 
   return (
@@ -213,23 +215,6 @@ const TaskItem: React.FC<TaskItemProps> = ({
       />
     </>
   );
-};
-
-const getCategoryStyles = (color: string) => {
-  switch (color) {
-    case "error":
-      return "bg-error-50 text-error-700 dark:bg-error-500/15 dark:text-error-400";
-    case "success":
-      return "bg-success-50 text-success-700 dark:bg-success-500/15 dark:text-success-400";
-    case "brand":
-      return "bg-brand-50 text-brand-700 dark:bg-brand-500/15 dark:text-brand-400";
-    case "orange":
-      return "bg-orange-50 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400";
-    case "purple":
-      return "bg-purple-50 text-purple-700 dark:bg-purple-500/15 dark:text-purple-400";
-    default:
-      return "bg-gray-100 text-gray-700 dark:bg-gray-500/15 dark:text-gray-400";
-  }
 };
 
 export default TaskItem;

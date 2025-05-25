@@ -6,9 +6,7 @@ import Button from "../ui/button/Button";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import TextArea from "../form/input/TextArea";
-import { MdAccessTime } from "react-icons/md";
 import { Task } from "./kanban/types/types";
-// import { initialTasks } from "./kanban/KanbanBoard";
 import addTask from "@/app/(admin)/tasks/addTask";
 
 // Define the TaskHeaderProps interface
@@ -22,7 +20,6 @@ interface TaskHeaderProps {
 export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, tasks, onTaskAdded }: TaskHeaderProps) {
   
   const { isOpen, openModal, closeModal } = useModal();
-  const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     dueDate: "",
@@ -141,12 +138,6 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
       setIsSubmitting(false);
     }
   }
-
-
-
-  const handleMessageChange = (value: string) => {
-    setMessage(value);
-  };
 
   // Function to validate form data
   const validateForm = (): boolean => {

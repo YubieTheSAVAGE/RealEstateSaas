@@ -1,31 +1,17 @@
 "use client";
-import React, { useEffect, useRef, useCallback, useState, useDeferredValue, use } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
-  BoxCubeIcon,
-  CalenderIcon,
-  ChatIcon,
   ChevronDownIcon,
-  DocsIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
-  MailIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  TaskIcon,
   UserCircleIcon,
 } from "../icons/index";
-import SidebarWidget from "./SidebarWidget";
-import { BiBuildings, BiBookContent, BiTask, BiBarChartAlt2 } from "react-icons/bi";
+import { BiBuildings, BiBookContent, BiTask } from "react-icons/bi";
 import { FaUsers } from "react-icons/fa";
-import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
-import { decodeToken } from "../utils/decodeToken";
 import {getUserRoleFromToken} from "@/app/(auth)/signin/login";
 type NavItem = {
   name: string;
@@ -121,7 +107,7 @@ const AppSidebar: React.FC = () => {
         <li key={nav.name}>
           {nav.subItems ? (
             <button
-              onClick={() => handleSubmenuToggle(index, menuType)}
+              onClick={() => handleSubmenuToggle(index)}
               className={`menu-item group  ${
                 openSubmenu?.type === menuType && openSubmenu?.index === index
                   ? "menu-item-active"
@@ -301,7 +287,7 @@ const AppSidebar: React.FC = () => {
     }
   }, [openSubmenu]);
 
-  const handleSubmenuToggle = (index: number, menuType: any) => {
+  const handleSubmenuToggle = (index: number) => {
     setOpenSubmenu((prevOpenSubmenu) => {
       if (prevOpenSubmenu && prevOpenSubmenu.index === index) {
         return null;

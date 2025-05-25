@@ -15,7 +15,6 @@ import {
   TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
-import { stat } from "fs";
 
 const tableRowData = [
   {

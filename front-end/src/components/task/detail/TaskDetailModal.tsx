@@ -7,9 +7,16 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import TextArea from "../../form/input/TextArea";
 import { Task } from "../kanban/types/types";
-import Image from "next/image";
 import { formatNotificationDate, formatNotificationTime } from "../notifications/formatters";
 import { updateTask as updateTaskAPI, addComment as addCommentAPI, getTaskComments } from './taskDetailActions';
+
+// Define a Comment type based on the Prisma schema
+interface Comment {
+  id: number;
+  content: string;
+  taskId: number;
+  createdAt: Date;
+}
 
 interface TaskDetailModalProps {
   isOpen: boolean;
@@ -108,14 +115,12 @@ export default function TaskDetailModal({
     try {
       setLoading(true);
       
-      // Call API to add comment
-      const commentResponse = await addCommentAPI(task.id, newComment);
+      // Call API to add comment and use the response
+      await addCommentAPI(task.id, newComment);
       
       // Fetch updated comments to ensure we have the latest data
       const response = await getTaskComments(task.id);
       console.log("Fetched comments:", response);
-
-      // Check if the response has the expected structure
       
       // Update task with new comment
       const updatedTask: Task = {
@@ -263,7 +268,7 @@ export default function TaskDetailModal({
                 <p className="text-gray-500 dark:text-gray-400 text-sm italic">No comments yet</p>
               ) : (
                 <ul className="space-y-3">
-                {(formData.comments || []).map((comment: any, index) => (
+                {(formData.comments || []).map((comment: Comment, index) => (
                     <li key={index} className="pb-3 border-b border-gray-100 dark:border-gray-700 last:border-0">
                     <p className="text-sm text-gray-800 dark:text-white/90">{comment.content}</p>
                     <span className="text-xs text-gray-500">Comment #{index + 1}</span>

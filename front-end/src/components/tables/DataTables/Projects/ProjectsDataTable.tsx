@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import {
   Table,
@@ -11,20 +10,17 @@ import {
 import {
   AngleDownIcon,
   AngleUpIcon,
-  PencilIcon,
-  TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
-
-type SortKey = "id" | "project" | "totalSales";
-type SortOrder = "asc" | "desc";
-
 import deleteProperties from "./deleteProperties";
 import { FaEye } from "react-icons/fa";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import { useRouter } from "next/navigation";
-import { table } from "console";
+
+type SortKey = "id" | "project" | "totalSales";
+type SortOrder = "asc" | "desc";
+
 
 interface DataTableTwoProps {
   projects: any[];

@@ -1,3 +1,7 @@
+import { Client } from "./client";
+import { Property } from "./property";
+import { Task } from "./Task";
+
 export enum Role {
   ADMIN = 'ADMIN',
   AGENT = 'AGENT'
@@ -19,7 +23,7 @@ export interface User {
   passwordHash: string;
   
   // Relationships (optional for frontend usage)
-  clients?: any[];
-  apartments?: any[];
-  createdTasks?: any[];
+  clients?: Client[];
+  apartments?: Property[];
+  createdTasks?: Task[];
 }
