@@ -9,8 +9,10 @@ import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import EditClientModal from "@/components/example/ModalExample/EditClientModal";
 import { Agent } from "@/types/Agent";
 import EditAgentModal from "@/components/example/ModalExample/EditAgentModal";
+import { useRouter } from "next/navigation";
+import deleteAgents from "@/components/tables/DataTables/Agents/deleteAgents";
 
-export default function AgentCard({ agent }: { agent: Agent }) {
+export default function AgentCard({ agent , onEdit }: { agent: Agent , onEdit: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
   
     function toggleDropdown() {
@@ -20,6 +22,18 @@ export default function AgentCard({ agent }: { agent: Agent }) {
     function closeDropdown() {
       setIsOpen(false);
     }
+
+  const router = useRouter();
+  const handleDelete = async (id : number) => {
+    const success = await deleteAgents(String(id));
+    if (success) {
+      router.push("/agents"); // Redirect to agents list after deletion
+      // Optionally, you can refresh the agent list or redirect
+    }
+    // Implement delete logic here
+    console.log(`Deleting agent with ID: ${agent.id}`);
+    // After deletion, you might want to refresh the agent list or redirect
+  }
   
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
@@ -42,12 +56,12 @@ export default function AgentCard({ agent }: { agent: Agent }) {
               onClose={closeDropdown}
               className="w-40 p-2"
             >
-              <EditAgentModal AgentDetails={agent} details={true} />
+              <EditAgentModal AgentDetails={agent} details={true} onAgentEdited={onEdit} />
               <DeleteModal
                 itemId={String(agent.id)}
                 heading="Delete Agent"
                 description="Are you sure you want to delete this agent? This action cannot be undone."
-                onDelete={() => {}}
+                onDelete={() => { handleDelete(agent.id) }}
                 details={true}
               />
             </Dropdown>

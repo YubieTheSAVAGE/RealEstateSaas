@@ -51,7 +51,7 @@ const setAuthCookie = async (response: { token: string }) => {
     httpOnly: true,
     path: '/',
     sameSite: 'lax',
-    expires: new Date(jwtDecode(token).exp! * 12000),
+    expires: new Date(jwtDecode(token).exp! * 1000), // Convert to milliseconds
   });
   // const userRole = getUserRoleFromToken(token);
   // redirect("/");

@@ -27,7 +27,7 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
     const [apartementsData, setApartementsData] = useState([]);
     const [userRole, setUserRole] = useState("");
 
-    const fetchAgent = useCallback(async () => {
+    const fetchAgent = async () => {
         const Data = await getAgentById(agentId);
         console.log("Agent data:", Data);
         if (Data.error || !Data) {
@@ -35,22 +35,23 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
             router.push("/not-found");
         }
         setAgent(Data);
-    }, [agentId, router]);
+        await fetchApartements()
+    };
 
     React.useEffect(() => {
         fetchAgent();
-    }, [fetchAgent]);
+    }, []);
 
-    const fetchApartements = useCallback(async () => {
+    const fetchApartements = async () => {
         // API call to fetch projects
         const data = await getApartements();
         const filteredData = data.filter((item:any) => agentId === item.userId);
         setApartementsData(filteredData);
-    }, []);
-        
-    useEffect(() => {
-        fetchApartements();
-    }, [fetchApartements]);
+    };
+
+    // useEffect(() => {
+    //     fetchApartements();
+    // }, []);
 
     if (!agent) {
         return <div>Loading...</div>;
@@ -60,7 +61,7 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2">
-                <AgentCard agent={agent} />
+                <AgentCard agent={agent} onEdit={() => {fetchAgent()}}/>
                 <MonthlySalesChart apartements={apartementsData} />
                 <span className="col-span-2">
                     <StatsCard apartments={apartementsData} />

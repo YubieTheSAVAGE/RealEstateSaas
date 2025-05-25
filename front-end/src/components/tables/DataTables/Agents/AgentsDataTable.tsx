@@ -22,7 +22,7 @@ import { FaEye } from "react-icons/fa";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import EditAgentModal from "@/components/example/ModalExample/EditAgentModal";
 import { useRouter } from "next/navigation";
-import deleteAgent from "./deleteAgent";
+import deleteAgents from "./deleteAgents";
 
 const tableRowData = [
   {
@@ -126,7 +126,7 @@ export default function   AgentsDataTable({ agents, onClientEdit }: { agents: an
   const handleDelete = async (id: string) => {
     // Implement the delete logic here
     // For example, you might call an API to delete the agent
-    const success: boolean = await deleteAgent(id);
+    const success: boolean = await deleteAgents(id);
     if (success) {
       // Optionally, you can refresh the data after deletion
       if (onClientEdit) {
@@ -136,6 +136,7 @@ export default function   AgentsDataTable({ agents, onClientEdit }: { agents: an
       console.error("Failed to delete agent with id:", id);
     }
   }
+
 
   // const filteredAndSortedData = useMemo(() => {
   //   return data
@@ -340,7 +341,7 @@ export default function   AgentsDataTable({ agents, onClientEdit }: { agents: an
                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer"
                         onClick={() => router.push(`/agents/${item.id}`)}
                       />
-                      <DeleteModal itemId={item.id} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {}} />
+                      <DeleteModal itemId={item.id} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {handleDelete(item.id)}} />
                       <EditAgentModal AgentDetails={item} onAgentEdited={() => onClientEdit(item.id)} />
                     </div>
                   </TableCell>
