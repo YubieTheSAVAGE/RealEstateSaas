@@ -1,21 +1,20 @@
 "use client";
 import React, { useState } from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
-import { API_URL } from "@/app/common/constants/api";
 import editProject from "@/app/(admin)/projects/editProjects";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import Alert from "@/components/ui/alert/Alert";
 import { PencilIcon } from "@/icons";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
+import { Project } from "@/types/project";
 
 interface EditProjectModalProps {
-  ProjectData?: any; // Add the type for ProjectData if available
+  ProjectData?: Project; // Add the type for ProjectData if available
   onRefresh?: () => void; // Callback to refresh project list after editing
   details?: boolean
 }
@@ -141,7 +140,8 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
 
       closeModal();
     } catch (error) {
-      // Handle API errors here if needed
+      console.error("Error saving project:", error);
+      
     }
   };
 
