@@ -4,14 +4,9 @@ import React from 'react';
 import Breadcrumb from '@/components/ui/breadcrumb/Breadcrumb';
 import ClientDetails from '@/components/client/ClientDetails';
 
-interface ClientDetailsPageProps {
-  params: {
-    clientId: string;
-  };
-}
 
-export default function ClientDetailsPage({ params }: ClientDetailsPageProps) {
-  const { clientId } = params;
+export default async function ClientDetailsPage({ params }: { params: Promise<{ clientId: string }> }) {
+  const { clientId } = await params;
 
   const threeLayerItems = [
     { label: 'Home', href: '/' },

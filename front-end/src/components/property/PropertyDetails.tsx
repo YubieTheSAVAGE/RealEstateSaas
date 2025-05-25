@@ -24,7 +24,7 @@ export default function PropertyDetails({ propertyId }: PropertyDetailsProps) {
     };
     useEffect(() => {
         fetchData();
-    }, [propertyId]);
+    });
 
     return (
         <div>

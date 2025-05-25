@@ -2,15 +2,13 @@ import ProjectDetails from "@/components/project/ProjectDetails";
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
 import React from "react";
 
-export default function ProjectPage({ params }: { params: { projectId: string } }) {
-    const { projectId } = params;
+export default async function ProjectPage({ params }: { params: Promise<{ projectId: string }> }) {
+    const { projectId } = await params;
     const threeLayerItems = [
         { label: "Home", href: "/" },
         { label: "Projects", href: "/projects" },
         { label: projectId },
     ];
-
-    
 
     return (
         <>
