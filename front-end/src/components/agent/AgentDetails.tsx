@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import getAgentById from "./getAgentById";
 import { Agent } from "@/types/Agent";
-import { Apartment } from "@/types/Apartment";
+import { Property } from "@/types/property";
 import AgentCard from "../cards/card-with-icon/AgentCard.tsx";
 import MonthlySalesChart from "../ecommerce/MonthlySalesChart";
 import getApartements from "../tables/DataTables/Properties/getApartements";
@@ -16,7 +16,7 @@ interface AgentDetailsProps {
 export default function AgentDetails({ agentId }: AgentDetailsProps) {
     const router = useRouter();
     const [agent, setAgent] = React.useState<Agent | null>(null);
-    const [apartementsData, setApartementsData] = useState<Apartment[]>([]);
+    const [apartementsData, setApartementsData] = useState<Property[]>([]);
 
     const fetchAgent = async () => {
         const Data = await getAgentById(agentId);
@@ -36,7 +36,7 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
     const fetchApartements = async () => {
         // API call to fetch projects
         const data = await getApartements();
-        const filteredData = data.filter((item:string) => agentId === item.userId);
+        const filteredData = data.filter((item: Property) => Number(agentId) === item.userId);
         setApartementsData(filteredData);
     };
 

@@ -264,7 +264,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
                     <div className="flex items-center justify-center w-full gap-2">
                       <FaEye
                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer"
-                        onClick={() => router.push(`/agents/${item.id}`)}
+                        onClick={() => router.push(`/agents/${item.id.toString()}`)}
                       />
                       <DeleteModal itemId={item.id.toString()} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {handleDelete(item.id.toString())}} />
                       <EditAgentModal AgentDetails={item} onAgentEdited={() => onClientEdit(item.id)} />
