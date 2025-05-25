@@ -6,9 +6,7 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
 import Select from "../../form/Select";
-import addAgents from "@/app/(admin)/agents/addAgents";
 import { Textarea } from "@/components/ui/textarea";
-import { User } from "@/types/user";
 import { PencilIcon } from "@/icons";
 import { Agent } from "@/types/Agent";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
@@ -109,10 +107,6 @@ export default function EditAgentModal({AgentDetails , onAgentEdited, details}: 
   const statusOptions = [
     { value: "ACTIVE", label: "Active" },
     { value: "INACTIVE", label: "Inactive" },
-  ];
-
-  const roleOptions = [
-    { value: "AGENT", label: "Agent" },
   ];
 
   const handleSelectChange = (selectedValue: string, name: string) => {
