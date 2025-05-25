@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useMemo, use } from "react";
+import { useState, } from "react";
 import {
   Table,
   TableBody,
@@ -11,103 +10,29 @@ import {
 import {
   AngleDownIcon,
   AngleUpIcon,
-  PencilIcon,
-  TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
-import { stat } from "fs";
-import getAgent from "./getAgents";
 import { useEffect } from "react";
 import { FaEye } from "react-icons/fa";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import EditAgentModal from "@/components/example/ModalExample/EditAgentModal";
 import { useRouter } from "next/navigation";
 import deleteAgents from "./deleteAgents";
-
-const tableRowData = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1234567890",
-    status: "active",
-    totalSales: 1000,
-    monthlySales: "+11%",
-  },
-  {
-    id: 2,
-    name: "Jane Doe",
-    email: "jane.doe@example.com",
-    phone: "+1234567890",
-    status: "inactive",
-    totalSales: 2000,
-    monthlySales: "-12%",
-  },
-  {
-    id: 3,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1234567890",
-    status: "active",
-    totalSales: 3000,
-    monthlySales: "-13%",
-  },
-  {
-    id: 4,
-    name: "Sarah Smith",
-    email: "sarah.smith@example.com", 
-    phone: "+1234567891",
-    status: "active",
-    totalSales: 4500,
-    monthlySales: "-15%",
-  },
-  {
-    id: 5,
-    name: "Michael Johnson",
-    email: "michael.j@example.com",
-    phone: "+1234567892", 
-    status: "inactive",
-    totalSales: 2800,
-    monthlySales: "-9%",
-  },
-  {
-    id: 6,
-    name: "Emily Brown",
-    email: "emily.b@example.com",
-    phone: "+1234567893",
-    status: "active", 
-    totalSales: 3200,
-    monthlySales: "+14%",
-  },
-  {
-    id: 7,
-    name: "David Wilson",
-    email: "david.w@example.com",
-    phone: "+1234567894",
-    status: "active",
-    totalSales: 5100,
-    monthlySales: "-17%",
-  },
-  {
-    id: 8,
-    name: "Lisa Anderson",
-    email: "lisa.a@example.com",
-    phone: "+1234567895",
-    status: "inactive",
-    totalSales: 1900,
-    monthlySales: "+8%",
-  }
-];
+import { Agent as BaseAgent } from "@/types/Agent";
+type Agent = BaseAgent & {
+  totalSales?: number;
+  monthlySales?: number;
+};
 type SortKey = "id" | "name" | "email" | "phone" | "status" | "totalSales" | "monthlySales";
 type SortOrder = "asc" | "desc";
 
-export default function   AgentsDataTable({ agents, onClientEdit }: { agents: any[], onClientEdit: (id: number) => void }) {
+export default function AgentsDataTable({ agents, onClientEdit }: { agents: any[], onClientEdit: (id: number) => void }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("status");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Agent[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -120,7 +45,7 @@ export default function   AgentsDataTable({ agents, onClientEdit }: { agents: an
       }
     };
     fetchData();
-  }); // Add refreshTrigger as a dependency to re-fetch when it changes
+  }, [agents]); // Add agents as a dependency to re-fetch when it changes
 
 
   const handleDelete = async (id: string) => {
@@ -341,7 +266,7 @@ export default function   AgentsDataTable({ agents, onClientEdit }: { agents: an
                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer"
                         onClick={() => router.push(`/agents/${item.id}`)}
                       />
-                      <DeleteModal itemId={item.id} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {handleDelete(item.id)}} />
+                      <DeleteModal itemId={item.id.toString()} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {handleDelete(item.id.toString())}} />
                       <EditAgentModal AgentDetails={item} onAgentEdited={() => onClientEdit(item.id)} />
                     </div>
                   </TableCell>
