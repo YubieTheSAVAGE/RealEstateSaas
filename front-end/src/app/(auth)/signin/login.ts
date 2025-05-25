@@ -2,7 +2,6 @@
 
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { FormResponse } from "@/app/common/interfaces/form-response.interface";
 import { API_URL } from "@/app/common/constants/api";
 import { getErrorMessage } from "@/app/common/utils/errors";
@@ -59,7 +58,10 @@ const setAuthCookie = async (response: { token: string }) => {
 
 type DecodedToken = {
   role?: string;
-  [key: string]: any;
+  exp?: number;
+  iat?: number;
+  sub?: string;
+  [key: string]: string | number | boolean | undefined;
 };
 
 export const getUserRoleFromToken = async () => {

@@ -3,10 +3,13 @@ import React from 'react';
 import Breadcrumb from '@/components/ui/breadcrumb/Breadcrumb';
 import AgentDetails from '@/components/agent/AgentDetails';
 
+// Correct way to type params in Next.js App Router
+interface PageParams {
+  agentId: string;
+}
+
 interface AgentDetailsPageProps {
-  params: {
-    agentId: string;
-  };
+  params: PageParams;
 }
 
 export default function AgentDetailsPage({ params }: AgentDetailsPageProps) {

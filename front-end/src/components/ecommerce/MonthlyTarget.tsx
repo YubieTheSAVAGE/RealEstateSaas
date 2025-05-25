@@ -39,7 +39,7 @@ export default function MonthlyTarget() {
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [targetDirection, setTargetDirection] = useState<'up' | 'down' | null>(null);
+  // const [targetDirection, setTargetDirection] = useState<'up' | 'down' | null>(null);
   const [revenueDirection, setRevenueDirection] = useState<'up' | 'down' | null>(null);
   const [todayDirection, setTodayDirection] = useState<'up' | 'down' | null>(null);
 
@@ -239,7 +239,7 @@ export default function MonthlyTarget() {
       const progressPercent = (revenueData.totalRevenue / targetData.target) * 100;
       setProgress(Math.min(progressPercent, 100)); // Cap at 100%
       // Compare revenue to target to set target direction
-      setTargetDirection(revenueData.totalRevenue >= targetData.target ? 'up' : 'down');
+      // setTargetDirection(revenueData.totalRevenue >= targetData.target ? 'up' : 'down');
       // Calculate growth rate
       const remainingToTarget = targetData.target - revenueData.totalRevenue;
       const growthRate = ((remainingToTarget / targetData.target) * 100);
