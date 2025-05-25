@@ -10,6 +10,7 @@ import PropertiesListDropdownFilter, { PropertyFilters } from "../example/Dropdo
 import { useEffect, useMemo, useState } from "react";
 import PaginationWithIcon from "../ui/pagination/PaginationWitIcon";
 import { FaEye } from "react-icons/fa";
+import { Property } from "@/types/property";
 
 const typeMap = {
   APARTMENT: "Appartement",
@@ -27,7 +28,7 @@ const typeMap = {
 
 const PAGE_SIZE = 10;
 
-export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: any[] }) {
+export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Property[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<PropertyFilters>({
     available: false,
@@ -102,17 +103,14 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {currentData.length > 0 ? (
-              currentData.map((product: any) => (
+              currentData.map((product: Property) => (
                 <TableRow key={product.id}>
                   <TableCell className="py-3">
                     <div className="flex items-center gap-3">
                       <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {(typeMap[product.type as keyof typeof typeMap] || product.name || product.title) + " " + (product.number || "") + " (" + product.floor + ")"}
+                          {(typeMap[product.type as keyof typeof typeMap] || product.project.name) + " " + (product.number || "") + " (" + product.floor + ")"}
                         </p>
-                        <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                          {typeMap[product.type as keyof typeof typeMap] || product.variants || "Standard"}
-                        </span>
                       </div>
                     </div>
                   </TableCell>
@@ -126,9 +124,9 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: an
                     <Badge
                       size="sm"
                       color={
-                        product.status === "AVAILABLE" || product.status === "Available"
+                        product.status?.toUpperCase() === "AVAILABLE"
                           ? "success"
-                          : product.status === "RESERVED" || product.status === "Reserved"
+                          : product.status?.toUpperCase() === "RESERVED"
                             ? "warning"
                             : "error"
                       }

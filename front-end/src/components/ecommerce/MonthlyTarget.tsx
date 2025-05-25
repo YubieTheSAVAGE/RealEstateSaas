@@ -27,6 +27,7 @@ interface RevenueData {
 }
 
 import getApartements from "../tables/DataTables/Properties/getApartements";
+import { Property } from "@/types/property";
 export default function MonthlyTarget() {
   const [role, setRole] = useState<string | null>(null);
   const [targetData, setTargetData] = useState<MonthlyTargetData | null>(null);
@@ -56,7 +57,7 @@ export default function MonthlyTarget() {
     yesterday.setDate(yesterday.getDate() - 1);
     
     // Current month's revenue (for the monthly calculation)
-    const currentMonthRevenue = data.reduce((acc: number, apartment: any) => {
+    const currentMonthRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt);
         if (saleDate >= firstDayCurrentMonth && saleDate <= today) {
@@ -67,7 +68,7 @@ export default function MonthlyTarget() {
     }, 0);
     
     // Previous month's revenue
-    const previousMonthRevenue = data.reduce((acc: number, apartment: any) => {
+    const previousMonthRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt);
         if (saleDate >= firstDayPreviousMonth && saleDate <= lastDayPreviousMonth) {
@@ -78,7 +79,7 @@ export default function MonthlyTarget() {
     }, 0);
     
     // Today's revenue
-    const dailyRevenue = data.reduce((acc: number, apartment: any) => {
+    const dailyRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt);
         if (saleDate.toDateString() === today.toDateString()) {
@@ -89,7 +90,7 @@ export default function MonthlyTarget() {
     }, 0);
     
     // Yesterday's revenue for comparison
-    const yesterdayRevenue = data.reduce((acc: number, apartment: any) => {
+    const yesterdayRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt);
         if (saleDate.toDateString() === yesterday.toDateString()) {
