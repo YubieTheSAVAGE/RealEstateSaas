@@ -200,9 +200,9 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
       try {
         const response = await getProperties();
         // Assuming response is an array of properties
-        const formattedOptions = response.map((property: any) => ({
+        const formattedOptions = response.map((property: Property) => ({
           value: property.id,
-          label: property.name,
+          label: property.project.name,
         }));
         setOptions(formattedOptions);
         console.log("Formatted options:", formattedOptions);
