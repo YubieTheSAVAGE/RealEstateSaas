@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { TaskNotification, TaskNotifications, getTaskNotifications } from "../task/notifications/taskNotifications";
+import { TaskNotifications, getTaskNotifications } from "../task/notifications/taskNotifications";
 import TaskNotificationItem from "../task/notifications/TaskNotificationItem";
 import getTaskByUser from "../task/kanban/getTaskByUser";
 

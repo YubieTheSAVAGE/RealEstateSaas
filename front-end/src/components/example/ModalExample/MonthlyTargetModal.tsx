@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import ComponentCard from "../../common/ComponentCard";
+import React, { useState } from "react";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
 import Label from "../../form/Label";
@@ -14,7 +13,7 @@ interface MonthlyTargetModalProps {
   onTargetAdded?: () => void; // Optional callback for data refresh
 }
 
-export default function MonthlyTargetModal({ closeDropdown, onTargetAdded }: MonthlyTargetModalProps) {
+export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
