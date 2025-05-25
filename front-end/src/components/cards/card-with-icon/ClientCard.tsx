@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CardDescription, CardTitle } from "../../ui/card";
+import { CardTitle } from "../../ui/card";
 import { CgProfile } from "react-icons/cg";
 import { Client } from "@/types/client";
 import Badge from "@/components/ui/badge/Badge";

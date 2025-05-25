@@ -1,19 +1,10 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { Client } from "@/types/client"
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { get } from "http";
-
-import ClientCard from "../cards/card-with-icon/ClientCard";
-import ClientNoteCard from "../cards/card-with-icon/ClientNoteCard";
-import ClientPropertiesCard from "../cards/card-with-icon/ClientPropertiesCard";
-import InterestTable from "../ecommerce/InterestTable";
-import { User } from "@/types/user";
 import getAgentById from "./getAgentById";
 import { Agent } from "@/types/Agent";
 import AgentCard from "../cards/card-with-icon/AgentCard.tsx";
 import MonthlySalesChart from "../ecommerce/MonthlySalesChart";
-import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
 import getApartements from "../tables/DataTables/Properties/getApartements";
 import { StatsCard } from "../ecommerce/StatsCard";
 
@@ -25,7 +16,6 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
     const router = useRouter();
     const [agent, setAgent] = React.useState<Agent | null>(null);
     const [apartementsData, setApartementsData] = useState([]);
-    const [userRole, setUserRole] = useState("");
 
     const fetchAgent = async () => {
         const Data = await getAgentById(agentId);

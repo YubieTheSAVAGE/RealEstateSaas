@@ -1,6 +1,5 @@
 import ProjectDetails from "@/components/project/ProjectDetails";
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
-import BreadCrumbWithIcon from "@/components/ui/breadcrumb/BreadCrumbWithIcon";
 import React from "react";
 
 export default function ProjectPage({ params }: { params: { projectId: string } }) {

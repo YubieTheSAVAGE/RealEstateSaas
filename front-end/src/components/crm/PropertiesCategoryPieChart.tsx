@@ -269,7 +269,7 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
             />
           </div>
           <div className="flex flex-col items-start gap-6 sm:flex-row xl:flex-col">
-            {salesData.map((item, index) => (
+            {salesData.map((item) => (
               <div key={item.type} className="flex items-start gap-2.5">
                 <div 
                   className="mt-1.5 h-2 w-2 rounded-full" 

@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { CardDescription, CardTitle } from "../../ui/card";
+import { CardTitle } from "../../ui/card";
 import { CgProfile } from "react-icons/cg";
-import { Client } from "@/types/client";
 import Badge from "@/components/ui/badge/Badge";
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
-import EditClientModal from "@/components/example/ModalExample/EditClientModal";
 import { Agent } from "@/types/Agent";
 import EditAgentModal from "@/components/example/ModalExample/EditAgentModal";
 import { useRouter } from "next/navigation";

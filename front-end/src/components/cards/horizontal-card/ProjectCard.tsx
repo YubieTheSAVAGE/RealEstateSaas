@@ -1,5 +1,5 @@
 import { CardDescription, CardTitle } from "../../ui/card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import 'react-photo-view/dist/react-photo-view.css';
 import PropertiesCategoryPieChart from "@/components/crm/PropertiesCategoryPieChart";
@@ -10,9 +10,10 @@ import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import deleteProperties from "@/components/tables/DataTables/Projects/deleteProperties";
 import { useRouter } from "next/navigation";
+import { Project } from "@/types/project";
 
 interface ProjectCardProps {
-  ProjectDetails: any;
+  ProjectDetails: Project;
   onRefresh?: () => void; // Callback to refresh project list after editing
 }
 
@@ -32,12 +33,16 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
 
   const handleDelete = async (id: string) => {
       const success: boolean = await deleteProperties(id);
+      if (!success) {
+        console.error("Error deleting project");
+        return;
+      }
       router.push("/projects");
   }
 
   
 
-  const calculateTotalSales = (ProjectDetails: any) => {
+  const calculateTotalSales = (ProjectDetails: Project) => {
     // Check if apartments array exists
     if (!ProjectDetails.apartments || !Array.isArray(ProjectDetails.apartments)) {
       return 0;
@@ -57,7 +62,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
     }
   };
 
-  const calculateTotalRevenue = (ProjectDetails: any) => {
+  const calculateTotalRevenue = (ProjectDetails: Project) => {
     // Check if apartments array exists
     if (!ProjectDetails.apartments || !Array.isArray(ProjectDetails.apartments)) {
       return 0;
@@ -120,11 +125,11 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
                 );
               }}
             >
-            <PhotoView src={ProjectDetails.image}>
+            <PhotoView src={ProjectDetails.image ?? undefined}>
               <img
                 width={448}
                 height={140}
-                src={ProjectDetails.image}
+                src={ProjectDetails.image ?? ""}
                 alt="card"
                 className="overflow-hidden rounded-lg object-cover object-center transition-all duration-200 ease-in-out hover:scale-105 sm:h-[160px] sm:w-[448px]"
               />
@@ -143,7 +148,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
             >
               <EditProjectModal ProjectData={ProjectDetails} details={true} onRefresh={handleRefresh} />
               <DeleteModal
-                itemId={ProjectDetails.id}
+                itemId={ProjectDetails.id?.toString()}
                 heading="Delete Project"
                 description="Are you sure you want to delete this project? This action cannot be undone."
                 onDelete={handleDelete}
@@ -179,10 +184,10 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
       </div>
       <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 mb-6">
         <div className="col-span-2 sm:col-span-1">
-          <PropertiesCategoryPieChart apartements={ProjectDetails.apartments}/>
+          <PropertiesCategoryPieChart apartements={ProjectDetails.apartments ?? []}/>
         </div>
         <div className="col-span-2 sm:col-span-1">
-          <MonthlySalesChart apartements={ProjectDetails.apartments}/>
+          <MonthlySalesChart apartements={ProjectDetails.apartments ?? []}/>
         </div>
       </div>
     </div>

@@ -5,7 +5,6 @@ import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import Badge from "@/components/ui/badge/Badge";
-import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import deleteApartement from "@/components/tables/DataTables/Properties/deleteApartement";
@@ -18,6 +17,8 @@ interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
@@ -33,11 +34,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
     );
   }
 
-  const router = useRouter();
 
   const handleDelete = async (id: string) => {
     // Implement delete logic here
       const success: boolean = await deleteApartement(id);
+      if (!success) {
+        console.error("Error deleting property");
+        return;
+      }
       router.push("/properties");// Call the delete function and handle success or error
   }
   

@@ -3,7 +3,7 @@ import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
+import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect, useTransition } from "react";
@@ -29,6 +29,7 @@ export default function SignInForm() {
         const result = await login(state, payload);
         return { ...result, error: result.error || '' };
       } catch (error) {
+        console.error("Login error:", error);
         return { error: "An error occurred during login" };
       }
     },
@@ -41,7 +42,7 @@ export default function SignInForm() {
     }
   }, [state, router]);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = () => {
     startTransition(() => {
     });
   };

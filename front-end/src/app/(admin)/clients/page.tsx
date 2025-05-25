@@ -1,8 +1,6 @@
 "use client";
 import React, {useState, useEffect, useCallback} from "react";
 import ClientsDataTable from "@/components/tables/DataTables/Clients/ClientsDataTable";
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import { Metadata } from "next";
 import AddClientModal from "@/components/example/ModalExample/AddClientModal";
 import getClient from "@/components/tables/DataTables/Clients/getClient";
 

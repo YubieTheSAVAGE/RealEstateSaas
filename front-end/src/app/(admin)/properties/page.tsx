@@ -1,9 +1,6 @@
 "use client";
 import React, {useCallback, useState, useEffect} from "react"
 import PropertiesDataTable from "@/components/tables/DataTables/Properties/PropertiesDataTable"
-import PageBreadcrumb from "@/components/common/PageBreadCrumb"
-import { Metadata } from "next";
-import AddApartementsModal from "@/components/example/ModalExample/AddApartementsModal"
 import getApartements from "@/components/tables/DataTables/Properties/getApartements";
 import AddPropertyModal from "@/components/example/ModalExample/AddApartementsModal";
 

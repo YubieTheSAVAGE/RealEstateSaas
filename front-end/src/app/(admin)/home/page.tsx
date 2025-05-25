@@ -7,6 +7,7 @@ import { StatsCard } from "@/components/ecommerce/StatsCard";
 import PerformingAgents from "@/components/ecommerce/TopPerformingAgents";
 import getApartements from "@/components/tables/DataTables/Properties/getApartements";
 import {getUserRoleFromToken} from "@/app/(auth)/signin/login";
+import { User } from "@/types/user";
 
 
 export default function Ecommerce() {
@@ -23,7 +24,7 @@ export default function Ecommerce() {
             setApartementsData(data);
         }else {
             const data = await getApartements();
-            const filteredData = data.filter((item:any) => item.userId === role);
+            const filteredData = data.filter((item:User) => item.id.toString() === role);
             setApartementsData(filteredData);
         }
     }, []);

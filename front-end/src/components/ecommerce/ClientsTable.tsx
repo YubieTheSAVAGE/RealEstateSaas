@@ -6,10 +6,8 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import Image from "next/image";
 import PropertiesListDropdownFilter from "../example/DropdownExample/PropertiesListDropdownFilter";
-import getProjectById from "../project/getProjectById"; // Adjust the import path as necessary
-import { use, useEffect, useState } from "react";
+import { Property } from "@/types/property";
 
 const type = {
   "APARTMENT": "Appartement",
@@ -25,10 +23,11 @@ const type = {
   "LAND": "Terrain",
 };
 
-export default function ClientsTable({ ProjectDetails }: { ProjectDetails: any }) {
+export default function ClientsTable({ ProjectDetails }: { ProjectDetails: Property[] }) {
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">      <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+      <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             Available Properties
@@ -72,16 +71,13 @@ export default function ClientsTable({ ProjectDetails }: { ProjectDetails: any }
           </TableHeader>
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
             {ProjectDetails && Array.isArray(ProjectDetails) && ProjectDetails.length > 0 ? (
-              ProjectDetails.map((product : any) => (                <TableRow key={product.id} className="">
+              ProjectDetails.map((product : Property) => (                <TableRow key={product.id} className="">
                   <TableCell className="py-3">
                     <div className="flex items-center gap-3">
                       <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                          {(type[product.type as keyof typeof type] || product.name || product.title) + " " + (product.number || "") +  " (" + product.floor + ")"}
+                          {(type[product.type as keyof typeof type] || product.project.name) + " " + (product.number || "") +  " (" + product.floor + ")"}
                         </p>
-                        <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                          {type[product.type as keyof typeof type] || product.variants || "Standard"}
-                        </span>
                       </div>
                     </div>
                   </TableCell>
@@ -95,9 +91,9 @@ export default function ClientsTable({ ProjectDetails }: { ProjectDetails: any }
                     <Badge
                       size="sm"
                       color={
-                        product.status === "AVAILABLE" || product.status === "Available"
+                        product.status?.toUpperCase() === "AVAILABLE"
                           ? "success"
-                          : product.status === "RESERVED" || product.status === "Reserved"
+                          : product.status?.toUpperCase() === "RESERVED"
                           ? "warning"
                           : "error"
                       }

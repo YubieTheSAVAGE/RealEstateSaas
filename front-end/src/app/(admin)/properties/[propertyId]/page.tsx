@@ -1,7 +1,6 @@
 "use client";
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
-import React, {useState, useEffect} from "react";
-import getApartmentsById from "../getApartmentsById";
+import React from "react";
 import PropertyDetails from "@/components/property/PropertyDetails";
 
 export default function PropertyPage({ params }: { params: Promise<{ propertyId: string }> }) {

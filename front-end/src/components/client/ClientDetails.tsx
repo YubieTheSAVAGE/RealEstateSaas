@@ -2,7 +2,6 @@
 import React, { useCallback } from "react";
 import { Client } from "@/types/client"
 import { useRouter } from "next/navigation";
-import { get } from "http";
 import getClientById from "./getClientById";
 import ClientCard from "../cards/card-with-icon/ClientCard";
 import ClientNoteCard from "../cards/card-with-icon/ClientNoteCard";
