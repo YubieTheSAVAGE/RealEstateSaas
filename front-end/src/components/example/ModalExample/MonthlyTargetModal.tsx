@@ -120,6 +120,7 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
               />
             </div>
           </div>
+          
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button 
