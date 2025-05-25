@@ -1,13 +1,9 @@
 "use client";
 import React from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { TrashBinIcon } from "@/icons";
-import { on } from "events";
-import { Item } from "@radix-ui/react-select";
-import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 
 interface DeleteModalProps {

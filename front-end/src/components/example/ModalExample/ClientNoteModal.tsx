@@ -1,10 +1,7 @@
 "use client";
 import React from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
-import Label from "../../form/Label";
-import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
 import { Textarea } from "@/components/ui/textarea";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
