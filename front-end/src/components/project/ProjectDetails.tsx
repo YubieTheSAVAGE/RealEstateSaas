@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import getProjectById from "./getProjectById";
 import ProjectCard from "../cards/horizontal-card/ProjectCard";
 import PropertiesTable from "../ecommerce/PropertiesTable";
@@ -9,7 +9,6 @@ import { Project } from "@/types/project";
 interface ProjectDetailsProps {
     projectId: string;
 }
-
 
 export default function ProjectDetails({ projectId }: ProjectDetailsProps) {
     const router = useRouter();
