@@ -17,13 +17,14 @@ import { FaEye } from "react-icons/fa";
 import EditProjectModal from "@/components/example/ModalExample/EditProjectModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import { useRouter } from "next/navigation";
+import { Project } from "@/types/project";
 
 type SortKey = "id" | "project" | "totalSales";
 type SortOrder = "asc" | "desc";
 
 
 interface DataTableTwoProps {
-  projects: any[];
+  projects: Project[];
   onRefresh?: () => void; // Callback to refresh projects data
 }
 
@@ -34,23 +35,11 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
   const [sortKey, setSortKey] = useState<SortKey>("project");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
-  type ProjectData = {
-    id: string;
-    project: string;
-    name: string;
-    totalSales: number;
-    apartments: {
-      id: string;
-      name: string;
-      price: string;
-      status: string;
-    }[];
-  };
 
-  const [projectData, setProjectData] = useState<ProjectData[]>([]);
+  const [projectData, setProjectData] = useState<Project[]>([]);
 
   // Calculate total sales for a project based on sold apartments
-  const calculateTotalSales = (projectItem: any) => {
+  const calculateTotalSales = (projectItem: Project) => {
     // Check if apartments array exists
     if (!projectItem.apartments || !Array.isArray(projectItem.apartments)) {
       return 0;
@@ -67,7 +56,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
   useEffect(() => {
     if (projects && Array.isArray(projects)) {
       // Process projects to include total sales data
-      const processedProjects = projects.map((project) => ({
+      const processedProjects: Project[] = projects.map((project) => ({
         ...project,
         totalSales: calculateTotalSales(project),
       }));
@@ -85,10 +74,10 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
 
       if (success) {
         setProjectData((prevData) =>
-          prevData.filter((project) => project.id !== id)
+          prevData.filter((project) => project.id.toString() !== id)
         );
         const remainingItems = projectData.filter(
-          (project) => project.id !== id
+          (project) => project.id.toString() !== id
         ).length;
         if (
           remainingItems <= (currentPage - 1) * itemsPerPage &&
@@ -112,8 +101,6 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
     }
   };
 
-  let show = false
-
   // Filter data based on search term
   const filteredData = projectData.filter((item) => {
     const searchValue = searchTerm.toLowerCase();
@@ -126,11 +113,11 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortKey === "totalSales") {
       return sortOrder === "asc" 
-        ? a.totalSales - b.totalSales 
-        : b.totalSales - a.totalSales;
+        ? (a.totalSales ?? 0) - (b.totalSales ?? 0)
+        : (b.totalSales ?? 0) - (a.totalSales ?? 0);
     } else {
-      const valueA = String(a[sortKey] || "").toLowerCase();
-      const valueB = String(b[sortKey] || "").toLowerCase();
+      const valueA = String(a[sortKey as keyof Project] || "").toLowerCase();
+      const valueB = String(b[sortKey as keyof Project] || "").toLowerCase();
       return sortOrder === "asc"
         ? valueA.localeCompare(valueB)
         : valueB.localeCompare(valueA);
@@ -296,7 +283,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                       >
                         <FaEye />
                       </button>
-                      <DeleteModal onDelete={() => handleDelete(item.id)} itemId={item.id} heading="Delete Project" description="Are you sure you want to delete this project?" />
+                      <DeleteModal onDelete={() => handleDelete(item.id.toString())} itemId={item.id.toString()} heading="Delete Project" description="Are you sure you want to delete this project?" />
                       <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
                     </div>
                   </TableCell>

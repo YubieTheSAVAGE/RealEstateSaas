@@ -9,4 +9,5 @@ export interface Project {
   numberOfApartments: number;
   notes?: string | null;
   apartments?: Property[]; // You may define Property interface separately
+  totalSales?: number;
 }
