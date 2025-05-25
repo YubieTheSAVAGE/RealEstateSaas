@@ -5,32 +5,15 @@ import { useState, useEffect, useMemo } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
+import { Property } from "@/types/property";
 
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-// Define the Apartment type based on backend schema
-type Apartment = {
-  id: number;
-  number: number;
-  floor: number;
-  type: string;
-  area: number;
-  price: number;
-  pricePerM2?: number;
-  zone?: string;
-  status: "AVAILABLE" | "RESERVED" | "SOLD";
-  updatedAt: string;
-  projectId?: number;
-  project?: {
-    id: number;
-    name: string;
-  };
-};
 
-export default function MonthlySalesChart({ apartements }: { apartements: Apartment[] }) {
+export default function MonthlySalesChart({ apartements }: { apartements: Property[] }) {
   const [monthlySalesCount, setMonthlySalesCount] = useState<number[]>(Array(12).fill(0));
   const [monthlySalesValue, setMonthlySalesValue] = useState<number[]>(Array(12).fill(0));
   const [selectedView, setSelectedView] = useState<'count' | 'value'>('count');

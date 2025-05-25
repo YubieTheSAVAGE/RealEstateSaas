@@ -3,6 +3,7 @@
 import { API_URL } from "@/app/common/constants/api";
 import { cookies } from "next/headers";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
+import { Task } from "@/types/Task";
 // import { Task } from "../kanban/types/types";
 
 /**

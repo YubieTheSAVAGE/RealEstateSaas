@@ -27,9 +27,9 @@ export default async function getTasksByUser() {
         let userId: number;
         try {
             const decodedToken = jwt.decode(token) as JwtPayload;
-            id = decodedToken.id;
+            userId = decodedToken.id;
             
-            if (!id) {
+            if (!userId) {
                 console.error("User ID not found in token");
                 return [];
             }

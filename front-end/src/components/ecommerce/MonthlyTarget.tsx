@@ -59,7 +59,7 @@ export default function MonthlyTarget() {
     // Current month's revenue (for the monthly calculation)
     const currentMonthRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
-        const saleDate = new Date(apartment.updatedAt);
+        const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate >= firstDayCurrentMonth && saleDate <= today) {
           return acc + apartment.price;
         }
@@ -70,7 +70,7 @@ export default function MonthlyTarget() {
     // Previous month's revenue
     const previousMonthRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
-        const saleDate = new Date(apartment.updatedAt);
+        const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate >= firstDayPreviousMonth && saleDate <= lastDayPreviousMonth) {
           return acc + apartment.price;
         }
@@ -81,7 +81,7 @@ export default function MonthlyTarget() {
     // Today's revenue
     const dailyRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
-        const saleDate = new Date(apartment.updatedAt);
+        const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate.toDateString() === today.toDateString()) {
           return acc + apartment.price;
         }
@@ -92,7 +92,7 @@ export default function MonthlyTarget() {
     // Yesterday's revenue for comparison
     const yesterdayRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
-        const saleDate = new Date(apartment.updatedAt);
+        const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate.toDateString() === yesterday.toDateString()) {
           return acc + apartment.price;
         }

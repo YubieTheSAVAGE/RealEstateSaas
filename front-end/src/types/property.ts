@@ -21,5 +21,5 @@ export interface Property {
   client?: Client | null;
   userId?: number | null;
   project: Project;
-  updatedAt: string;
+  updatedAt?: Date | string | undefined; // Use Date for consistency, can be string if coming from API
 }

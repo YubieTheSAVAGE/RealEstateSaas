@@ -22,8 +22,7 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
     endDate: "",
   });
 
-  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // Prevent button default behavior
+  const handleSave = async () => {
     
     if (isSubmitting) return;
     
@@ -96,7 +95,7 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
                 name="target" 
                 type="number" 
                 onChange={handleInputChange} 
-                value={formData.target}
+                defaultValue={formData.target}
                 required 
               />
             </div>
@@ -106,7 +105,7 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
                 name="startDate" 
                 type="date" 
                 onChange={handleInputChange} 
-                value={formData.startDate}
+                defaultValue={formData.startDate}
                 required 
               />
             </div>
@@ -116,7 +115,7 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
                 name="endDate" 
                 type="date" 
                 onChange={handleInputChange} 
-                value={formData.endDate}
+                defaultValue={formData.endDate}
                 required 
               />
             </div>
@@ -126,10 +125,7 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
             <Button 
               size="sm" 
               variant="outline" 
-              onClick={(e) => {
-                e.preventDefault();
-                closeModal();
-              }}
+              onClick={closeModal}
             >
               Close
             </Button>

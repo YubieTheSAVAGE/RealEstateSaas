@@ -5,30 +5,12 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "@/icons";
 import dynamic from "next/dynamic";
+import { Property } from "@/types/property";
 
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
-
-// Define the Apartment type based on backend schema
-type Apartment = {
-  id: number;
-  number: number;
-  floor: number;
-  type: string;
-  area: number;
-  price: number;
-  pricePerM2?: number;
-  zone?: string;
-  status: "AVAILABLE" | "RESERVED" | "SOLD";
-  updatedAt: string;
-  projectId?: number;
-  project?: {
-    id: number;
-    name: string;
-  };
-};
 
 interface PropertySalesData {
   type: string;
@@ -51,7 +33,7 @@ const CHART_COLORS = [
   "#9d4edd", // Purple
 ];
 
-export default function PropertiesCategoryPieChart({ apartements }: { apartements: Apartment[] }) {
+export default function PropertiesCategoryPieChart({ apartements }: { apartements: Property[] }) {
   const [salesData, setSalesData] = useState<PropertySalesData[]>([]);
   const [totalSoldProperties, setTotalSoldProperties] = useState(0);
   

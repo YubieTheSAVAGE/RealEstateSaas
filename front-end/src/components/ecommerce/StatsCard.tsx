@@ -2,26 +2,10 @@
 import React, { useMemo } from "react";
 import Badge from "../ui/badge/Badge";
 import { ArrowDownIcon, ArrowUpIcon, GroupIcon, DollarLineIcon } from "@/icons";
+import { Property } from "@/types/property";
 
-type Apartment = {
-  id: number;
-  number: number;
-  floor: number;
-  type: string;
-  area: number;
-  price: number;
-  pricePerM2?: number;
-  zone?: string;
-  status: "AVAILABLE" | "RESERVED" | "SOLD";
-  updatedAt: string;
-  projectId?: number;
-  project?: {
-    id: number;
-    name: string;
-  };
-};
 
-export const StatsCard = ({apartments}: {apartments: Apartment[]}) => {
+export const StatsCard = ({apartments}: {apartments: Property[]}) => {
   // Calculate statistics from apartment data
   const stats = useMemo(() => {
     if (!apartments || apartments.length === 0) {
@@ -54,12 +38,12 @@ export const StatsCard = ({apartments}: {apartments: Apartment[]}) => {
 
     // Get sold properties in current period (last 30 days)
     const soldCurrentPeriod = soldProperties.filter(apt => 
-      new Date(apt.updatedAt) >= thirtyDaysAgo
+      new Date(apt.updatedAt || "") >= thirtyDaysAgo
     ).length;
 
     // Get sold properties in previous period (30-60 days ago)
     const soldPreviousPeriod = soldProperties.filter(apt => 
-      new Date(apt.updatedAt) >= sixtyDaysAgo && new Date(apt.updatedAt) < thirtyDaysAgo
+      new Date(apt.updatedAt || "") >= sixtyDaysAgo && new Date(apt.updatedAt || "") < thirtyDaysAgo
     ).length;
 
     // Calculate percentage change
