@@ -1,7 +1,7 @@
 "use client";
 import React, { useMemo } from "react";
 import Badge from "../ui/badge/Badge";
-import { ArrowDownIcon, ArrowUpIcon, BoxIconLine, GroupIcon, DollarLineIcon } from "@/icons";
+import { ArrowDownIcon, ArrowUpIcon, GroupIcon, DollarLineIcon } from "@/icons";
 
 type Apartment = {
   id: number;

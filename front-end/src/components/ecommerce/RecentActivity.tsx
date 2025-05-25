@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -9,7 +8,6 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import Image from "next/image";
 import { getRecentActivity } from "./activityService";
 import { useRouter } from "next/navigation";
 
@@ -73,13 +71,13 @@ export default function RecentActivity() {
   };
 
   // Map API status to UI status
-  const mapStatus = (status: string): "Sold" | "Reserved" | "Available" => {
-    switch (status) {
-      case "SOLD": return "Sold";
-      case "RESERVED": return "Reserved";
-      default: return "Available";
-    }
-  };
+  // const mapStatus = (status: string): "Sold" | "Reserved" | "Available" => {
+  //   switch (status) {
+  //     case "SOLD": return "Sold";
+  //     case "RESERVED": return "Reserved";
+  //     default: return "Available";
+  //   }
+  // };
 
   const router = useRouter();
 

@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
 import MultiSelect from "@/components/form/MultiSelect"
+import { Property } from "@/types/property"
 
 interface AddProjectModalProps {
   onClientAdded?: () => void // Callback to refresh client list
@@ -184,9 +185,9 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     const fetchProperties = async () => {
       try {
         const response = await getProperties()
-        const formattedOptions = response.map((property: any) => ({
+        const formattedOptions = response.map((property: Property) => ({
           value: property.id,
-          label: property.name,
+          label: property.project.name,
         }))
         setProjects(formattedOptions)
       } catch (error) {
@@ -203,9 +204,9 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       console.log("Fetching apartments for project ID:", projectId)
       const data = await getProjectApartements(projectId)
 
-      const formattedOptions = data.map((apartment: any) => ({
+      const formattedOptions = data.map((apartment: Property) => ({
         value: apartment.id,
-        text: apartment.name || `Apartment ${apartment.number || apartment.id}`,
+        text: apartment.project.name || `Apartment ${apartment.number || apartment.id}`,
       }))
 
       setCurrentProjectApartments(formattedOptions)

@@ -7,7 +7,6 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import Image from "next/image";
 import { ArrowDownIcon, ArrowUpIcon } from "@/icons";
 import { getTopPerformingAgents } from "./agentsService";
 import { useEffect, useState } from "react";

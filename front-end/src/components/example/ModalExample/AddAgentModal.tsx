@@ -107,10 +107,6 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
     { value: "INACTIVE", label: "Inactive" },
   ];
 
-  const roleOptions = [
-    { value: "AGENT", label: "Agent" },
-  ];
-
   const handleSelectChange = (selectedValue: string, name: string) => {
     setFormData((prev) => ({
       ...prev,

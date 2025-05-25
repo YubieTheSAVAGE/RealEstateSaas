@@ -1,19 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
-import { API_URL } from "@/app/common/constants/api";
 import addApartments from "@/app/(admin)/properties/addApartments";
 import getProperties from "@/components/tables/DataTables/Projects/getProperties";
 import Select from "../../form/Select";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
-import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 import getClient from "@/components/tables/DataTables/Clients/getClient";
+import { Client } from "@/types/client";
+import { Property } from "@/types/property";
 
 interface AddPropertyModalProps {
   onApartementsAdded?: () => void; // Callback to refresh project list
@@ -89,7 +88,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   
   const fetchClients = async () => {
     const clients = await getClient();
-    const formattedOptions = clients.map((client: any) => ({
+    const formattedOptions = clients.map((client: Client) => ({
       value: client.id,
       label: client.name,
     }));
@@ -101,9 +100,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       try {
         const response = await getProperties();
         // Assuming response is an array of properties
-        const formattedOptions = response.map((property: any) => ({
+        const formattedOptions = response.map((property: Property) => ({
           value: property.id,
-          label: property.name,
+          label: property.project.name,
         }));
         setOptions(formattedOptions);
         console.log("Formatted options:", formattedOptions);
