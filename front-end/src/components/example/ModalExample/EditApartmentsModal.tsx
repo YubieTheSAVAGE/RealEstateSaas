@@ -42,9 +42,9 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     try {
       const response = await getClient();
       // Assuming response is an array of properties
-      const formattedOptions = response.map((property: any) => ({
+      const formattedOptions = response.map((property: Property) => ({
         value: property.id,
-        label: property.name,
+        label: property.project.name,
       }));
       setClientOptions(formattedOptions);
       console.log("Formatted options:", formattedOptions);
@@ -80,35 +80,35 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     });
   // State for form fields
   interface FormDataState {
-    id: any;
-    floor: any;
-    number: any;
-    type: any;
-    area: any;
-    threeDViewUrl: any;
-    price: any;
-    status: any;
-    notes: any;
-    pricePerM2: any;
+    id: number | string; // Changed to number | string to handle both cases
+    floor: number;
+    number: number;
+    type: string;
+    area: number;
+    threeDViewUrl: string;
+    price: number;
+    status: string;
+    notes: string;
+    pricePerM2: number;
     image: File | null;
-    zone: any;
-    clientId: any;
+    zone: string;
+    clientId: string; // Changed to string to handle client ID
   }
 
   const [formData, setFormData] = useState<FormDataState>({
-    id: PropertyData?.id || "",
-    floor: PropertyData?.floor || "",
-    number: PropertyData?.number || "",
+    id: PropertyData?.id || 0,
+    floor: PropertyData?.floor || 0,
+    number: PropertyData?.number || 0,
     type:  PropertyData?.type || "",    
-    area: PropertyData?.area || "",
+    area: PropertyData?.area || 0,
     threeDViewUrl: PropertyData?.threeDViewUrl || "",
-    price: PropertyData?.price || "",
+    price: PropertyData?.price || 0,
     status: PropertyData?.status || "AVAILABLE",
     notes: PropertyData?.notes || "",
-    pricePerM2: PropertyData?.pricePerM2 || "",
+    pricePerM2: PropertyData?.pricePerM2 || 0,
     image: null, // Default to null for image
     zone: PropertyData?.zone || "",
-    clientId: PropertyData?.client?.id || "", // Added optional chaining to safely access client.id
+    clientId: PropertyData?.client?.id ? String(PropertyData.client.id) : "", // Ensure clientId is always a string
   });
 
 
