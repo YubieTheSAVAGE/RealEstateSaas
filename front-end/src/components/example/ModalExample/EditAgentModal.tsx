@@ -18,10 +18,10 @@ interface AddAgentModalProps {
   // onAgentAdded?: () => void; // Callback to refresh agent list
   onAgentEdited?: () => void; // Callback to refresh agent list after editing
   AgentDetails: Agent;
-  // details?: boolean; // Optional prop to indicate if it's in details mode
+  details?: boolean; // Optional prop to indicate if it's in details mode
 }
 
-export default function EditAgentModal({AgentDetails , onAgentEdited}: AddAgentModalProps) {
+export default function EditAgentModal({AgentDetails , onAgentEdited, details}: AddAgentModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -87,7 +87,7 @@ export default function EditAgentModal({AgentDetails , onAgentEdited}: AddAgentM
 
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      formDataToSend.append(key, value ?? "");
+      formDataToSend.append(key, value != null ? String(value) : "");
     });
     
     try {
@@ -124,7 +124,7 @@ export default function EditAgentModal({AgentDetails , onAgentEdited}: AddAgentM
 
   return (
     <>
-      {AgentDetails ? (
+      {details ? (
         <DropdownItem 
           className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
           onClick={openModal}
