@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Client } from "@/types/client";
 import {
   Table,
@@ -12,8 +12,6 @@ import {
 import {
   AngleDownIcon,
   AngleUpIcon,
-  PencilIcon,
-  TrashBinIcon,
 } from "../../../../icons";
 import PaginationWithButton from "./PaginationWithButton";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
@@ -25,7 +23,12 @@ import deleteClient from "./deleteClient"; // Assuming you have a delete functio
 type SortKey = "id" | "name" | "email" | "phone" | "interest";
 type SortOrder = "asc" | "desc";
 
-export default function ClientsDataTable({clients, onClientAdded}: any) {
+interface ClientsDataTableProps {
+  clients: Client[]; // Assuming clients is an array of Client objects
+  onClientAdded?: () => void; // Callback function to refresh the client list
+}
+
+export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState<SortKey>("id");
@@ -39,16 +42,16 @@ export default function ClientsDataTable({clients, onClientAdded}: any) {
       if (clients) {
           console.log('Fetched clients:', clients);
 
-          const formattedData: Client[] = clients.map((item: any) => ({
+          const formattedData: Client[] = clients.map((item: Client) => ({
               id: item.id,
               name: item.name,
               email: item.email,
               phoneNumber: item.phoneNumber,
               status: item.status,
               provenance: item.provenance || "",
-              createdById: item.createdById || "",
-              properties: item.properties || [],
+              createdById: typeof item.createdById === "number" ? item.createdById : Number(item.createdById) || 0,
               interestedApartments: item.interestedApartments || [],
+              properties: item.apartments || [],
               notes: item.notes || "",
           }));
 
@@ -280,7 +283,7 @@ export default function ClientsDataTable({clients, onClientAdded}: any) {
                         itemId={item.id.toString()} 
                         heading={"Delete client"} 
                         description={`Are you sure you want to delete ${item.name}? this action is irreversible.`} 
-                        onDelete={() => handleDelete(item.id)}
+                        onDelete={() => handleDelete(item.id.toString())}
                       />
                       <EditClientModal 
                         clientData={item}
