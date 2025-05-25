@@ -4,14 +4,14 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import getTasks, { TaskNotification, TaskNotifications, getTaskNotifications } from "../task/notifications/taskNotifications";
+import { TaskNotification, TaskNotifications, getTaskNotifications } from "../task/notifications/taskNotifications";
 import TaskNotificationItem from "../task/notifications/TaskNotificationItem";
 import getTaskByUser from "../task/kanban/getTaskByUser";
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifying, setNotifying] = useState(false);
-  const [tasks, setTasks] = useState<TaskNotification[]>([]);
+  // const [tasks, setTasks] = useState<TaskNotification[]>([]);
   const [notifications, setNotifications] = useState<TaskNotifications>({ overdue: [], upcoming: [] });
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +21,7 @@ export default function NotificationDropdown() {
       try {
         setLoading(true);
         const tasksData = await getTaskByUser();
-        setTasks(tasksData);
+        // setTasks(tasksData);
         
         const notificationsData = await getTaskNotifications(tasksData);
         setNotifications(notificationsData);
