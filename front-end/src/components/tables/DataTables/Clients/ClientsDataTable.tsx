@@ -51,7 +51,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
               provenance: item.provenance || "",
               createdById: typeof item.createdById === "number" ? item.createdById : Number(item.createdById) || 0,
               interestedApartments: item.interestedApartments || [],
-              properties: item.apartments || [],
+              apartments: item.apartments || [],
               notes: item.notes || "",
           }));
 

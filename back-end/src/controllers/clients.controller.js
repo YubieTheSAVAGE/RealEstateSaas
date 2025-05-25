@@ -92,7 +92,7 @@ async function updateClient(request, reply) {
     }
 
     const data = {};
-    const allowed = ["name", "email", "phoneNumber", "status", "notes"];
+    const allowed = ["name", "email", "phoneNumber", "status", "notes", "apartmentId"];
 
     for (const key of allowed) {
       if (request.body[key] !== undefined) {

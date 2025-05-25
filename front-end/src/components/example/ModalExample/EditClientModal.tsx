@@ -16,6 +16,7 @@ import { PencilIcon } from "@/icons"
 import type { Client } from "@/types/client"
 import { Property } from "@/types/property"
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem"
+import { Project } from "@/types/project"
 
 // Custom textarea component to replace shadcn/ui textarea
 const CustomTextarea = ({
@@ -123,14 +124,14 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
           })
         }
 
-        // Add all properties from this project
-        if (item.project.properties && item.project.properties.length > 0) {
+        // Add all apartments from this project
+        if (item.project.apartments && item.project.apartments.length > 0) {
           const project = projectMap.get(String(projectId))!
 
-          item.project.properties.forEach((property) => {
+          item.project.apartments.forEach((apartment) => {
             project.apartments.push({
-              id: String(property.id),
-              name: property.type || `Apartment ${property.number || property.id}`,
+              id: String(apartment.id),
+              name: apartment.type || `Apartment ${apartment.number || apartment.id}`,
             })
           })
         }
@@ -156,20 +157,45 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     }))
   }
 
-  const handleSave = async () => {
-    // Validate required fields
-    const newErrors = {
-      name: formData.name ? "" : "Name is required",
-      email: formData.email ? "" : "Email is required",
-      phoneNumber: formData.phoneNumber ? "" : "Phone number is required",
-      provenance: formData.provenance ? "" : "This field is required",
+    const validateForm = (): boolean => {
+    let valid = true;
+    const newErrors = { ...errors };
+    
+    // Required field validation
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+      valid = false;
     }
 
-    setErrors(newErrors)
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email";
+      valid = false;
+    }
 
-    // Check if there are any errors
-    if (Object.values(newErrors).some((error) => error !== "")) {
-      return
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Phone number is required";
+      valid = false;
+    } else if (!/^[+\d\s\-()]{7,20}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Please enter a valid phone number";
+      valid = false;
+    }
+
+    if (!formData.provenance.trim()) {
+      newErrors.provenance = "This field is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSave = async () => {
+    // Validate required fields
+    if (!validateForm()) {
+      return;
     }
 
     // Flatten all selected apartments into a single array of IDs
@@ -192,7 +218,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       formDataToSend.append("apartmentId", id)
     })
 
-    console.log("Form data to send:", formDataToSend)
+    console.log("Form data to send:", allApartmentIds)
 
     try {
       await updateClient(formDataToSend)
@@ -213,7 +239,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     const fetchProperties = async () => {
       try {
         const response = await getProperties()
-        const formattedOptions = response.map((property: any) => ({
+        const formattedOptions = response.map((property: Project) => ({
           value: String(property.id),
           label: property.name,
         }))
@@ -231,9 +257,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     try {
       const data = await getProjectApartements(projectId)
 
-      const formattedOptions = data.map((apartment: any) => ({
+      const formattedOptions = data.map((apartment: Property) => ({
         value: String(apartment.id),
-        text: apartment.name || `Apartment ${apartment.number || apartment.id}`,
+        text: apartment.project?.name || `Apartment ${apartment.number || apartment.id}`,
       }))
 
       setCurrentProjectApartments(formattedOptions)

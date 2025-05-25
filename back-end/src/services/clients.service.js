@@ -138,20 +138,32 @@ async function updateClient(clientId, data, user) {
       throw err;
     }
   }
+
+  const clientData = {
+    name: data.name,
+    email: data.email,
+    phoneNumber: data.phoneNumber,
+    status: data.status || "CLIENT",
+    notes: data.notes,
+    provenance: data.provenance,
+  };
+
+  if (data.apartmentId) {
+    try {
+      const interestedApartments = data.apartmentId;
+      if (Array.isArray(interestedApartments) && interestedApartments.length > 0) {
+        clientData.interestedApartments = {
+          connect: interestedApartments.map(apt => ({ id: parseInt(apt) }))
+        };
+      }
+    } catch (err) {
+      console.error("Error parsing interestedApartments:", err);
+    }
+  }
   
   const updated = await prisma.client.update({
     where: { id: clientId },
-    data: {
-      name: data.name,
-      email: data.email,
-      phoneNumber: data.phoneNumber,
-      status: data.status,
-      notes: data.notes,
-      provenance: data.provenance,
-      interestedApartments: data.apartmentId ? {
-        connect: { id: parseInt(data.apartmentId) }
-      } : undefined
-    },
+    data: clientData,
   });
   return updated;
 }

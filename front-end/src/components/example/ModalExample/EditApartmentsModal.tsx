@@ -1,26 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import ComponentCard from "../../common/ComponentCard";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
 import Label from "../../form/Label";
 import Input from "../../form/input/InputField";
 import { useModal } from "@/hooks/useModal";
-import { API_URL } from "@/app/common/constants/api";
 import editApartements from "@/app/(admin)/properties/editApartements";
 import getProperties from "@/components/tables/DataTables/Projects/getProperties";
 import Select from "../../form/Select";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
-import { imageConfigDefault } from "next/dist/shared/lib/image-config";
-import { FaPen } from "react-icons/fa";
 import { PencilIcon } from "@/icons";
 import getClient from "@/components/tables/DataTables/Clients/getClient";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
+import { Property } from "@/types/property";
 
 interface EditPropertyModalProps {
   // onApartementsAdded?: () => void; // Callback to refresh project list
-  PropertyData ?: any; // Add the type for PropertyData if available
+  PropertyData ?: Property; // Add the type for PropertyData if available
   onRefresh?: () => void; // Callback to refresh project list after editing
   details?: boolean;
 }
@@ -57,7 +54,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
   }
   useEffect(() => {
     const fetchData = async () => {
-      if (PropertyData.status === "SOLD") {
+      if (PropertyData?.status === "SOLD") {
         await fetchClients();
         console.log("PropertyData.status", PropertyData.status);
         console.log("PropertyData", PropertyData);
@@ -66,7 +63,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
       }
     };
     fetchData();
-  }, [PropertyData.status]);
+  }, [PropertyData?.status]);
 
     const [errors, setErrors] = useState({
       id: "",
@@ -281,7 +278,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
             <div className="col-span-1">
               <Label>Project <span className="text-red-500">*</span></Label>
               <Select
-                defaultValue={PropertyData?.id}
+                defaultValue={PropertyData?.id !== undefined ? String(PropertyData.id) : undefined}
                 name="id"
                 options={options}
                 placeholder="Select Option"
@@ -391,7 +388,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
             <div className="col-span-1">
               <Label>3D Link</Label>
               <Input
-                defaultValue={PropertyData?.threeDViewUrl}
+                defaultValue={PropertyData?.threeDViewUrl ?? undefined}
                 name="threeDViewUrl"
                 type="text"
                 placeholder="e.g. 10"
@@ -465,7 +462,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
               <TextArea
-                value={PropertyData.notes}
+                value={PropertyData?.notes ?? ""}
                 rows={3}
                 placeholder="Add notes here"
                 onChange={handleTextAreaChange}
