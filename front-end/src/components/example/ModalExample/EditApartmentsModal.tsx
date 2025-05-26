@@ -14,6 +14,7 @@ import { PencilIcon } from "@/icons";
 import getClient from "@/components/tables/DataTables/Clients/getClient";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { Property } from "@/types/property";
+import { Project } from "@/types/project";
 
 interface EditPropertyModalProps {
   // onApartementsAdded?: () => void; // Callback to refresh project list
@@ -200,9 +201,9 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
       try {
         const response = await getProperties();
         // Assuming response is an array of properties
-        const formattedOptions = response.map((property: Property) => ({
+        const formattedOptions = response.map((property: Project) => ({
           value: property.id,
-          label: property.project.name,
+          label: property.name,
         }));
         setOptions(formattedOptions);
         console.log("Formatted options:", formattedOptions);

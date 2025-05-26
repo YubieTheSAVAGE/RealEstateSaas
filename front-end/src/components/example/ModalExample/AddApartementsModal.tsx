@@ -12,7 +12,8 @@ import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import getClient from "@/components/tables/DataTables/Clients/getClient";
 import { Client } from "@/types/client";
-import { Property } from "@/types/property";
+// import { Property } from "@/types/property";
+import { Project } from "@/types/project";
 
 interface AddPropertyModalProps {
   onApartementsAdded?: () => void; // Callback to refresh project list
@@ -100,9 +101,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       try {
         const response = await getProperties();
         // Assuming response is an array of properties
-        const formattedOptions = response.map((property: Property) => ({
+        const formattedOptions = response.map((property: Project) => ({
           value: property.id,
-          label: property.project.name,
+          label: property.name || `Property ${property.id}`,
         }));
         setOptions(formattedOptions);
         console.log("Formatted options:", formattedOptions);
