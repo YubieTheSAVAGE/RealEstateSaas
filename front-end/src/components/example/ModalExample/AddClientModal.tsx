@@ -246,10 +246,10 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   }
 
   // Handle multi-select change for apartments
-  const handleMultiSelectChange = (selected: string[]) => {
-    console.log("Selected apartments:", selected)
-    setTempSelectedApartments(selected)
-  }
+  // const handleMultiSelectChange = (selected: string[]) => {
+  //   console.log("Selected apartments:", selected)
+  //   setTempSelectedApartments(selected)
+  // }
 
   // Add selected apartments to the list
   const handleAddApartments = () => {

@@ -11,7 +11,6 @@ import { Trash2, Search } from "lucide-react"
 import updateClient from "@/app/(admin)/clients/updateClient"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
-import MultiSelect from "@/components/form/MultiSelect"
 import { PencilIcon } from "@/icons"
 import type { Client } from "@/types/client"
 import { Property } from "@/types/property"
@@ -301,9 +300,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   }
 
   // Handle multi-select change for apartments
-  const handleMultiSelectChange = (selected: string[]) => {
-    setTempSelectedApartments(selected)
-  }
+  // const handleMultiSelectChange = (selected: string[]) => {
+  //   setTempSelectedApartments(selected)
+  // }
 
   // Add selected apartments to the list
   const handleAddApartments = () => {
