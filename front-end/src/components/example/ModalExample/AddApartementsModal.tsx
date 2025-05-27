@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Button from "../../ui/button/Button";
 import { Modal } from "../../ui/modal";
 import Label from "../../form/Label";
@@ -21,6 +21,13 @@ interface AddPropertyModalProps {
 
 export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
+
+  // Move clientOptions state before it's used
+  const [clientOptions, setClientOptions] = useState<Array<{ value: string; label: string }>>([]);
+  const [clientSearch, setClientSearch] = useState("");
+  const [filteredClients, setFilteredClients] = useState<Array<{ value: string; label: string }>>([]);
+  const [showClientDropdown, setShowClientDropdown] = useState(false);
+  const clientSearchRef = useRef<HTMLDivElement>(null);
 
   // State for form fields
   const [formData, setFormData] = useState({
@@ -52,6 +59,48 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     image: "",
     clientId: "",
   });
+
+  // Add click outside handler for dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (clientSearchRef.current && !clientSearchRef.current.contains(event.target as Node)) {
+        setShowClientDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Update filtered clients when search changes
+  useEffect(() => {
+    if (clientSearch.trim() === "") {
+      setFilteredClients(clientOptions);
+    } else {
+      const filtered = clientOptions.filter(client =>
+        client.label.toLowerCase().includes(clientSearch.toLowerCase())
+      );
+      setFilteredClients(filtered);
+    }
+  }, [clientSearch, clientOptions]);
+
+  const handleClientSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setClientSearch(e.target.value);
+    setShowClientDropdown(true);
+  };
+
+  const handleClientSelect = (client: { value: string; label: string }) => {
+    setFormData(prev => ({
+      ...prev,
+      clientId: client.value
+    }));
+    setClientSearch(client.label);
+    setShowClientDropdown(false);
+    setErrors(prev => ({
+      ...prev,
+      clientId: ""
+    }));
+  };
 
   // Update form field values
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,8 +134,6 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     { value: "SOLD", label: "Sold" },
   ]
 
-  const [clientOptions, setClientOptions] = useState([]);
-  
   const fetchClients = async () => {
     const clients = await getClient();
     const formattedOptions = clients.map((client: Client) => ({
@@ -393,22 +440,47 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               />
             </div>
             {(formData.status === "SOLD" || formData.status === "RESERVED") && (
-                <div className="col-span-1">
-                  <Label>Client <span className="text-red-500">*</span></Label>
-                  <Select
-                    name="clientId"
-                    options={clientOptions}
-                    placeholder="Select Option"
-                    onChange={(value, name) => handleSelectChange(value, name)}
-                    className="dark:bg-dark-900"
-                  />
-                  {errors.clientId && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.clientId}
-                    </p>
+              <div className="col-span-1" ref={clientSearchRef}>
+                <Label>Client <span className="text-red-500">*</span></Label>
+                <div className="relative">
+                  <div onClick={() => setShowClientDropdown(true)}>
+                    <Input
+                      name="clientSearch"
+                      type="text"
+                      defaultValue={clientSearch}
+                      onChange={handleClientSearch}
+                      placeholder="Search for a client..."
+                      className="w-full"
+                    />
+                  </div>
+                  {showClientDropdown && filteredClients.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto dark:bg-dark-900 dark:border-dark-700">
+                      {filteredClients.map((client) => (
+                        <div
+                          key={client.value}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-800"
+                          onClick={() => handleClientSelect(client)}
+                        >
+                          {client.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {showClientDropdown && filteredClients.length === 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg dark:bg-dark-900 dark:border-dark-700">
+                      <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
+                        No clients found
+                      </div>
+                    </div>
                   )}
                 </div>
-              )}
+                {errors.clientId && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.clientId}
+                  </p>
+                )}
+              </div>
+            )}
             <div className="col-span-2">
               <Label>Plan</Label>
               <FileInput
