@@ -1,4 +1,3 @@
-"use client"
 import type React from "react"
 import { useState, useEffect } from "react"
 import Button from "../../ui/button/Button"
@@ -7,12 +6,12 @@ import Label from "../../form/Label"
 import Input from "../../form/input/InputField"
 import { useModal } from "@/hooks/useModal"
 import Select from "../../form/Select"
-import { Trash2 } from "lucide-react"
+import { Trash2, Search } from "lucide-react"
 import addClient from "@/app/(admin)/clients/addClient"
 import { Textarea } from "@/components/ui/textarea"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
-import MultiSelect from "@/components/form/MultiSelect"
+// import MultiSelect from "@/components/form/MultiSelect"
 import { Property } from "@/types/property"
 import { Project } from "@/types/project"
 
@@ -63,6 +62,10 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   const [currentProjectApartments, setCurrentProjectApartments] = useState<{ value: string; text: string; selected: boolean }[]>([])
   const [tempSelectedApartments, setTempSelectedApartments] = useState<string[]>([])
   const [currentProjectName, setCurrentProjectName] = useState("")
+
+  // Add these new state variables after other useState declarations
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filteredApartments, setFilteredApartments] = useState<{ value: string; text: string; selected: boolean }[]>([])
 
   // Status options
   const status = [
@@ -202,12 +205,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   // Function to fetch apartments for a specific project
   const fetchApartmentsForProject = async (projectId: string) => {
     try {
+      console.log("Fetching apartments for project ID:", projectId)
       const data = await getProjectApartements(projectId)
-      console.log("Fetching apartments for project ID:", data)
 
       const formattedOptions = data.map((apartment: Property) => ({
         value: apartment.id,
-        text:  `${apartment.type} ${apartment.number || apartment.id}`,
+        text:  `${apartment.type} ${apartment.number || apartment.id} `,
       }))
 
       setCurrentProjectApartments(formattedOptions)
@@ -325,14 +328,37 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     setSelectedApartments(updatedProjects)
   }
 
-  // Update apartments when project changes
+  // Add this new function after other function declarations
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase()
+    setSearchQuery(query)
+    
+    if (!query.trim()) {
+      setFilteredApartments(currentProjectApartments)
+      return
+    }
+
+    const filtered = currentProjectApartments.filter(apt => 
+      apt.text.toLowerCase().includes(query)
+    )
+    setFilteredApartments(filtered)
+  }
+
+  // Update the useEffect that handles project changes
   useEffect(() => {
     if (formData.projectId) {
       fetchApartmentsForProject(formData.projectId)
     } else {
       setCurrentProjectApartments([])
+      setFilteredApartments([])
+      setSearchQuery("")
     }
   }, [formData.projectId])
+
+  // Update the useEffect to initialize filtered apartments
+  useEffect(() => {
+    setFilteredApartments(currentProjectApartments)
+  }, [currentProjectApartments])
 
   function handleTextareaChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
     const { name, value } = event.target
@@ -432,20 +458,68 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   </div>
                   {formData.projectId && (
                     <div className="col-span-1">
-                      <Label>Property <span className="text-red-500">*</span></Label>
-                      <MultiSelect
-                        label=""
-                        options={currentProjectApartments}
-                        onChange={handleMultiSelectChange}
-                      />
+                      <Label>Search Properties <span className="text-red-500">*</span></Label>
+                      <div className="relative">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Search by type or number..."
+                            className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                        </div>
+                        {searchQuery && filteredApartments.length > 0 && (
+                          <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+                            {filteredApartments.map((apt) => (
+                              <div
+                                key={apt.value}
+                                className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                                onClick={() => {
+                                  if (!tempSelectedApartments.includes(apt.value)) {
+                                    setTempSelectedApartments([...tempSelectedApartments, apt.value])
+                                  }
+                                }}
+                              >
+                                {apt.text}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {tempSelectedApartments.length > 0 && (
+                        <div className="mt-2">
+                          <div className="flex flex-wrap gap-2">
+                            {tempSelectedApartments.map((id) => {
+                              const apt = currentProjectApartments.find((a) => a.value === id)
+                              return (
+                                <div
+                                  key={id}
+                                  className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 rounded-full"
+                                >
+                                  <span>{apt?.text}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setTempSelectedApartments(tempSelectedApartments.filter(t => t !== id))}
+                                    className="text-blue-600 hover:text-blue-800"
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
 
-                {formData.projectId && (
+                {formData.projectId && tempSelectedApartments.length > 0 && (
                   <div className="flex justify-end">
-                    <Button size="sm" onClick={handleAddApartments} disabled={tempSelectedApartments.length === 0}>
-                      Add Property
+                    <Button size="sm" onClick={handleAddApartments}>
+                      Add Selected Properties
                     </Button>
                   </div>
                 )}
