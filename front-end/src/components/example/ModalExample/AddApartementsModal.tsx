@@ -116,7 +116,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   }
   , []);
   const handleSelectChange = (selectedValue: string, name:string) => {
-    if (name == "status" && selectedValue == "SOLD") {
+    if (name == "status" && (selectedValue == "SOLD" || selectedValue == "RESERVED")) {
       fetchClients();
     }
     setFormData((prev) => ({
@@ -392,8 +392,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 onChange={(value, name) => handleSelectChange(value, name)}
               />
             </div>
-            {
-              formData.status === "SOLD" && (
+            {(formData.status === "SOLD" || formData.status === "RESERVED") && (
                 <div className="col-span-1">
                   <Label>Client <span className="text-red-500">*</span></Label>
                   <Select

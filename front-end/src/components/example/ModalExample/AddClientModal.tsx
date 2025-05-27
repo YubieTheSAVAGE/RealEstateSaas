@@ -14,6 +14,7 @@ import getProperties from "@/components/tables/DataTables/Projects/getProperties
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
 import MultiSelect from "@/components/form/MultiSelect"
 import { Property } from "@/types/property"
+import { Project } from "@/types/project"
 
 interface AddProjectModalProps {
   onClientAdded?: () => void // Callback to refresh client list
@@ -185,9 +186,9 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     const fetchProperties = async () => {
       try {
         const response = await getProperties()
-        const formattedOptions = response.map((property: Property) => ({
+        const formattedOptions = response.map((property: Project) => ({
           value: property.id,
-          label: property.project.name,
+          label: property.name,
         }))
         setProjects(formattedOptions)
       } catch (error) {
@@ -201,12 +202,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   // Function to fetch apartments for a specific project
   const fetchApartmentsForProject = async (projectId: string) => {
     try {
-      console.log("Fetching apartments for project ID:", projectId)
       const data = await getProjectApartements(projectId)
+      console.log("Fetching apartments for project ID:", data)
 
       const formattedOptions = data.map((apartment: Property) => ({
         value: apartment.id,
-        text: apartment.project.name || `Apartment ${apartment.number || apartment.id}`,
+        text:  `${apartment.type} ${apartment.number || apartment.id}`,
       }))
 
       setCurrentProjectApartments(formattedOptions)

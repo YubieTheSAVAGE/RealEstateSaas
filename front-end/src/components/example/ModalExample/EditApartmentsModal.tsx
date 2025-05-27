@@ -15,6 +15,7 @@ import getClient from "@/components/tables/DataTables/Clients/getClient";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { Property } from "@/types/property";
 import { Project } from "@/types/project";
+import { Client } from "@/types/client";
 
 interface EditPropertyModalProps {
   // onApartementsAdded?: () => void; // Callback to refresh project list
@@ -43,9 +44,9 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     try {
       const response = await getClient();
       // Assuming response is an array of properties
-      const formattedOptions = response.map((property: Property) => ({
+      const formattedOptions = response.map((property: Client) => ({
         value: property.id,
-        label: property.project.name,
+        label: property.name,
       }));
       setClientOptions(formattedOptions);
       console.log("Formatted options:", formattedOptions);
@@ -219,7 +220,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     
   const handleSelectChange = (selectedValue: string, name:string) => {
     // console.log("Selected value:", selectedValue, name);
-    if (name === "status" && selectedValue === "SOLD") {
+    if (name === "status" && (selectedValue === "SOLD" || selectedValue === "RESERVED")) {
       fetchClients();
     }
     console.log("Selected value:", selectedValue, name);
@@ -427,7 +428,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                 </p>
               )}
             </div>
-            {formData.status === "SOLD" && (
+            {(formData.status === "SOLD" || formData.status === "RESERVED") && (
               <div className="col-span-1">
                 <Label>Client <span className="text-red-500">*</span></Label>
                 <Select

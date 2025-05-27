@@ -1,6 +1,6 @@
 
 function isPositiveInt(val) {
-  return Number.isInteger(val) && val > 0
+  return Number.isInteger(val) && val >= 0
 }
 
 function validateEmail(email) {

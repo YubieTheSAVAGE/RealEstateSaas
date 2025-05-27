@@ -32,7 +32,7 @@ async function getRecentActivity(limit = 5) {
 async function listByProject(projectId) {
   return prisma.apartment.findMany({
     where: { projectId },
-    include: { client: true },
+    include: { client: true, project: true },
   });
 }
 
@@ -67,6 +67,16 @@ async function create(projectId, data) {
     apartmentData.client = {
       connect: { id: data.clientId }
     };
+    if (data.status === "SOLD" || data.status === "RESERVED") {
+      await prisma.client.update({
+        where: {
+          id: data.clientId
+        },
+        data: {
+          status: "CLIENT"
+        }
+      });
+    }
   }
 
   const apartment = await prisma.apartment.create({
@@ -101,17 +111,30 @@ async function update(apartmentId, data) {
   };
 
   // Handle client association based on status
-  if (data.status && data.status !== "SOLD") {
-    // If status is not SOLD, disconnect any client association
+  if (data.status && (data.status !== "SOLD" && data.status !== "RESERVED")) {
+    // If status is not SOLD or RESERVED, disconnect any client association
     updateData.client = {
       disconnect: true
     };
+
   } else if (data.clientId) {
     // If clientId is provided, connect to that client
     updateData.client = {
       connect: { id: parseInt(data.clientId, 10) }
     };
+    if (data.status === "SOLD" || data.status === "RESERVED") {
+      await prisma.client.update({
+        where: {
+          id: data.clientId
+        },
+        data: {
+          status: "CLIENT"
+        }
+      });
+    }
   }
+
+
 
   const updated = await prisma.apartment.update({
     where: { id: apartmentId },
