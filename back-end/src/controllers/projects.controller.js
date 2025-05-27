@@ -54,7 +54,7 @@ async function createProject(request, reply) {
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
       const dest = path.join(uploadsDir, uniqueName);
       await fs.promises.writeFile(dest, buffer);
-      uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
+      uploadedImage = "https://realestatesaas.onrender.com" + path.join('/uploads', uniqueName);
     }
 
     const project = await projectService.addNewProject({
@@ -102,7 +102,7 @@ async function updateProject(request, reply) {
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
       const dest = path.join(uploadsDir, uniqueName);
       await fs.promises.writeFile(dest, buffer);
-      uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
+      uploadedImage = "https://realestatesaas.onrender.com" + path.join('/uploads', uniqueName);
     }
 
     const project = await projectService.updateProject(projectId, {
