@@ -7,7 +7,7 @@ import Label from "../../form/Label"
 import Input from "../../form/input/InputField"
 import { useModal } from "@/hooks/useModal"
 import Select from "../../form/Select"
-import { Trash2 } from "lucide-react"
+import { Trash2, Search } from "lucide-react"
 import updateClient from "@/app/(admin)/clients/updateClient"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
@@ -89,6 +89,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   const [currentProjectApartments, setCurrentProjectApartments] = useState<{ value: string; text: string; selected: boolean }[]>([])
   const [tempSelectedApartments, setTempSelectedApartments] = useState<string[]>([])
   const [currentProjectName, setCurrentProjectName] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filteredApartments, setFilteredApartments] = useState<{ value: string; text: string; selected: boolean }[]>([])
+
 
   useEffect(() => {
     console.log("Selected apartments:", selectedApartments)
@@ -123,24 +126,33 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
             }]
           })
         }
-
+        else {
+          const project = projectMap.get(String(projectId))!
+          // Check if apartment already exists in this project
+          if (!project.apartments.some((apt) => apt.id === apartmentId)) {
+            project.apartments.push({
+              id: apartmentId,
+              name: `${apartmentName} ${apartmentNumber}`,
+            })
+          }
+        }
         // Add all apartments from this project
         if (item.project.apartments && item.project.apartments.length > 0) {
           const project = projectMap.get(String(projectId))!
-
           item.project.apartments.forEach((apartment) => {
             project.apartments.push({
               id: String(apartment.id),
-              name: apartment.type || `Apartment ${apartment.number || apartment.id}`,
+              name: `${apartment.type} ${apartment.number || apartment.id}`,
             })
           })
         }
       })
-
+      console.log("Project map:", projectMap)
       // Convert map to array
       setSelectedApartments(Array.from(projectMap.values()))
     }
   }, [clientData])
+
 
   // Update form field values
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -259,7 +271,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
       const formattedOptions = data.map((apartment: Property) => ({
         value: String(apartment.id),
-        text: apartment.project?.name || `Apartment ${apartment.number || apartment.id}`,
+        text:  `${apartment.type} ${apartment.number || apartment.id} `,
       }))
 
       setCurrentProjectApartments(formattedOptions)
@@ -389,6 +401,22 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     }))
   }
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase()
+    setSearchQuery(query)
+    
+    if (!query.trim()) {
+      setFilteredApartments(currentProjectApartments)
+      return
+    }
+
+    const filtered = currentProjectApartments.filter(apt => 
+      apt.text.toLowerCase().includes(query)
+    )
+    setFilteredApartments(filtered)
+  }
+
+
   return (
     <>
       {details ? (
@@ -475,12 +503,60 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
                   </div>
                   {formData.projectId && (
                     <div className="col-span-1">
-                      <Label>Properties</Label>
-                      <MultiSelect
-                        label=""
-                        options={currentProjectApartments}
-                        onChange={handleMultiSelectChange}
-                      />
+                      <Label>Search Properties <span className="text-red-500">*</span></Label>
+                      <div className="relative">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Search by type or number..."
+                            className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          />
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                        </div>
+                        {searchQuery && filteredApartments.length > 0 && (
+                          <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+                            {filteredApartments.map((apt) => (
+                              <div
+                                key={apt.value}
+                                className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                                onClick={() => {
+                                  if (!tempSelectedApartments.includes(apt.value)) {
+                                    setTempSelectedApartments([...tempSelectedApartments, apt.value])
+                                  }
+                                }}
+                              >
+                                {apt.text}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {tempSelectedApartments.length > 0 && (
+                        <div className="mt-2">
+                          <div className="flex flex-wrap gap-2">
+                            {tempSelectedApartments.map((id) => {
+                              const apt = currentProjectApartments.find((a) => a.value === id)
+                              return (
+                                <div
+                                  key={id}
+                                  className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 rounded-full"
+                                >
+                                  <span>{apt?.text}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setTempSelectedApartments(tempSelectedApartments.filter(t => t !== id))}
+                                    className="text-blue-600 hover:text-blue-800"
+                                  >
+                                    ×
+                                  </button>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
