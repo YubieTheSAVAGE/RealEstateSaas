@@ -10,6 +10,7 @@ module.exports = async function (fastify) {
         "http://localhost:3000",
         "http://localhost:5555",
         "http://127.0.0.1:3000",
+        "https://real-estate-saas-xi.vercel.app/"
       ];
 
       if (allowedOrigins.includes(origin)) {
