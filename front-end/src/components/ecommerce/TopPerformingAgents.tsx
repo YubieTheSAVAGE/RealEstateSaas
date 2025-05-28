@@ -12,7 +12,7 @@ import { getTopPerformingAgents } from "./agentsService";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-
+import { FallingLines } from "react-loader-spinner";
 // Define the TypeScript interface for the agent data
 interface Agent {
   id: number;
@@ -96,7 +96,6 @@ export default function PerformingAgents() {
           </div>
         ) : (
           <Table>
-            {/* Table Header */}
             <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
               <TableRow>
                 <TableCell
@@ -105,12 +104,6 @@ export default function PerformingAgents() {
                 >
                   Agent
                 </TableCell>
-                {/* <TableCell
-                  isHeader
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                >
-                  Project
-                </TableCell> */}
                 <TableCell
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -127,33 +120,28 @@ export default function PerformingAgents() {
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            {loading ? (
+              <div className="flex h-screen w-full items-center justify-center">
+                <FallingLines
+                    height="80"
+                    width="80"
+                    color="#4460FF"
+                    visible={loading}
+                  />
+                </div>
+            ) : (
+              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
               {agents.map((agent) => (
                 <TableRow key={agent.id} className="">
                   <TableCell className="py-3">
                     <div className="flex items-center gap-3">
-                      {/* <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-                        <Image
-                          width={50}
-                          height={50}
-                          src={agent.image}
-                          className="h-[50px] w-[50px]"
-                          alt={agent.name}
-                        />
-                      </div> */}
                       <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                           {agent.name}
                         </p>
-                        {/* <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                          {agent.level}
-                        </span> */}
                       </div>
                     </div>
                   </TableCell>
-                  {/* <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {agent.project}
-                  </TableCell> */}
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {agent.salesRevenue.toLocaleString("en-US", {
                       style: "currency",
@@ -175,7 +163,8 @@ export default function PerformingAgents() {
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
+              </TableBody>
+            )}
           </Table>
         )}
       </div>
