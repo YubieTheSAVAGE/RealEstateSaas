@@ -61,9 +61,6 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
                     <StatsCard apartments={apartementsData} />
                 </span>
 
-                {/* <ClientCard client={agent} />
-                <ClientNoteCard clientNote={agent.notes || ""} />
-                <ClientPropertiesCard ClientProperties={agent.apartments || []} /> */}
                 <div className="col-span-2"></div>
             </div>
             {/* <InterestTable ProjectDetails={agent.interestedApartments || []} /> */}
