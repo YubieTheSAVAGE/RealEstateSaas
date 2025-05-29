@@ -379,11 +379,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       <Button size="sm" onClick={openModal}>
         Add Client
       </Button>
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Lead Information</h4>
-
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-4 sm:p-5 lg:p-8 max-h-[90vh] md:max-h-[85vh] flex flex-col">
+        <form onSubmit={(e) => e.preventDefault()} className="flex flex-col h-full">
+          <h4 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90">Lead Information</h4>
+          
+          <div className="overflow-y-auto pr-2 -mr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-700" style={{maxHeight: "calc(80vh - 140px)"}}>
+            <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
               <Label>
                 Full Name <span className="text-red-500">*</span>
@@ -576,6 +577,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 onChange={handleTextareaChange}
               />
             </div>
+          </div>
           </div>
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
