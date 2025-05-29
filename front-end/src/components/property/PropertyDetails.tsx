@@ -5,6 +5,7 @@ import PropertyCard from "../cards/horizontal-card/PropertyCard";
 import { Property } from "@/types/property";
 import getApartmentsById from "@/app/(admin)/properties/getApartmentsById";
 import { FallingLines } from "react-loader-spinner";
+import InterestedClientTable from "../ecommerce/InterstedClientTable";
 
 interface PropertyDetailsProps {
     propertyId: string;
@@ -28,7 +29,7 @@ export default function PropertyDetails({ propertyId }: PropertyDetailsProps) {
     };
     useEffect(() => {
         fetchData();
-    });
+    }, [propertyId, router]);
 
     if (!property && isLoading) {
         return (
@@ -45,6 +46,12 @@ export default function PropertyDetails({ propertyId }: PropertyDetailsProps) {
     return (
         <div>
             <PropertyCard property={property as Property}  onRefresh={fetchData}/>
+            <div className="mt-6">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
+                    Interested Clients
+                </h3>
+                <InterestedClientTable ClientDetails={property?.interestedClients || []} />
+            </div>
         </div>
     );
 }

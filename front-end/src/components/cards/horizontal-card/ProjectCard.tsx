@@ -85,8 +85,12 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
     <div>
       <div className="flex flex-col gap-5 mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-6">
         <div className="overflow-hidden rounded-lg w-1/2">
-          {/* <PhotoProvider> */}
-          <PhotoProvider
+          {!ProjectDetails.image ? (
+            <div className="flex items-center justify-center h-56 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <span className="text-gray-500 dark:text-gray-400">No Image Available</span>
+            </div>
+          ) : (
+            <PhotoProvider
               maskOpacity={0.7}
               toolbarRender={({ onRotate, rotate, onScale, scale }) => {
                 return (
@@ -135,7 +139,8 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
               />
             </PhotoView>
           </PhotoProvider>
-        </div>
+          )}
+       </div>
         <div className="relative w-full">
           <div className="absolute right-0 h-fit">
             <button onClick={toggleDropdown} className="dropdown-toggle">

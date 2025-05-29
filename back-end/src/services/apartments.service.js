@@ -6,6 +6,7 @@ async function getAllApartments() {
     include: {
       project: true,
       client: true,
+      interestedClients: true
     },
   });
 }
@@ -32,7 +33,7 @@ async function getRecentActivity(limit = 5) {
 async function listByProject(projectId) {
   return prisma.apartment.findMany({
     where: { projectId },
-    include: { client: true, project: true },
+    include: { client: true, project: true, interestedClients: true },
   });
 }
 
@@ -189,6 +190,7 @@ async function getApartmentById(apartmentId) {
     include: {
       project: true,
       client: true,
+      interestedClients: true,
     },
   });
   if (!apartment) {

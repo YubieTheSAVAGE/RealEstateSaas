@@ -21,5 +21,6 @@ export interface Property {
   client?: Client | null;
   userId?: number | null;
   project: Project;
+  interestedClients?: Client[] | null; // List of clients interested in this property
   updatedAt?: Date | string | undefined; // Use Date for consistency, can be string if coming from API
 }
