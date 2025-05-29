@@ -3,16 +3,19 @@ import AddProjectModal from "@/components/example/ModalExample/AddProjectModal";
 import ProjectsDataTable from "@/components/tables/DataTables/Projects/ProjectsDataTable";
 import React, {useState, useEffect, useCallback} from "react";
 import getProjects from "@/components/tables/DataTables/Projects/getProperties";
+import { FallingLines } from "react-loader-spinner";
 
 export default function Projects() {
     const [projects, setProjects] = useState([]);
-  
+    const [isLoading, setIsLoading] = useState(true);
     const fetchProjects = useCallback(async () => {
+      setIsLoading(true);
       // API call to fetch projects
       const data = await getProjects();
       setProjects(data);
+      setIsLoading(false);
     }, []);
-    
+
     useEffect(() => {
       fetchProjects();
     }, [fetchProjects]);
@@ -28,7 +31,18 @@ export default function Projects() {
                 </h2>
                 <AddProjectModal onProjectAdded={fetchProjects}/>
             </div>
-            <ProjectsDataTable projects={projects} onRefresh={fetchProjects}/>
+            {isLoading ? (
+                <div className="flex mt-24 w-full items-center justify-center py-4">
+                    <FallingLines
+                        height="80"
+                        width="80"
+                        color="#4460FF"
+                        visible={isLoading}
+                    />
+                </div>
+            ) : (
+                <ProjectsDataTable projects={projects} onRefresh={fetchProjects}/>
+            )}
         </>
     )
 }
