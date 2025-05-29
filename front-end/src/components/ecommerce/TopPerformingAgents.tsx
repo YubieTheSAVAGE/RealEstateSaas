@@ -62,9 +62,18 @@ export default function PerformingAgents() {
             variant="outline"
             onClick={fetchAgents}
             disabled={loading}
-            className="inline-flex items-center gap-2 font-medium"
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
           >
-            {loading ? "Refreshing..." : "Refresh Data"}
+            <svg 
+              className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            Refresh
           </Button>
           <button
             onClick={() => router.push("/agents")}
@@ -76,8 +85,13 @@ export default function PerformingAgents() {
       </div>
       <div className="max-w-full overflow-x-auto">
         {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+          <div className="flex w-full items-center justify-center py-4">
+            <FallingLines
+              height="30"
+              width="30"
+              color="#4460FF"
+              visible={loading}
+            />
           </div>
         ) : error ? (
           <div className="text-center py-8 text-error-500">

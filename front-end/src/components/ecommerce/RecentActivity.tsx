@@ -10,6 +10,7 @@ import {
 import Badge from "../ui/badge/Badge";
 import { getRecentActivity } from "./activityService";
 import { useRouter } from "next/navigation";
+import { FallingLines } from "react-loader-spinner";
 
 // Define the TypeScript interface for the apartment activity
 interface ApartmentActivity {
@@ -128,8 +129,13 @@ export default function RecentActivity() {
       </div>
       <div className="max-w-full overflow-x-auto">
         {loading ? (
-          <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-            Loading recent activities...
+          <div className="flex w-full items-center justify-center py-4">
+            <FallingLines
+              height="30"
+              width="30"
+              color="#4460FF"
+              visible={loading}
+            />
           </div>
         ) : error ? (
           <div className="text-center py-4 text-red-500 dark:text-red-400">

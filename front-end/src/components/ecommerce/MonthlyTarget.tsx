@@ -28,6 +28,7 @@ interface RevenueData {
 
 import getApartements from "../tables/DataTables/Properties/getApartements";
 import { Property } from "@/types/property";
+import { FallingLines } from "react-loader-spinner";
 export default function MonthlyTarget() {
   const [role, setRole] = useState<string | null>(null);
   const [targetData, setTargetData] = useState<MonthlyTargetData | null>(null);
@@ -289,9 +290,14 @@ export default function MonthlyTarget() {
         </div>
         <div className="relative">
           {loading ? (
-            <div className="flex items-center justify-center h-[330px]">
-              <div className="w-8 h-8 border-4 border-gray-300 rounded-full border-t-brand-500 animate-spin"></div>
-            </div>
+              <div className="flex h-[200px] w-full items-center justify-center">
+                <FallingLines
+                  height="80"
+                  width="80"
+                  color="#4460FF"
+                  visible={loading}
+                />
+              </div>
           ) : (
             <div className="max-h-[330px]" id="chartDarkStyle">
               <ReactApexChart
