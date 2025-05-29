@@ -53,10 +53,10 @@ export default function SignInForm() {
         <div>
           <div className="mb-5 sm:mb-8">
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-              Sign In
+              Se connecter
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Enter your email and password to sign in!
+              Entrez votre email et votre mot de passe pour vous connecter !
             </p>
           </div>
           <div>
@@ -80,14 +80,14 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    Mot de passe <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
                       name="password"
                       type={showPassword ? "text" : "password"}
                       required
-                      placeholder="Enter your password"
+                      placeholder="Entrez votre mot de passe"
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -105,14 +105,14 @@ export default function SignInForm() {
                   <div className="flex items-center gap-3">
                     <Checkbox checked={isChecked} onChange={setIsChecked} />
                     <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                      Keep me logged in
+                      Rester connecté
                     </span>
                   </div>
                   <Link
                     href="/reset-password"
                     className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
                   >
-                    Forgot password?
+                    Mot de passe oublié ?
                   </Link>
                 </div>
                 <div>
@@ -124,7 +124,7 @@ export default function SignInForm() {
                       type="submit"
                       disabled={isPending}
                     >
-                      Sign In
+                      Se connecter
                     </Button>
                   )}
                 </div>

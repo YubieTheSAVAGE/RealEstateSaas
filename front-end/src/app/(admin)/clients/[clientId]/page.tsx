@@ -9,7 +9,7 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
   const { clientId } = await params;
 
   const threeLayerItems = [
-    { label: 'Home', href: '/' },
+    { label: 'Accueil', href: '/' },
     { label: 'Clients', href: '/clients' },
     { label: clientId },
   ];
@@ -18,7 +18,7 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
     <>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
-          Client Details
+          Détails du client
         </h2>
         <Breadcrumb items={threeLayerItems} variant="withIcon" />
       </div>

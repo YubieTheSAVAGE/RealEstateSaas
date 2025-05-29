@@ -53,7 +53,7 @@ export default function PerformingAgents() {
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Top Performing Agents
+            Meilleurs agents
           </h3>
         </div>
 
@@ -122,13 +122,13 @@ export default function PerformingAgents() {
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Sales revenue
+                  Chiffre d'affaires
                 </TableCell>
                 <TableCell
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Monthly Sales
+                  variation mensuelle
                 </TableCell>
               </TableRow>
             </TableHeader>

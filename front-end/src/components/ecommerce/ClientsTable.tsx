@@ -11,12 +11,12 @@ import { Property } from "@/types/property";
 
 const type = {
   "APARTMENT": "Appartement",
-  "VILLA": "Villa",
+  "VILLA": "Villa", 
   "PENTHOUSE": "Penthouse",
   "STUDIO": "Studio",
   "LOFT": "Loft",
   "DUPLEX": "Duplex",
-  "TRIPLEX": "Triplex",
+  "TRIPLEX": "Triplex", 
   "TOWNHOUSE": "Maison de ville",
   "BUNGALOW": "Bungalow",
   "STORE": "Magasin",
@@ -30,7 +30,7 @@ export default function ClientsTable({ ProjectDetails }: { ProjectDetails: Prope
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Available Properties
+           Propriétés disponibles
           </h3>
         </div>
 

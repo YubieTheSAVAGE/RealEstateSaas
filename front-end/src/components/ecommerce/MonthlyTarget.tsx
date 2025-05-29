@@ -47,16 +47,16 @@ export default function MonthlyTarget() {
   const fetchRevenueData = async () => {
     const data = await getApartements();
     const today = new Date();
-    
+
     // Calculate the first day of current and previous month
     const firstDayCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const firstDayPreviousMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
     const lastDayPreviousMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-    
+
     // Calculate today and yesterday
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    
+
     // Current month's revenue (for the monthly calculation)
     const currentMonthRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
@@ -67,7 +67,7 @@ export default function MonthlyTarget() {
       }
       return acc;
     }, 0);
-    
+
     // Previous month's revenue
     const previousMonthRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
@@ -78,7 +78,7 @@ export default function MonthlyTarget() {
       }
       return acc;
     }, 0);
-    
+
     // Today's revenue
     const dailyRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
@@ -89,7 +89,7 @@ export default function MonthlyTarget() {
       }
       return acc;
     }, 0);
-    
+
     // Yesterday's revenue for comparison
     const yesterdayRevenue = data.reduce((acc: number, apartment: Property) => {
       if (apartment.status === "SOLD") {
@@ -100,12 +100,12 @@ export default function MonthlyTarget() {
       }
       return acc;
     }, 0);
-    
+
     // Calculate growth rates and directions
-    const monthlyGrowthRate = previousMonthRevenue > 0 
-      ? ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100 
+    const monthlyGrowthRate = previousMonthRevenue > 0
+      ? ((currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue) * 100
       : (currentMonthRevenue > 0 ? 100 : 0);
-    
+
     setRevenueDirection(currentMonthRevenue >= previousMonthRevenue ? 'up' : 'down');
     setTodayDirection(dailyRevenue >= yesterdayRevenue ? 'up' : 'down');
     console.log("Current Month Revenue:", currentMonthRevenue);
@@ -208,12 +208,12 @@ export default function MonthlyTarget() {
         const monthlyTargetData = await getMonthlyTarget();
         if (monthlyTargetData) {
           setTargetData(monthlyTargetData);
-          
+
           // Calculate progress percentage when we have both target and revenue data
           if (monthlyTargetData.target && revenueData.totalRevenue) {
             const progressPercent = (revenueData.totalRevenue / monthlyTargetData.target) * 100;
             setProgress(Math.min(progressPercent, 100)); // Cap at 100%
-            
+
             // Calculate growth rate as well
             const chaka = monthlyTargetData.target - revenueData.dailyRevenue;
             const growthRate = ((chaka / monthlyTargetData.target) * 100);
@@ -244,7 +244,7 @@ export default function MonthlyTarget() {
       // Calculate growth rate
       const remainingToTarget = targetData.target - revenueData.totalRevenue;
       const growthRate = ((remainingToTarget / targetData.target) * 100);
-      
+
       setRevenueData(prev => ({
         ...prev,
         growthRate: parseFloat((100 - growthRate).toFixed(1)) // Show achievement percentage instead
@@ -258,16 +258,16 @@ export default function MonthlyTarget() {
         <div className="flex justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-              Monthly Target
+              Objectif mensuel
             </h3>
             <p className="mt-1 font-normal text-gray-500 text-theme-sm dark:text-gray-400">
               {targetData
-                ? `Target period: ${new Date(
-                    targetData.startDate
-                  ).toLocaleDateString()} - ${new Date(
-                    targetData.endDate
-                  ).toLocaleDateString()}`
-                : "Target you've set for each month"}
+                ? `Période de l'objectif : ${new Date(
+                  targetData.startDate
+                ).toLocaleDateString()} - ${new Date(
+                  targetData.endDate
+                ).toLocaleDateString()}`
+                : "Objectif que vous avez défini pour chaque mois"}
             </p>
           </div>
           {role === "ADMIN" && (
@@ -290,14 +290,14 @@ export default function MonthlyTarget() {
         </div>
         <div className="relative">
           {loading ? (
-              <div className="flex h-[200px] w-full items-center justify-center">
-                <FallingLines
-                  height="80"
-                  width="80"
-                  color="#4460FF"
-                  visible={loading}
-                />
-              </div>
+            <div className="flex h-[200px] w-full items-center justify-center">
+              <FallingLines
+                height="80"
+                width="80"
+                color="#4460FF"
+                visible={loading}
+              />
+            </div>
           ) : (
             <div className="max-h-[330px]" id="chartDarkStyle">
               <ReactApexChart
@@ -315,14 +315,14 @@ export default function MonthlyTarget() {
           </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You earn{" "}
-          {revenueData.dailyRevenue.toLocaleString("en-us", {
+          Vous avez gagné{" "}
+          {revenueData.dailyRevenue.toLocaleString("fr-FR", {
             style: "currency",
             currency: "MAD",
           })}{" "}
-          today
+          aujourd'hui
           {revenueData.growthRate > 0
-            ? ", it's higher than last month. Keep up your good work!"
+            ? ", c'est plus élevé que le mois dernier. Continuez votre bon travail !"
             : "."}
         </p>
       </div>
@@ -330,7 +330,7 @@ export default function MonthlyTarget() {
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Target
+            Objectif
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
             {targetData ? formatCurrency(targetData.target) : "N/A"}
@@ -341,7 +341,7 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Revenue
+            Chiffre d'affaires
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
             {formatCurrency(revenueData.totalRevenue)}
@@ -385,7 +385,7 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Today
+            Aujourd'hui
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
             {formatCurrency(revenueData.dailyRevenue)}

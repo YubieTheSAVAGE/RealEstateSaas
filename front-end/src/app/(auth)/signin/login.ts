@@ -12,22 +12,22 @@ export default async function login(_prevState: FormResponse, formData: FormData
     const email = formData.get('email');
     const password = formData.get('password');
 
-    console.log('Login attempt:', { email, password });
+    console.log('Tentative de connexion :', { email, password });
 
     if (!email || !password) {
-      return { error: 'Email and password are required' };
+      return { error: 'Email et mot de passe requis' };
     }
 
-    console.log('Making API request to:', `${API_URL}/auth/login`);
+    console.log('Envoi de la requête API à :', `${API_URL}/auth/login`);
     const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
     
-    console.log('API Response status:', res.status);
+    console.log('Statut de la réponse API :', res.status);
     const parsedRes = await res.json();
-    console.log('API Response:', parsedRes);
+    console.log('Réponse API :', parsedRes);
 
     if (!res.ok) {
       return { error: getErrorMessage(parsedRes) };
@@ -35,8 +35,8 @@ export default async function login(_prevState: FormResponse, formData: FormData
     await setAuthCookie(parsedRes);
     return { success: true, redirect: '/home' };
   } catch (error) {
-    console.error('Login error details:', error);
-    return { error: error instanceof Error ? error.message : 'An unexpected error occurred during login' };
+    console.error('Détails de l’erreur de connexion :', error);
+    return { error: error instanceof Error ? error.message : 'Une erreur inattendue est survenue lors de la connexion' };
   }
 }
 
@@ -50,7 +50,7 @@ const setAuthCookie = async (response: { token: string }) => {
     httpOnly: true,
     path: '/',
     sameSite: 'lax',
-    expires: new Date(jwtDecode(token).exp! * 1000), // Convert to milliseconds
+    expires: new Date(jwtDecode(token).exp! * 1000), // Convertir en millisecondes
   });
   // const userRole = getUserRoleFromToken(token);
   // redirect("/");
@@ -74,7 +74,7 @@ export const getUserRoleFromToken = async () => {
     const decodedToken = jwtDecode<DecodedToken>(token);
     return decodedToken.role;
   } catch (error) {
-    console.error("Error decoding token:", error);
+    console.error("Erreur lors du décodage du token :", error);
     return null;
   }
 }

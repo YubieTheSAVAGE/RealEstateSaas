@@ -24,7 +24,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
+    name: "Tableau de bord",
     path: "/home",
     roles: ["ADMIN", "AGENT"],
   },
@@ -59,7 +59,7 @@ const navItems: NavItem[] = [
     roles: ["ADMIN", "AGENT"],
   },
   {
-    name: "Task",
+    name: "Gestion des tâches",
     icon: <BiTask size="1.5em"/>,
     path: "/tasks",
     roles: ["ADMIN", "AGENT"],

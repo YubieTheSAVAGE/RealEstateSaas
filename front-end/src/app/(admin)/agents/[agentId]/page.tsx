@@ -16,7 +16,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ a
     <>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-white/90">
-          Agent Details
+          Détails de l’agent
         </h2>
         <Breadcrumb items={threeLayerItems} variant="withIcon" />
       </div>

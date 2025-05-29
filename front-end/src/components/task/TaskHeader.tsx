@@ -39,22 +39,22 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
 
   const taskGroups = [
     { 
-      name: "All Tasks", 
+      name: "Toutes les tâches", 
       key: "All", 
       count: tasks.length 
     },
     { 
-      name: "To do", 
+      name: "à faire", 
       key: "TODO", 
       count: tasks.filter((task: Task) => task.status === "TODO").length 
     },
     { 
-      name: "In Progress", 
+      name: "En cours", 
       key: "IN_PROGRESS", 
       count: tasks.filter((task: Task) => task.status === "IN_PROGRESS").length 
     },
     { 
-      name: "Completed", 
+      name: "Terminé", 
       key: "COMPLETED", 
       count: tasks.filter((task: Task) => task.status === "COMPLETED").length 
     },
@@ -132,7 +132,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
         onTaskAdded(); // Call the callback if provided
       }
     } catch (error) {
-      console.error("Error adding task:", error);
+      console.error("erreur lors de l’ajout de la tâche : ", error);
       // You could add error handling here
     } finally {
       setIsSubmitting(false);
@@ -150,13 +150,13 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
 
     // Validate title (required)
     if (!formData.title.trim()) {
-      newErrors.title = "Task title is required";
+      newErrors.title = "Le titre de la tâche est obligatoire";
       isValid = false;
     }
 
     // Validate due date (required)
     if (!formData.dueDate.trim()) {
-      newErrors.dueDate = "Due date is required";
+      newErrors.dueDate = "La date d’échéance est obligatoire";
       isValid = false;
     }
 
@@ -239,10 +239,10 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
       >
         <div className="px-2">
           <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-            Add a new task
+            Ajouter une nouvelle tâche
           </h4>
           <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-            Effortlessly manage your to-do list: add a new task
+            Gérez facilement votre liste de tâches : ajoutez une nouvelle tâche
           </p>
         </div>
 
@@ -250,7 +250,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
           <div className="custom-scrollbar h-[350px] sm:h-[450px] overflow-y-auto px-2">
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="sm:col-span-2">
-                <Label>Task Title <span className="text-red-500">*</span></Label>
+                <Label>Titre de la tâche <span className="text-red-500">*</span></Label>
                 <Input 
                   type="text" 
                   onChange={handleChange} 
@@ -261,7 +261,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
               </div>
 
               <div>
-                <Label>Due Date <span className="text-red-500">*</span></Label>
+                <Label>Date d’échéance <span className="text-red-500">*</span></Label>
                 <div className="relative">
                   <Input 
                     type="datetime-local" 
@@ -290,26 +290,26 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                 </div>
               </div>
               <div>
-                <Label>Status</Label>
+                <Label>Statut</Label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
                   <select onChange={handleStatusChange} name="status" className="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
                     <option
                       value="TODO"
                       className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                     >
-                      To Do
+                      a faire
                     </option>
                     <option
                       value="IN_PROGRESS"
                       className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                     >
-                      In Progress
+                      En cours
                     </option>s
                     <option
                       value="COMPLETED"
                       className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                     >
-                      Completed
+                      Terminé
                     </option>
                   </select>
                   <span className="absolute z-30 text-gray-500 -translate-y-1/2 right-4 top-1/2 dark:text-gray-400">
@@ -361,7 +361,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                 disabled={isSubmitting}
                 className="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Cancel
+                Anuler
               </button>
               <button
                 onClick={handleSubmit}

@@ -72,7 +72,7 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Total Properties Sold
+              Nombre total de biens vendus
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
               {stats.soldCount}
@@ -95,7 +95,7 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Total Sales Value
+              Valeur totale des ventes
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
               {stats.totalSales.toLocaleString("en-US", {
@@ -121,7 +121,7 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Total Projects
+              Nombre total de projets
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
               {stats.projectsCount}
@@ -130,7 +130,7 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
           
           {stats.projectsCount > 0 && (
             <Badge color="info">
-              Active
+              Actif
             </Badge>
           )}
         </div>

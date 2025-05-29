@@ -188,7 +188,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {selectedView === 'count' 
-              ? `${calculateTotalSales()} properties sold in ${currentYear}` 
+              ? `${calculateTotalSales()} propriétés vendues à ${currentYear}` 
               : `Total value: ${calculateTotalSales().toLocaleString("en-US", {
                   style: "currency",
                   currency: "MAD",
@@ -217,7 +217,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
               onItemClick={closeDropdown}
               className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
-              Export Data
+              Exporter les données
             </DropdownItem>
           </Dropdown>
         </div>
@@ -234,7 +234,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
             />
           ) : (
             <div className="flex justify-center items-center h-44">
-              <p className="text-gray-500">No sales data available</p>
+              <p className="text-gray-500">Aucune donnée de vente disponible</p>
             </div>
           )}
         </div>

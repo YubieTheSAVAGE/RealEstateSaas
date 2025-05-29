@@ -87,7 +87,7 @@ export default function RecentActivity() {
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Recent Activity
+            Activité récente
           </h3>
         </div>
         <div className="flex items-center gap-3">
@@ -117,13 +117,13 @@ export default function RecentActivity() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
             </svg>
-            Refresh
+            Actualiser
           </button>
           <button
             onClick={() => router.push("/properties")}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
           >
-            See all
+            Voir tout
           </button>
         </div>
       </div>
@@ -143,7 +143,7 @@ export default function RecentActivity() {
           </div>
         ) : activities.length === 0 ? (
           <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-            No recent activities found
+            Aucune activité récente trouvée.
           </div>
         ) : (
           <Table>
@@ -154,25 +154,25 @@ export default function RecentActivity() {
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Project
+                  project
                 </TableCell>
                 <TableCell
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Type
+                  type
                 </TableCell>
                 <TableCell
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Price
+                  Prix
                 </TableCell>
                 <TableCell
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Status
+                  Statu
                 </TableCell>
               </TableRow>
             </TableHeader>
