@@ -8,6 +8,7 @@ import AgentCard from "../cards/card-with-icon/AgentCard.tsx";
 import MonthlySalesChart from "../ecommerce/MonthlySalesChart";
 import getApartements from "../tables/DataTables/Properties/getApartements";
 import { StatsCard } from "../ecommerce/StatsCard";
+import { FallingLines } from "react-loader-spinner";
 
 interface AgentDetailsProps {
     agentId: string;
@@ -45,9 +46,15 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
     // }, []);
 
     if (!agent) {
-        return <div>Loading...</div>;
+        return <div className="flex mt-24 w-full items-center justify-center py-4">
+            <FallingLines
+                height="80"
+                width="80"
+                color="#4460FF"
+                visible={agent === null}
+            />
+        </div>;
     }
-    
 
     return (
         <div>

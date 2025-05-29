@@ -6,6 +6,7 @@ import ClientCard from "../cards/card-with-icon/ClientCard";
 import ClientNoteCard from "../cards/card-with-icon/ClientNoteCard";
 import ClientPropertiesCard from "../cards/card-with-icon/ClientPropertiesCard";
 import InterestTable from "../ecommerce/InterestTable";
+import { FallingLines } from "react-loader-spinner";
 
 interface ClientDetailsProps {
     clientId: string;
@@ -27,7 +28,14 @@ export default function ClientDetails({ clientId }: ClientDetailsProps) {
         fetchClient();
     }, [fetchClient]);
     if (!client) {
-        return <div>Loading...</div>;
+        return <div className="flex mt-24 w-full items-center justify-center py-4">
+                        <FallingLines
+                            height="80"
+                            width="80"
+                            color="#4460FF"
+                            visible={client === null}
+                        />
+                    </div>;
     }
     console.log("Client details:", client.apartments);
     return (
