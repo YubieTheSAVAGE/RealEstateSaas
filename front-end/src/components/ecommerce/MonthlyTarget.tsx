@@ -262,7 +262,7 @@ export default function MonthlyTarget() {
             </h3>
             <p className="mt-1 font-normal text-gray-500 text-theme-sm dark:text-gray-400">
               {targetData
-                ? `Période de l'objectif : ${new Date(
+                ? `Période de l&apos;objectif : ${new Date(
                   targetData.startDate
                 ).toLocaleDateString()} - ${new Date(
                   targetData.endDate
@@ -320,9 +320,9 @@ export default function MonthlyTarget() {
             style: "currency",
             currency: "MAD",
           })}{" "}
-          aujourd'hui
+          aujourd&apos;hui
           {revenueData.growthRate > 0
-            ? ", c'est plus élevé que le mois dernier. Continuez votre bon travail !"
+            ? ", c&apos;est plus élevé que le mois dernier. Continuez votre bon travail !"
             : "."}
         </p>
       </div>
@@ -341,7 +341,7 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Chiffre d'affaires
+            Chiffre d&apos;affaires
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
             {formatCurrency(revenueData.totalRevenue)}
@@ -385,7 +385,7 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Aujourd'hui
+            Aujourd&apos;hui
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
             {formatCurrency(revenueData.dailyRevenue)}

@@ -122,7 +122,7 @@ export default function PerformingAgents() {
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Chiffre d'affaires
+                  Chiffre d&apos;affaires
                 </TableCell>
                 <TableCell
                   isHeader
