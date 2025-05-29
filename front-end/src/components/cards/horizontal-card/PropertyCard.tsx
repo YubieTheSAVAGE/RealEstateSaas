@@ -56,7 +56,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
       <div className="flex flex-col gap-5 mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-6 transition-shadow hover:shadow-2xl">
         <div className="overflow-hidden rounded-lg w-full sm:w-1/2 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 sm:h-[320px] h-[220px]">
           {/* <PhotoProvider> */}
-          <PhotoProvider
+          {property.image ? (
+            <div className="flex items-center justify-center h-56 bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <span className="text-gray-500 dark:text-gray-400">No Image Available</span>
+            </div>
+          ) : (
+            <PhotoProvider
               maskOpacity={0.7}
               toolbarRender={({ onRotate, rotate, onScale, scale }) => {
                 return (
@@ -111,6 +116,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
               </div>
             )}
           </PhotoProvider>
+          )}
         </div>
         <div className="relative w-full">
           <div className="absolute right-0 h-fit -top-5">
