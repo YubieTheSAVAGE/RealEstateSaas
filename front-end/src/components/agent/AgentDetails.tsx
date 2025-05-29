@@ -41,10 +41,6 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
         setApartementsData(filteredData);
     };
 
-    // useEffect(() => {
-    //     fetchApartements();
-    // }, []);
-
     if (!agent) {
         return <div className="flex mt-24 w-full items-center justify-center py-4">
             <FallingLines
