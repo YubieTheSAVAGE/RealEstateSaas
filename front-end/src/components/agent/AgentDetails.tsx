@@ -63,7 +63,6 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
 
                 <div className="col-span-2"></div>
             </div>
-            {/* <InterestTable ProjectDetails={agent.interestedApartments || []} /> */}
         </div>
     );
 }
