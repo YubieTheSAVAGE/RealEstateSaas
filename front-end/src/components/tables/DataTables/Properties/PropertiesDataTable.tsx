@@ -30,7 +30,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
-    // Define the ProjectData type
+  // Define the ProjectData type
 
   const type =
   {
@@ -42,32 +42,32 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     "AUTRE": "Autre",
   }
 
-    
+
   const [apartementsData, setApartementsData] = useState<Property[]>([]);
   useEffect(() => {
-      // Check if data exists and is an array before mapping
-      if (apartmentsData && Array.isArray(apartmentsData)) {
-          const formattedData: Property[] = apartmentsData.map((item: Property) => ({
-              id: item.id ?? "",
-              number: item.number ?? "",
-              floor: item.floor ?? "",
-              type: item.type ?? "",
-              area: item.area ?? 0 ,
-              price: item.price ?? 0,
-              status: item.status ?? "",
-              pricePerM2: item.pricePerM2 ?? 0,
-              zone: item.zone ?? "",
-              project: item.project ?? { id: "", name: "" },
-              projectId: item.projectId ?? item.project?.id ?? "",
-              threeDViewUrl: item.threeDViewUrl ?? "",
-              notes: item.notes ?? "",
-              client: item.client ?? null,
-          }));
-          setApartementsData(formattedData);
-      } else {
-          // If data is undefined or not an array, set empty array
-          setApartementsData([]);
-      }
+    // Check if data exists and is an array before mapping
+    if (apartmentsData && Array.isArray(apartmentsData)) {
+      const formattedData: Property[] = apartmentsData.map((item: Property) => ({
+        id: item.id ?? "",
+        number: item.number ?? "",
+        floor: item.floor ?? "",
+        type: item.type ?? "",
+        area: item.area ?? 0,
+        price: item.price ?? 0,
+        status: item.status ?? "",
+        pricePerM2: item.pricePerM2 ?? 0,
+        zone: item.zone ?? "",
+        project: item.project ?? { id: "", name: "" },
+        projectId: item.projectId ?? item.project?.id ?? "",
+        threeDViewUrl: item.threeDViewUrl ?? "",
+        notes: item.notes ?? "",
+        client: item.client ?? null,
+      }));
+      setApartementsData(formattedData);
+    } else {
+      // If data is undefined or not an array, set empty array
+      setApartementsData([]);
+    }
   }, [apartmentsData]);
 
   const totalItems = apartementsData.length;
@@ -94,7 +94,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     if (onRefresh) {
       onRefresh();
     }
-  };  
+  };
 
   // Filter data based on search term
   const filteredData = apartementsData.filter((item) => {
@@ -157,7 +157,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-gray-500 dark:text-gray-400"> Show </span>
+          <span className="text-gray-500 dark:text-gray-400"> Afficher </span>
           <div className="relative z-20 bg-transparent">
             <select
               className="w-full py-2 pl-3 pr-8 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none dark:bg-dark-900 h-9 bg-none shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
@@ -193,7 +193,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               </svg>
             </span>
           </div>
-          <span className="text-gray-500 dark:text-gray-400"> entries </span>
+          <span className="text-gray-500 dark:text-gray-400"> entrées </span>
         </div>
 
         <div className="relative">
@@ -221,7 +221,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               setSearchTerm(e.target.value);
               setCurrentPage(1); // Reset to first page when search term changes
             }}
-            placeholder="Search..."
+            placeholder="Rechercher..."
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
           />
         </div>
@@ -232,14 +232,15 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
           <Table>
             <TableHeader className="border-t border-gray-100 dark:border-white/[0.05]">
               <TableRow>
+                {/* Table header translations */}
                 {[
-                  { key: "project", label: "Project" },
+                  { key: "project", label: "Projet" },
                   { key: "type", label: "Type" },
                   { key: "superficie", label: "Superficie" },
-                  { key: "pricePerM2", label: "Price Per M²" },
+                  { key: "pricePerM2", label: "Prix/m²" },
                   { key: "zone", label: "Zone" },
-                  { key: "price", label: "Price" },
-                  { key: "status", label: "Status" },
+                  { key: "price", label: "Prix" },
+                  { key: "status", label: "Statut" },
                 ].map(({ key, label }) => (
                   <TableCell
                     key={key}
@@ -255,18 +256,16 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                       </p>
                       <button className="flex flex-col gap-0.5">
                         <AngleUpIcon
-                          className={`text-gray-300 dark:text-gray-700 ${
-                            sortKey === key && sortOrder === "asc"
+                          className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "asc"
                               ? "text-brand-500"
                               : ""
-                          }`}
+                            }`}
                         />
                         <AngleDownIcon
-                          className={`text-gray-300 dark:text-gray-700 ${
-                            sortKey === key && sortOrder === "desc"
+                          className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "desc"
                               ? "text-brand-500"
                               : ""
-                          }`}
+                            }`}
                         />
                       </button>
                     </div>
@@ -276,6 +275,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                   isHeader
                   className="px-4 py-3 border border-gray-100 dark:border-white/[0.05]"
                 >
+                  {/* Action column */}
                   <p className="font-medium text-gray-700 text-theme-xs dark:text-gray-400">
                     Action
                   </p>
@@ -289,7 +289,8 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                     colSpan={8}
                     className="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
                   >
-                    No data available
+                    {/* No data message */}
+                    Aucune donnée disponible
                   </TableCell>
                 </TableRow>
               )}
@@ -330,8 +331,8 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                         item.status === "AVAILABLE"
                           ? "success"
                           : item.status === "RESERVED"
-                          ? "warning"
-                          : "error"
+                            ? "warning"
+                            : "error"
                       }
                       size="sm"
                     >
@@ -372,7 +373,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                         </span>
                       )}
                       {item.status === "SOLD" && (
-                        <span className="text-error-500">   
+                        <span className="text-error-500">
                           <svg
                             className="w-3 h-3 mr-1"
                             xmlns="http://www.w3.org/2000/svg"
@@ -388,7 +389,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                             />
                           </svg>
                         </span>
-                    // {item.status.toLowerCase()}
+                        // {item.status.toLowerCase()}
                       )}
                       {item.status.toLowerCase()}
                     </Badge>
@@ -396,12 +397,12 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center w-full gap-2 justify-center">
                       <button
-                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-600"
-                         onClick={() => {router.push(`/properties/${item.id}`)}}
+                        className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-600"
+                        onClick={() => { router.push(`/properties/${item.id}`) }}
                       >
                         <FaEye />
                       </button>
-                      <DeleteModal heading="Delete Property" itemId={item.id.toString()} description="Are you sure you want to delete this property?" onDelete={() => handleDelete(item.id.toString())} />
+                      <DeleteModal heading="Supprimer la propriété" itemId={item.id.toString()} description="Êtes-vous sûr de vouloir supprimer cette propriété ?" onDelete={() => handleDelete(item.id.toString())} />
                       {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
                       <EditPropertyModal
                         PropertyData={item}
@@ -417,24 +418,24 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
         </div>
       </div>
 
-    {currentData.length > 0 && (
-      <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
-        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-          {/* Left side: Showing entries */}
+      {currentData.length > 0 && (
+        <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
+          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
+            {/* Left side: Showing entries */}
 
-          <PaginationWithButton
-            totalPages={totalPages}
-            initialPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-          <div className="pt-3 xl:pt-0">
-            <p className="pt-3 text-sm font-medium text-center text-gray-500 border-t border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-t-0 xl:pt-0 xl:text-left">
-              Showing {startIndex + 1} to {endIndex} of {totalItems} entries
-            </p>
+            <PaginationWithButton
+              totalPages={totalPages}
+              initialPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+            <div className="pt-3 xl:pt-0">
+              <p className="pt-3 text-sm font-medium text-center text-gray-500 border-t border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-t-0 xl:pt-0 xl:text-left">
+                Affichage de {startIndex + 1} à {endIndex} sur {totalItems} entrées
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 }

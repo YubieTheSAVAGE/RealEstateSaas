@@ -70,7 +70,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   // Status options
   const status = [
     { value: "CLIENT", label: "Client" },
-    { value: "LEAD", label: "Lead" },
+    { value: "LEAD", label: "Prospect" },
   ]
 
   // Update form field values
@@ -93,9 +93,9 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     if (!validateForm()) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     // Flatten all selected apartments into a single array of IDs
     const allApartmentIds = selectedApartments.flatMap((project) => project.apartments.map((apt) => apt.id))
 
@@ -133,7 +133,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
         apartmentId: [],
       });
       setSelectedApartments([]);
-      
+
       closeModal()
     } catch (error) {
       console.error("Error adding client:", error);
@@ -147,36 +147,36 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   const validateForm = (): boolean => {
     let valid = true;
     const newErrors = { ...errors };
-    
+
     // Required field validation
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = "Le nom est requis";
       valid = false;
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "L'email est requis";
       valid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+      newErrors.email = "Veuillez entrer un email valide";
       valid = false;
     }
 
     if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required";
+      newErrors.phoneNumber = "Le numéro de téléphone est requis";
       valid = false;
     } else if (!/^[+\d\s\-()]{7,20}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Please enter a valid phone number";
+      newErrors.phoneNumber = "Veuillez entrer un numéro de téléphone valide";
       valid = false;
     }
 
     if (!formData.provenance.trim()) {
-      newErrors.provenance = "This field is required";
+      newErrors.provenance = "Ce champ est requis";
       valid = false;
     }
 
     if (selectedApartments.length === 0) {
-      newErrors.apartmentId = ["At least one property must be selected"];
+      newErrors.apartmentId = ["Au moins un bien doit être sélectionné"];
       valid = false;
     }
 
@@ -210,7 +210,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
       const formattedOptions = data.map((apartment: Property) => ({
         value: apartment.id,
-        text:  `${apartment.type} ${apartment.number || apartment.id} `,
+        text: `${apartment.type} ${apartment.number || apartment.id} `,
       }))
 
       setCurrentProjectApartments(formattedOptions)
@@ -332,13 +332,13 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase()
     setSearchQuery(query)
-    
+
     if (!query.trim()) {
       setFilteredApartments(currentProjectApartments)
       return
     }
 
-    const filtered = currentProjectApartments.filter(apt => 
+    const filtered = currentProjectApartments.filter(apt =>
       apt.text.toLowerCase().includes(query)
     )
     setFilteredApartments(filtered)
@@ -377,30 +377,40 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   return (
     <>
       <Button size="sm" onClick={openModal}>
-        Add Client
+        Ajouter un client
       </Button>
+<<<<<<< HEAD
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-4 sm:p-5 lg:p-8 max-h-[90vh] md:max-h-[85vh] flex flex-col">
         <form onSubmit={(e) => e.preventDefault()} className="flex flex-col h-full">
           <h4 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90">Lead Information</h4>
           
           <div className="overflow-y-auto pr-2 -mr-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-700" style={{maxHeight: "calc(80vh - 140px)"}}>
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+=======
+      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
+        <form onSubmit={(e) => e.preventDefault()}>
+          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
+            Informations du prospect
+          </h4>
+
+          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+>>>>>>> b06570f (done)
             <div className="col-span-1">
               <Label>
-                Full Name <span className="text-red-500">*</span>
+                Nom complet <span className="text-red-500">*</span>
               </Label>
-              <Input 
-                name="name" 
-                type="text" 
-                placeholder="e.g. John Doe" 
-                onChange={handleChange} 
+              <Input
+                name="name"
+                type="text"
+                placeholder="ex: Jean Dupont"
+                onChange={handleChange}
                 error={!!errors.name}
               />
               {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
             </div>
             <div className="col-span-1">
               <Label>
-                Status <span className="text-red-500">*</span>
+                Statut <span className="text-red-500">*</span>
               </Label>
               <Select
                 options={status}
@@ -417,7 +427,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Input
                 name="email"
                 type="text"
-                placeholder="e.g. john.doe@example.com"
+                placeholder="ex: jean.dupont@exemple.com"
                 onChange={handleChange}
                 error={!!errors.email}
               />
@@ -426,12 +436,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
             <div className="col-span-1">
               <Label>
-                Phone Number <span className="text-red-500">*</span>
+                Numéro de téléphone <span className="text-red-500">*</span>
               </Label>
               <Input
                 name="phoneNumber"
                 type="phone"
-                placeholder="e.g. 123-456-7890"
+                placeholder="ex: 06-12-34-56-78"
                 onChange={handleChange}
                 error={!!errors.phoneNumber}
               />
@@ -440,17 +450,19 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
             {/* Project and Apartment Selection Section */}
             <div className="col-span-2">
-              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">Interested Properties <span className="text-red-500">*</span></h5>
+              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
+                Biens intéressés <span className="text-red-500">*</span>
+              </h5>
               <div className="flex flex-col gap-4 p-4 border rounded-lg">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="col-span-2">
                     <Label>
-                      Project <span className="text-red-500">*</span>
+                      Projet <span className="text-red-500">*</span>
                     </Label>
                     <Select
                       options={projects}
                       name="projectId"
-                      placeholder="Select a project"
+                      placeholder="Sélectionner un projet"
                       onChange={(value, name) => handleSelectChange(value, name)}
                     />
                     {errors.apartmentId && errors.apartmentId.length > 0 && selectedApartments.length === 0 && (
@@ -458,15 +470,20 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                     )}
                   </div>
                   {formData.projectId && (
+<<<<<<< HEAD
                     <div className="col-span-2">
                       <Label>Search Properties <span className="text-red-500">*</span></Label>
+=======
+                    <div className="col-span-1">
+                      <Label>Rechercher des biens <span className="text-red-500">*</span></Label>
+>>>>>>> b06570f (done)
                       <div className="relative">
                         <div className="relative">
                           <input
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="Search by type or number..."
+                            placeholder="Rechercher par type ou numéro..."
                             className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -520,7 +537,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 {formData.projectId && tempSelectedApartments.length > 0 && (
                   <div className="flex justify-end">
                     <Button size="sm" onClick={handleAddApartments}>
-                      Add Selected Properties
+                      Ajouter les biens sélectionnés
                     </Button>
                   </div>
                 )}
@@ -530,7 +547,9 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
             {/* Selected Apartments Display */}
             {selectedApartments.length > 0 && (
               <div className="col-span-2 mt-2">
-                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">Selected Properties</h5>
+                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">
+                  Biens sélectionnés
+                </h5>
                 <div className="p-4 border rounded-lg">
                   {selectedApartments.map((project) => (
                     <div key={project.projectId} className="mb-4">
@@ -557,12 +576,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
             <div className="col-span-1 sm:col-span-2">
               <Label>
-                How did you hear about us? <span className="text-red-500">*</span>
+                Comment nous avez-vous connu ? <span className="text-red-500">*</span>
               </Label>
               <Input
                 name="provenance"
                 type="text"
-                placeholder="e.g. Google, Referral"
+                placeholder="ex: Google, Recommandation"
                 onChange={handleChange}
                 error={!!errors.provenance}
               />
@@ -573,7 +592,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Textarea
                 rows={3}
                 name="notes"
-                placeholder="e.g. Notes about the client"
+                placeholder="ex: Notes concernant le client"
                 onChange={handleTextareaChange}
               />
             </div>
@@ -581,20 +600,20 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
           </div>
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={closeModal}
               disabled={isSubmitting}
             >
-              Close
+              Fermer
             </Button>
-            <Button 
-              size="sm" 
-              onClick={handleSave} 
+            <Button
+              size="sm"
+              onClick={handleSave}
               disabled={isSubmitting || selectedApartments.length === 0}
             >
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
+              {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
             </Button>
           </div>
         </form>

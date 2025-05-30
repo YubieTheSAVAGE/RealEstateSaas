@@ -19,7 +19,7 @@ import { Client } from "@/types/client";
 
 interface EditPropertyModalProps {
   // onApartementsAdded?: () => void; // Callback to refresh project list
-  PropertyData ?: Property; // Add the type for PropertyData if available
+  PropertyData?: Property; // Add the type for PropertyData if available
   onRefresh?: () => void; // Callback to refresh project list after editing
   details?: boolean;
 }
@@ -28,11 +28,11 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
   const { isOpen, openModal, closeModal } = useModal();
 
   const type = {
-    "APARTMENT": "Apartment",
+    "APARTMENT": "Appartement",
     'DUPLEX': "Duplex",
     'VILLA': "Villa",
-    'STORE': "Store",
-    'LAND': "Land",
+    'STORE': "Magasin",
+    'LAND': "Terrain",
   }
   const typeOptions = Object.entries(type).map(([value, label]) => ({
     value,
@@ -67,19 +67,19 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     fetchData();
   }, [PropertyData?.status]);
 
-    const [errors, setErrors] = useState({
-      id: "",
-      floor: "",
-      number: "",
-      type: "",
-      area: "",
-      price: "",
-      status: "",
-      pricePerM2: "",
-      zone: "",
-      image: "",
-      clientId : "",
-    });
+  const [errors, setErrors] = useState({
+    id: "",
+    floor: "",
+    number: "",
+    type: "",
+    area: "",
+    price: "",
+    status: "",
+    pricePerM2: "",
+    zone: "",
+    image: "",
+    clientId: "",
+  });
   // State for form fields
   interface FormDataState {
     id: number | string; // Changed to number | string to handle both cases
@@ -101,7 +101,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     id: PropertyData?.id || 0,
     floor: PropertyData?.floor || 0,
     number: PropertyData?.number || 0,
-    type:  PropertyData?.type || "",    
+    type: PropertyData?.type || "",
     area: PropertyData?.area || 0,
     threeDViewUrl: PropertyData?.threeDViewUrl || "",
     price: PropertyData?.price || 0,
@@ -135,15 +135,15 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     let hasErrors = false;
 
     const validations = [
-      { field: "id", test: (v : string) => !v, message: "Project is required" },
-      { field: "number", test: (v: string) => !v, message: "Number is required" },
-      { field: "type", test: (v: string) => !v, message: "Type is required" },
-      { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Area must be a positive number or required" },
-      { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price must be a positive number or required" },
-      { field: "status", test: (v: string) => !v, message: "Status is required" },
-      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0, message: "Floor must be a positive number or required" },
-      { field: "zone", test: (v: string) => !v, message: "Zone is required" },
-      { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price per M² must be a positive number or required" },
+      { field: "id", test: (v: string) => !v, message: "Le projet est requis" },
+      { field: "number", test: (v: string) => !v, message: "Le numéro est requis" },
+      { field: "type", test: (v: string) => !v, message: "Le type est requis" },
+      { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "La superficie doit être un nombre positif ou est requise" },
+      { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix doit être un nombre positif ou est requis" },
+      { field: "status", test: (v: string) => !v, message: "Le statut est requis" },
+      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0, message: "L'étage doit être un nombre positif ou est requis" },
+      { field: "zone", test: (v: string) => !v, message: "La zone est requise" },
+      { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix par m² doit être un nombre positif ou est requis" },
     ];
 
     validations.forEach(({ field, test, message }) => {
@@ -191,9 +191,9 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
 
 
   const status = [
-    { value: "AVAILABLE", label: "Available" },
-    { value: "RESERVED", label: "Reserved" },
-    { value: "SOLD", label: "Sold" },
+    { value: "AVAILABLE", label: "Disponible" },
+    { value: "RESERVED", label: "Réservé" },
+    { value: "SOLD", label: "Vendu" },
   ]
 
 
@@ -215,10 +215,10 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
 
     fetchProperties();
   }
-  , []);
+    , []);
 
-    
-  const handleSelectChange = (selectedValue: string, name:string) => {
+
+  const handleSelectChange = (selectedValue: string, name: string) => {
     // console.log("Selected value:", selectedValue, name);
     if (name === "status" && (selectedValue === "SOLD" || selectedValue === "RESERVED")) {
       fetchClients();
@@ -251,7 +251,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
   return (
     <>
       {details ? (
-        <DropdownItem 
+        <DropdownItem
           className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
           onClick={openModal}
         >
@@ -268,22 +268,23 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
         className="max-w-[584px] p-5 lg:p-10"
       >
         <form onSubmit={(e) => e.preventDefault()}>
+          {/* Modal content translations */}
           <h4 className="mb-2 text-lg font-medium text-gray-800 dark:text-white/90">
-            Edit Property
+            Modifier la propriété
           </h4>
-          <div className="mb-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Edit the property details below.
-            </p>
-          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Modifiez les détails de la propriété ci-dessous.
+          </p>
+
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
-              <Label>Project <span className="text-red-500">*</span></Label>
+              {/* Form labels */}
+              <Label>Projet <span className="text-red-500">*</span></Label>
               <Select
                 defaultValue={PropertyData?.id !== undefined ? String(PropertyData.id) : undefined}
                 name="id"
                 options={options}
-                placeholder="Select Option"
+                placeholder="Sélectionner une option"
                 onChange={(value, name) => handleSelectChange(value, name)}
                 className="dark:bg-dark-900"
               />
@@ -310,12 +311,12 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
             </div>
 
             <div className="col-span-1">
-              <Label>Floor <span className="text-red-500">*</span></Label>
+              <Label>Étage <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={PropertyData?.floor}
                 name="floor"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.floor && (
@@ -325,12 +326,12 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               )}
             </div>
             <div className="col-span-1">
-              <Label>Number <span className="text-red-500">*</span></Label>
+              <Label>Numéro <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={PropertyData?.number}
                 name="number"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.number && (
@@ -341,12 +342,12 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
             </div>
 
             <div className="col-span-1">
-              <Label>Area <span className="text-red-500">*</span></Label>
+              <Label>Superficie <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={PropertyData?.area}
                 name="area"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.area && (
@@ -356,12 +357,12 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               )}
             </div>
             <div className="col-span-1">
-              <Label>Price Per M² <span className="text-red-500">*</span></Label>
+              <Label>Prix/m² <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={PropertyData?.pricePerM2}
                 name="pricePerM2"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.pricePerM2 && (
@@ -377,7 +378,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                 defaultValue={PropertyData?.zone}
                 name="zone"
                 type="text"
-                placeholder="e.g. Zone 1"
+                placeholder="ex: Zone 1"
                 onChange={handleChange}
               />
               {errors.zone && (
@@ -386,25 +387,25 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                 </p>
               )}
             </div>
-            
+
             <div className="col-span-1">
-              <Label>3D Link</Label>
+              <Label>Lien 3D</Label>
               <Input
                 defaultValue={PropertyData?.threeDViewUrl ?? undefined}
                 name="threeDViewUrl"
                 type="text"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
             </div>
 
             <div className="col-span-1">
-              <Label>Total Price <span className="text-red-500">*</span></Label>
+              <Label>Prix total <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={PropertyData?.price}
                 name="price"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.price && (
@@ -414,7 +415,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               )}
             </div>
             <div className="col-span-1">
-              <Label>Status <span className="text-red-500">*</span></Label>
+              <Label>Statut <span className="text-red-500">*</span></Label>
               <Select
                 defaultValue={PropertyData?.status}
                 options={status}
@@ -435,7 +436,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                   defaultValue={formData?.clientId || ""}
                   options={clientOptions}
                   name="clientId"
-                  placeholder="Select Option"
+                  placeholder="Sélectionner une option"
                   onChange={(value, name) => handleSelectChange(value, name)}
                   className="dark:bg-dark-900"
                 />
@@ -456,7 +457,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               />
               {formData.image && (
                 <p className="mt-1 text-xs text-green-600">
-                  File selected: {formData.image.name}
+                  Fichier sélectionné: {formData.image.name}
                 </p>
               )}
             </div>
@@ -466,18 +467,19 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               <TextArea
                 value={PropertyData?.notes ?? ""}
                 rows={3}
-                placeholder="Add notes here"
+                placeholder="Ajouter des notes ici"
                 onChange={handleTextAreaChange}
               />
             </div>
           </div>
 
+          {/* Buttons */}
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              Fermer
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Enregistrer
             </Button>
           </div>
         </form>

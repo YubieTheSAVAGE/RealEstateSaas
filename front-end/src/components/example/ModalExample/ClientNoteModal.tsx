@@ -10,20 +10,20 @@ interface ClientNoteModalProps {
   clientNote: string;
 }
 
-export default function ClientNoteModal( clientNoteModalProps: ClientNoteModalProps) {
+export default function ClientNoteModal(clientNoteModalProps: ClientNoteModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {  
+  const handleSave = () => {
     // Handle save logic here
-    console.log("Saving changes...");
+    console.log("Enregistrement des modifications...");
     closeModal();
   };
   return (
     <>
-      <DropdownItem 
+      <DropdownItem
         onItemClick={openModal}
-        className="text-gray-500 hover:text-error-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"  
+        className="text-gray-500 hover:text-error-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
       >
-        ADD/EDIT
+        AJOUTER/MODIFIER
       </DropdownItem>
       <Modal
         isOpen={isOpen}
@@ -37,10 +37,9 @@ export default function ClientNoteModal( clientNoteModalProps: ClientNoteModalPr
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-2">
-              {/* <Label>Note</Label> */}
               <Textarea
                 defaultValue={clientNoteModalProps.clientNote}
-                placeholder="Write your note here..."
+                placeholder="Écrivez votre note ici..."
                 className="h-32"
               />
             </div>
@@ -48,10 +47,10 @@ export default function ClientNoteModal( clientNoteModalProps: ClientNoteModalPr
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              Fermer
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Enregistrer
             </Button>
           </div>
         </form>

@@ -56,27 +56,27 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
     // Validation
     let valid = true;
     const newErrors = { ...errors };
-    
+
     if (!formData.name) {
-      newErrors.name = "Name is required";
+      newErrors.name = "Le nom est requis";
       valid = false;
     }
-    
+
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Valid email is required";
+      newErrors.email = "Une adresse email valide est requise";
       valid = false;
     }
-    
+
     if (!formData.phoneNumber) {
-      newErrors.phoneNumber = "Phone number is required";
+      newErrors.phoneNumber = "Le numéro de téléphone est requis";
       valid = false;
     }
-    
+
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = "Le mot de passe est requis";
       valid = false;
     }
-    
+
     if (!valid) {
       setErrors(newErrors);
       return;
@@ -86,16 +86,16 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
     Object.entries(formData).forEach(([key, value]) => {
       formDataToSend.append(key, value);
     });
-    
+
     try {
       await addAgents(formDataToSend);
       console.log("Saving agent with data:", formData);
-      
+
       // Call the callback function to refresh the agent list
       if (onAgentAdded) {
         onAgentAdded();
       }
-      
+
       closeModal();
     } catch (error) {
       console.error("Error saving agent:", error);
@@ -103,8 +103,8 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
   };
 
   const statusOptions = [
-    { value: "ACTIVE", label: "Active" },
-    { value: "INACTIVE", label: "Inactive" },
+    { value: "ACTIVE", label: "Actif" },
+    { value: "INACTIVE", label: "Inactif" },
   ];
 
   const handleSelectChange = (selectedValue: string, name: string) => {
@@ -117,7 +117,7 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
   return (
     <>
       <Button size="sm" onClick={openModal}>
-        Add Agent
+        Ajouter un agent
       </Button>
       <Modal
         isOpen={isOpen}
@@ -126,22 +126,22 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Agent Information
+            Informations de l'agent
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-2">
-              <Label>Name <span className="text-red-500">*</span></Label>
+              <Label>Nom <span className="text-red-500">*</span></Label>
               <Input
                 name="name"
                 type="text"
-                placeholder="Full Name"
+                placeholder="Nom complet"
                 onChange={handleChange}
               />
               {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
             </div>
             <div className="col-span-1">
-              <Label>Status <span className="text-red-500">*</span></Label>
+              <Label>Statut <span className="text-red-500">*</span></Label>
               <Select
                 defaultValue={statusOptions[0].value}
                 name="status"
@@ -152,7 +152,7 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
               />
             </div>
             <div className="col-span-1">
-              <Label>Phone Number <span className="text-red-500">*</span></Label>
+              <Label>Numéro de téléphone <span className="text-red-500">*</span></Label>
               <Input
                 name="phoneNumber"
                 type="tel"
@@ -167,14 +167,14 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
               <Input
                 name="email"
                 type="email"
-                placeholder="email@example.com"
+                placeholder="email@exemple.com"
                 onChange={handleChange}
               />
               {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
             </div>
 
             <div className="col-span-1">
-              <Label>Password <span className="text-red-500">*</span></Label>
+              <Label>Mot de passe <span className="text-red-500">*</span></Label>
               <Input
                 name="password"
                 type="password"
@@ -190,7 +190,7 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
               <Textarea
                 className="h-24"
                 name="notes"
-                placeholder="Additional notes"
+                placeholder="Notes supplémentaires"
                 onChange={handleChange}
               />
             </div>
@@ -198,10 +198,10 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Cancel
+              Annuler
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Add Agent
+              Ajouter l'agent
             </Button>
           </div>
         </form>

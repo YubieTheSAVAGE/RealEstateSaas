@@ -98,7 +98,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   // Status options
   const status = [
     { value: "CLIENT", label: "Client" },
-    { value: "LEAD", label: "Lead" },
+    { value: "LEAD", label: "Prospect" },
   ]
 
   // Initialize existing apartments from clientData
@@ -168,34 +168,34 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     }))
   }
 
-    const validateForm = (): boolean => {
+  const validateForm = (): boolean => {
     let valid = true;
     const newErrors = { ...errors };
-    
+
     // Required field validation
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = "Le nom est requis";
       valid = false;
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "L'email est requis";
       valid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+      newErrors.email = "Veuillez entrer un email valide";
       valid = false;
     }
 
     if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required";
+      newErrors.phoneNumber = "Le numéro de téléphone est requis";
       valid = false;
     } else if (!/^[+\d\s\-()]{7,20}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Please enter a valid phone number";
+      newErrors.phoneNumber = "Veuillez entrer un numéro de téléphone valide";
       valid = false;
     }
 
     if (!formData.provenance.trim()) {
-      newErrors.provenance = "This field is required";
+      newErrors.provenance = "Ce champ est requis";
       valid = false;
     }
 
@@ -229,7 +229,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       formDataToSend.append("apartmentId", id)
     })
 
-    console.log("Form data to send:", allApartmentIds)
+    console.log("Formulaire envoyé:", formDataToSend)
 
     try {
       await updateClient(formDataToSend)
@@ -240,7 +240,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
       closeModal()
     } catch (error) {
-      console.error("Error updating client:", error)
+      console.error("Erreur lors de la mise à jour du client:", error)
       // Handle error (could add error state and display to user)
     }
   }
@@ -270,7 +270,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
       const formattedOptions = data.map((apartment: Property) => ({
         value: String(apartment.id),
-        text:  `${apartment.type} ${apartment.number || apartment.id} `,
+        text: `${apartment.type} ${apartment.number || apartment.id} `,
       }))
 
       setCurrentProjectApartments(formattedOptions)
@@ -403,13 +403,13 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase()
     setSearchQuery(query)
-    
+
     if (!query.trim()) {
       setFilteredApartments(currentProjectApartments)
       return
     }
 
-    const filtered = currentProjectApartments.filter(apt => 
+    const filtered = currentProjectApartments.filter(apt =>
       apt.text.toLowerCase().includes(query)
     )
     setFilteredApartments(filtered)
@@ -419,11 +419,11 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   return (
     <>
       {details ? (
-        <DropdownItem 
+        <DropdownItem
           className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"
           onClick={openModal}
         >
-          Edit
+          Modifier
         </DropdownItem>
       ) : (
         <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
@@ -432,24 +432,26 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       )}
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
         <form onSubmit={(e) => e.preventDefault()}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">Edit Client Information</h4>
+          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
+            Modifier les informations du client
+          </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
               <Label>
-                Full Name <span className="text-red-500">*</span>
+                Nom complet <span className="text-red-500">*</span>
               </Label>
               <Input
                 name="name"
                 type="text"
-                placeholder="e.g. John Doe"
+                placeholder="ex: Jean Dupont"
                 onChange={handleChange}
                 defaultValue={formData.name}
               />
             </div>
             <div className="col-span-1">
               <Label>
-                Status <span className="text-red-500">*</span>
+                Statut <span className="text-red-500">*</span>
               </Label>
               <Select
                 options={status}
@@ -466,7 +468,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
               <Input
                 name="email"
                 type="text"
-                placeholder="e.g. john.doe@example.com"
+                placeholder="ex: jean.dupont@exemple.com"
                 onChange={handleChange}
                 defaultValue={formData.email}
               />
@@ -474,12 +476,12 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
             <div className="col-span-1">
               <Label>
-                Phone Number <span className="text-red-500">*</span>
+                Numéro de téléphone <span className="text-red-500">*</span>
               </Label>
               <Input
                 name="phoneNumber"
                 type="phone"
-                placeholder="e.g. 123-456-7890"
+                placeholder="ex: 06-12-34-56-78"
                 onChange={handleChange}
                 defaultValue={formData.phoneNumber}
               />
@@ -487,29 +489,33 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
             {/* Project and Apartment Selection Section */}
             <div className="col-span-2">
-              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">Add Properties</h5>
+              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
+                Ajouter des biens
+              </h5>
               <div className="flex flex-col gap-4 p-4 border rounded-lg">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="col-span-1">
-                    <Label>Project</Label>
+                    <Label>Projet</Label>
                     <Select
                       options={projects}
                       name="projectId"
-                      placeholder="Select a project"
+                      placeholder="Sélectionner un projet"
                       defaultValue={formData.projectId}
                       onChange={(value, name) => handleSelectChange(value, name)}
                     />
                   </div>
                   {formData.projectId && (
                     <div className="col-span-1">
-                      <Label>Search Properties <span className="text-red-500">*</span></Label>
+                      <Label>
+                        Rechercher des biens <span className="text-red-500">*</span>
+                      </Label>
                       <div className="relative">
                         <div className="relative">
                           <input
                             type="text"
                             value={searchQuery}
                             onChange={handleSearchChange}
-                            placeholder="Search by type or number..."
+                            placeholder="Rechercher par type ou numéro..."
                             className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
@@ -563,7 +569,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
                 {formData.projectId && (
                   <div className="flex justify-end">
                     <Button size="sm" onClick={handleAddApartments} disabled={tempSelectedApartments.length === 0}>
-                      Add Properties
+                      Ajouter les biens
                     </Button>
                   </div>
                 )}
@@ -572,14 +578,16 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
             {/* Selected Apartments Display */}
             {selectedApartments.length > 0 && (
               <div className="col-span-2 mt-2">
-                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">Selected Properties</h5>
+                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">
+                  Biens sélectionnés
+                </h5>
                 <div className="p-4 border rounded-lg max-h-[300px] overflow-y-auto">
                   {selectedApartments.map((project) => (
                     <div key={project.projectId} className="mb-4">
                       <h6 className="mb-2 font-medium">{project.projectName}</h6>
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         {project.apartments.length === 0 && (
-                          <p className="text-sm text-gray-500">No apartments selected</p>
+                          <p className="text-sm text-gray-500">Aucun bien sélectionné</p>
                         )}
                         {project.apartments.map((apt) => (
                           <div key={apt.id} className="flex items-center justify-between p-2 border rounded">
@@ -603,12 +611,12 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
             <div className="col-span-1 sm:col-span-2">
               <Label>
-                How did you hear about us? <span className="text-red-500">*</span>
+                Comment nous avez-vous connu ? <span className="text-red-500">*</span>
               </Label>
               <Input
                 name="provenance"
                 type="text"
-                placeholder="e.g. Google, Referral"
+                placeholder="ex: Google, Recommandation"
                 onChange={handleChange}
                 defaultValue={formData.provenance}
               />
@@ -618,7 +626,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
               <CustomTextarea
                 rows={3}
                 name="notes"
-                placeholder="e.g. Notes about the client"
+                placeholder="ex: Notes concernant le client"
                 onChange={handleTextareaChange}
                 defaultValue={formData.notes}
               />
@@ -627,10 +635,10 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Cancel
+              Annuler
             </Button>
             <Button size="sm" onClick={handleSave} disabled={selectedApartments.length === 0}>
-              Update Client
+              Mettre à jour
             </Button>
           </div>
         </form>

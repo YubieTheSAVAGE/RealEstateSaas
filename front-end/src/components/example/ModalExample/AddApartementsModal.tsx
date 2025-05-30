@@ -39,9 +39,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     price: "",
     status: "AVAILABLE",
     notes: "",
-    pricePerM2 : "",
+    pricePerM2: "",
     image: null as File | null, // Store as File object instead of string
-    zone : "",
+    zone: "",
     clientId: "",
   });
 
@@ -121,17 +121,17 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   ]);
 
   const type = [
-    { value: "APARTMENT", label: "Apartement" },
+    { value: "APARTMENT", label: "Appartement" },
     { value: "DUPLEX", label: "Duplex" },
     { value: "VILLA", label: "Villa" },
-    { value: "STORE", label: "Store" },
-    { value: "LAND", label: "Land" },
+    { value: "STORE", label: "Magasin" },
+    { value: "LAND", label: "Terrain" },
   ]
 
   const status = [
-    { value: "AVAILABLE", label: "Available" },
-    { value: "RESERVED", label: "Reserved" },
-    { value: "SOLD", label: "Sold" },
+    { value: "AVAILABLE", label: "Disponible" },
+    { value: "RESERVED", label: "Réservé" },
+    { value: "SOLD", label: "Vendu" },
   ]
 
   const fetchClients = async () => {
@@ -161,8 +161,8 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
     fetchProperties();
   }
-  , []);
-  const handleSelectChange = (selectedValue: string, name:string) => {
+    , []);
+  const handleSelectChange = (selectedValue: string, name: string) => {
     if (name == "status" && (selectedValue == "SOLD" || selectedValue == "RESERVED")) {
       fetchClients();
     }
@@ -185,9 +185,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       price: "",
       status: "AVAILABLE",
       notes: "",
-      pricePerM2 : "",
+      pricePerM2: "",
       image: null,
-      zone : "",
+      zone: "",
       clientId: "",
     });
     setErrors({
@@ -237,15 +237,15 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     let hasErrors = false;
 
     const validations = [
-      { field: "id", test: (v: string) => !v, message: "Project is required" },
-      { field: "number", test: (v: string) => !v, message: "Number is required" },
-      { field: "type", test: (v: string) => !v, message: "Type is required" },
-      { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Area must be a positive number or required" },
-      { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price must be a positive number or required" },
-      { field: "status", test: (v: string) => !v, message: "Status is required" },
-      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0, message: "Floor must be a positive number or required" },
-      { field: "zone", test: (v: string) => !v, message: "Zone is required" },
-      { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Price per M² must be a positive number or required" },
+      { field: "id", test: (v: string) => !v, message: "Le projet est requis" },
+      { field: "number", test: (v: string) => !v, message: "Le numéro est requis" },
+      { field: "type", test: (v: string) => !v, message: "Le type est requis" },
+      { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "La superficie doit être un nombre positif" },
+      { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix doit être un nombre positif" },
+      { field: "status", test: (v: string) => !v, message: "Le statut est requis" },
+      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0, message: "L'étage doit être un nombre positif" },
+      { field: "zone", test: (v: string) => !v, message: "La zone est requise" },
+      { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix par m² doit être un nombre positif" }
     ];
 
     validations.forEach(({ field, test, message }) => {
@@ -288,7 +288,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   return (
     <>
       <Button size="sm" onClick={openModal}>
-        Add Property
+        Ajouter un bien
       </Button>
       <Modal
         isOpen={isOpen}
@@ -297,16 +297,16 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Property Information
+            Informations du bien
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
-              <Label>Project <span className="text-red-500">*</span></Label>
+              <Label>Projet <span className="text-red-500">*</span></Label>
               <Select
                 name="id"
                 options={options}
-                placeholder="Select Option"
+                placeholder="Sélectionner une option"
                 onChange={(value, name) => handleSelectChange(value, name)}
                 className="dark:bg-dark-900"
               />
@@ -332,11 +332,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             </div>
 
             <div className="col-span-1">
-              <Label>Floor <span className="text-red-500">*</span></Label>
+              <Label>Étage <span className="text-red-500">*</span></Label>
               <Input
                 name="floor"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.floor && (
@@ -347,11 +347,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
             </div>
             <div className="col-span-1">
-              <Label>Number <span className="text-red-500">*</span></Label>
+              <Label>Numéro <span className="text-red-500">*</span></Label>
               <Input
                 name="number"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.number && (
@@ -362,11 +362,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             </div>
 
             <div className="col-span-1">
-              <Label>Area <span className="text-red-500">*</span></Label>
+              <Label>Superficie <span className="text-red-500">*</span></Label>
               <Input
                 name="area"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.area && (
@@ -376,11 +376,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               )}
             </div>
             <div className="col-span-1">
-              <Label>Price Per M² <span className="text-red-500">*</span></Label>
+              <Label>Prix/m² <span className="text-red-500">*</span></Label>
               <Input
                 name="pricePerM2"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.pricePerM2 && (
@@ -395,7 +395,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               <Input
                 name="zone"
                 type="text"
-                placeholder="e.g. Zone 1"
+                placeholder="ex: Zone 1"
                 onChange={handleChange}
               />
               {errors.zone && (
@@ -404,23 +404,23 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 </p>
               )}
             </div>
-            
+
             <div className="col-span-1">
-              <Label>3D Link</Label>
+              <Label>Lien 3D</Label>
               <Input
                 name="threeDViewUrl"
                 type="text"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
             </div>
 
             <div className="col-span-1">
-              <Label>Total Price <span className="text-red-500">*</span></Label>
+              <Label>Prix total <span className="text-red-500">*</span></Label>
               <Input
                 name="price"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.price && (
@@ -430,7 +430,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               )}
             </div>
             <div className="col-span-1">
-              <Label>Status <span className="text-red-500">*</span></Label>
+              <Label>Statut <span className="text-red-500">*</span></Label>
               <Select
                 defaultValue={status[0].value}
                 options={status}
@@ -449,7 +449,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       type="text"
                       defaultValue={clientSearch}
                       onChange={handleClientSearch}
-                      placeholder="Search for a client..."
+                      placeholder="Rechercher un client..."
                       className="w-full"
                     />
                   </div>
@@ -469,7 +469,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   {showClientDropdown && filteredClients.length === 0 && (
                     <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg dark:bg-dark-900 dark:border-dark-700">
                       <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
-                        No clients found
+                        Aucun client trouvé
                       </div>
                     </div>
                   )}
@@ -489,7 +489,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               />
               {formData.image && (
                 <p className="mt-1 text-xs text-green-600">
-                  File selected: {formData.image.name}
+                  Fichier sélectionné : {formData.image.name}
                 </p>
               )}
             </div>
@@ -499,7 +499,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               <TextArea
                 value={formData.notes}
                 rows={3}
-                placeholder="Add notes here"
+                placeholder="Ajouter des notes ici"
                 onChange={handleTextAreaChange}
               />
             </div>
@@ -507,10 +507,10 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={handleCloseModal}>
-              Close
+              Fermer
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save
+              Enregistrer
             </Button>
           </div>
         </form>

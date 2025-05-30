@@ -20,11 +20,10 @@ const AccountMenuDropdown: React.FC = () => {
         onClick={toggleDropdown}
         className="inline-flex items-center dropdown-toggle gap-2 px-4 py-3 text-sm font-medium text-white rounded-lg bg-brand-500 hover:bg-brand-600"
       >
-        Account Menu
+        Menu du compte
         <svg
-          className={`duration-200 ease-in-out stroke-current ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`duration-200 ease-in-out stroke-current ${isOpen ? "rotate-180" : ""
+            }`}
           width="20"
           height="20"
           viewBox="0 0 20 20"
@@ -54,7 +53,7 @@ const AccountMenuDropdown: React.FC = () => {
               text-gray-700 hover:bg-gray-100 dark:text-gray-300
               dark:hover:bg-white/5"
             >
-              Edit Profile
+              Modifier le profil
             </DropdownItem>
           </li>
           <li>
@@ -64,7 +63,7 @@ const AccountMenuDropdown: React.FC = () => {
               text-gray-700 hover:bg-gray-100 dark:text-gray-300
               dark:hover:bg-white/5"
             >
-              Account Settings
+              Paramètres du compte
             </DropdownItem>
           </li>
           <li>
@@ -74,7 +73,7 @@ const AccountMenuDropdown: React.FC = () => {
               text-gray-700 hover:bg-gray-100 dark:text-gray-300
               dark:hover:bg-white/5"
             >
-              License
+              Licence
             </DropdownItem>
           </li>
           <li>

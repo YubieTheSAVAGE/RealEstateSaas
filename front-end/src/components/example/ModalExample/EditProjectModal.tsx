@@ -91,7 +91,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
 
     // Validation rules
     if (!formData.name.trim()) {
-      newErrors.name = "Project name is required";
+      newErrors.name = "Le nom du projet est requis";
       hasErrors = true;
     }
 
@@ -100,7 +100,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
       isNaN(Number(formData.numberOfApartments)) ||
       Number(formData.numberOfApartments) <= 0
     ) {
-      newErrors.numberOfApartments = "Number of properties is required and must be a positive integer";
+      newErrors.numberOfApartments = "Le nombre de biens est requis et doit être un nombre entier positif";
       hasErrors = true;
     }
 
@@ -109,12 +109,12 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
       isNaN(Number(formData.totalSurface)) ||
       Number(formData.totalSurface) <= 0
     ) {
-      newErrors.totalSurface = "Total surface is required and must be a positive number";
+      newErrors.totalSurface = "La surface totale est requise et doit être un nombre positif";
       hasErrors = true;
     }
 
     if (!formData.address.trim()) {
-      newErrors.address = "Address is required";
+      newErrors.address = "L'adresse est requise";
       hasErrors = true;
     }
 
@@ -141,7 +141,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
       closeModal();
     } catch (error) {
       console.error("Error saving project:", error);
-      
+
     }
   };
 
@@ -156,13 +156,13 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
     <>
       {details ? (
         <DropdownItem onItemClick={openModal}>
-          Edit
+          Modifier
         </DropdownItem>
-          ) : (
-      <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
-        <PencilIcon onClick={openModal} />
-      </span>
-          )}
+      ) : (
+        <span className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer">
+          <PencilIcon onClick={openModal} />
+        </span>
+      )}
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
@@ -170,18 +170,18 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-2 text-lg font-medium text-gray-800 dark:text-white/90">
-            Project Information
+            Informations du projet
           </h4>
           <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
-            Edit the project details below.
+            Modifiez les détails du projet ci-dessous.
           </p>
 
           {/* Validation Errors Summary */}
           {Object.values(errors).some((error) => error) && (
             <div className="mb-4">
               <Alert
-                title="Validation Error"
-                message="Please correct the errors in the form below."
+                title="Erreur de validation"
+                message="Veuillez corriger les erreurs dans le formulaire ci-dessous."
                 variant="error"
                 showLink={false}
               />
@@ -190,12 +190,12 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
-              <Label>Name <span className="text-red-500">*</span></Label>
+              <Label>Nom <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={ProjectData?.name}
                 name="name"
                 type="text"
-                placeholder="Project Name"
+                placeholder="Nom du projet"
                 onChange={handleChange}
               />
               {errors.name && (
@@ -206,12 +206,12 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
             </div>
 
             <div className="col-span-1">
-              <Label>Total properties <span className="text-red-500">*</span></Label>
+              <Label>Nombre total de biens <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={ProjectData?.numberOfApartments}
                 name="numberOfApartments"
                 type="number"
-                placeholder="e.g. 10"
+                placeholder="ex: 10"
                 onChange={handleChange}
               />
               {errors.numberOfApartments && (
@@ -222,12 +222,12 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
             </div>
 
             <div className="col-span-1">
-              <Label>Total surface <span className="text-red-500">*</span></Label>
+              <Label>Surface totale <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={ProjectData?.totalSurface}
                 name="totalSurface"
                 type="number"
-                placeholder="e.g. 1000 m²"
+                placeholder="ex: 1000 m²"
                 onChange={handleChange}
               />
               {errors.totalSurface && (
@@ -238,12 +238,12 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
             </div>
 
             <div className="col-span-1">
-              <Label>Address <span className="text-red-500">*</span></Label>
+              <Label>Adresse <span className="text-red-500">*</span></Label>
               <Input
                 defaultValue={ProjectData?.address}
                 name="address"
                 type="text"
-                placeholder="e.g. 123 Main St"
+                placeholder="ex: 123 Rue Principale"
                 onChange={handleChange}
               />
               {errors.address && (
@@ -260,7 +260,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
               />
               {formData.image && (
                 <p className="text-sm text-green-500 mt-1">
-                  File selected: {formData.image.name}
+                  Fichier sélectionné: {formData.image.name}
                 </p>
               )}
               {errors.image && (
@@ -275,7 +275,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
               <TextArea
                 value={formData.notes}
                 name="notes"
-                placeholder="Type a note here..."
+                placeholder="Tapez une note ici..."
                 rows={6}
                 onChange={handleTextareaChange}
               />
@@ -284,10 +284,10 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              Fermer
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Enregistrer
             </Button>
           </div>
         </form>

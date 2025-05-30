@@ -70,21 +70,21 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
   console.log("Project Data:", projectData);
 
   const handleDelete = async (id: string) => {
-      const success: boolean = await deleteProperties(id);
+    const success: boolean = await deleteProperties(id);
 
-      if (success) {
-        setProjectData((prevData) =>
-          prevData.filter((project) => project.id.toString() !== id)
-        );
-        const remainingItems = projectData.filter(
-          (project) => project.id.toString() !== id
-        ).length;
-        if (
-          remainingItems <= (currentPage - 1) * itemsPerPage &&
-          currentPage > 1
-        ) {
-          setCurrentPage(currentPage - 1);
-        }
+    if (success) {
+      setProjectData((prevData) =>
+        prevData.filter((project) => project.id.toString() !== id)
+      );
+      const remainingItems = projectData.filter(
+        (project) => project.id.toString() !== id
+      ).length;
+      if (
+        remainingItems <= (currentPage - 1) * itemsPerPage &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+      }
     }
   };
 
@@ -112,7 +112,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
   // Sort filtered data
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortKey === "totalSales") {
-      return sortOrder === "asc" 
+      return sortOrder === "asc"
         ? (a.totalSales ?? 0) - (b.totalSales ?? 0)
         : (b.totalSales ?? 0) - (a.totalSales ?? 0);
     } else {
@@ -134,7 +134,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-gray-500 dark:text-gray-400"> Show </span>
+          <span className="text-gray-500 dark:text-gray-400"> Afficher </span>
           <div className="relative z-20 bg-transparent">
             <select
               className="w-full py-2 pl-3 pr-8 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none dark:bg-dark-900 h-9 bg-none shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
@@ -170,7 +170,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
               </svg>
             </span>
           </div>
-          <span className="text-gray-500 dark:text-gray-400"> entries </span>
+          <span className="text-gray-500 dark:text-gray-400"> entrées </span>
         </div>
 
         <div className="relative">
@@ -198,7 +198,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
               setSearchTerm(e.target.value);
               setCurrentPage(1); // Reset to first page when search term changes
             }}
-            placeholder="Search..."
+            placeholder="Rechercher..."
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
           />
         </div>
@@ -210,8 +210,8 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
             <TableHeader className="border-t border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {[
-                  { key: "project", label: "Project" },
-                  { key: "totalSales", label: "Total Sales" },
+                  { key: "project", label: "Projet" },
+                  { key: "totalSales", label: "Ventes totales" },
                   // { key: "", label: "" },
                   // { key: "status", label: "Status" },
                 ].map(({ key, label }) => (
@@ -229,18 +229,16 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                       </p>
                       <button className="flex flex-col gap-0.5">
                         <AngleUpIcon
-                          className={`text-gray-300 dark:text-gray-700 ${
-                            sortKey === key && sortOrder === "asc"
+                          className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "asc"
                               ? "text-brand-500"
                               : ""
-                          }`}
+                            }`}
                         />
                         <AngleDownIcon
-                          className={`text-gray-300 dark:text-gray-700 ${
-                            sortKey === key && sortOrder === "desc"
+                          className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "desc"
                               ? "text-brand-500"
                               : ""
-                          }`}
+                            }`}
                         />
                       </button>
                     </div>
@@ -263,7 +261,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                     colSpan={6}
                     className="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
                   >
-                    No data available
+                    Aucune donnée disponible
                   </TableCell>
                 </TableRow>
               )}
@@ -277,13 +275,13 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">
-                      <button 
+                      <button
                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90"
                         onClick={() => { router.push(`/projects/${item.id}`) }}
                       >
                         <FaEye />
                       </button>
-                      <DeleteModal onDelete={() => handleDelete(item.id.toString())} itemId={item.id.toString()} heading="Delete Project" description="Are you sure you want to delete this project?" />
+                      <DeleteModal onDelete={() => handleDelete(item.id.toString())} itemId={item.id.toString()} heading="Supprimer le projet" description="Êtes-vous sûr de vouloir supprimer ce projet ?" />
                       <EditProjectModal ProjectData={item} onRefresh={onRefresh} />
                     </div>
                   </TableCell>
@@ -294,23 +292,23 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
         </div>
       </div>
 
-          {currentData.length > 0 && (
-      <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
-      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-          {/* Left side: Showing entries */}
-          <PaginationWithButton
-            totalPages={totalPages}
-            initialPage={currentPage}
-            onPageChange={handlePageChange}
-          />
-          <div className="pt-3 xl:pt-0">
-            <p className="pt-3 text-sm font-medium text-center text-gray-500 border-t border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-t-0 xl:pt-0 xl:text-left">
-              Showing {startIndex + 1} to {endIndex} of {totalItems} entries
-            </p>
+      {currentData.length > 0 && (
+        <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
+          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
+            {/* Left side: Showing entries */}
+            <PaginationWithButton
+              totalPages={totalPages}
+              initialPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+            <div className="pt-3 xl:pt-0">
+              <p className="pt-3 text-sm font-medium text-center text-gray-500 border-t border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-t-0 xl:pt-0 xl:text-left">
+                Affichage de {startIndex + 1} à {endIndex} sur {totalItems} entrées
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-          )}
+      )}
     </div>
   );
 }

@@ -10,14 +10,15 @@ export default function FormInModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
     // Handle save logic here
-    console.log("Saving changes...");
+    console.log("Enregistrement des modifications...");
     closeModal();
   };
   return (
     <>
       <Button size="sm" onClick={openModal}>
-        Open Modal
+        Ouvrir
       </Button>
+
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
@@ -25,42 +26,42 @@ export default function FormInModal() {
       >
         <form className="">
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Personal Information
+            Informations personnelles
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
-              <Label>First Name</Label>
-              <Input type="text" placeholder="Emirhan" />
+              <Label>Prénom</Label>
+              <Input type="text" placeholder="Prénom" />
             </div>
 
             <div className="col-span-1">
-              <Label>Last Name</Label>
-              <Input type="text" placeholder="Boruch" />
+              <Label>Nom</Label>
+              <Input type="text" placeholder="Nom" />
             </div>
 
             <div className="col-span-1">
-              <Label>Last Name</Label>
-              <Input type="email" placeholder="emirhanboruch55@gmail.com" />
+              <Label>Email</Label>
+              <Input type="email" placeholder="email@exemple.com" />
             </div>
 
             <div className="col-span-1">
-              <Label>Phone</Label>
-              <Input type="text" placeholder="+09 363 398 46" />
+              <Label>Téléphone</Label>
+              <Input type="text" placeholder="+33 6 12 34 56 78" />
             </div>
 
             <div className="col-span-1 sm:col-span-2">
               <Label>Bio</Label>
-              <Input type="text" placeholder="Team Manager" />
+              <Input type="text" placeholder="Responsable d'équipe" />
             </div>
           </div>
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              Fermer
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Enregistrer
             </Button>
           </div>
         </form>

@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <BiBuildings size="1.5em" />,
-    name: "Projects",
+    name: "Projets",
     path: "/projects",
     roles: ["ADMIN", "AGENT"],
   },

@@ -173,7 +173,7 @@ const handleSave = async () => {
         className="max-w-[584px] p-5 lg:p-10"
       >
         <form onSubmit={(e) => e.preventDefault()}>          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Project Information
+            Informations sur le projet
           </h4>
           
           {/* Show API errors */}
@@ -201,7 +201,7 @@ const handleSave = async () => {
           )}
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            <div className="col-span-1">              <Label>Name <span className="text-red-500">*</span></Label>
+            <div className="col-span-1">              <Label>Nom <span className="text-red-500">*</span></Label>
               <Input
                 name="name"
                 type="text"
@@ -216,7 +216,7 @@ const handleSave = async () => {
             </div>
 
             <div className="col-span-1">
-              <Label>Total properties <span className="text-red-500">*</span></Label>
+              <Label> Nombre total de propriétés <span className="text-red-500">*</span></Label>
               <Input
                 name="numberOfApartments"
                 type="number"
@@ -230,7 +230,7 @@ const handleSave = async () => {
               )}
             </div>
 
-            <div className="col-span-1">              <Label>Total surface <span className="text-red-500">*</span></Label>
+            <div className="col-span-1">              <Label>Surface totale  <span className="text-red-500">*</span></Label>
               <Input
                 name="totalSurface"
                 type="number"
@@ -288,10 +288,10 @@ const handleSave = async () => {
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              Fermer
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Enregistrer les modifications
             </Button>
           </div>
         </form>

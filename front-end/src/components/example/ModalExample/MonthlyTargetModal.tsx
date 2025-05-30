@@ -23,36 +23,36 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
   });
 
   const handleSave = async () => {
-    
+
     if (isSubmitting) return;
-    
+
     try {
       setIsSubmitting(true);
-      console.log("Form data:", formData);
-      
+      console.log("Données du formulaire:", formData);
+
       const formDataToSend = new FormData();
       formDataToSend.append("target", formData.target);
       formDataToSend.append("startDate", formData.startDate);
       formDataToSend.append("endDate", formData.endDate);
-      
+
       await addMonthlyTarget(formDataToSend);
-      console.log("Monthly target added successfully");
-      
+      console.log("Objectif mensuel ajouté avec succès");
+
       // Call callback if provided
       if (onTargetAdded) {
         onTargetAdded();
       }
-      
+
       // Reset form and close modal
       setFormData({
         target: "",
         startDate: "",
         endDate: ""
       });
-      
+
       closeModal();
     } catch (error) {
-      console.error("Error adding monthly target:", error);
+      console.error("Erreur lors de l'ajout de l'objectif mensuel:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -65,18 +65,18 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
       [name]: value,
     }));
   }
-  
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent form default submission
   };
-  
+
   return (
     <>
       <DropdownItem
         onClick={openModal}
         className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
       >
-        Edit
+        Modifier
       </DropdownItem>
       <Modal
         isOpen={isOpen}
@@ -85,57 +85,57 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
       >
         <form onSubmit={handleFormSubmit}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Monthly Target
+            Objectif mensuel
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1 sm:col-span-2">
-              <Label>Target in MAD</Label>
-              <Input 
-                name="target" 
-                type="number" 
-                onChange={handleInputChange} 
+              <Label>Objectif en MAD</Label>
+              <Input
+                name="target"
+                type="number"
+                onChange={handleInputChange}
                 defaultValue={formData.target}
-                required 
+                required
               />
             </div>
             <div>
-              <Label>Start Date</Label>
-              <Input 
-                name="startDate" 
-                type="date" 
-                onChange={handleInputChange} 
+              <Label>Date de début</Label>
+              <Input
+                name="startDate"
+                type="date"
+                onChange={handleInputChange}
                 defaultValue={formData.startDate}
-                required 
+                required
               />
             </div>
             <div>
-              <Label>End Date</Label>
-              <Input 
-                name="endDate" 
-                type="date" 
-                onChange={handleInputChange} 
+              <Label>Date de fin</Label>
+              <Input
+                name="endDate"
+                type="date"
+                onChange={handleInputChange}
                 defaultValue={formData.endDate}
-                required 
+                required
               />
             </div>
           </div>
-          
+
 
           <div className="flex items-center justify-end w-full gap-3 mt-6">
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={closeModal}
             >
-              Close
+              Fermer
             </Button>
-            <Button 
-              size="sm" 
-              onClick={handleSave} 
+            <Button
+              size="sm"
+              onClick={handleSave}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Saving..." : "Save"}
+              {isSubmitting ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </div>
         </form>

@@ -22,9 +22,8 @@ export default function DropdownWithDivider() {
       >
         Options
         <svg
-          className={`duration-200 ease-in-out stroke-current ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`duration-200 ease-in-out stroke-current ${isOpen ? "rotate-180" : ""
+            }`}
           width="20"
           height="20"
           viewBox="0 0 20 20"
@@ -52,7 +51,7 @@ export default function DropdownWithDivider() {
               onItemClick={closeDropdown}
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
-              Edit
+              Modifier
             </DropdownItem>
           </li>
           <li>
@@ -60,26 +59,7 @@ export default function DropdownWithDivider() {
               onItemClick={closeDropdown}
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
-              Duplicate
-            </DropdownItem>
-          </li>
-          <li>
-            <span className="my-1.5 block h-px w-full bg-gray-200 dark:bg-[#353C49]"></span>
-          </li>
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
-            >
-              Archive
-            </DropdownItem>
-          </li>
-          <li>
-            <DropdownItem
-              onItemClick={closeDropdown}
-              className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
-            >
-              Move
+              Dupliquer
             </DropdownItem>
           </li>
           <li>
@@ -90,7 +70,26 @@ export default function DropdownWithDivider() {
               onItemClick={closeDropdown}
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
-              Delete
+              Archiver
+            </DropdownItem>
+          </li>
+          <li>
+            <DropdownItem
+              onItemClick={closeDropdown}
+              className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
+            >
+              Déplacer
+            </DropdownItem>
+          </li>
+          <li>
+            <span className="my-1.5 block h-px w-full bg-gray-200 dark:bg-[#353C49]"></span>
+          </li>
+          <li>
+            <DropdownItem
+              onItemClick={closeDropdown}
+              className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
+            >
+              Supprimer
             </DropdownItem>
           </li>
         </ul>
