@@ -366,8 +366,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       ...prev,
       [name]: value,
     }))
-
-    // Clear errors when the user starts typing
     setErrors((prev) => ({
       ...prev,
       [name]: "",
