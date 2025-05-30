@@ -225,3 +225,4 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
     </>
   );
 }
+

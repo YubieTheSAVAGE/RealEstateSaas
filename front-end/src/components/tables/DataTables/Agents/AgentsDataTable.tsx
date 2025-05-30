@@ -58,7 +58,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
         onClientEdit(Number(id)); // Convert string id to number since onClientEdit expects a number
       }
     } else {
-      console.error("Failed to delete agent with id:", id);
+      console.error("Erreur lors de la suppression de l'agent avec l'ID:", id);
     }
   }
 
@@ -104,11 +104,21 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const currentData = data.slice(startIndex, endIndex);
 
+  // Table header translations
+  const tableHeaders = [
+    { key: "name", label: "Agent" },
+    { key: "email", label: "Email" },
+    { key: "phone", label: "Téléphone" },
+    { key: "status", label: "Statut" },
+    { key: "totalSales", label: "Ventes totales" },
+    { key: "monthlySales", label: "Ventes mensuelles" },
+  ];
+
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-gray-500 dark:text-gray-400"> Show </span>
+          <span className="text-gray-500 dark:text-gray-400"> Afficher </span>
           <div className="relative z-20 bg-transparent">
             <select
               className="w-full py-2 pl-3 pr-8 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none dark:bg-dark-900 h-9 bg-none shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
@@ -144,7 +154,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
               </svg>
             </span>
           </div>
-          <span className="text-gray-500 dark:text-gray-400"> entries </span>
+          <span className="text-gray-500 dark:text-gray-400"> entrées </span>
         </div>
 
         <div className="relative">
@@ -169,7 +179,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search..."
+            placeholder="Rechercher..."
             className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pl-11 pr-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[300px]"
           />
         </div>
@@ -180,14 +190,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
           <Table>
             <TableHeader className="border-t border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                {[
-                  { key: "name", label: "Agent" },
-                  { key: "email", label: "Email" },
-                  { key: "phone", label: "Phone" },
-                  { key: "status", label: "Status" },
-                  { key: "totalSales", label: "Total Sales" },
-                  { key: "monthlySales", label: "Monthly Sales" },
-                ].map(({ key, label }) => (
+                {tableHeaders.map(({ key, label }) => (
                   <TableCell
                     key={key}
                     isHeader
@@ -202,18 +205,16 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
                       </p>
                       <button className="flex flex-col gap-0.5">
                         <AngleUpIcon
-                          className={`text-gray-300 dark:text-gray-700 ${
-                            sortKey === key && sortOrder === "asc"
+                          className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "asc"
                               ? "text-brand-500"
                               : ""
-                          }`}
+                            }`}
                         />
                         <AngleDownIcon
-                          className={`text-gray-300 dark:text-gray-700 ${
-                            sortKey === key && sortOrder === "desc"
+                          className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "desc"
                               ? "text-brand-500"
                               : ""
-                          }`}
+                            }`}
                         />
                       </button>
                     </div>
@@ -236,7 +237,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
                     colSpan={7}
                     className="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
                   >
-                    No data available
+                    Aucune donnée disponible
                   </TableCell>
                 </TableRow>
               )}
@@ -266,7 +267,12 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white/90 cursor-pointer"
                         onClick={() => router.push(`/agents/${item.id.toString()}`)}
                       />
-                      <DeleteModal itemId={item.id.toString()} heading="Delete Agent" description={`Are you sure you want to delete agent ${item.name}?`} onDelete={() => {handleDelete(item.id.toString())}} />
+                      <DeleteModal
+                        itemId={item.id.toString()}
+                        heading="Supprimer l'agent"
+                        description={`Êtes-vous sûr de vouloir supprimer l'agent ${item.name} ?`}
+                        onDelete={() => { handleDelete(item.id.toString()) }}
+                      />
                       <EditAgentModal AgentDetails={item} onAgentEdited={() => onClientEdit(item.id)} />
                     </div>
                   </TableCell>
@@ -286,7 +292,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
             />
             <div className="pt-3 xl:pt-0">
               <p className="pt-3 text-sm font-medium text-center text-gray-500 border-t border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-t-0 xl:pt-0 xl:text-left">
-                Showing {startIndex + 1} to {endIndex} of {totalItems} entries
+                Affichage de {startIndex + 1} à {endIndex} sur {totalItems} entrées
               </p>
             </div>
           </div>

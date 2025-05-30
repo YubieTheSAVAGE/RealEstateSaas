@@ -18,7 +18,7 @@ interface TaskHeaderProps {
 }
 
 export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, tasks, onTaskAdded }: TaskHeaderProps) {
-  
+
   const { isOpen, openModal, closeModal } = useModal();
   const [formData, setFormData] = useState({
     title: "",
@@ -26,37 +26,37 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
     status: "TODO",
     description: "",
   });
-  
+
   // State for validation errors
   const [errors, setErrors] = useState({
     title: "",
     dueDate: "",
     description: "",
   });
-  
+
   // State for form submission status
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const taskGroups = [
-    { 
-      name: "Toutes les tâches", 
-      key: "All", 
-      count: tasks.length 
+    {
+      name: "Toutes les tâches",
+      key: "All",
+      count: tasks.length
     },
-    { 
-      name: "à faire", 
-      key: "TODO", 
-      count: tasks.filter((task: Task) => task.status === "TODO").length 
+    {
+      name: "À faire",
+      key: "TODO",
+      count: tasks.filter((task: Task) => task.status === "TODO").length
     },
-    { 
-      name: "En cours", 
-      key: "IN_PROGRESS", 
-      count: tasks.filter((task: Task) => task.status === "IN_PROGRESS").length 
+    {
+      name: "En cours",
+      key: "IN_PROGRESS",
+      count: tasks.filter((task: Task) => task.status === "IN_PROGRESS").length
     },
-    { 
-      name: "Terminé", 
-      key: "COMPLETED", 
-      count: tasks.filter((task: Task) => task.status === "COMPLETED").length 
+    {
+      name: "Terminé",
+      key: "COMPLETED",
+      count: tasks.filter((task: Task) => task.status === "COMPLETED").length
     },
   ];
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +65,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({
@@ -87,7 +87,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
       ...prev,
       description: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors.description) {
       setErrors((prev) => ({
@@ -99,25 +99,25 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate form before submission
     if (!validateForm()) {
       return; // Stop submission if validation fails
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const formDataToSend = new FormData();
       // Handle form submission logic here
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null) {
-            formDataToSend.append(key, String(value))
+          formDataToSend.append(key, String(value))
         }
       });
-      
+
       await addTask(formDataToSend);
-      
+
       // Reset form data
       setFormData({
         title: "",
@@ -125,14 +125,14 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
         status: "TODO",
         description: "",
       });
-      
+
       closeModal();
-      
+
       if (onTaskAdded) {
         onTaskAdded(); // Call the callback if provided
       }
     } catch (error) {
-      console.error("erreur lors de l’ajout de la tâche : ", error);
+      console.error("Erreur lors de l’ajout de la tâche : ", error);
       // You could add error handling here
     } finally {
       setIsSubmitting(false);
@@ -164,7 +164,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
     setErrors(newErrors);
     return isValid;
   };
-  
+
   return (
     <>
       <div className="flex flex-col items-center px-4 py-5 xl:px-6 xl:py-6">
@@ -174,19 +174,17 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
               <button
                 key={group.key}
                 onClick={() => setSelectedTaskGroup(group.key)}
-                className={`inline-flex items-center xl:justify-start justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md group hover:text-gray-900 dark:hover:text-white ${
-                  selectedTaskGroup === group.key
+                className={`inline-flex items-center xl:justify-start justify-center gap-2 px-4 py-2 text-sm font-medium rounded-md group hover:text-gray-900 dark:hover:text-white ${selectedTaskGroup === group.key
                     ? "text-gray-900 dark:text-white bg-white dark:bg-gray-800"
                     : "text-gray-500 dark:text-gray-400"
-                }`}
+                  }`}
               >
                 {group.name}
                 <span
-                  className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium leading-normal group-hover:bg-brand-50 group-hover:text-brand-500 dark:group-hover:bg-brand-500/15 dark:group-hover:text-brand-400 ${
-                    selectedTaskGroup === group.key
+                  className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium leading-normal group-hover:bg-brand-50 group-hover:text-brand-500 dark:group-hover:bg-brand-500/15 dark:group-hover:text-brand-400 ${selectedTaskGroup === group.key
                       ? "text-brand-500 dark:text-brand-400 bg-brand-50 dark:bg-brand-500/15"
                       : "bg-white dark:bg-white/[0.03]"
-                  }`}
+                    }`}
                 >
                   {group.count}
                 </span>
@@ -194,6 +192,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-3 xl:justify-end">
+            {/* Button texts */}
             <Button variant="outline" size="sm">
               <svg
                 width="20"
@@ -209,10 +208,10 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                   fill="currentColor"
                 />
               </svg>
-              Filter & Short
+              Filtrer et trier
             </Button>
             <Button size="sm" onClick={openModal}>
-              Add New Task
+              Ajouter une tâche
               <svg
                 className="fill-current"
                 width="20"
@@ -238,6 +237,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
         className="max-w-[700px] p-5 lg:p-10 m-4"
       >
         <div className="px-2">
+          {/* Modal content */}
           <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
             Ajouter une nouvelle tâche
           </h4>
@@ -250,23 +250,24 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
           <div className="custom-scrollbar h-[350px] sm:h-[450px] overflow-y-auto px-2">
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="sm:col-span-2">
+                {/* Form labels */}
                 <Label>Titre de la tâche <span className="text-red-500">*</span></Label>
-                <Input 
-                  type="text" 
-                  onChange={handleChange} 
-                  name="title" 
+                <Input
+                  type="text"
+                  onChange={handleChange}
+                  name="title"
                   error={!!errors.title}
                   hint={errors.title || ""}
                 />
               </div>
 
               <div>
-                <Label>Date d’échéance <span className="text-red-500">*</span></Label>
+                <Label>Date d&apos;échéance <span className="text-red-500">*</span></Label>
                 <div className="relative">
-                  <Input 
-                    type="datetime-local" 
-                    onChange={handleChange} 
-                    name="dueDate" 
+                  <Input
+                    type="datetime-local"
+                    onChange={handleChange}
+                    name="dueDate"
                     error={!!errors.dueDate}
                     hint={errors.dueDate || ""}
                   />
@@ -293,11 +294,12 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                 <Label>Statut</Label>
                 <div className="relative z-20 bg-transparent dark:bg-form-input">
                   <select onChange={handleStatusChange} name="status" className="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800">
+                    {/* Status options */}
                     <option
                       value="TODO"
                       className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                     >
-                      a faire
+                      À faire
                     </option>
                     <option
                       value="IN_PROGRESS"
@@ -338,7 +340,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                 <TextArea
                   name="description"
                   value={formData.description}
-                  placeholder="Type your message here..."
+                  placeholder="Tapez votre message ici..."
                   rows={6}
                   onChange={handleTextAreaChange}
                   error={!!errors.description}
@@ -361,7 +363,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                 disabled={isSubmitting}
                 className="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Anuler
+                Annuler
               </button>
               <button
                 onClick={handleSubmit}
@@ -369,7 +371,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                 disabled={isSubmitting}
                 className="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Creating..." : "Create Task"}
+                {isSubmitting ? "Création..." : "Créer la tâche"}
               </button>
             </div>
           </div>

@@ -13,21 +13,21 @@ interface KanbanBoardProps {
   onTasksUpdated?: (updatedTasks: Task[]) => void;
 }
 
-const KanbanBoard: React.FC<KanbanBoardProps> = ({ 
-  selectedTaskGroup, 
+const KanbanBoard: React.FC<KanbanBoardProps> = ({
+  selectedTaskGroup,
   tasks,
-  onTasksUpdated 
+  onTasksUpdated
 }) => {
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  
+
   useEffect(() => {
-      setFilteredTasks(tasks);
+    setFilteredTasks(tasks);
   }, [tasks]);
-  
+
   const tasksToDisplay = selectedTaskGroup === "All"
     ? filteredTasks
     : filteredTasks.filter(task => task.status === selectedTaskGroup);
-  
+
   // Move tasks within the board (drag and drop)
   const moveTask = useCallback((dragIndex: number, hoverIndex: number) => {
     setFilteredTasks((prevTasks) => {
@@ -35,12 +35,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
       const draggedTask = newTasks[dragIndex];
       newTasks.splice(dragIndex, 1);
       newTasks.splice(hoverIndex, 0, draggedTask);
-      
+
       // Notify parent about the update
       if (onTasksUpdated) {
         onTasksUpdated(newTasks);
       }
-      
+
       return newTasks;
     });
   }, [onTasksUpdated]);
@@ -49,40 +49,40 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   const changeTaskStatus = useCallback((taskId: string, newStatus: string) => {
     // Call API to update task status
     changeTaskStatuss(taskId, newStatus);
-    
+
     setFilteredTasks((prevTasks) => {
       const updatedTasks = prevTasks.map((task) =>
         task.id === taskId ? { ...task, status: newStatus } : task
       );
-      
+
       // Notify parent about the update
       if (onTasksUpdated) {
         onTasksUpdated(updatedTasks);
       }
-      
+
       return updatedTasks;
     });
   }, [onTasksUpdated]);
-  
+
   // Handle task updates from the modal
   const handleTaskUpdate = useCallback((updatedTask: Task) => {
     setFilteredTasks((prevTasks) => {
       const updatedTasks = prevTasks.map((task) =>
         task.id === updatedTask.id ? updatedTask : task
       );
-      
+
       // Notify parent about the update
       if (onTasksUpdated) {
         onTasksUpdated(updatedTasks);
       }
-      
+
       return updatedTasks;
     });
-  }, [onTasksUpdated]);  return (
+  }, [onTasksUpdated]); return (
     <DndProvider backend={HTML5Backend}>
       <div className="grid grid-cols-1 border-t border-gray-200 divide-x divide-gray-200 dark:divide-white/[0.05] mt-7 dark:border-white/[0.05] sm:mt-0 sm:grid-cols-2 xl:grid-cols-3">
         <Column
-          title="To Do"
+          title="À faire"
           tasks={tasksToDisplay.filter((task) => task.status === "TODO")}
           status="TODO"
           moveTask={moveTask}
@@ -90,7 +90,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           onTaskUpdated={handleTaskUpdate}
         />
         <Column
-          title="In Progress"
+          title="En cours"
           tasks={tasksToDisplay.filter((task) => task.status === "IN_PROGRESS")}
           status="IN_PROGRESS"
           moveTask={moveTask}
@@ -98,7 +98,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
           onTaskUpdated={handleTaskUpdate}
         />
         <Column
-          title="Completed"
+          title="Terminé"
           tasks={tasksToDisplay.filter((task) => task.status === "COMPLETED")}
           status="COMPLETED"
           moveTask={moveTask}

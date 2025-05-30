@@ -21,14 +21,10 @@ export default function InterestedClientTable({ ClientDetails }: { ClientDetails
             Clients intéressés
           </h3>
         </div>
-
-        {/* <div className="flex items-center gap-3">
-          <PropertiesListDropdownFilter />
-        </div> */}
       </div>
       <div className="max-w-full overflow-x-auto">
         <Table>
-          {/* Table Header */}
+          {/* En-tête du tableau */}
           <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
             <TableRow>
               <TableCell
@@ -47,13 +43,13 @@ export default function InterestedClientTable({ ClientDetails }: { ClientDetails
                 isHeader
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
-                Phone Number
+                Téléphone
               </TableCell>
               <TableCell
                 isHeader
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
-                Status
+                Statut
               </TableCell>
               <TableCell
                 isHeader
@@ -64,7 +60,7 @@ export default function InterestedClientTable({ ClientDetails }: { ClientDetails
             </TableRow>
           </TableHeader>
 
-          {/* Table Body */}
+          {/* Corps du tableau */}
           <TableBody>
             {ClientDetails.map((client) => (
               <TableRow key={client.id}>
@@ -79,8 +75,8 @@ export default function InterestedClientTable({ ClientDetails }: { ClientDetails
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   <Badge size="sm" color={client.status === "CLIENT" ? "primary" : "info"} variant="light">
-                      {client.status.toLocaleLowerCase() === "client" ? "Client" : "Lead"}
-                    </Badge>
+                    {client.status.toLocaleLowerCase() === "client" ? "Client" : "Prospect"}
+                  </Badge>
                 </TableCell>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                   <FaEye
