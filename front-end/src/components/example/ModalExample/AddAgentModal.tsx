@@ -126,7 +126,7 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Informations de l'agent
+            Informations de l&apos;agent
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -201,7 +201,7 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
               Annuler
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Ajouter l'agent
+              Ajouter l&apos;agent
             </Button>
           </div>
         </form>

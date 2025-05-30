@@ -138,7 +138,7 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
       >
         <form onSubmit={(e) => e.preventDefault()}>
           <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Informations de l'agent
+            Informations de l&apos;agent
           </h4>
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -217,7 +217,7 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
               Annuler
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Modifier l'agent
+              Modifier l&apos;agent
             </Button>
           </div>
         </form>
