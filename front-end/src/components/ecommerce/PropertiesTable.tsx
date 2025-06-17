@@ -81,7 +81,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Available Properties
+            Propriétés disponibles
           </h3>
         </div>
         <div className="flex items-center gap-3">
@@ -93,10 +93,10 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
         <Table>
           <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
             <TableRow>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Property</TableCell>
+              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Propriété</TableCell>
               <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Type</TableCell>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Price</TableCell>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Status</TableCell>
+              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Prix</TableCell>
+              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Statut</TableCell>
               <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Actions</TableCell>
             </TableRow>
           </TableHeader>
@@ -155,10 +155,10 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
         <div className="w-full border-t border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between py-4">
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Page {currentPage} of {totalPages}
+              Page {currentPage} de {totalPages}
             </span>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Showing {currentData.length} of {filteredProperties.length} properties
+              Affichage de {currentData.length} sur {filteredProperties.length} propriété
             </span>
           </div>
             <div className="flex items-center justify-center py-0">

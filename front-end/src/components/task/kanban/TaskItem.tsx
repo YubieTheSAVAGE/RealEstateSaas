@@ -189,9 +189,9 @@ const TaskItem: React.FC<TaskItemProps> = ({
                   : "bg-success-50 text-success-700 dark:bg-success-500/15 dark:text-success-400"
               }`}
             >
-              {currentTask.status === "TODO" ? "To Do" : 
-               currentTask.status === "IN_PROGRESS" ? "In Progress" : 
-               "Completed"}
+              {currentTask.status === "TODO" ? "A faire" : 
+               currentTask.status === "IN_PROGRESS" ? "En cours" : 
+               "terminé"}
             </span>
           </div>
         </div>

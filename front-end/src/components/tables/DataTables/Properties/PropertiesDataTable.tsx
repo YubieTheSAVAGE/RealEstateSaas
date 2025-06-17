@@ -421,7 +421,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
       {currentData.length > 0 && (
         <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-            {/* Left side: Showing entries */}
+            {/* Left side: Showing Entrées*/}
 
             <PaginationWithButton
               totalPages={totalPages}

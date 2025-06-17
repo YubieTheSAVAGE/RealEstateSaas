@@ -66,8 +66,8 @@ export default function AgentCard({ agent , onEdit }: { agent: Agent , onEdit: (
           </div>
         <div>
           <p className="text-md font-bold text-gray-500 dark:text-gray-400">Email: <span className="ml-2 font-normal">{agent.email}</span></p>
-          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Phone: <span className="ml-2 font-normal">{agent.phoneNumber}</span></p>
-          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Role: <span className="ml-2 font-normal">{agent.role.toLocaleLowerCase()}</span></p>
+          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Téléphone : <span className="ml-2 font-normal">{agent.phoneNumber}</span></p>
+          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Rôle : <span className="ml-2 font-normal">{agent.role.toLocaleLowerCase()}</span></p>
         </div>
       </div>
     </div>

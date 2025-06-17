@@ -149,10 +149,10 @@ export default function TaskDetailModal({
     >
       <div className="px-2">
         <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-          Edit Task
+          Modifier la tâche
         </h4>
         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-          Update task details or add comments
+          Mettre à jour les détails de la tâche ou ajouter des commentaires
         </p>
       </div>
 
@@ -199,7 +199,7 @@ export default function TaskDetailModal({
 
           {/* Status */}
           <div>
-            <Label>Status</Label>
+            <Label>Statut</Label>
             <div className="relative z-20 bg-transparent dark:bg-form-input">              <select
                 name="status" 
                 defaultValue={formData.status}
@@ -210,19 +210,19 @@ export default function TaskDetailModal({
                   value="TODO"
                   className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                 >
-                  To Do
+                  À faire
                 </option>
                 <option
                   value="IN_PROGRESS"
                   className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                 >
-                  In Progress
+                  En cours
                 </option>
                 <option
                   value="COMPLETED"
                   className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
                 >
-                  Completed
+                  Terminé
                 </option>
               </select>
               <span className="absolute z-30 text-gray-500 -translate-y-1/2 right-4 top-1/2 dark:text-gray-400">
@@ -278,7 +278,7 @@ export default function TaskDetailModal({
               )}
             </div>
             
-            <Label>Add a Comment</Label>
+            <Label>Ajouter un commentaire</Label>
             <div className="flex space-x-2">
               <div className="flex-1">
                 <TextArea
@@ -295,7 +295,7 @@ export default function TaskDetailModal({
                 className="h-fit mt-auto"
                 size="sm"
               >
-                Add
+                Ajouter
               </Button>
             </div>
           </div>
@@ -318,7 +318,7 @@ export default function TaskDetailModal({
             type="button"
             className="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto"
           >
-            Cancel
+            Annuler
           </button>
           <button
             onClick={handleSubmit}

@@ -265,7 +265,7 @@ const handleSave = async () => {
               />
               {formData.image && (
                 <p className="mt-1 text-xs text-green-600">
-                  File selected: {formData.image.name}
+                  Fichier sélectionné : {formData.image.name}
                 </p>
               )}
               {errors.image && (
@@ -279,7 +279,7 @@ const handleSave = async () => {
               <TextArea
                 value={formData.notes}
                 name="notes"
-                placeholder="Type your notes here..."
+                placeholder="Saisissez votre notes here..."
                 rows={6}
                 onChange={handleTextareaChange}
               />

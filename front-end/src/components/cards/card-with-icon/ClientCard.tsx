@@ -53,8 +53,8 @@ export default function ClientCard({ client, onRefresh }: { client: Client, onRe
               <EditClientModal clientData={client} details={true} onClientUpdated={onRefresh} />
               <DeleteModal
                 itemId={String(client.id)}
-                heading="Delete Client"
-                description="Are you sure you want to delete this client? This action cannot be undone."
+                heading="Supprimer le client"
+                description="Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible."
                 onDelete={() => handleDelete(String(client.id))}
                 details={true}
               />
@@ -62,7 +62,7 @@ export default function ClientCard({ client, onRefresh }: { client: Client, onRe
           </div>
         <div>
           <p className="text-md font-bold text-gray-500 dark:text-gray-400">Email: <span className="ml-2 font-normal">{client.email}</span></p>
-          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Phone: <span className="ml-2 font-normal">{client.phoneNumber}</span></p>
+          <p className="text-md font-bold text-gray-500 dark:text-gray-400">Téléphone : <span className="ml-2 font-normal">{client.phoneNumber}</span></p>
           <p className="text-md font-bold text-gray-500 dark:text-gray-400">Provenance: <span className="ml-2 font-normal">{client.provenance}</span></p>
         </div>
       </div>

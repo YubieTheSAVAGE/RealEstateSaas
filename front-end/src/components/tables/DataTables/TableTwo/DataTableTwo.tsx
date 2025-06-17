@@ -198,7 +198,7 @@ export default function DataTableTwo() {
               </svg>
             </span>
           </div>
-          <span className="text-gray-500 dark:text-gray-400"> entries </span>
+          <span className="text-gray-500 dark:text-gray-400"> Entrées</span>
         </div>
 
         <div className="relative">
@@ -324,7 +324,7 @@ export default function DataTableTwo() {
 
       <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-          {/* Left side: Showing entries */}
+          {/* Left side: Showing Entrées*/}
 
           <PaginationWithButton
             totalPages={totalPages}

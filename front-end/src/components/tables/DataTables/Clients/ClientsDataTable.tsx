@@ -124,7 +124,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-gray-500 dark:text-gray-400"> Show </span>
+          <span className="text-gray-500 dark:text-gray-400"> Afficher </span>
           <div className="relative z-20 bg-transparent">
             <select
               className="w-full py-2 pl-3 pr-8 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none dark:bg-dark-900 h-9 bg-none shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
@@ -160,7 +160,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
               </svg>
             </span>
           </div>
-          <span className="text-gray-500 dark:text-gray-400"> entries </span>
+          <span className="text-gray-500 dark:text-gray-400"> Entrées</span>
         </div>
 
         <div className="relative">
@@ -281,7 +281,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
                       
                       <DeleteModal  
                         itemId={item.id.toString()} 
-                        heading={"Delete client"} 
+                        heading={"Supprimer le client"} 
                         description={`Are you sure you want to delete ${item.name}? this action is irreversible.`} 
                         onDelete={() => handleDelete(item.id.toString())}
                       />
@@ -301,7 +301,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
       {currentData.length > 0 && (
         <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
           <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-            {/* Left side: Showing entries */}
+            {/* Left side: Showing Entrées*/}
 
             <PaginationWithButton
               totalPages={totalPages}

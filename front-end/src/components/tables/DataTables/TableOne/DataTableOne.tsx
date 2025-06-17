@@ -231,7 +231,7 @@ export default function DataTableOne() {
               </svg>
             </span>
           </div>
-          <span className="text-gray-500 dark:text-gray-400"> entries </span>
+          <span className="text-gray-500 dark:text-gray-400"> Entrées</span>
         </div>
 
         <div className="relative">
@@ -353,7 +353,7 @@ export default function DataTableOne() {
 
       <div className="border border-t-0 rounded-b-xl border-gray-100 py-4 pl-[18px] pr-4 dark:border-white/[0.05]">
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between">
-          {/* Left side: Showing entries */}
+          {/* Left side: Showing Entrées*/}
           <div className="pb-3 xl:pb-0">
             <p className="pb-3 text-sm font-medium text-center text-gray-500 border-b border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-b-0 xl:pb-0 xl:text-left">
               Affichage de {startIndex + 1} à {endIndex} sur {totalItems} entrée

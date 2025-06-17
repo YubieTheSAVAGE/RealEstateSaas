@@ -184,7 +184,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            {selectedView === 'count' ? 'Monthly Sales (Units)' : 'Monthly Sales (Value)'}
+            {selectedView === 'count' ? 'Ventes mensuelles (unités)' : 'Monthly Sales (Value)'}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {selectedView === 'count' 
@@ -211,7 +211,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
               onItemClick={toggleView}
               className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
-              {selectedView === 'count' ? 'Show Value (MAD)' : 'Show Count'}
+              {selectedView === 'count' ? 'Afficher la valeur (MAD)' : 'Show Count'}
             </DropdownItem>
             <DropdownItem
               onItemClick={closeDropdown}
