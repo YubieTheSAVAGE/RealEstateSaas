@@ -91,6 +91,14 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   const [searchQuery, setSearchQuery] = useState("")
   const [filteredApartments, setFilteredApartments] = useState<{ value: string; text: string; selected: boolean }[]>([])
 
+  useEffect(() => {
+    // initalize tempselectedApartments with clientData if available
+    if (clientData && clientData.interestedApartments) {
+      console.log("Client data:", clientData)
+      setTempSelectedApartments(clientData.interestedApartments.map((apt) => String(apt.id)))
+    }
+  }, [clientData])
+  console.log("Temp selected apartments:", tempSelectedApartments)
 
   useEffect(() => {
     console.log("Selected apartments:", selectedApartments)
@@ -494,7 +502,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
               </h5>
               <div className="flex flex-col gap-4 p-4 border rounded-lg">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="col-span-1">
+                  <div className="col-span-2">
                     <Label>Projet</Label>
                     <Select
                       options={projects}
@@ -505,7 +513,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
                     />
                   </div>
                   {formData.projectId && (
-                    <div className="col-span-1">
+                    <div className="col-span-2">
                       <Label>
                         Rechercher des biens <span className="text-red-500">*</span>
                       </Label>
