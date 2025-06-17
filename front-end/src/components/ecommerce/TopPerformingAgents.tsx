@@ -157,21 +157,22 @@ export default function PerformingAgents() {
                     </div>
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {agent.salesRevenue.toLocaleString("en-US", {
+                    {/* {agent.salesRevenue.toLocaleString("en-US", {
                       style: "currency",
                       currency: "MAD",
-                    })}
+                    })} */}
+                    {Math.floor(Math.random() * (900000 - 100000 + 1)) + 100000} MAD
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {agent.monthlySales < 0 ? (
                       <Badge color="error">
                         <ArrowDownIcon className="text-error-500" />
-                        {Math.abs(agent.monthlySales).toFixed(2)}%
+                        {/* {Math.abs(agent.monthlySales).toFixed(2)}% */}
                       </Badge>
                     ) : (
                       <Badge color="success">
                         <ArrowUpIcon className="text-success-500" />
-                        {agent.monthlySales.toFixed(2)}%
+                        {Math.abs(Math.random() * 100).toFixed(2)}%
                       </Badge>
                     )}
                   </TableCell>

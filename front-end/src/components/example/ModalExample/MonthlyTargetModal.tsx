@@ -8,20 +8,37 @@ import { useModal } from "@/hooks/useModal";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import addMonthlyTarget from "./addMonthlyTarget";
 
+
+interface MonthlyTargetData {
+  id: number;
+  target: number;
+  startDate: string;
+  endDate: string;
+}
+
 interface MonthlyTargetModalProps {
   closeDropdown: () => void;
   onTargetAdded?: () => void; // Optional callback for data refresh
+  targetData?: MonthlyTargetData;
 }
 
-export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModalProps) {
+export default function MonthlyTargetModal({ onTargetAdded, targetData  }: MonthlyTargetModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    target: "",
-    startDate: "",
-    endDate: "",
-  });
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "";
+    // Format to yyyy-mm-dd
+    return date.toISOString().slice(0, 10);
+  };
 
+  const [formData, setFormData] = useState({
+    target: targetData?.target || "",
+    startDate: formatDate(targetData?.startDate),
+    endDate: formatDate(targetData?.endDate),
+  });
+  
   const handleSave = async () => {
 
     if (isSubmitting) return;
@@ -31,7 +48,7 @@ export default function MonthlyTargetModal({ onTargetAdded }: MonthlyTargetModal
       console.log("Données du formulaire:", formData);
 
       const formDataToSend = new FormData();
-      formDataToSend.append("target", formData.target);
+      formDataToSend.append("target", String(formData.target));
       formDataToSend.append("startDate", formData.startDate);
       formDataToSend.append("endDate", formData.endDate);
 

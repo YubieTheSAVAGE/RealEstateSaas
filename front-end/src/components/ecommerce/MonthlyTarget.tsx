@@ -283,6 +283,7 @@ export default function MonthlyTarget() {
                 <MonthlyTargetModal
                   closeDropdown={closeDropdown}
                   onTargetAdded={handleTargetAdded}
+                  targetData={targetData ?? undefined}
                 />
               </Dropdown>
             </div>
