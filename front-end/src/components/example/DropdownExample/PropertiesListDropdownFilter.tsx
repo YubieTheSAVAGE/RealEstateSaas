@@ -122,7 +122,7 @@ export default function PropertiesListDropdownFilter({
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
               <Checkbox 
-                label="Available"
+                label="Disponible"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
                 checked={filters.available}
                 onChange={() => handleCheckboxChange('available')}
@@ -134,7 +134,7 @@ export default function PropertiesListDropdownFilter({
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
               <Checkbox
-                label="Reserved"
+                label="Réservé"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
                 checked={filters.reserved}
                 onChange={() => handleCheckboxChange('reserved')}
@@ -146,7 +146,7 @@ export default function PropertiesListDropdownFilter({
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
               <Checkbox
-                label="Sold"
+                label="Vendu"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
                 checked={filters.sold}
                 onChange={() => handleCheckboxChange('sold')}
@@ -161,7 +161,7 @@ export default function PropertiesListDropdownFilter({
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
               <Checkbox
-                label="Apartment"
+                label="Appartement"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
                 checked={filters.apartment}
                 onChange={() => handleCheckboxChange('apartment')}
@@ -197,7 +197,7 @@ export default function PropertiesListDropdownFilter({
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
               <Checkbox
-                label="Store"
+                label="Magasin"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
                 checked={filters.store}
                 onChange={() => handleCheckboxChange('store')}
