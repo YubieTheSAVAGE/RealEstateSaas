@@ -129,7 +129,7 @@ export default function RecentOrderAnalytics() {
               Filter
             </Button>
             <Button size="sm" variant="outline">
-              See all
+              Voir tout
             </Button>
           </div>
         </div>

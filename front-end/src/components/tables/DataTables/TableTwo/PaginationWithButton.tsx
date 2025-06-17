@@ -71,7 +71,7 @@ export default function PaginationWithButton({
         disabled={currentPage === 1}
         className="flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 sm:p-2.5 text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Previous
+        Précédent
       </button>
 
       <ul className="flex items-center gap-1">{renderPageNumbers()}</ul>
@@ -81,7 +81,7 @@ export default function PaginationWithButton({
         disabled={currentPage === totalPages}
         className="flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 sm:p-2.5 text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Next
+        Suivant
       </button>
     </div>
   );

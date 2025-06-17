@@ -262,7 +262,7 @@ export default function MonthlyTarget() {
             </h3>
             <p className="mt-1 font-normal text-gray-500 text-theme-sm dark:text-gray-400">
               {targetData
-                ? `Période de l&apos;objectif : ${new Date(
+                ? `Période de l'objectif : ${new Date(
                   targetData.startDate
                 ).toLocaleDateString()} - ${new Date(
                   targetData.endDate
@@ -322,7 +322,7 @@ export default function MonthlyTarget() {
           })}{" "}
           aujourd&apos;hui
           {revenueData.growthRate > 0
-            ? ", c&apos;est plus élevé que le mois dernier. Continuez votre bon travail !"
+            ? ", c'est plus élevé que le mois dernier. Continuez votre bon travail !"
             : "."}
         </p>
       </div>

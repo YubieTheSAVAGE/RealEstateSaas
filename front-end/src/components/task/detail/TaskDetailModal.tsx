@@ -335,7 +335,7 @@ export default function TaskDetailModal({
                 Saving...
               </>
             ) : (
-              "Save Changes"
+              "Enregistrer les modifications"
             )}
           </button>
         </div>

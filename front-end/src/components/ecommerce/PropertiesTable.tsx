@@ -146,7 +146,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
             ) : (
               <TableRow>
                 <TableCell colSpan={4} className="py-6 text-center text-gray-500 dark:text-gray-400">
-                  No properties match the selected filters
+                  Aucune propriété ne correspond aux filtres sélectionnés
                 </TableCell>
               </TableRow>
             )}

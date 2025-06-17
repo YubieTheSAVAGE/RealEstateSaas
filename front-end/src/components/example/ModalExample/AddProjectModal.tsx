@@ -165,7 +165,7 @@ const handleSave = async () => {
   return (
     <>
       <Button size="sm" onClick={openModal}>
-        Add Project
+        Ajouter un projet
       </Button>
       <Modal
         isOpen={isOpen}

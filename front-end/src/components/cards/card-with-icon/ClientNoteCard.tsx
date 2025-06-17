@@ -14,7 +14,7 @@ export default function ClientNoteCard({ clientNote }: { clientNote: string }) {
           {!clientNote && (
             <div className="text-center mt-16">
               <CardDescription>
-                No notes available
+                Aucune note disponible
               </CardDescription>
             </div>
           )}

@@ -422,7 +422,7 @@ export default function DataTableThree() {
           {/* Left side: Showing entries */}
           <div className="pb-3 xl:pb-0">
             <p className="pb-3 text-sm font-medium text-center text-gray-500 border-b border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-b-0 xl:pb-0 xl:text-left">
-              Showing {startIndex + 1} to {endIndex} of {totalEntries} entries
+              Affichage de {startIndex + 1} à {endIndex} sur {totalEntries} entrée
             </p>
           </div>
           <Pagination

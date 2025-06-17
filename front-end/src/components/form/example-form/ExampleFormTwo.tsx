@@ -153,7 +153,7 @@ export default function ExampleFormTwo() {
             </div>
           </div>
           <div className="flex gap-3">
-            <Button size="sm">Save Changes</Button>
+            <Button size="sm">Enregistrer les modifications</Button>
             <Button size="sm" variant="outline">
               Cancel
             </Button>

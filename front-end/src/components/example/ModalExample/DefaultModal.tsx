@@ -40,10 +40,10 @@ export default function DefaultModal() {
           </p>
           <div className="flex items-center justify-end w-full gap-3 mt-8">
             <Button size="sm" variant="outline" onClick={closeModal}>
-              Close
+              fermer
             </Button>
             <Button size="sm" onClick={handleSave}>
-              Save Changes
+              Enregistrer les modifications
             </Button>
           </div>
         </Modal>

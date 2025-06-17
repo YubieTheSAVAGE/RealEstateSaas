@@ -83,7 +83,7 @@ export default function InterestTable({ ProjectDetails }: { ProjectDetails: Prop
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Interested Properties
+            Propriétés intéressées
           </h3>
         </div>
         <div className="flex items-center gap-3">
@@ -151,7 +151,7 @@ export default function InterestTable({ ProjectDetails }: { ProjectDetails: Prop
             ) : (
               <TableRow>
                 <TableCell colSpan={4} className="py-6 text-center text-gray-500 dark:text-gray-400">
-                  No properties match the selected filters
+                  Aucune propriété ne correspond aux filtres sélectionnés
                 </TableCell>
               </TableRow>
             )}
@@ -160,10 +160,10 @@ export default function InterestTable({ ProjectDetails }: { ProjectDetails: Prop
         <div className="w-full border-t border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between py-4">
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Page {currentPage} of {totalPages}
+              Page {currentPage} de {totalPages}
             </span>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Showing {currentData.length} of {filteredProperties.length} properties
+              Affichage de {currentData.length} sur {filteredProperties.length} propriétés
             </span>
           </div>
             <div className="flex items-center justify-center py-0">

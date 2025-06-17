@@ -178,7 +178,7 @@ export default function UserInfoCard() {
                 Close
               </Button>
               <Button size="sm" onClick={handleSave}>
-                Save Changes
+                Enregistrer les modifications
               </Button>
             </div>
           </form>

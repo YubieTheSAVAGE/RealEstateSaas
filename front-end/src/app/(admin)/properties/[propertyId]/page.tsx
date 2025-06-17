@@ -29,7 +29,7 @@ export default function PropertyPage({ params }: { params: Promise<{ propertyId:
                         className="text-xl font-semibold text-gray-800 dark:text-white/90"
                         x-text="pageName"
                     >
-                        Property Details
+                        Détails de la propriété
                     </h2>
                 <Breadcrumb items={threeLayerItems} variant="withIcon" />
             </div>

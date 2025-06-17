@@ -57,7 +57,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
 
           setClientsData(formattedData);
       } else {
-          console.log("No data available");
+          console.log("Aucune donnée disponible");
           setClientsData([]);
       }
   }, [clients]);
@@ -250,7 +250,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
                     colSpan={5}
                     className="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
                   >
-                    No data available
+                    Aucune donnée disponible
                   </TableCell>
                 </TableRow>
               )}
@@ -310,7 +310,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
             />
             <div className="pt-3 xl:pt-0">
               <p className="pt-3 text-sm font-medium text-center text-gray-500 border-t border-gray-100 dark:border-gray-800 dark:text-gray-400 xl:border-t-0 xl:pt-0 xl:text-left">
-                Showing {startIndex + 1} to {endIndex} of {totalItems} entries
+                Affichage de  {startIndex + 1} à  {endIndex} sur {totalItems} entrée
               </p>
             </div>
           </div>

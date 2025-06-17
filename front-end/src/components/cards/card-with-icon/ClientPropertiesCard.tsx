@@ -11,12 +11,12 @@ export default function ClientPropertiesCard({ ClientProperties }: { ClientPrope
     <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
       <div className="relative">
         <CardTitle>
-          Properties
+          Propriétés
         </CardTitle>
           {!ClientProperties.length && (
             <div className="text-center mt-16">
               <CardDescription>
-                No properties bought by this client
+                Aucune propriété achetée par ce client
               </CardDescription>
             </div>
           )}
