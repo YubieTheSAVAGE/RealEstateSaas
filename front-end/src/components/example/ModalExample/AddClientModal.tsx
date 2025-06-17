@@ -459,7 +459,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                     )}
                   </div>
                   {formData.projectId && (
-                    <div className="col-span-1">
+                    <div className="col-span-2">
                       <Label>Rechercher des biens <span className="text-red-500">*</span></Label>
                       <div className="relative">
                         <div className="relative">
