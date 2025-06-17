@@ -62,6 +62,13 @@ export default function InterestedClientTable({ ClientDetails }: { ClientDetails
 
           {/* Corps du tableau */}
           <TableBody>
+            {ClientDetails.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="py-3 text-gray-500 text-theme-sm dark:text-gray-400 text-center">
+                  Aucun client intéressé trouvé.
+                </TableCell>
+              </TableRow>
+            )}
             {ClientDetails.map((client) => (
               <TableRow key={client.id}>
                 <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">

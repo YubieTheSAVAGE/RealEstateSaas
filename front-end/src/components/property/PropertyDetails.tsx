@@ -47,9 +47,9 @@ export default function PropertyDetails({ propertyId }: PropertyDetailsProps) {
         <div>
             <PropertyCard property={property as Property}  onRefresh={fetchData}/>
             <div className="mt-6">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
+                {/* <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
                     Clients intéressés
-                </h3>
+                </h3> */}
                 <InterestedClientTable ClientDetails={property?.interestedClients || []} />
             </div>
         </div>
