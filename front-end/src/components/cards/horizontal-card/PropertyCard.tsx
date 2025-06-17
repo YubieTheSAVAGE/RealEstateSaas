@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Property } from "@/types/property";
 import { PhotoProvider, PhotoView } from "react-photo-view";
+import 'react-photo-view/dist/react-photo-view.css';
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { CardDescription, CardTitle } from "@/components/ui/card";
@@ -53,8 +54,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
 
   return (
     <div>
-      <div className="flex flex-col gap-5 mb-6 rounded-xl border border-gray-200 bg-white p-4 shadow-lg dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-6 transition-shadow hover:shadow-2xl">
-        <div className="overflow-hidden rounded-lg w-full sm:w-1/2 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-900 sm:h-[320px] h-[220px]">
+      <div className="flex flex-col gap-5 mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-6">
+        <div className="overflow-hidden rounded-lg w-1/2">
           {!property.image ? (
             <div className="flex items-center justify-center h-56 bg-gray-100 dark:bg-gray-800 rounded-lg">
               <span className="text-gray-500 dark:text-gray-400">Aucune image disponible</span>
@@ -118,7 +119,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
           )}
         </div>
         <div className="relative w-full">
-          <div className="absolute right-0 h-fit -top-5">
+          <div className="absolute right-0 h-fit ">
             <button onClick={toggleDropdown} className="dropdown-toggle">
               <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
             </button>
@@ -181,23 +182,28 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
               </div>
               <span className="border-b border-gray-200 dark:border-gray-700"></span>
               <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Statut :</span>
-                <Badge
-                  className="w-fit"
-                  size="sm"
-                  color={
-                    property.status?.toUpperCase() === "AVAILABLE"
-                      ? "success"
-                      : property.status?.toUpperCase() === "RESERVED"
-                        ? "warning"
-                        : "error"
-                  }
-                >
-                  {property.status === "AVAILABLE" ? "Disponible"
-                    : property.status === "RESERVED" ? "Réservé"
-                      : property.status === "SOLD" ? "Vendu"
-                        : "Inconnu"}
-                </Badge>
+                <span className="font-semibold flex">Statut :</span>
+                <span className="flex items-center gap-2">
+                  <Badge
+                    className="w-fit"
+                    size="sm"
+                    color={
+                      property.status?.toUpperCase() === "AVAILABLE"
+                        ? "success"
+                        : property.status?.toUpperCase() === "RESERVED"
+                          ? "warning"
+                          : "error"
+                    }
+                  >
+                    {property.status === "AVAILABLE" ? "Disponible"
+                      : property.status === "RESERVED" ? "Réservé"
+                        : property.status === "SOLD" ? "Vendu"
+                          : "Inconnu"}
+                  </Badge>
+                  {property?.client && property.client.id && property.client.name ? (
+                    <span>pour <span className="hover:text-blue-500 hover:underline font-semibold cursor-pointer" onClick={() => router.push(`/clients/${property.client!.id}`)}> {property.client!.name}</span></span>
+                  ) : null}
+                </span>
               </div>
               {property.notes && (
                 <>
