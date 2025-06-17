@@ -253,7 +253,13 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
                     {item.phoneNumber}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.status}
+                    {item.status === "ACTIVE" ? (
+                      <span className="text-green-500">Actif</span>
+                    ) : item.status === "INACTIVE" ? (
+                      <span className="text-red-500">Inactif</span>
+                    ) : (
+                      <span className="text-yellow-500">Inconnu</span>
+                    )}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.totalSales || 0}

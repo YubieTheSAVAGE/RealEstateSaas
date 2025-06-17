@@ -70,9 +70,9 @@ const Column: React.FC<ColumnProps> = ({
           </span>
         </h3>
         <div className="relative">
-          <button onClick={toggleDropdown} className="dropdown-toggle">
+          {/* <button onClick={toggleDropdown} className="dropdown-toggle">
             <HorizontaLDots className="text-gray-800 hover:text-gray-700 dark:hover:text-gray-300" />
-          </button>
+          </button> */}
           <Dropdown
             isOpen={isOpen}
             onClose={closeDropdown}

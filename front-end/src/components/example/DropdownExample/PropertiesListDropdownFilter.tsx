@@ -102,7 +102,7 @@ export default function PropertiesListDropdownFilter({
             strokeWidth="1.5"
           />
         </svg>
-        Filter
+        Filtrer 
         {Object.values(filters).some(value => value) && (
           <span className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-xs font-medium text-white">
             {Object.values(filters).filter(value => value).length}

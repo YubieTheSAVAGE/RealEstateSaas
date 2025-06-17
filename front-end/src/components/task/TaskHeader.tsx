@@ -193,7 +193,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
           </div>
           <div className="flex flex-wrap items-center gap-3 xl:justify-end">
             {/* Button texts */}
-            <Button variant="outline" size="sm">
+            {/* <Button variant="outline" size="sm">
               <svg
                 width="20"
                 height="20"
@@ -209,7 +209,7 @@ export default function TaskHeader({ selectedTaskGroup, setSelectedTaskGroup, ta
                 />
               </svg>
               Filtrer et trier
-            </Button>
+            </Button> */}
             <Button size="sm" onClick={openModal}>
               Ajouter une tâche
               <svg

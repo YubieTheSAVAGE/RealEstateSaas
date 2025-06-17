@@ -9,6 +9,7 @@ import TextArea from "../../form/input/TextArea";
 import { Task } from "../kanban/types/types";
 import { formatNotificationDate, formatNotificationTime } from "../notifications/formatters";
 import { updateTask as updateTaskAPI, addComment as addCommentAPI, getTaskComments } from './taskDetailActions';
+import { TrashIcon } from "lucide-react";
 
 // Define a Comment type based on the Prisma schema
 interface Comment {
@@ -320,6 +321,16 @@ export default function TaskDetailModal({
           >
             Annuler
           </button>
+            <button
+            onClick={() => {
+              // Handle delete logic here
+              console.log("Delete task logic goes here");
+            }}
+            type="button"
+            className="flex w-full items-center justify-center gap-1 rounded-lg border border-red-500 bg-red-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-600 hover:border-red-600 focus:ring-4 focus:ring-red-100 dark:border-red-500 dark:bg-red-500 dark:focus:ring-red-600/30 sm:w-auto"
+            >
+            <TrashIcon className="w-5 h-5" />
+            </button>
           <button
             onClick={handleSubmit}
             type="button"

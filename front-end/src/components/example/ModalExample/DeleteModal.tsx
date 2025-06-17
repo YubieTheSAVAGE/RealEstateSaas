@@ -36,7 +36,7 @@ export default function DeleteModal( {
           onItemClick={openModal}
           className="text-gray-500 hover:text-error-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"  
         >
-          Delete
+          Supprimer
         </DropdownItem>
       ) : (
         <span className="text-gray-500 hover:text-error-600 dark:text-gray-400 dark:hover:text-error-500 cursor-pointer">

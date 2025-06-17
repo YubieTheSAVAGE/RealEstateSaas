@@ -197,10 +197,10 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
             <TableHeader className="border-t border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {[
-                  { key: "name", label: "Project" },
-                  { key: "email", label: "email" },
-                  { key: "number", label: "number" },
-                  { key: "Status", label: "Status" },
+                  { key: "name", label: "Projet" },
+                  { key: "email", label: "Email" },
+                  { key: "number", label: "Numéro" },
+                  { key: "status", label: "Statut" },
                 ].map(({ key, label }) => (
                   <TableCell
                     key={key}
@@ -267,7 +267,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     <Badge size="sm" color={item.status === "CLIENT" ? "primary" : "info"} variant="light">
-                      {item.status.toLocaleLowerCase() === "client" ? "Client" : "Lead"}
+                      {item.status.toLocaleLowerCase() === "client" ? "Client" : "Prospect"}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
