@@ -4,8 +4,107 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int         @id @default(autoincrement())
+  name         String
+  email        String      @unique
+  phoneNumber  String
+  status       Status      @default(ACTIVE)
+  notes        String?
+  role         Role        @default(AGENT)
+  passwordHash String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  apartments   Apartment[] @relation("UserApartments")
+  clients      Client[]
+  createdTasks Task[]      @relation("UserCreatedTasks")
+}
+
+model Client {
+  id                   Int          @id @default(autoincrement())
+  name                 String
+  email                String       @unique
+  phoneNumber          String
+  notes                String?
+  provenance           String
+  status               ClientStatus @default(LEAD)
+  createdById          Int
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  apartments           Apartment[]
+  createdBy            User         @relation(fields: [createdById], references: [id])
+  interestedApartments Apartment[]  @relation("InterestedApartments")
+}
+
+model Project {
+  id                 Int         @id @default(autoincrement())
+  name               String
+  image              String?
+  address            String
+  totalSurface       Int
+  numberOfApartments Int
+  notes              String?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  apartments         Apartment[]
+}
+
+model Apartment {
+  id                Int             @id @default(autoincrement())
+  number            Int
+  floor             Int
+  type              PropertyType    @default(APARTMENT)
+  area              Float
+  threeDViewUrl     String?
+  price             Float
+  pricePerM2        Float
+  zone              String
+  image             String?
+  status            ApartmentStatus @default(AVAILABLE)
+  notes             String?
+  projectId         Int
+  clientId          Int?
+  userId            Int?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  client            Client?         @relation(fields: [clientId], references: [id])
+  project           Project         @relation(fields: [projectId], references: [id])
+  user              User?           @relation("UserApartments", fields: [userId], references: [id])
+  interestedClients Client[]        @relation("InterestedApartments")
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  dueDate     DateTime
+  status      TodoStatus @default(TODO)
+  createdById Int?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  comments    Comment[]
+  createdBy   User?      @relation("UserCreatedTasks", fields: [createdById], references: [id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  taskId    Int
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id])
+}
+
+model monthlyTarget {
+  id        Int      @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  target    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
@@ -35,103 +134,6 @@ enum ClientStatus {
 enum Status {
   ACTIVE
   INACTIVE
-}
-
-model User {
-  id           Int     @id @default(autoincrement())
-  name         String
-  email        String  @unique
-  phoneNumber  String
-  status       Status  @default(ACTIVE)
-  notes        String?
-  role         Role    @default(AGENT)
-  passwordHash String
-
-  clients      Client[]
-  apartments   Apartment[] @relation("UserApartments")
-  createdTasks Task[]      @relation("UserCreatedTasks")
-}
-
-model Client {
-  id          Int          @id @default(autoincrement())
-  name        String
-  email       String       @unique
-  phoneNumber String
-  notes       String?
-  provenance  String
-  status      ClientStatus @default(LEAD)
-
-  createdBy   User @relation(fields: [createdById], references: [id])
-  createdById Int
-
-  interestedApartments Apartment[] @relation("InterestedApartments")
-
-  apartments Apartment[]
-}
-
-model Project {
-  id                 Int     @id @default(autoincrement())
-  name               String
-  image              String?
-  address            String
-  totalSurface       Int
-  numberOfApartments Int
-  notes              String?
-
-  apartments Apartment[]
-}
-
-model Apartment {
-  id            Int             @id @default(autoincrement())
-  number        Int
-  floor         Int
-  type          PropertyType    @default(APARTMENT)
-  area          Float
-  threeDViewUrl String?
-  price         Float
-  pricePerM2    Float
-  zone          String
-  image         String?
-  status        ApartmentStatus @default(AVAILABLE)
-  notes         String?
-
-  project   Project @relation(fields: [projectId], references: [id])
-  projectId Int
-
-  client            Client?   @relation(fields: [clientId], references: [id])
-  clientId          Int?
-  user              User?     @relation("UserApartments", fields: [userId], references: [id])
-  userId            Int?
-  interestedClients Client[]  @relation("InterestedApartments")
-  updatedAt         DateTime? @updatedAt
-}
-
-model Task {
-  id          Int        @id @default(autoincrement())
-  title       String
-  description String?
-  dueDate     DateTime
-  status      TodoStatus @default(TODO)
-  createdById Int?
-  createdBy   User?      @relation("UserCreatedTasks", fields: [createdById], references: [id])
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  comments    Comment[]
-}
-
-model Comment {
-  id        Int      @id @default(autoincrement())
-  content   String
-  taskId    Int
-  task      Task     @relation(fields: [taskId], references: [id])
-  createdAt DateTime @default(now())
-}
-
-model monthlyTarget {
-  id        Int      @id @default(autoincrement())
-  startDate DateTime
-  endDate   DateTime
-  target    Float
 }
 
 enum TodoStatus {

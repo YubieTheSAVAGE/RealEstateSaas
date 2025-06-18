@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.7.0
- * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+ * Prisma Client JS version: 6.10.1
+ * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
  */
 Prisma.prismaVersion = {
-  client: "6.7.0",
-  engine: "3cff47a7f5d65c3ea74883f1d736e41d68ce91ed"
+  client: "6.10.1",
+  engine: "9b628578b3b7cae625e8c927178f15a170e74a9c"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -114,6 +114,9 @@ Prisma.NullTypes = {
  */
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
@@ -125,7 +128,9 @@ exports.Prisma.UserScalarFieldEnum = {
   status: 'status',
   notes: 'notes',
   role: 'role',
-  passwordHash: 'passwordHash'
+  passwordHash: 'passwordHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ClientScalarFieldEnum = {
@@ -136,7 +141,9 @@ exports.Prisma.ClientScalarFieldEnum = {
   notes: 'notes',
   provenance: 'provenance',
   status: 'status',
-  createdById: 'createdById'
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ProjectScalarFieldEnum = {
@@ -146,7 +153,9 @@ exports.Prisma.ProjectScalarFieldEnum = {
   address: 'address',
   totalSurface: 'totalSurface',
   numberOfApartments: 'numberOfApartments',
-  notes: 'notes'
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ApartmentScalarFieldEnum = {
@@ -165,6 +174,7 @@ exports.Prisma.ApartmentScalarFieldEnum = {
   projectId: 'projectId',
   clientId: 'clientId',
   userId: 'userId',
+  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
@@ -190,12 +200,19 @@ exports.Prisma.MonthlyTargetScalarFieldEnum = {
   id: 'id',
   startDate: 'startDate',
   endDate: 'endDate',
-  target: 'target'
+  target: 'target',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {

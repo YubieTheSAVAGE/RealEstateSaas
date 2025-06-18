@@ -383,8 +383,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.7.0
-   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+   * Prisma Client JS version: 6.10.1
+   * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
    */
   export type PrismaVersion = {
     client: string
@@ -1497,14 +1497,14 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    clients: number
     apartments: number
+    clients: number
     createdTasks: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    clients?: boolean | UserCountOutputTypeCountClientsArgs
     apartments?: boolean | UserCountOutputTypeCountApartmentsArgs
+    clients?: boolean | UserCountOutputTypeCountClientsArgs
     createdTasks?: boolean | UserCountOutputTypeCountCreatedTasksArgs
   }
 
@@ -1522,15 +1522,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountClientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ClientWhereInput
+  export type UserCountOutputTypeCountApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApartmentWhereInput
   }
 
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ApartmentWhereInput
+  export type UserCountOutputTypeCountClientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClientWhereInput
   }
 
   /**
@@ -1546,13 +1546,13 @@ export namespace Prisma {
    */
 
   export type ClientCountOutputType = {
-    interestedApartments: number
     apartments: number
+    interestedApartments: number
   }
 
   export type ClientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    interestedApartments?: boolean | ClientCountOutputTypeCountInterestedApartmentsArgs
     apartments?: boolean | ClientCountOutputTypeCountApartmentsArgs
+    interestedApartments?: boolean | ClientCountOutputTypeCountInterestedApartmentsArgs
   }
 
   // Custom InputTypes
@@ -1569,14 +1569,14 @@ export namespace Prisma {
   /**
    * ClientCountOutputType without action
    */
-  export type ClientCountOutputTypeCountInterestedApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ClientCountOutputTypeCountApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ApartmentWhereInput
   }
 
   /**
    * ClientCountOutputType without action
    */
-  export type ClientCountOutputTypeCountApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type ClientCountOutputTypeCountInterestedApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ApartmentWhereInput
   }
 
@@ -1707,6 +1707,8 @@ export namespace Prisma {
     notes: string | null
     role: $Enums.Role | null
     passwordHash: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1718,6 +1720,8 @@ export namespace Prisma {
     notes: string | null
     role: $Enums.Role | null
     passwordHash: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1729,6 +1733,8 @@ export namespace Prisma {
     notes: number
     role: number
     passwordHash: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -1750,6 +1756,8 @@ export namespace Prisma {
     notes?: true
     role?: true
     passwordHash?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1761,6 +1769,8 @@ export namespace Prisma {
     notes?: true
     role?: true
     passwordHash?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1772,6 +1782,8 @@ export namespace Prisma {
     notes?: true
     role?: true
     passwordHash?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -1870,6 +1882,8 @@ export namespace Prisma {
     notes: string | null
     role: $Enums.Role
     passwordHash: string
+    createdAt: Date
+    updatedAt: Date
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -1900,8 +1914,10 @@ export namespace Prisma {
     notes?: boolean
     role?: boolean
     passwordHash?: boolean
-    clients?: boolean | User$clientsArgs<ExtArgs>
+    createdAt?: boolean
+    updatedAt?: boolean
     apartments?: boolean | User$apartmentsArgs<ExtArgs>
+    clients?: boolean | User$clientsArgs<ExtArgs>
     createdTasks?: boolean | User$createdTasksArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -1915,6 +1931,8 @@ export namespace Prisma {
     notes?: boolean
     role?: boolean
     passwordHash?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1926,6 +1944,8 @@ export namespace Prisma {
     notes?: boolean
     role?: boolean
     passwordHash?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -1937,12 +1957,14 @@ export namespace Prisma {
     notes?: boolean
     role?: boolean
     passwordHash?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phoneNumber" | "status" | "notes" | "role" | "passwordHash", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phoneNumber" | "status" | "notes" | "role" | "passwordHash" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    clients?: boolean | User$clientsArgs<ExtArgs>
     apartments?: boolean | User$apartmentsArgs<ExtArgs>
+    clients?: boolean | User$clientsArgs<ExtArgs>
     createdTasks?: boolean | User$createdTasksArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -1952,8 +1974,8 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      clients: Prisma.$ClientPayload<ExtArgs>[]
       apartments: Prisma.$ApartmentPayload<ExtArgs>[]
+      clients: Prisma.$ClientPayload<ExtArgs>[]
       createdTasks: Prisma.$TaskPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -1965,6 +1987,8 @@ export namespace Prisma {
       notes: string | null
       role: $Enums.Role
       passwordHash: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2359,8 +2383,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    clients<T extends User$clientsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     apartments<T extends User$apartmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$apartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clients<T extends User$clientsArgs<ExtArgs> = {}>(args?: Subset<T, User$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdTasks<T extends User$createdTasksArgs<ExtArgs> = {}>(args?: Subset<T, User$createdTasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2399,6 +2423,8 @@ export namespace Prisma {
     readonly notes: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly passwordHash: FieldRef<"User", 'String'>
+    readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -2628,6 +2654,7 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -2646,6 +2673,7 @@ export namespace Prisma {
      * The data used to create many Users.
      */
     data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -2785,30 +2813,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.clients
-   */
-  export type User$clientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Client
-     */
-    select?: ClientSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Client
-     */
-    omit?: ClientOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ClientInclude<ExtArgs> | null
-    where?: ClientWhereInput
-    orderBy?: ClientOrderByWithRelationInput | ClientOrderByWithRelationInput[]
-    cursor?: ClientWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
-  }
-
-  /**
    * User.apartments
    */
   export type User$apartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2830,6 +2834,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ApartmentScalarFieldEnum | ApartmentScalarFieldEnum[]
+  }
+
+  /**
+   * User.clients
+   */
+  export type User$clientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    where?: ClientWhereInput
+    orderBy?: ClientOrderByWithRelationInput | ClientOrderByWithRelationInput[]
+    cursor?: ClientWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
   }
 
   /**
@@ -2906,6 +2934,8 @@ export namespace Prisma {
     provenance: string | null
     status: $Enums.ClientStatus | null
     createdById: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ClientMaxAggregateOutputType = {
@@ -2917,6 +2947,8 @@ export namespace Prisma {
     provenance: string | null
     status: $Enums.ClientStatus | null
     createdById: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ClientCountAggregateOutputType = {
@@ -2928,6 +2960,8 @@ export namespace Prisma {
     provenance: number
     status: number
     createdById: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -2951,6 +2985,8 @@ export namespace Prisma {
     provenance?: true
     status?: true
     createdById?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ClientMaxAggregateInputType = {
@@ -2962,6 +2998,8 @@ export namespace Prisma {
     provenance?: true
     status?: true
     createdById?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ClientCountAggregateInputType = {
@@ -2973,6 +3011,8 @@ export namespace Prisma {
     provenance?: true
     status?: true
     createdById?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -3071,6 +3111,8 @@ export namespace Prisma {
     provenance: string
     status: $Enums.ClientStatus
     createdById: number
+    createdAt: Date
+    updatedAt: Date
     _count: ClientCountAggregateOutputType | null
     _avg: ClientAvgAggregateOutputType | null
     _sum: ClientSumAggregateOutputType | null
@@ -3101,9 +3143,11 @@ export namespace Prisma {
     provenance?: boolean
     status?: boolean
     createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    apartments?: boolean | Client$apartmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     interestedApartments?: boolean | Client$interestedApartmentsArgs<ExtArgs>
-    apartments?: boolean | Client$apartmentsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -3116,6 +3160,8 @@ export namespace Prisma {
     provenance?: boolean
     status?: boolean
     createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -3128,6 +3174,8 @@ export namespace Prisma {
     provenance?: boolean
     status?: boolean
     createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["client"]>
 
@@ -3140,13 +3188,15 @@ export namespace Prisma {
     provenance?: boolean
     status?: boolean
     createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phoneNumber" | "notes" | "provenance" | "status" | "createdById", ExtArgs["result"]["client"]>
+  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phoneNumber" | "notes" | "provenance" | "status" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
   export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    apartments?: boolean | Client$apartmentsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     interestedApartments?: boolean | Client$interestedApartmentsArgs<ExtArgs>
-    apartments?: boolean | Client$apartmentsArgs<ExtArgs>
     _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3159,9 +3209,9 @@ export namespace Prisma {
   export type $ClientPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Client"
     objects: {
+      apartments: Prisma.$ApartmentPayload<ExtArgs>[]
       createdBy: Prisma.$UserPayload<ExtArgs>
       interestedApartments: Prisma.$ApartmentPayload<ExtArgs>[]
-      apartments: Prisma.$ApartmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3172,6 +3222,8 @@ export namespace Prisma {
       provenance: string
       status: $Enums.ClientStatus
       createdById: number
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["client"]>
     composites: {}
   }
@@ -3566,9 +3618,9 @@ export namespace Prisma {
    */
   export interface Prisma__ClientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    apartments<T extends Client$apartmentsArgs<ExtArgs> = {}>(args?: Subset<T, Client$apartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     interestedApartments<T extends Client$interestedApartmentsArgs<ExtArgs> = {}>(args?: Subset<T, Client$interestedApartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    apartments<T extends Client$apartmentsArgs<ExtArgs> = {}>(args?: Subset<T, Client$apartmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3606,6 +3658,8 @@ export namespace Prisma {
     readonly provenance: FieldRef<"Client", 'String'>
     readonly status: FieldRef<"Client", 'ClientStatus'>
     readonly createdById: FieldRef<"Client", 'Int'>
+    readonly createdAt: FieldRef<"Client", 'DateTime'>
+    readonly updatedAt: FieldRef<"Client", 'DateTime'>
   }
     
 
@@ -3835,6 +3889,7 @@ export namespace Prisma {
      * The data used to create many Clients.
      */
     data: ClientCreateManyInput | ClientCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -3853,6 +3908,7 @@ export namespace Prisma {
      * The data used to create many Clients.
      */
     data: ClientCreateManyInput | ClientCreateManyInput[]
+    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -4000,9 +4056,9 @@ export namespace Prisma {
   }
 
   /**
-   * Client.interestedApartments
+   * Client.apartments
    */
-  export type Client$interestedApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Client$apartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Apartment
      */
@@ -4024,9 +4080,9 @@ export namespace Prisma {
   }
 
   /**
-   * Client.apartments
+   * Client.interestedApartments
    */
-  export type Client$apartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Client$interestedApartmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Apartment
      */
@@ -4098,6 +4154,8 @@ export namespace Prisma {
     totalSurface: number | null
     numberOfApartments: number | null
     notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ProjectMaxAggregateOutputType = {
@@ -4108,6 +4166,8 @@ export namespace Prisma {
     totalSurface: number | null
     numberOfApartments: number | null
     notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type ProjectCountAggregateOutputType = {
@@ -4118,6 +4178,8 @@ export namespace Prisma {
     totalSurface: number
     numberOfApartments: number
     notes: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -4142,6 +4204,8 @@ export namespace Prisma {
     totalSurface?: true
     numberOfApartments?: true
     notes?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ProjectMaxAggregateInputType = {
@@ -4152,6 +4216,8 @@ export namespace Prisma {
     totalSurface?: true
     numberOfApartments?: true
     notes?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type ProjectCountAggregateInputType = {
@@ -4162,6 +4228,8 @@ export namespace Prisma {
     totalSurface?: true
     numberOfApartments?: true
     notes?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -4259,6 +4327,8 @@ export namespace Prisma {
     totalSurface: number
     numberOfApartments: number
     notes: string | null
+    createdAt: Date
+    updatedAt: Date
     _count: ProjectCountAggregateOutputType | null
     _avg: ProjectAvgAggregateOutputType | null
     _sum: ProjectSumAggregateOutputType | null
@@ -4288,6 +4358,8 @@ export namespace Prisma {
     totalSurface?: boolean
     numberOfApartments?: boolean
     notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     apartments?: boolean | Project$apartmentsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["project"]>
@@ -4300,6 +4372,8 @@ export namespace Prisma {
     totalSurface?: boolean
     numberOfApartments?: boolean
     notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4310,6 +4384,8 @@ export namespace Prisma {
     totalSurface?: boolean
     numberOfApartments?: boolean
     notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["project"]>
 
   export type ProjectSelectScalar = {
@@ -4320,9 +4396,11 @@ export namespace Prisma {
     totalSurface?: boolean
     numberOfApartments?: boolean
     notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "address" | "totalSurface" | "numberOfApartments" | "notes", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "image" | "address" | "totalSurface" | "numberOfApartments" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     apartments?: boolean | Project$apartmentsArgs<ExtArgs>
     _count?: boolean | ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -4343,6 +4421,8 @@ export namespace Prisma {
       totalSurface: number
       numberOfApartments: number
       notes: string | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["project"]>
     composites: {}
   }
@@ -4774,6 +4854,8 @@ export namespace Prisma {
     readonly totalSurface: FieldRef<"Project", 'Int'>
     readonly numberOfApartments: FieldRef<"Project", 'Int'>
     readonly notes: FieldRef<"Project", 'String'>
+    readonly createdAt: FieldRef<"Project", 'DateTime'>
+    readonly updatedAt: FieldRef<"Project", 'DateTime'>
   }
     
 
@@ -5003,6 +5085,7 @@ export namespace Prisma {
      * The data used to create many Projects.
      */
     data: ProjectCreateManyInput | ProjectCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -5021,6 +5104,7 @@ export namespace Prisma {
      * The data used to create many Projects.
      */
     data: ProjectCreateManyInput | ProjectCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -5254,6 +5338,7 @@ export namespace Prisma {
     projectId: number | null
     clientId: number | null
     userId: number | null
+    createdAt: Date | null
     updatedAt: Date | null
   }
 
@@ -5273,6 +5358,7 @@ export namespace Prisma {
     projectId: number | null
     clientId: number | null
     userId: number | null
+    createdAt: Date | null
     updatedAt: Date | null
   }
 
@@ -5292,6 +5378,7 @@ export namespace Prisma {
     projectId: number
     clientId: number
     userId: number
+    createdAt: number
     updatedAt: number
     _all: number
   }
@@ -5337,6 +5424,7 @@ export namespace Prisma {
     projectId?: true
     clientId?: true
     userId?: true
+    createdAt?: true
     updatedAt?: true
   }
 
@@ -5356,6 +5444,7 @@ export namespace Prisma {
     projectId?: true
     clientId?: true
     userId?: true
+    createdAt?: true
     updatedAt?: true
   }
 
@@ -5375,6 +5464,7 @@ export namespace Prisma {
     projectId?: true
     clientId?: true
     userId?: true
+    createdAt?: true
     updatedAt?: true
     _all?: true
   }
@@ -5481,7 +5571,8 @@ export namespace Prisma {
     projectId: number
     clientId: number | null
     userId: number | null
-    updatedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
     _count: ApartmentCountAggregateOutputType | null
     _avg: ApartmentAvgAggregateOutputType | null
     _sum: ApartmentSumAggregateOutputType | null
@@ -5519,9 +5610,10 @@ export namespace Prisma {
     projectId?: boolean
     clientId?: boolean
     userId?: boolean
+    createdAt?: boolean
     updatedAt?: boolean
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
     client?: boolean | Apartment$clientArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | Apartment$userArgs<ExtArgs>
     interestedClients?: boolean | Apartment$interestedClientsArgs<ExtArgs>
     _count?: boolean | ApartmentCountOutputTypeDefaultArgs<ExtArgs>
@@ -5543,9 +5635,10 @@ export namespace Prisma {
     projectId?: boolean
     clientId?: boolean
     userId?: boolean
+    createdAt?: boolean
     updatedAt?: boolean
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
     client?: boolean | Apartment$clientArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | Apartment$userArgs<ExtArgs>
   }, ExtArgs["result"]["apartment"]>
 
@@ -5565,9 +5658,10 @@ export namespace Prisma {
     projectId?: boolean
     clientId?: boolean
     userId?: boolean
+    createdAt?: boolean
     updatedAt?: boolean
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
     client?: boolean | Apartment$clientArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | Apartment$userArgs<ExtArgs>
   }, ExtArgs["result"]["apartment"]>
 
@@ -5587,33 +5681,34 @@ export namespace Prisma {
     projectId?: boolean
     clientId?: boolean
     userId?: boolean
+    createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ApartmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "floor" | "type" | "area" | "threeDViewUrl" | "price" | "pricePerM2" | "zone" | "image" | "status" | "notes" | "projectId" | "clientId" | "userId" | "updatedAt", ExtArgs["result"]["apartment"]>
+  export type ApartmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "number" | "floor" | "type" | "area" | "threeDViewUrl" | "price" | "pricePerM2" | "zone" | "image" | "status" | "notes" | "projectId" | "clientId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["apartment"]>
   export type ApartmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
     client?: boolean | Apartment$clientArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | Apartment$userArgs<ExtArgs>
     interestedClients?: boolean | Apartment$interestedClientsArgs<ExtArgs>
     _count?: boolean | ApartmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ApartmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
     client?: boolean | Apartment$clientArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | Apartment$userArgs<ExtArgs>
   }
   export type ApartmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    project?: boolean | ProjectDefaultArgs<ExtArgs>
     client?: boolean | Apartment$clientArgs<ExtArgs>
+    project?: boolean | ProjectDefaultArgs<ExtArgs>
     user?: boolean | Apartment$userArgs<ExtArgs>
   }
 
   export type $ApartmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Apartment"
     objects: {
-      project: Prisma.$ProjectPayload<ExtArgs>
       client: Prisma.$ClientPayload<ExtArgs> | null
+      project: Prisma.$ProjectPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs> | null
       interestedClients: Prisma.$ClientPayload<ExtArgs>[]
     }
@@ -5633,7 +5728,8 @@ export namespace Prisma {
       projectId: number
       clientId: number | null
       userId: number | null
-      updatedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["apartment"]>
     composites: {}
   }
@@ -6028,8 +6124,8 @@ export namespace Prisma {
    */
   export interface Prisma__ApartmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends Apartment$clientArgs<ExtArgs> = {}>(args?: Subset<T, Apartment$clientArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    project<T extends ProjectDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProjectDefaultArgs<ExtArgs>>): Prisma__ProjectClient<$Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends Apartment$userArgs<ExtArgs> = {}>(args?: Subset<T, Apartment$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     interestedClients<T extends Apartment$interestedClientsArgs<ExtArgs> = {}>(args?: Subset<T, Apartment$interestedClientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -6076,6 +6172,7 @@ export namespace Prisma {
     readonly projectId: FieldRef<"Apartment", 'Int'>
     readonly clientId: FieldRef<"Apartment", 'Int'>
     readonly userId: FieldRef<"Apartment", 'Int'>
+    readonly createdAt: FieldRef<"Apartment", 'DateTime'>
     readonly updatedAt: FieldRef<"Apartment", 'DateTime'>
   }
     
@@ -6306,6 +6403,7 @@ export namespace Prisma {
      * The data used to create many Apartments.
      */
     data: ApartmentCreateManyInput | ApartmentCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -6324,6 +6422,7 @@ export namespace Prisma {
      * The data used to create many Apartments.
      */
     data: ApartmentCreateManyInput | ApartmentCreateManyInput[]
+    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -6777,8 +6876,8 @@ export namespace Prisma {
     createdById?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    createdBy?: boolean | Task$createdByArgs<ExtArgs>
     comments?: boolean | Task$commentsArgs<ExtArgs>
+    createdBy?: boolean | Task$createdByArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
@@ -6819,8 +6918,8 @@ export namespace Prisma {
 
   export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "dueDate" | "status" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    createdBy?: boolean | Task$createdByArgs<ExtArgs>
     comments?: boolean | Task$commentsArgs<ExtArgs>
+    createdBy?: boolean | Task$createdByArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6833,8 +6932,8 @@ export namespace Prisma {
   export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Task"
     objects: {
-      createdBy: Prisma.$UserPayload<ExtArgs> | null
       comments: Prisma.$CommentPayload<ExtArgs>[]
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -7239,8 +7338,8 @@ export namespace Prisma {
    */
   export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    createdBy<T extends Task$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Task$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     comments<T extends Task$commentsArgs<ExtArgs> = {}>(args?: Subset<T, Task$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdBy<T extends Task$createdByArgs<ExtArgs> = {}>(args?: Subset<T, Task$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7507,6 +7606,7 @@ export namespace Prisma {
      * The data used to create many Tasks.
      */
     data: TaskCreateManyInput | TaskCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -7525,6 +7625,7 @@ export namespace Prisma {
      * The data used to create many Tasks.
      */
     data: TaskCreateManyInput | TaskCreateManyInput[]
+    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -7672,25 +7773,6 @@ export namespace Prisma {
   }
 
   /**
-   * Task.createdBy
-   */
-  export type Task$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the User
-     */
-    select?: UserSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the User
-     */
-    omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-  }
-
-  /**
    * Task.comments
    */
   export type Task$commentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7712,6 +7794,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+  }
+
+  /**
+   * Task.createdBy
+   */
+  export type Task$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -8631,6 +8732,7 @@ export namespace Prisma {
      * The data used to create many Comments.
      */
     data: CommentCreateManyInput | CommentCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -8649,6 +8751,7 @@ export namespace Prisma {
      * The data used to create many Comments.
      */
     data: CommentCreateManyInput | CommentCreateManyInput[]
+    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -8841,6 +8944,8 @@ export namespace Prisma {
     startDate: Date | null
     endDate: Date | null
     target: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MonthlyTargetMaxAggregateOutputType = {
@@ -8848,6 +8953,8 @@ export namespace Prisma {
     startDate: Date | null
     endDate: Date | null
     target: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MonthlyTargetCountAggregateOutputType = {
@@ -8855,6 +8962,8 @@ export namespace Prisma {
     startDate: number
     endDate: number
     target: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -8874,6 +8983,8 @@ export namespace Prisma {
     startDate?: true
     endDate?: true
     target?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type MonthlyTargetMaxAggregateInputType = {
@@ -8881,6 +8992,8 @@ export namespace Prisma {
     startDate?: true
     endDate?: true
     target?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type MonthlyTargetCountAggregateInputType = {
@@ -8888,6 +9001,8 @@ export namespace Prisma {
     startDate?: true
     endDate?: true
     target?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -8982,6 +9097,8 @@ export namespace Prisma {
     startDate: Date
     endDate: Date
     target: number
+    createdAt: Date
+    updatedAt: Date
     _count: MonthlyTargetCountAggregateOutputType | null
     _avg: MonthlyTargetAvgAggregateOutputType | null
     _sum: MonthlyTargetSumAggregateOutputType | null
@@ -9008,6 +9125,8 @@ export namespace Prisma {
     startDate?: boolean
     endDate?: boolean
     target?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["monthlyTarget"]>
 
   export type monthlyTargetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9015,6 +9134,8 @@ export namespace Prisma {
     startDate?: boolean
     endDate?: boolean
     target?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["monthlyTarget"]>
 
   export type monthlyTargetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9022,6 +9143,8 @@ export namespace Prisma {
     startDate?: boolean
     endDate?: boolean
     target?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["monthlyTarget"]>
 
   export type monthlyTargetSelectScalar = {
@@ -9029,9 +9152,11 @@ export namespace Prisma {
     startDate?: boolean
     endDate?: boolean
     target?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type monthlyTargetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "startDate" | "endDate" | "target", ExtArgs["result"]["monthlyTarget"]>
+  export type monthlyTargetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "startDate" | "endDate" | "target" | "createdAt" | "updatedAt", ExtArgs["result"]["monthlyTarget"]>
 
   export type $monthlyTargetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "monthlyTarget"
@@ -9041,6 +9166,8 @@ export namespace Prisma {
       startDate: Date
       endDate: Date
       target: number
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["monthlyTarget"]>
     composites: {}
   }
@@ -9468,6 +9595,8 @@ export namespace Prisma {
     readonly startDate: FieldRef<"monthlyTarget", 'DateTime'>
     readonly endDate: FieldRef<"monthlyTarget", 'DateTime'>
     readonly target: FieldRef<"monthlyTarget", 'Float'>
+    readonly createdAt: FieldRef<"monthlyTarget", 'DateTime'>
+    readonly updatedAt: FieldRef<"monthlyTarget", 'DateTime'>
   }
     
 
@@ -9673,6 +9802,7 @@ export namespace Prisma {
      * The data used to create many monthlyTargets.
      */
     data: monthlyTargetCreateManyInput | monthlyTargetCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -9691,6 +9821,7 @@ export namespace Prisma {
      * The data used to create many monthlyTargets.
      */
     data: monthlyTargetCreateManyInput | monthlyTargetCreateManyInput[]
+    skipDuplicates?: boolean
   }
 
   /**
@@ -9837,6 +9968,9 @@ export namespace Prisma {
    */
 
   export const TransactionIsolationLevel: {
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
   };
 
@@ -9851,7 +9985,9 @@ export namespace Prisma {
     status: 'status',
     notes: 'notes',
     role: 'role',
-    passwordHash: 'passwordHash'
+    passwordHash: 'passwordHash',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -9865,7 +10001,9 @@ export namespace Prisma {
     notes: 'notes',
     provenance: 'provenance',
     status: 'status',
-    createdById: 'createdById'
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
@@ -9878,7 +10016,9 @@ export namespace Prisma {
     address: 'address',
     totalSurface: 'totalSurface',
     numberOfApartments: 'numberOfApartments',
-    notes: 'notes'
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -9900,6 +10040,7 @@ export namespace Prisma {
     projectId: 'projectId',
     clientId: 'clientId',
     userId: 'userId',
+    createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
@@ -9934,7 +10075,9 @@ export namespace Prisma {
     id: 'id',
     startDate: 'startDate',
     endDate: 'endDate',
-    target: 'target'
+    target: 'target',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type MonthlyTargetScalarFieldEnum = (typeof MonthlyTargetScalarFieldEnum)[keyof typeof MonthlyTargetScalarFieldEnum]
@@ -9946,6 +10089,14 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
   export const NullsOrder: {
@@ -9969,9 +10120,23 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
    * Reference to a field of type 'String'
    */
   export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+  /**
+   * Reference to a field of type 'String[]'
+   */
+  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
     
 
 
@@ -9983,6 +10148,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Status[]'
+   */
+  export type ListEnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Role'
    */
   export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -9990,30 +10162,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'ClientStatus'
+   * Reference to a field of type 'Role[]'
    */
-  export type EnumClientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'PropertyType'
-   */
-  export type EnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'ApartmentStatus'
-   */
-  export type EnumApartmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApartmentStatus'>
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
     
 
 
@@ -10025,9 +10176,79 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ClientStatus'
+   */
+  export type EnumClientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ClientStatus[]'
+   */
+  export type ListEnumClientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClientStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PropertyType'
+   */
+  export type EnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PropertyType[]'
+   */
+  export type ListEnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApartmentStatus'
+   */
+  export type EnumApartmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApartmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApartmentStatus[]'
+   */
+  export type ListEnumApartmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApartmentStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'TodoStatus'
    */
   export type EnumTodoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TodoStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TodoStatus[]'
+   */
+  export type ListEnumTodoStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TodoStatus[]'>
     
   /**
    * Deep Input Types
@@ -10046,8 +10267,10 @@ export namespace Prisma {
     notes?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     passwordHash?: StringFilter<"User"> | string
-    clients?: ClientListRelationFilter
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     apartments?: ApartmentListRelationFilter
+    clients?: ClientListRelationFilter
     createdTasks?: TaskListRelationFilter
   }
 
@@ -10060,8 +10283,10 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     role?: SortOrder
     passwordHash?: SortOrder
-    clients?: ClientOrderByRelationAggregateInput
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     apartments?: ApartmentOrderByRelationAggregateInput
+    clients?: ClientOrderByRelationAggregateInput
     createdTasks?: TaskOrderByRelationAggregateInput
   }
 
@@ -10077,8 +10302,10 @@ export namespace Prisma {
     notes?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
     passwordHash?: StringFilter<"User"> | string
-    clients?: ClientListRelationFilter
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     apartments?: ApartmentListRelationFilter
+    clients?: ClientListRelationFilter
     createdTasks?: TaskListRelationFilter
   }, "id" | "email">
 
@@ -10091,6 +10318,8 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     role?: SortOrder
     passwordHash?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -10110,6 +10339,8 @@ export namespace Prisma {
     notes?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     passwordHash?: StringWithAggregatesFilter<"User"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
   export type ClientWhereInput = {
@@ -10124,9 +10355,11 @@ export namespace Prisma {
     provenance?: StringFilter<"Client"> | string
     status?: EnumClientStatusFilter<"Client"> | $Enums.ClientStatus
     createdById?: IntFilter<"Client"> | number
+    createdAt?: DateTimeFilter<"Client"> | Date | string
+    updatedAt?: DateTimeFilter<"Client"> | Date | string
+    apartments?: ApartmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     interestedApartments?: ApartmentListRelationFilter
-    apartments?: ApartmentListRelationFilter
   }
 
   export type ClientOrderByWithRelationInput = {
@@ -10138,9 +10371,11 @@ export namespace Prisma {
     provenance?: SortOrder
     status?: SortOrder
     createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    apartments?: ApartmentOrderByRelationAggregateInput
     createdBy?: UserOrderByWithRelationInput
     interestedApartments?: ApartmentOrderByRelationAggregateInput
-    apartments?: ApartmentOrderByRelationAggregateInput
   }
 
   export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -10155,9 +10390,11 @@ export namespace Prisma {
     provenance?: StringFilter<"Client"> | string
     status?: EnumClientStatusFilter<"Client"> | $Enums.ClientStatus
     createdById?: IntFilter<"Client"> | number
+    createdAt?: DateTimeFilter<"Client"> | Date | string
+    updatedAt?: DateTimeFilter<"Client"> | Date | string
+    apartments?: ApartmentListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     interestedApartments?: ApartmentListRelationFilter
-    apartments?: ApartmentListRelationFilter
   }, "id" | "email">
 
   export type ClientOrderByWithAggregationInput = {
@@ -10169,6 +10406,8 @@ export namespace Prisma {
     provenance?: SortOrder
     status?: SortOrder
     createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ClientCountOrderByAggregateInput
     _avg?: ClientAvgOrderByAggregateInput
     _max?: ClientMaxOrderByAggregateInput
@@ -10188,6 +10427,8 @@ export namespace Prisma {
     provenance?: StringWithAggregatesFilter<"Client"> | string
     status?: EnumClientStatusWithAggregatesFilter<"Client"> | $Enums.ClientStatus
     createdById?: IntWithAggregatesFilter<"Client"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Client"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Client"> | Date | string
   }
 
   export type ProjectWhereInput = {
@@ -10201,6 +10442,8 @@ export namespace Prisma {
     totalSurface?: IntFilter<"Project"> | number
     numberOfApartments?: IntFilter<"Project"> | number
     notes?: StringNullableFilter<"Project"> | string | null
+    createdAt?: DateTimeFilter<"Project"> | Date | string
+    updatedAt?: DateTimeFilter<"Project"> | Date | string
     apartments?: ApartmentListRelationFilter
   }
 
@@ -10212,6 +10455,8 @@ export namespace Prisma {
     totalSurface?: SortOrder
     numberOfApartments?: SortOrder
     notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     apartments?: ApartmentOrderByRelationAggregateInput
   }
 
@@ -10226,6 +10471,8 @@ export namespace Prisma {
     totalSurface?: IntFilter<"Project"> | number
     numberOfApartments?: IntFilter<"Project"> | number
     notes?: StringNullableFilter<"Project"> | string | null
+    createdAt?: DateTimeFilter<"Project"> | Date | string
+    updatedAt?: DateTimeFilter<"Project"> | Date | string
     apartments?: ApartmentListRelationFilter
   }, "id">
 
@@ -10237,6 +10484,8 @@ export namespace Prisma {
     totalSurface?: SortOrder
     numberOfApartments?: SortOrder
     notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
     _avg?: ProjectAvgOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
@@ -10255,6 +10504,8 @@ export namespace Prisma {
     totalSurface?: IntWithAggregatesFilter<"Project"> | number
     numberOfApartments?: IntWithAggregatesFilter<"Project"> | number
     notes?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Project"> | Date | string
   }
 
   export type ApartmentWhereInput = {
@@ -10276,9 +10527,10 @@ export namespace Prisma {
     projectId?: IntFilter<"Apartment"> | number
     clientId?: IntNullableFilter<"Apartment"> | number | null
     userId?: IntNullableFilter<"Apartment"> | number | null
-    updatedAt?: DateTimeNullableFilter<"Apartment"> | Date | string | null
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    createdAt?: DateTimeFilter<"Apartment"> | Date | string
+    updatedAt?: DateTimeFilter<"Apartment"> | Date | string
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     interestedClients?: ClientListRelationFilter
   }
@@ -10299,9 +10551,10 @@ export namespace Prisma {
     projectId?: SortOrder
     clientId?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
-    project?: ProjectOrderByWithRelationInput
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     client?: ClientOrderByWithRelationInput
+    project?: ProjectOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     interestedClients?: ClientOrderByRelationAggregateInput
   }
@@ -10325,9 +10578,10 @@ export namespace Prisma {
     projectId?: IntFilter<"Apartment"> | number
     clientId?: IntNullableFilter<"Apartment"> | number | null
     userId?: IntNullableFilter<"Apartment"> | number | null
-    updatedAt?: DateTimeNullableFilter<"Apartment"> | Date | string | null
-    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
+    createdAt?: DateTimeFilter<"Apartment"> | Date | string
+    updatedAt?: DateTimeFilter<"Apartment"> | Date | string
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    project?: XOR<ProjectScalarRelationFilter, ProjectWhereInput>
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     interestedClients?: ClientListRelationFilter
   }, "id">
@@ -10348,7 +10602,8 @@ export namespace Prisma {
     projectId?: SortOrder
     clientId?: SortOrderInput | SortOrder
     userId?: SortOrderInput | SortOrder
-    updatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: ApartmentCountOrderByAggregateInput
     _avg?: ApartmentAvgOrderByAggregateInput
     _max?: ApartmentMaxOrderByAggregateInput
@@ -10375,7 +10630,8 @@ export namespace Prisma {
     projectId?: IntWithAggregatesFilter<"Apartment"> | number
     clientId?: IntNullableWithAggregatesFilter<"Apartment"> | number | null
     userId?: IntNullableWithAggregatesFilter<"Apartment"> | number | null
-    updatedAt?: DateTimeNullableWithAggregatesFilter<"Apartment"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Apartment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Apartment"> | Date | string
   }
 
   export type TaskWhereInput = {
@@ -10390,8 +10646,8 @@ export namespace Prisma {
     createdById?: IntNullableFilter<"Task"> | number | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
-    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     comments?: CommentListRelationFilter
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type TaskOrderByWithRelationInput = {
@@ -10403,8 +10659,8 @@ export namespace Prisma {
     createdById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    createdBy?: UserOrderByWithRelationInput
     comments?: CommentOrderByRelationAggregateInput
+    createdBy?: UserOrderByWithRelationInput
   }
 
   export type TaskWhereUniqueInput = Prisma.AtLeast<{
@@ -10419,8 +10675,8 @@ export namespace Prisma {
     createdById?: IntNullableFilter<"Task"> | number | null
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
-    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     comments?: CommentListRelationFilter
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type TaskOrderByWithAggregationInput = {
@@ -10513,6 +10769,8 @@ export namespace Prisma {
     startDate?: DateTimeFilter<"monthlyTarget"> | Date | string
     endDate?: DateTimeFilter<"monthlyTarget"> | Date | string
     target?: FloatFilter<"monthlyTarget"> | number
+    createdAt?: DateTimeFilter<"monthlyTarget"> | Date | string
+    updatedAt?: DateTimeFilter<"monthlyTarget"> | Date | string
   }
 
   export type monthlyTargetOrderByWithRelationInput = {
@@ -10520,6 +10778,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     target?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type monthlyTargetWhereUniqueInput = Prisma.AtLeast<{
@@ -10530,6 +10790,8 @@ export namespace Prisma {
     startDate?: DateTimeFilter<"monthlyTarget"> | Date | string
     endDate?: DateTimeFilter<"monthlyTarget"> | Date | string
     target?: FloatFilter<"monthlyTarget"> | number
+    createdAt?: DateTimeFilter<"monthlyTarget"> | Date | string
+    updatedAt?: DateTimeFilter<"monthlyTarget"> | Date | string
   }, "id">
 
   export type monthlyTargetOrderByWithAggregationInput = {
@@ -10537,6 +10799,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     target?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: monthlyTargetCountOrderByAggregateInput
     _avg?: monthlyTargetAvgOrderByAggregateInput
     _max?: monthlyTargetMaxOrderByAggregateInput
@@ -10552,6 +10816,8 @@ export namespace Prisma {
     startDate?: DateTimeWithAggregatesFilter<"monthlyTarget"> | Date | string
     endDate?: DateTimeWithAggregatesFilter<"monthlyTarget"> | Date | string
     target?: FloatWithAggregatesFilter<"monthlyTarget"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"monthlyTarget"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"monthlyTarget"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -10562,8 +10828,10 @@ export namespace Prisma {
     notes?: string | null
     role?: $Enums.Role
     passwordHash: string
-    clients?: ClientCreateNestedManyWithoutCreatedByInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentCreateNestedManyWithoutUserInput
+    clients?: ClientCreateNestedManyWithoutCreatedByInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
   }
 
@@ -10576,8 +10844,10 @@ export namespace Prisma {
     notes?: string | null
     role?: $Enums.Role
     passwordHash: string
-    clients?: ClientUncheckedCreateNestedManyWithoutCreatedByInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentUncheckedCreateNestedManyWithoutUserInput
+    clients?: ClientUncheckedCreateNestedManyWithoutCreatedByInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
   }
 
@@ -10589,8 +10859,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
-    clients?: ClientUpdateManyWithoutCreatedByNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUpdateManyWithoutUserNestedInput
+    clients?: ClientUpdateManyWithoutCreatedByNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
   }
 
@@ -10603,8 +10875,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
-    clients?: ClientUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUncheckedUpdateManyWithoutUserNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
@@ -10617,6 +10891,8 @@ export namespace Prisma {
     notes?: string | null
     role?: $Enums.Role
     passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
@@ -10627,6 +10903,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -10638,6 +10916,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientCreateInput = {
@@ -10647,9 +10927,11 @@ export namespace Prisma {
     notes?: string | null
     provenance: string
     status?: $Enums.ClientStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    apartments?: ApartmentCreateNestedManyWithoutClientInput
     createdBy: UserCreateNestedOneWithoutClientsInput
     interestedApartments?: ApartmentCreateNestedManyWithoutInterestedClientsInput
-    apartments?: ApartmentCreateNestedManyWithoutClientInput
   }
 
   export type ClientUncheckedCreateInput = {
@@ -10661,8 +10943,10 @@ export namespace Prisma {
     provenance: string
     status?: $Enums.ClientStatus
     createdById: number
-    interestedApartments?: ApartmentUncheckedCreateNestedManyWithoutInterestedClientsInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentUncheckedCreateNestedManyWithoutClientInput
+    interestedApartments?: ApartmentUncheckedCreateNestedManyWithoutInterestedClientsInput
   }
 
   export type ClientUpdateInput = {
@@ -10672,9 +10956,11 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apartments?: ApartmentUpdateManyWithoutClientNestedInput
     createdBy?: UserUpdateOneRequiredWithoutClientsNestedInput
     interestedApartments?: ApartmentUpdateManyWithoutInterestedClientsNestedInput
-    apartments?: ApartmentUpdateManyWithoutClientNestedInput
   }
 
   export type ClientUncheckedUpdateInput = {
@@ -10686,8 +10972,10 @@ export namespace Prisma {
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
     createdById?: IntFieldUpdateOperationsInput | number
-    interestedApartments?: ApartmentUncheckedUpdateManyWithoutInterestedClientsNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUncheckedUpdateManyWithoutClientNestedInput
+    interestedApartments?: ApartmentUncheckedUpdateManyWithoutInterestedClientsNestedInput
   }
 
   export type ClientCreateManyInput = {
@@ -10699,6 +10987,8 @@ export namespace Prisma {
     provenance: string
     status?: $Enums.ClientStatus
     createdById: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ClientUpdateManyMutationInput = {
@@ -10708,6 +10998,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientUncheckedUpdateManyInput = {
@@ -10719,6 +11011,8 @@ export namespace Prisma {
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
     createdById?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProjectCreateInput = {
@@ -10728,6 +11022,8 @@ export namespace Prisma {
     totalSurface: number
     numberOfApartments: number
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentCreateNestedManyWithoutProjectInput
   }
 
@@ -10739,6 +11035,8 @@ export namespace Prisma {
     totalSurface: number
     numberOfApartments: number
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentUncheckedCreateNestedManyWithoutProjectInput
   }
 
@@ -10749,6 +11047,8 @@ export namespace Prisma {
     totalSurface?: IntFieldUpdateOperationsInput | number
     numberOfApartments?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUpdateManyWithoutProjectNestedInput
   }
 
@@ -10760,6 +11060,8 @@ export namespace Prisma {
     totalSurface?: IntFieldUpdateOperationsInput | number
     numberOfApartments?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUncheckedUpdateManyWithoutProjectNestedInput
   }
 
@@ -10771,6 +11073,8 @@ export namespace Prisma {
     totalSurface: number
     numberOfApartments: number
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ProjectUpdateManyMutationInput = {
@@ -10780,6 +11084,8 @@ export namespace Prisma {
     totalSurface?: IntFieldUpdateOperationsInput | number
     numberOfApartments?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ProjectUncheckedUpdateManyInput = {
@@ -10790,6 +11096,8 @@ export namespace Prisma {
     totalSurface?: IntFieldUpdateOperationsInput | number
     numberOfApartments?: IntFieldUpdateOperationsInput | number
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ApartmentCreateInput = {
@@ -10804,9 +11112,10 @@ export namespace Prisma {
     image?: string | null
     status?: $Enums.ApartmentStatus
     notes?: string | null
-    updatedAt?: Date | string | null
-    project: ProjectCreateNestedOneWithoutApartmentsInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutApartmentsInput
+    project: ProjectCreateNestedOneWithoutApartmentsInput
     user?: UserCreateNestedOneWithoutApartmentsInput
     interestedClients?: ClientCreateNestedManyWithoutInterestedApartmentsInput
   }
@@ -10827,7 +11136,8 @@ export namespace Prisma {
     projectId: number
     clientId?: number | null
     userId?: number | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     interestedClients?: ClientUncheckedCreateNestedManyWithoutInterestedApartmentsInput
   }
 
@@ -10843,9 +11153,10 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    project?: ProjectUpdateOneRequiredWithoutApartmentsNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutApartmentsNestedInput
+    project?: ProjectUpdateOneRequiredWithoutApartmentsNestedInput
     user?: UserUpdateOneWithoutApartmentsNestedInput
     interestedClients?: ClientUpdateManyWithoutInterestedApartmentsNestedInput
   }
@@ -10866,7 +11177,8 @@ export namespace Prisma {
     projectId?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interestedClients?: ClientUncheckedUpdateManyWithoutInterestedApartmentsNestedInput
   }
 
@@ -10886,7 +11198,8 @@ export namespace Prisma {
     projectId: number
     clientId?: number | null
     userId?: number | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ApartmentUpdateManyMutationInput = {
@@ -10901,7 +11214,8 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ApartmentUncheckedUpdateManyInput = {
@@ -10920,7 +11234,8 @@ export namespace Prisma {
     projectId?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskCreateInput = {
@@ -10930,8 +11245,8 @@ export namespace Prisma {
     status?: $Enums.TodoStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    createdBy?: UserCreateNestedOneWithoutCreatedTasksInput
     comments?: CommentCreateNestedManyWithoutTaskInput
+    createdBy?: UserCreateNestedOneWithoutCreatedTasksInput
   }
 
   export type TaskUncheckedCreateInput = {
@@ -10953,8 +11268,8 @@ export namespace Prisma {
     status?: EnumTodoStatusFieldUpdateOperationsInput | $Enums.TodoStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    createdBy?: UserUpdateOneWithoutCreatedTasksNestedInput
     comments?: CommentUpdateManyWithoutTaskNestedInput
+    createdBy?: UserUpdateOneWithoutCreatedTasksNestedInput
   }
 
   export type TaskUncheckedUpdateInput = {
@@ -11049,6 +11364,8 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     target: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type monthlyTargetUncheckedCreateInput = {
@@ -11056,12 +11373,16 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     target: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type monthlyTargetUpdateInput = {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     target?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type monthlyTargetUncheckedUpdateInput = {
@@ -11069,6 +11390,8 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     target?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type monthlyTargetCreateManyInput = {
@@ -11076,12 +11399,16 @@ export namespace Prisma {
     startDate: Date | string
     endDate: Date | string
     target: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type monthlyTargetUpdateManyMutationInput = {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     target?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type monthlyTargetUncheckedUpdateManyInput = {
@@ -11089,12 +11416,14 @@ export namespace Prisma {
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     target?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -11104,8 +11433,8 @@ export namespace Prisma {
 
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -11113,20 +11442,21 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
   export type EnumStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[]
-    notIn?: $Enums.Status[]
+    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumStatusFilter<$PrismaModel> | $Enums.Status
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -11134,26 +11464,38 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type EnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[]
-    notIn?: $Enums.Role[]
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
   }
 
-  export type ClientListRelationFilter = {
-    every?: ClientWhereInput
-    some?: ClientWhereInput
-    none?: ClientWhereInput
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type ApartmentListRelationFilter = {
     every?: ApartmentWhereInput
     some?: ApartmentWhereInput
     none?: ApartmentWhereInput
+  }
+
+  export type ClientListRelationFilter = {
+    every?: ClientWhereInput
+    some?: ClientWhereInput
+    none?: ClientWhereInput
   }
 
   export type TaskListRelationFilter = {
@@ -11167,11 +11509,11 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type ClientOrderByRelationAggregateInput = {
+  export type ApartmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type ApartmentOrderByRelationAggregateInput = {
+  export type ClientOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11188,6 +11530,8 @@ export namespace Prisma {
     notes?: SortOrder
     role?: SortOrder
     passwordHash?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -11203,6 +11547,8 @@ export namespace Prisma {
     notes?: SortOrder
     role?: SortOrder
     passwordHash?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -11214,6 +11560,8 @@ export namespace Prisma {
     notes?: SortOrder
     role?: SortOrder
     passwordHash?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -11222,8 +11570,8 @@ export namespace Prisma {
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -11238,8 +11586,8 @@ export namespace Prisma {
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -11247,6 +11595,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
@@ -11255,8 +11604,8 @@ export namespace Prisma {
 
   export type EnumStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[]
-    notIn?: $Enums.Status[]
+    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumStatusWithAggregatesFilter<$PrismaModel> | $Enums.Status
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumStatusFilter<$PrismaModel>
@@ -11265,8 +11614,8 @@ export namespace Prisma {
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -11274,6 +11623,7 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
@@ -11282,18 +11632,32 @@ export namespace Prisma {
 
   export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[]
-    notIn?: $Enums.Role[]
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type EnumClientStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ClientStatus | EnumClientStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ClientStatus[]
-    notIn?: $Enums.ClientStatus[]
+    in?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumClientStatusFilter<$PrismaModel> | $Enums.ClientStatus
   }
 
@@ -11311,6 +11675,8 @@ export namespace Prisma {
     provenance?: SortOrder
     status?: SortOrder
     createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ClientAvgOrderByAggregateInput = {
@@ -11327,6 +11693,8 @@ export namespace Prisma {
     provenance?: SortOrder
     status?: SortOrder
     createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ClientMinOrderByAggregateInput = {
@@ -11338,6 +11706,8 @@ export namespace Prisma {
     provenance?: SortOrder
     status?: SortOrder
     createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ClientSumOrderByAggregateInput = {
@@ -11347,8 +11717,8 @@ export namespace Prisma {
 
   export type EnumClientStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ClientStatus | EnumClientStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ClientStatus[]
-    notIn?: $Enums.ClientStatus[]
+    in?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumClientStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClientStatus
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumClientStatusFilter<$PrismaModel>
@@ -11363,6 +11733,8 @@ export namespace Prisma {
     totalSurface?: SortOrder
     numberOfApartments?: SortOrder
     notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectAvgOrderByAggregateInput = {
@@ -11379,6 +11751,8 @@ export namespace Prisma {
     totalSurface?: SortOrder
     numberOfApartments?: SortOrder
     notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectMinOrderByAggregateInput = {
@@ -11389,6 +11763,8 @@ export namespace Prisma {
     totalSurface?: SortOrder
     numberOfApartments?: SortOrder
     notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ProjectSumOrderByAggregateInput = {
@@ -11399,15 +11775,15 @@ export namespace Prisma {
 
   export type EnumPropertyTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.PropertyType | EnumPropertyTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.PropertyType[]
-    notIn?: $Enums.PropertyType[]
+    in?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumPropertyTypeFilter<$PrismaModel> | $Enums.PropertyType
   }
 
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -11417,15 +11793,15 @@ export namespace Prisma {
 
   export type EnumApartmentStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ApartmentStatus | EnumApartmentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ApartmentStatus[]
-    notIn?: $Enums.ApartmentStatus[]
+    in?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumApartmentStatusFilter<$PrismaModel> | $Enums.ApartmentStatus
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -11433,25 +11809,14 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type ClientNullableScalarRelationFilter = {
+    is?: ClientWhereInput | null
+    isNot?: ClientWhereInput | null
   }
 
   export type ProjectScalarRelationFilter = {
     is?: ProjectWhereInput
     isNot?: ProjectWhereInput
-  }
-
-  export type ClientNullableScalarRelationFilter = {
-    is?: ClientWhereInput | null
-    isNot?: ClientWhereInput | null
   }
 
   export type UserNullableScalarRelationFilter = {
@@ -11475,6 +11840,7 @@ export namespace Prisma {
     projectId?: SortOrder
     clientId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -11506,6 +11872,7 @@ export namespace Prisma {
     projectId?: SortOrder
     clientId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -11525,6 +11892,7 @@ export namespace Prisma {
     projectId?: SortOrder
     clientId?: SortOrder
     userId?: SortOrder
+    createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
@@ -11542,8 +11910,8 @@ export namespace Prisma {
 
   export type EnumPropertyTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PropertyType | EnumPropertyTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.PropertyType[]
-    notIn?: $Enums.PropertyType[]
+    in?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumPropertyTypeWithAggregatesFilter<$PrismaModel> | $Enums.PropertyType
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPropertyTypeFilter<$PrismaModel>
@@ -11552,8 +11920,8 @@ export namespace Prisma {
 
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -11568,8 +11936,8 @@ export namespace Prisma {
 
   export type EnumApartmentStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ApartmentStatus | EnumApartmentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ApartmentStatus[]
-    notIn?: $Enums.ApartmentStatus[]
+    in?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumApartmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApartmentStatus
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApartmentStatusFilter<$PrismaModel>
@@ -11578,8 +11946,8 @@ export namespace Prisma {
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -11592,35 +11960,10 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
   export type EnumTodoStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TodoStatus | EnumTodoStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TodoStatus[]
-    notIn?: $Enums.TodoStatus[]
+    in?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumTodoStatusFilter<$PrismaModel> | $Enums.TodoStatus
   }
 
@@ -11677,24 +12020,10 @@ export namespace Prisma {
     createdById?: SortOrder
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type EnumTodoStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TodoStatus | EnumTodoStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TodoStatus[]
-    notIn?: $Enums.TodoStatus[]
+    in?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumTodoStatusWithAggregatesFilter<$PrismaModel> | $Enums.TodoStatus
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTodoStatusFilter<$PrismaModel>
@@ -11742,6 +12071,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     target?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type monthlyTargetAvgOrderByAggregateInput = {
@@ -11754,6 +12085,8 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     target?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type monthlyTargetMinOrderByAggregateInput = {
@@ -11761,18 +12094,13 @@ export namespace Prisma {
     startDate?: SortOrder
     endDate?: SortOrder
     target?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type monthlyTargetSumOrderByAggregateInput = {
     id?: SortOrder
     target?: SortOrder
-  }
-
-  export type ClientCreateNestedManyWithoutCreatedByInput = {
-    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
-    createMany?: ClientCreateManyCreatedByInputEnvelope
-    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
   }
 
   export type ApartmentCreateNestedManyWithoutUserInput = {
@@ -11782,6 +12110,13 @@ export namespace Prisma {
     connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
   }
 
+  export type ClientCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ClientCreateManyCreatedByInputEnvelope
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+  }
+
   export type TaskCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<TaskCreateWithoutCreatedByInput, TaskUncheckedCreateWithoutCreatedByInput> | TaskCreateWithoutCreatedByInput[] | TaskUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: TaskCreateOrConnectWithoutCreatedByInput | TaskCreateOrConnectWithoutCreatedByInput[]
@@ -11789,18 +12124,18 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
-  export type ClientUncheckedCreateNestedManyWithoutCreatedByInput = {
-    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
-    createMany?: ClientCreateManyCreatedByInputEnvelope
-    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-  }
-
   export type ApartmentUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ApartmentCreateWithoutUserInput, ApartmentUncheckedCreateWithoutUserInput> | ApartmentCreateWithoutUserInput[] | ApartmentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ApartmentCreateOrConnectWithoutUserInput | ApartmentCreateOrConnectWithoutUserInput[]
     createMany?: ApartmentCreateManyUserInputEnvelope
     connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
+  }
+
+  export type ClientUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
+    createMany?: ClientCreateManyCreatedByInputEnvelope
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
   }
 
   export type TaskUncheckedCreateNestedManyWithoutCreatedByInput = {
@@ -11826,18 +12161,8 @@ export namespace Prisma {
     set?: $Enums.Role
   }
 
-  export type ClientUpdateManyWithoutCreatedByNestedInput = {
-    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
-    upsert?: ClientUpsertWithWhereUniqueWithoutCreatedByInput | ClientUpsertWithWhereUniqueWithoutCreatedByInput[]
-    createMany?: ClientCreateManyCreatedByInputEnvelope
-    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    update?: ClientUpdateWithWhereUniqueWithoutCreatedByInput | ClientUpdateWithWhereUniqueWithoutCreatedByInput[]
-    updateMany?: ClientUpdateManyWithWhereWithoutCreatedByInput | ClientUpdateManyWithWhereWithoutCreatedByInput[]
-    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
   }
 
   export type ApartmentUpdateManyWithoutUserNestedInput = {
@@ -11852,6 +12177,20 @@ export namespace Prisma {
     update?: ApartmentUpdateWithWhereUniqueWithoutUserInput | ApartmentUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ApartmentUpdateManyWithWhereWithoutUserInput | ApartmentUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ApartmentScalarWhereInput | ApartmentScalarWhereInput[]
+  }
+
+  export type ClientUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ClientUpsertWithWhereUniqueWithoutCreatedByInput | ClientUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ClientCreateManyCreatedByInputEnvelope
+    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    update?: ClientUpdateWithWhereUniqueWithoutCreatedByInput | ClientUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ClientUpdateManyWithWhereWithoutCreatedByInput | ClientUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
   }
 
   export type TaskUpdateManyWithoutCreatedByNestedInput = {
@@ -11876,20 +12215,6 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type ClientUncheckedUpdateManyWithoutCreatedByNestedInput = {
-    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
-    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
-    upsert?: ClientUpsertWithWhereUniqueWithoutCreatedByInput | ClientUpsertWithWhereUniqueWithoutCreatedByInput[]
-    createMany?: ClientCreateManyCreatedByInputEnvelope
-    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
-    update?: ClientUpdateWithWhereUniqueWithoutCreatedByInput | ClientUpdateWithWhereUniqueWithoutCreatedByInput[]
-    updateMany?: ClientUpdateManyWithWhereWithoutCreatedByInput | ClientUpdateManyWithWhereWithoutCreatedByInput[]
-    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
-  }
-
   export type ApartmentUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ApartmentCreateWithoutUserInput, ApartmentUncheckedCreateWithoutUserInput> | ApartmentCreateWithoutUserInput[] | ApartmentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ApartmentCreateOrConnectWithoutUserInput | ApartmentCreateOrConnectWithoutUserInput[]
@@ -11902,6 +12227,20 @@ export namespace Prisma {
     update?: ApartmentUpdateWithWhereUniqueWithoutUserInput | ApartmentUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ApartmentUpdateManyWithWhereWithoutUserInput | ApartmentUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ApartmentScalarWhereInput | ApartmentScalarWhereInput[]
+  }
+
+  export type ClientUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput> | ClientCreateWithoutCreatedByInput[] | ClientUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutCreatedByInput | ClientCreateOrConnectWithoutCreatedByInput[]
+    upsert?: ClientUpsertWithWhereUniqueWithoutCreatedByInput | ClientUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: ClientCreateManyCreatedByInputEnvelope
+    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    update?: ClientUpdateWithWhereUniqueWithoutCreatedByInput | ClientUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: ClientUpdateManyWithWhereWithoutCreatedByInput | ClientUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
   }
 
   export type TaskUncheckedUpdateManyWithoutCreatedByNestedInput = {
@@ -11918,6 +12257,13 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
+  export type ApartmentCreateNestedManyWithoutClientInput = {
+    create?: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput> | ApartmentCreateWithoutClientInput[] | ApartmentUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ApartmentCreateOrConnectWithoutClientInput | ApartmentCreateOrConnectWithoutClientInput[]
+    createMany?: ApartmentCreateManyClientInputEnvelope
+    connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
+  }
+
   export type UserCreateNestedOneWithoutClientsInput = {
     create?: XOR<UserCreateWithoutClientsInput, UserUncheckedCreateWithoutClientsInput>
     connectOrCreate?: UserCreateOrConnectWithoutClientsInput
@@ -11930,7 +12276,7 @@ export namespace Prisma {
     connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
   }
 
-  export type ApartmentCreateNestedManyWithoutClientInput = {
+  export type ApartmentUncheckedCreateNestedManyWithoutClientInput = {
     create?: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput> | ApartmentCreateWithoutClientInput[] | ApartmentUncheckedCreateWithoutClientInput[]
     connectOrCreate?: ApartmentCreateOrConnectWithoutClientInput | ApartmentCreateOrConnectWithoutClientInput[]
     createMany?: ApartmentCreateManyClientInputEnvelope
@@ -11943,15 +12289,22 @@ export namespace Prisma {
     connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
   }
 
-  export type ApartmentUncheckedCreateNestedManyWithoutClientInput = {
-    create?: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput> | ApartmentCreateWithoutClientInput[] | ApartmentUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: ApartmentCreateOrConnectWithoutClientInput | ApartmentCreateOrConnectWithoutClientInput[]
-    createMany?: ApartmentCreateManyClientInputEnvelope
-    connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
-  }
-
   export type EnumClientStatusFieldUpdateOperationsInput = {
     set?: $Enums.ClientStatus
+  }
+
+  export type ApartmentUpdateManyWithoutClientNestedInput = {
+    create?: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput> | ApartmentCreateWithoutClientInput[] | ApartmentUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: ApartmentCreateOrConnectWithoutClientInput | ApartmentCreateOrConnectWithoutClientInput[]
+    upsert?: ApartmentUpsertWithWhereUniqueWithoutClientInput | ApartmentUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: ApartmentCreateManyClientInputEnvelope
+    set?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
+    disconnect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
+    delete?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
+    connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
+    update?: ApartmentUpdateWithWhereUniqueWithoutClientInput | ApartmentUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: ApartmentUpdateManyWithWhereWithoutClientInput | ApartmentUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: ApartmentScalarWhereInput | ApartmentScalarWhereInput[]
   }
 
   export type UserUpdateOneRequiredWithoutClientsNestedInput = {
@@ -11975,7 +12328,7 @@ export namespace Prisma {
     deleteMany?: ApartmentScalarWhereInput | ApartmentScalarWhereInput[]
   }
 
-  export type ApartmentUpdateManyWithoutClientNestedInput = {
+  export type ApartmentUncheckedUpdateManyWithoutClientNestedInput = {
     create?: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput> | ApartmentCreateWithoutClientInput[] | ApartmentUncheckedCreateWithoutClientInput[]
     connectOrCreate?: ApartmentCreateOrConnectWithoutClientInput | ApartmentCreateOrConnectWithoutClientInput[]
     upsert?: ApartmentUpsertWithWhereUniqueWithoutClientInput | ApartmentUpsertWithWhereUniqueWithoutClientInput[]
@@ -11999,20 +12352,6 @@ export namespace Prisma {
     connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
     update?: ApartmentUpdateWithWhereUniqueWithoutInterestedClientsInput | ApartmentUpdateWithWhereUniqueWithoutInterestedClientsInput[]
     updateMany?: ApartmentUpdateManyWithWhereWithoutInterestedClientsInput | ApartmentUpdateManyWithWhereWithoutInterestedClientsInput[]
-    deleteMany?: ApartmentScalarWhereInput | ApartmentScalarWhereInput[]
-  }
-
-  export type ApartmentUncheckedUpdateManyWithoutClientNestedInput = {
-    create?: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput> | ApartmentCreateWithoutClientInput[] | ApartmentUncheckedCreateWithoutClientInput[]
-    connectOrCreate?: ApartmentCreateOrConnectWithoutClientInput | ApartmentCreateOrConnectWithoutClientInput[]
-    upsert?: ApartmentUpsertWithWhereUniqueWithoutClientInput | ApartmentUpsertWithWhereUniqueWithoutClientInput[]
-    createMany?: ApartmentCreateManyClientInputEnvelope
-    set?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
-    disconnect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
-    delete?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
-    connect?: ApartmentWhereUniqueInput | ApartmentWhereUniqueInput[]
-    update?: ApartmentUpdateWithWhereUniqueWithoutClientInput | ApartmentUpdateWithWhereUniqueWithoutClientInput[]
-    updateMany?: ApartmentUpdateManyWithWhereWithoutClientInput | ApartmentUpdateManyWithWhereWithoutClientInput[]
     deleteMany?: ApartmentScalarWhereInput | ApartmentScalarWhereInput[]
   }
 
@@ -12058,16 +12397,16 @@ export namespace Prisma {
     deleteMany?: ApartmentScalarWhereInput | ApartmentScalarWhereInput[]
   }
 
-  export type ProjectCreateNestedOneWithoutApartmentsInput = {
-    create?: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutApartmentsInput
-    connect?: ProjectWhereUniqueInput
-  }
-
   export type ClientCreateNestedOneWithoutApartmentsInput = {
     create?: XOR<ClientCreateWithoutApartmentsInput, ClientUncheckedCreateWithoutApartmentsInput>
     connectOrCreate?: ClientCreateOrConnectWithoutApartmentsInput
     connect?: ClientWhereUniqueInput
+  }
+
+  export type ProjectCreateNestedOneWithoutApartmentsInput = {
+    create?: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutApartmentsInput
+    connect?: ProjectWhereUniqueInput
   }
 
   export type UserCreateNestedOneWithoutApartmentsInput = {
@@ -12104,18 +12443,6 @@ export namespace Prisma {
     set?: $Enums.ApartmentStatus
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type ProjectUpdateOneRequiredWithoutApartmentsNestedInput = {
-    create?: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
-    connectOrCreate?: ProjectCreateOrConnectWithoutApartmentsInput
-    upsert?: ProjectUpsertWithoutApartmentsInput
-    connect?: ProjectWhereUniqueInput
-    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutApartmentsInput, ProjectUpdateWithoutApartmentsInput>, ProjectUncheckedUpdateWithoutApartmentsInput>
-  }
-
   export type ClientUpdateOneWithoutApartmentsNestedInput = {
     create?: XOR<ClientCreateWithoutApartmentsInput, ClientUncheckedCreateWithoutApartmentsInput>
     connectOrCreate?: ClientCreateOrConnectWithoutApartmentsInput
@@ -12124,6 +12451,14 @@ export namespace Prisma {
     delete?: ClientWhereInput | boolean
     connect?: ClientWhereUniqueInput
     update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutApartmentsInput, ClientUpdateWithoutApartmentsInput>, ClientUncheckedUpdateWithoutApartmentsInput>
+  }
+
+  export type ProjectUpdateOneRequiredWithoutApartmentsNestedInput = {
+    create?: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutApartmentsInput
+    upsert?: ProjectUpsertWithoutApartmentsInput
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<XOR<ProjectUpdateToOneWithWhereWithoutApartmentsInput, ProjectUpdateWithoutApartmentsInput>, ProjectUncheckedUpdateWithoutApartmentsInput>
   }
 
   export type UserUpdateOneWithoutApartmentsNestedInput = {
@@ -12170,17 +12505,17 @@ export namespace Prisma {
     deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutCreatedTasksInput = {
-    create?: XOR<UserCreateWithoutCreatedTasksInput, UserUncheckedCreateWithoutCreatedTasksInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCreatedTasksInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type CommentCreateNestedManyWithoutTaskInput = {
     create?: XOR<CommentCreateWithoutTaskInput, CommentUncheckedCreateWithoutTaskInput> | CommentCreateWithoutTaskInput[] | CommentUncheckedCreateWithoutTaskInput[]
     connectOrCreate?: CommentCreateOrConnectWithoutTaskInput | CommentCreateOrConnectWithoutTaskInput[]
     createMany?: CommentCreateManyTaskInputEnvelope
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedOneWithoutCreatedTasksInput = {
+    create?: XOR<UserCreateWithoutCreatedTasksInput, UserUncheckedCreateWithoutCreatedTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedTasksInput
+    connect?: UserWhereUniqueInput
   }
 
   export type CommentUncheckedCreateNestedManyWithoutTaskInput = {
@@ -12190,22 +12525,8 @@ export namespace Prisma {
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
   export type EnumTodoStatusFieldUpdateOperationsInput = {
     set?: $Enums.TodoStatus
-  }
-
-  export type UserUpdateOneWithoutCreatedTasksNestedInput = {
-    create?: XOR<UserCreateWithoutCreatedTasksInput, UserUncheckedCreateWithoutCreatedTasksInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCreatedTasksInput
-    upsert?: UserUpsertWithoutCreatedTasksInput
-    disconnect?: UserWhereInput | boolean
-    delete?: UserWhereInput | boolean
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedTasksInput, UserUpdateWithoutCreatedTasksInput>, UserUncheckedUpdateWithoutCreatedTasksInput>
   }
 
   export type CommentUpdateManyWithoutTaskNestedInput = {
@@ -12220,6 +12541,16 @@ export namespace Prisma {
     update?: CommentUpdateWithWhereUniqueWithoutTaskInput | CommentUpdateWithWhereUniqueWithoutTaskInput[]
     updateMany?: CommentUpdateManyWithWhereWithoutTaskInput | CommentUpdateManyWithWhereWithoutTaskInput[]
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+  }
+
+  export type UserUpdateOneWithoutCreatedTasksNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedTasksInput, UserUncheckedCreateWithoutCreatedTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedTasksInput
+    upsert?: UserUpsertWithoutCreatedTasksInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedTasksInput, UserUpdateWithoutCreatedTasksInput>, UserUncheckedUpdateWithoutCreatedTasksInput>
   }
 
   export type CommentUncheckedUpdateManyWithoutTaskNestedInput = {
@@ -12252,8 +12583,8 @@ export namespace Prisma {
 
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -12263,8 +12594,8 @@ export namespace Prisma {
 
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -12277,15 +12608,15 @@ export namespace Prisma {
 
   export type NestedEnumStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[]
-    notIn?: $Enums.Status[]
+    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumStatusFilter<$PrismaModel> | $Enums.Status
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -12298,15 +12629,26 @@ export namespace Prisma {
 
   export type NestedEnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[]
-    notIn?: $Enums.Role[]
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -12321,8 +12663,8 @@ export namespace Prisma {
 
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -12332,8 +12674,8 @@ export namespace Prisma {
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[]
-    notIn?: string[]
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -12349,8 +12691,8 @@ export namespace Prisma {
 
   export type NestedEnumStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[]
-    notIn?: $Enums.Status[]
+    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumStatusWithAggregatesFilter<$PrismaModel> | $Enums.Status
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumStatusFilter<$PrismaModel>
@@ -12359,8 +12701,8 @@ export namespace Prisma {
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -12376,8 +12718,8 @@ export namespace Prisma {
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -12387,25 +12729,39 @@ export namespace Prisma {
 
   export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[]
-    notIn?: $Enums.Role[]
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type NestedEnumClientStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ClientStatus | EnumClientStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ClientStatus[]
-    notIn?: $Enums.ClientStatus[]
+    in?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumClientStatusFilter<$PrismaModel> | $Enums.ClientStatus
   }
 
   export type NestedEnumClientStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ClientStatus | EnumClientStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ClientStatus[]
-    notIn?: $Enums.ClientStatus[]
+    in?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ClientStatus[] | ListEnumClientStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumClientStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClientStatus
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumClientStatusFilter<$PrismaModel>
@@ -12414,33 +12770,22 @@ export namespace Prisma {
 
   export type NestedEnumPropertyTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.PropertyType | EnumPropertyTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.PropertyType[]
-    notIn?: $Enums.PropertyType[]
+    in?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumPropertyTypeFilter<$PrismaModel> | $Enums.PropertyType
   }
 
   export type NestedEnumApartmentStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ApartmentStatus | EnumApartmentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ApartmentStatus[]
-    notIn?: $Enums.ApartmentStatus[]
+    in?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumApartmentStatusFilter<$PrismaModel> | $Enums.ApartmentStatus
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedEnumPropertyTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PropertyType | EnumPropertyTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.PropertyType[]
-    notIn?: $Enums.PropertyType[]
+    in?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyType[] | ListEnumPropertyTypeFieldRefInput<$PrismaModel>
     not?: NestedEnumPropertyTypeWithAggregatesFilter<$PrismaModel> | $Enums.PropertyType
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPropertyTypeFilter<$PrismaModel>
@@ -12449,8 +12794,8 @@ export namespace Prisma {
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -12465,8 +12810,8 @@ export namespace Prisma {
 
   export type NestedEnumApartmentStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ApartmentStatus | EnumApartmentStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ApartmentStatus[]
-    notIn?: $Enums.ApartmentStatus[]
+    in?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ApartmentStatus[] | ListEnumApartmentStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumApartmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.ApartmentStatus
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApartmentStatusFilter<$PrismaModel>
@@ -12475,8 +12820,8 @@ export namespace Prisma {
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -12491,8 +12836,8 @@ export namespace Prisma {
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -12500,92 +12845,21 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | null
-    notIn?: Date[] | string[] | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
   export type NestedEnumTodoStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TodoStatus | EnumTodoStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TodoStatus[]
-    notIn?: $Enums.TodoStatus[]
+    in?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumTodoStatusFilter<$PrismaModel> | $Enums.TodoStatus
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedEnumTodoStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TodoStatus | EnumTodoStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TodoStatus[]
-    notIn?: $Enums.TodoStatus[]
+    in?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TodoStatus[] | ListEnumTodoStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumTodoStatusWithAggregatesFilter<$PrismaModel> | $Enums.TodoStatus
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTodoStatusFilter<$PrismaModel>
     _max?: NestedEnumTodoStatusFilter<$PrismaModel>
-  }
-
-  export type ClientCreateWithoutCreatedByInput = {
-    name: string
-    email: string
-    phoneNumber: string
-    notes?: string | null
-    provenance: string
-    status?: $Enums.ClientStatus
-    interestedApartments?: ApartmentCreateNestedManyWithoutInterestedClientsInput
-    apartments?: ApartmentCreateNestedManyWithoutClientInput
-  }
-
-  export type ClientUncheckedCreateWithoutCreatedByInput = {
-    id?: number
-    name: string
-    email: string
-    phoneNumber: string
-    notes?: string | null
-    provenance: string
-    status?: $Enums.ClientStatus
-    interestedApartments?: ApartmentUncheckedCreateNestedManyWithoutInterestedClientsInput
-    apartments?: ApartmentUncheckedCreateNestedManyWithoutClientInput
-  }
-
-  export type ClientCreateOrConnectWithoutCreatedByInput = {
-    where: ClientWhereUniqueInput
-    create: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput>
-  }
-
-  export type ClientCreateManyCreatedByInputEnvelope = {
-    data: ClientCreateManyCreatedByInput | ClientCreateManyCreatedByInput[]
   }
 
   export type ApartmentCreateWithoutUserInput = {
@@ -12600,9 +12874,10 @@ export namespace Prisma {
     image?: string | null
     status?: $Enums.ApartmentStatus
     notes?: string | null
-    updatedAt?: Date | string | null
-    project: ProjectCreateNestedOneWithoutApartmentsInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutApartmentsInput
+    project: ProjectCreateNestedOneWithoutApartmentsInput
     interestedClients?: ClientCreateNestedManyWithoutInterestedApartmentsInput
   }
 
@@ -12621,7 +12896,8 @@ export namespace Prisma {
     notes?: string | null
     projectId: number
     clientId?: number | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     interestedClients?: ClientUncheckedCreateNestedManyWithoutInterestedApartmentsInput
   }
 
@@ -12632,6 +12908,44 @@ export namespace Prisma {
 
   export type ApartmentCreateManyUserInputEnvelope = {
     data: ApartmentCreateManyUserInput | ApartmentCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClientCreateWithoutCreatedByInput = {
+    name: string
+    email: string
+    phoneNumber: string
+    notes?: string | null
+    provenance: string
+    status?: $Enums.ClientStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    apartments?: ApartmentCreateNestedManyWithoutClientInput
+    interestedApartments?: ApartmentCreateNestedManyWithoutInterestedClientsInput
+  }
+
+  export type ClientUncheckedCreateWithoutCreatedByInput = {
+    id?: number
+    name: string
+    email: string
+    phoneNumber: string
+    notes?: string | null
+    provenance: string
+    status?: $Enums.ClientStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    apartments?: ApartmentUncheckedCreateNestedManyWithoutClientInput
+    interestedApartments?: ApartmentUncheckedCreateNestedManyWithoutInterestedClientsInput
+  }
+
+  export type ClientCreateOrConnectWithoutCreatedByInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ClientCreateManyCreatedByInputEnvelope = {
+    data: ClientCreateManyCreatedByInput | ClientCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
   }
 
   export type TaskCreateWithoutCreatedByInput = {
@@ -12662,36 +12976,7 @@ export namespace Prisma {
 
   export type TaskCreateManyCreatedByInputEnvelope = {
     data: TaskCreateManyCreatedByInput | TaskCreateManyCreatedByInput[]
-  }
-
-  export type ClientUpsertWithWhereUniqueWithoutCreatedByInput = {
-    where: ClientWhereUniqueInput
-    update: XOR<ClientUpdateWithoutCreatedByInput, ClientUncheckedUpdateWithoutCreatedByInput>
-    create: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput>
-  }
-
-  export type ClientUpdateWithWhereUniqueWithoutCreatedByInput = {
-    where: ClientWhereUniqueInput
-    data: XOR<ClientUpdateWithoutCreatedByInput, ClientUncheckedUpdateWithoutCreatedByInput>
-  }
-
-  export type ClientUpdateManyWithWhereWithoutCreatedByInput = {
-    where: ClientScalarWhereInput
-    data: XOR<ClientUpdateManyMutationInput, ClientUncheckedUpdateManyWithoutCreatedByInput>
-  }
-
-  export type ClientScalarWhereInput = {
-    AND?: ClientScalarWhereInput | ClientScalarWhereInput[]
-    OR?: ClientScalarWhereInput[]
-    NOT?: ClientScalarWhereInput | ClientScalarWhereInput[]
-    id?: IntFilter<"Client"> | number
-    name?: StringFilter<"Client"> | string
-    email?: StringFilter<"Client"> | string
-    phoneNumber?: StringFilter<"Client"> | string
-    notes?: StringNullableFilter<"Client"> | string | null
-    provenance?: StringFilter<"Client"> | string
-    status?: EnumClientStatusFilter<"Client"> | $Enums.ClientStatus
-    createdById?: IntFilter<"Client"> | number
+    skipDuplicates?: boolean
   }
 
   export type ApartmentUpsertWithWhereUniqueWithoutUserInput = {
@@ -12729,7 +13014,40 @@ export namespace Prisma {
     projectId?: IntFilter<"Apartment"> | number
     clientId?: IntNullableFilter<"Apartment"> | number | null
     userId?: IntNullableFilter<"Apartment"> | number | null
-    updatedAt?: DateTimeNullableFilter<"Apartment"> | Date | string | null
+    createdAt?: DateTimeFilter<"Apartment"> | Date | string
+    updatedAt?: DateTimeFilter<"Apartment"> | Date | string
+  }
+
+  export type ClientUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: ClientWhereUniqueInput
+    update: XOR<ClientUpdateWithoutCreatedByInput, ClientUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<ClientCreateWithoutCreatedByInput, ClientUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type ClientUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: ClientWhereUniqueInput
+    data: XOR<ClientUpdateWithoutCreatedByInput, ClientUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type ClientUpdateManyWithWhereWithoutCreatedByInput = {
+    where: ClientScalarWhereInput
+    data: XOR<ClientUpdateManyMutationInput, ClientUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type ClientScalarWhereInput = {
+    AND?: ClientScalarWhereInput | ClientScalarWhereInput[]
+    OR?: ClientScalarWhereInput[]
+    NOT?: ClientScalarWhereInput | ClientScalarWhereInput[]
+    id?: IntFilter<"Client"> | number
+    name?: StringFilter<"Client"> | string
+    email?: StringFilter<"Client"> | string
+    phoneNumber?: StringFilter<"Client"> | string
+    notes?: StringNullableFilter<"Client"> | string | null
+    provenance?: StringFilter<"Client"> | string
+    status?: EnumClientStatusFilter<"Client"> | $Enums.ClientStatus
+    createdById?: IntFilter<"Client"> | number
+    createdAt?: DateTimeFilter<"Client"> | Date | string
+    updatedAt?: DateTimeFilter<"Client"> | Date | string
   }
 
   export type TaskUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -12762,6 +13080,55 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Task"> | Date | string
   }
 
+  export type ApartmentCreateWithoutClientInput = {
+    number: number
+    floor: number
+    type?: $Enums.PropertyType
+    area: number
+    threeDViewUrl?: string | null
+    price: number
+    pricePerM2: number
+    zone: string
+    image?: string | null
+    status?: $Enums.ApartmentStatus
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    project: ProjectCreateNestedOneWithoutApartmentsInput
+    user?: UserCreateNestedOneWithoutApartmentsInput
+    interestedClients?: ClientCreateNestedManyWithoutInterestedApartmentsInput
+  }
+
+  export type ApartmentUncheckedCreateWithoutClientInput = {
+    id?: number
+    number: number
+    floor: number
+    type?: $Enums.PropertyType
+    area: number
+    threeDViewUrl?: string | null
+    price: number
+    pricePerM2: number
+    zone: string
+    image?: string | null
+    status?: $Enums.ApartmentStatus
+    notes?: string | null
+    projectId: number
+    userId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    interestedClients?: ClientUncheckedCreateNestedManyWithoutInterestedApartmentsInput
+  }
+
+  export type ApartmentCreateOrConnectWithoutClientInput = {
+    where: ApartmentWhereUniqueInput
+    create: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput>
+  }
+
+  export type ApartmentCreateManyClientInputEnvelope = {
+    data: ApartmentCreateManyClientInput | ApartmentCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserCreateWithoutClientsInput = {
     name: string
     email: string
@@ -12770,6 +13137,8 @@ export namespace Prisma {
     notes?: string | null
     role?: $Enums.Role
     passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentCreateNestedManyWithoutUserInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
   }
@@ -12783,6 +13152,8 @@ export namespace Prisma {
     notes?: string | null
     role?: $Enums.Role
     passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentUncheckedCreateNestedManyWithoutUserInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -12804,9 +13175,10 @@ export namespace Prisma {
     image?: string | null
     status?: $Enums.ApartmentStatus
     notes?: string | null
-    updatedAt?: Date | string | null
-    project: ProjectCreateNestedOneWithoutApartmentsInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutApartmentsInput
+    project: ProjectCreateNestedOneWithoutApartmentsInput
     user?: UserCreateNestedOneWithoutApartmentsInput
   }
 
@@ -12826,7 +13198,8 @@ export namespace Prisma {
     projectId: number
     clientId?: number | null
     userId?: number | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ApartmentCreateOrConnectWithoutInterestedClientsInput = {
@@ -12834,50 +13207,20 @@ export namespace Prisma {
     create: XOR<ApartmentCreateWithoutInterestedClientsInput, ApartmentUncheckedCreateWithoutInterestedClientsInput>
   }
 
-  export type ApartmentCreateWithoutClientInput = {
-    number: number
-    floor: number
-    type?: $Enums.PropertyType
-    area: number
-    threeDViewUrl?: string | null
-    price: number
-    pricePerM2: number
-    zone: string
-    image?: string | null
-    status?: $Enums.ApartmentStatus
-    notes?: string | null
-    updatedAt?: Date | string | null
-    project: ProjectCreateNestedOneWithoutApartmentsInput
-    user?: UserCreateNestedOneWithoutApartmentsInput
-    interestedClients?: ClientCreateNestedManyWithoutInterestedApartmentsInput
-  }
-
-  export type ApartmentUncheckedCreateWithoutClientInput = {
-    id?: number
-    number: number
-    floor: number
-    type?: $Enums.PropertyType
-    area: number
-    threeDViewUrl?: string | null
-    price: number
-    pricePerM2: number
-    zone: string
-    image?: string | null
-    status?: $Enums.ApartmentStatus
-    notes?: string | null
-    projectId: number
-    userId?: number | null
-    updatedAt?: Date | string | null
-    interestedClients?: ClientUncheckedCreateNestedManyWithoutInterestedApartmentsInput
-  }
-
-  export type ApartmentCreateOrConnectWithoutClientInput = {
+  export type ApartmentUpsertWithWhereUniqueWithoutClientInput = {
     where: ApartmentWhereUniqueInput
+    update: XOR<ApartmentUpdateWithoutClientInput, ApartmentUncheckedUpdateWithoutClientInput>
     create: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput>
   }
 
-  export type ApartmentCreateManyClientInputEnvelope = {
-    data: ApartmentCreateManyClientInput | ApartmentCreateManyClientInput[]
+  export type ApartmentUpdateWithWhereUniqueWithoutClientInput = {
+    where: ApartmentWhereUniqueInput
+    data: XOR<ApartmentUpdateWithoutClientInput, ApartmentUncheckedUpdateWithoutClientInput>
+  }
+
+  export type ApartmentUpdateManyWithWhereWithoutClientInput = {
+    where: ApartmentScalarWhereInput
+    data: XOR<ApartmentUpdateManyMutationInput, ApartmentUncheckedUpdateManyWithoutClientInput>
   }
 
   export type UserUpsertWithoutClientsInput = {
@@ -12899,6 +13242,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUpdateManyWithoutUserNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
   }
@@ -12912,6 +13257,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUncheckedUpdateManyWithoutUserNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -12932,22 +13279,6 @@ export namespace Prisma {
     data: XOR<ApartmentUpdateManyMutationInput, ApartmentUncheckedUpdateManyWithoutInterestedClientsInput>
   }
 
-  export type ApartmentUpsertWithWhereUniqueWithoutClientInput = {
-    where: ApartmentWhereUniqueInput
-    update: XOR<ApartmentUpdateWithoutClientInput, ApartmentUncheckedUpdateWithoutClientInput>
-    create: XOR<ApartmentCreateWithoutClientInput, ApartmentUncheckedCreateWithoutClientInput>
-  }
-
-  export type ApartmentUpdateWithWhereUniqueWithoutClientInput = {
-    where: ApartmentWhereUniqueInput
-    data: XOR<ApartmentUpdateWithoutClientInput, ApartmentUncheckedUpdateWithoutClientInput>
-  }
-
-  export type ApartmentUpdateManyWithWhereWithoutClientInput = {
-    where: ApartmentScalarWhereInput
-    data: XOR<ApartmentUpdateManyMutationInput, ApartmentUncheckedUpdateManyWithoutClientInput>
-  }
-
   export type ApartmentCreateWithoutProjectInput = {
     number: number
     floor: number
@@ -12960,7 +13291,8 @@ export namespace Prisma {
     image?: string | null
     status?: $Enums.ApartmentStatus
     notes?: string | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     client?: ClientCreateNestedOneWithoutApartmentsInput
     user?: UserCreateNestedOneWithoutApartmentsInput
     interestedClients?: ClientCreateNestedManyWithoutInterestedApartmentsInput
@@ -12981,7 +13313,8 @@ export namespace Prisma {
     notes?: string | null
     clientId?: number | null
     userId?: number | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
     interestedClients?: ClientUncheckedCreateNestedManyWithoutInterestedApartmentsInput
   }
 
@@ -12992,6 +13325,7 @@ export namespace Prisma {
 
   export type ApartmentCreateManyProjectInputEnvelope = {
     data: ApartmentCreateManyProjectInput | ApartmentCreateManyProjectInput[]
+    skipDuplicates?: boolean
   }
 
   export type ApartmentUpsertWithWhereUniqueWithoutProjectInput = {
@@ -13010,30 +13344,6 @@ export namespace Prisma {
     data: XOR<ApartmentUpdateManyMutationInput, ApartmentUncheckedUpdateManyWithoutProjectInput>
   }
 
-  export type ProjectCreateWithoutApartmentsInput = {
-    name: string
-    image?: string | null
-    address: string
-    totalSurface: number
-    numberOfApartments: number
-    notes?: string | null
-  }
-
-  export type ProjectUncheckedCreateWithoutApartmentsInput = {
-    id?: number
-    name: string
-    image?: string | null
-    address: string
-    totalSurface: number
-    numberOfApartments: number
-    notes?: string | null
-  }
-
-  export type ProjectCreateOrConnectWithoutApartmentsInput = {
-    where: ProjectWhereUniqueInput
-    create: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
-  }
-
   export type ClientCreateWithoutApartmentsInput = {
     name: string
     email: string
@@ -13041,6 +13351,8 @@ export namespace Prisma {
     notes?: string | null
     provenance: string
     status?: $Enums.ClientStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutClientsInput
     interestedApartments?: ApartmentCreateNestedManyWithoutInterestedClientsInput
   }
@@ -13054,12 +13366,42 @@ export namespace Prisma {
     provenance: string
     status?: $Enums.ClientStatus
     createdById: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
     interestedApartments?: ApartmentUncheckedCreateNestedManyWithoutInterestedClientsInput
   }
 
   export type ClientCreateOrConnectWithoutApartmentsInput = {
     where: ClientWhereUniqueInput
     create: XOR<ClientCreateWithoutApartmentsInput, ClientUncheckedCreateWithoutApartmentsInput>
+  }
+
+  export type ProjectCreateWithoutApartmentsInput = {
+    name: string
+    image?: string | null
+    address: string
+    totalSurface: number
+    numberOfApartments: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectUncheckedCreateWithoutApartmentsInput = {
+    id?: number
+    name: string
+    image?: string | null
+    address: string
+    totalSurface: number
+    numberOfApartments: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ProjectCreateOrConnectWithoutApartmentsInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
   }
 
   export type UserCreateWithoutApartmentsInput = {
@@ -13070,6 +13412,8 @@ export namespace Prisma {
     notes?: string | null
     role?: $Enums.Role
     passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     clients?: ClientCreateNestedManyWithoutCreatedByInput
     createdTasks?: TaskCreateNestedManyWithoutCreatedByInput
   }
@@ -13083,6 +13427,8 @@ export namespace Prisma {
     notes?: string | null
     role?: $Enums.Role
     passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     clients?: ClientUncheckedCreateNestedManyWithoutCreatedByInput
     createdTasks?: TaskUncheckedCreateNestedManyWithoutCreatedByInput
   }
@@ -13099,8 +13445,10 @@ export namespace Prisma {
     notes?: string | null
     provenance: string
     status?: $Enums.ClientStatus
-    createdBy: UserCreateNestedOneWithoutClientsInput
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentCreateNestedManyWithoutClientInput
+    createdBy: UserCreateNestedOneWithoutClientsInput
   }
 
   export type ClientUncheckedCreateWithoutInterestedApartmentsInput = {
@@ -13112,42 +13460,14 @@ export namespace Prisma {
     provenance: string
     status?: $Enums.ClientStatus
     createdById: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
     apartments?: ApartmentUncheckedCreateNestedManyWithoutClientInput
   }
 
   export type ClientCreateOrConnectWithoutInterestedApartmentsInput = {
     where: ClientWhereUniqueInput
     create: XOR<ClientCreateWithoutInterestedApartmentsInput, ClientUncheckedCreateWithoutInterestedApartmentsInput>
-  }
-
-  export type ProjectUpsertWithoutApartmentsInput = {
-    update: XOR<ProjectUpdateWithoutApartmentsInput, ProjectUncheckedUpdateWithoutApartmentsInput>
-    create: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
-    where?: ProjectWhereInput
-  }
-
-  export type ProjectUpdateToOneWithWhereWithoutApartmentsInput = {
-    where?: ProjectWhereInput
-    data: XOR<ProjectUpdateWithoutApartmentsInput, ProjectUncheckedUpdateWithoutApartmentsInput>
-  }
-
-  export type ProjectUpdateWithoutApartmentsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: StringFieldUpdateOperationsInput | string
-    totalSurface?: IntFieldUpdateOperationsInput | number
-    numberOfApartments?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ProjectUncheckedUpdateWithoutApartmentsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: StringFieldUpdateOperationsInput | string
-    totalSurface?: IntFieldUpdateOperationsInput | number
-    numberOfApartments?: IntFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ClientUpsertWithoutApartmentsInput = {
@@ -13168,6 +13488,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutClientsNestedInput
     interestedApartments?: ApartmentUpdateManyWithoutInterestedClientsNestedInput
   }
@@ -13181,7 +13503,43 @@ export namespace Prisma {
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
     createdById?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interestedApartments?: ApartmentUncheckedUpdateManyWithoutInterestedClientsNestedInput
+  }
+
+  export type ProjectUpsertWithoutApartmentsInput = {
+    update: XOR<ProjectUpdateWithoutApartmentsInput, ProjectUncheckedUpdateWithoutApartmentsInput>
+    create: XOR<ProjectCreateWithoutApartmentsInput, ProjectUncheckedCreateWithoutApartmentsInput>
+    where?: ProjectWhereInput
+  }
+
+  export type ProjectUpdateToOneWithWhereWithoutApartmentsInput = {
+    where?: ProjectWhereInput
+    data: XOR<ProjectUpdateWithoutApartmentsInput, ProjectUncheckedUpdateWithoutApartmentsInput>
+  }
+
+  export type ProjectUpdateWithoutApartmentsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    totalSurface?: IntFieldUpdateOperationsInput | number
+    numberOfApartments?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProjectUncheckedUpdateWithoutApartmentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: StringFieldUpdateOperationsInput | string
+    totalSurface?: IntFieldUpdateOperationsInput | number
+    numberOfApartments?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUpsertWithoutApartmentsInput = {
@@ -13203,6 +13561,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clients?: ClientUpdateManyWithoutCreatedByNestedInput
     createdTasks?: TaskUpdateManyWithoutCreatedByNestedInput
   }
@@ -13216,6 +13576,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clients?: ClientUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTasks?: TaskUncheckedUpdateManyWithoutCreatedByNestedInput
   }
@@ -13236,36 +13598,6 @@ export namespace Prisma {
     data: XOR<ClientUpdateManyMutationInput, ClientUncheckedUpdateManyWithoutInterestedApartmentsInput>
   }
 
-  export type UserCreateWithoutCreatedTasksInput = {
-    name: string
-    email: string
-    phoneNumber: string
-    status?: $Enums.Status
-    notes?: string | null
-    role?: $Enums.Role
-    passwordHash: string
-    clients?: ClientCreateNestedManyWithoutCreatedByInput
-    apartments?: ApartmentCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutCreatedTasksInput = {
-    id?: number
-    name: string
-    email: string
-    phoneNumber: string
-    status?: $Enums.Status
-    notes?: string | null
-    role?: $Enums.Role
-    passwordHash: string
-    clients?: ClientUncheckedCreateNestedManyWithoutCreatedByInput
-    apartments?: ApartmentUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutCreatedTasksInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCreatedTasksInput, UserUncheckedCreateWithoutCreatedTasksInput>
-  }
-
   export type CommentCreateWithoutTaskInput = {
     content: string
     createdAt?: Date | string
@@ -13284,42 +13616,41 @@ export namespace Prisma {
 
   export type CommentCreateManyTaskInputEnvelope = {
     data: CommentCreateManyTaskInput | CommentCreateManyTaskInput[]
+    skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithoutCreatedTasksInput = {
-    update: XOR<UserUpdateWithoutCreatedTasksInput, UserUncheckedUpdateWithoutCreatedTasksInput>
+  export type UserCreateWithoutCreatedTasksInput = {
+    name: string
+    email: string
+    phoneNumber: string
+    status?: $Enums.Status
+    notes?: string | null
+    role?: $Enums.Role
+    passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    apartments?: ApartmentCreateNestedManyWithoutUserInput
+    clients?: ClientCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedTasksInput = {
+    id?: number
+    name: string
+    email: string
+    phoneNumber: string
+    status?: $Enums.Status
+    notes?: string | null
+    role?: $Enums.Role
+    passwordHash: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    apartments?: ApartmentUncheckedCreateNestedManyWithoutUserInput
+    clients?: ClientUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedTasksInput = {
+    where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCreatedTasksInput, UserUncheckedCreateWithoutCreatedTasksInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutCreatedTasksInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCreatedTasksInput, UserUncheckedUpdateWithoutCreatedTasksInput>
-  }
-
-  export type UserUpdateWithoutCreatedTasksInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    clients?: ClientUpdateManyWithoutCreatedByNestedInput
-    apartments?: ApartmentUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutCreatedTasksInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    passwordHash?: StringFieldUpdateOperationsInput | string
-    clients?: ClientUncheckedUpdateManyWithoutCreatedByNestedInput
-    apartments?: ApartmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CommentUpsertWithWhereUniqueWithoutTaskInput = {
@@ -13346,6 +13677,46 @@ export namespace Prisma {
     content?: StringFilter<"Comment"> | string
     taskId?: IntFilter<"Comment"> | number
     createdAt?: DateTimeFilter<"Comment"> | Date | string
+  }
+
+  export type UserUpsertWithoutCreatedTasksInput = {
+    update: XOR<UserUpdateWithoutCreatedTasksInput, UserUncheckedUpdateWithoutCreatedTasksInput>
+    create: XOR<UserCreateWithoutCreatedTasksInput, UserUncheckedCreateWithoutCreatedTasksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedTasksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedTasksInput, UserUncheckedUpdateWithoutCreatedTasksInput>
+  }
+
+  export type UserUpdateWithoutCreatedTasksInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apartments?: ApartmentUpdateManyWithoutUserNestedInput
+    clients?: ClientUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedTasksInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apartments?: ApartmentUncheckedUpdateManyWithoutUserNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type TaskCreateWithoutCommentsInput = {
@@ -13406,16 +13777,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ClientCreateManyCreatedByInput = {
-    id?: number
-    name: string
-    email: string
-    phoneNumber: string
-    notes?: string | null
-    provenance: string
-    status?: $Enums.ClientStatus
-  }
-
   export type ApartmentCreateManyUserInput = {
     id?: number
     number: number
@@ -13431,7 +13792,20 @@ export namespace Prisma {
     notes?: string | null
     projectId: number
     clientId?: number | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientCreateManyCreatedByInput = {
+    id?: number
+    name: string
+    email: string
+    phoneNumber: string
+    notes?: string | null
+    provenance: string
+    status?: $Enums.ClientStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type TaskCreateManyCreatedByInput = {
@@ -13442,39 +13816,6 @@ export namespace Prisma {
     status?: $Enums.TodoStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-  }
-
-  export type ClientUpdateWithoutCreatedByInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    provenance?: StringFieldUpdateOperationsInput | string
-    status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
-    interestedApartments?: ApartmentUpdateManyWithoutInterestedClientsNestedInput
-    apartments?: ApartmentUpdateManyWithoutClientNestedInput
-  }
-
-  export type ClientUncheckedUpdateWithoutCreatedByInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    provenance?: StringFieldUpdateOperationsInput | string
-    status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
-    interestedApartments?: ApartmentUncheckedUpdateManyWithoutInterestedClientsNestedInput
-    apartments?: ApartmentUncheckedUpdateManyWithoutClientNestedInput
-  }
-
-  export type ClientUncheckedUpdateManyWithoutCreatedByInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phoneNumber?: StringFieldUpdateOperationsInput | string
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    provenance?: StringFieldUpdateOperationsInput | string
-    status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
   }
 
   export type ApartmentUpdateWithoutUserInput = {
@@ -13489,9 +13830,10 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    project?: ProjectUpdateOneRequiredWithoutApartmentsNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutApartmentsNestedInput
+    project?: ProjectUpdateOneRequiredWithoutApartmentsNestedInput
     interestedClients?: ClientUpdateManyWithoutInterestedApartmentsNestedInput
   }
 
@@ -13510,7 +13852,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interestedClients?: ClientUncheckedUpdateManyWithoutInterestedApartmentsNestedInput
   }
 
@@ -13529,7 +13872,47 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: IntFieldUpdateOperationsInput | number
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClientUpdateWithoutCreatedByInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    provenance?: StringFieldUpdateOperationsInput | string
+    status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apartments?: ApartmentUpdateManyWithoutClientNestedInput
+    interestedApartments?: ApartmentUpdateManyWithoutInterestedClientsNestedInput
+  }
+
+  export type ClientUncheckedUpdateWithoutCreatedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    provenance?: StringFieldUpdateOperationsInput | string
+    status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    apartments?: ApartmentUncheckedUpdateManyWithoutClientNestedInput
+    interestedApartments?: ApartmentUncheckedUpdateManyWithoutInterestedClientsNestedInput
+  }
+
+  export type ClientUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    provenance?: StringFieldUpdateOperationsInput | string
+    status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskUpdateWithoutCreatedByInput = {
@@ -13578,63 +13961,8 @@ export namespace Prisma {
     notes?: string | null
     projectId: number
     userId?: number | null
-    updatedAt?: Date | string | null
-  }
-
-  export type ApartmentUpdateWithoutInterestedClientsInput = {
-    number?: IntFieldUpdateOperationsInput | number
-    floor?: IntFieldUpdateOperationsInput | number
-    type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
-    area?: FloatFieldUpdateOperationsInput | number
-    threeDViewUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    pricePerM2?: FloatFieldUpdateOperationsInput | number
-    zone?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    project?: ProjectUpdateOneRequiredWithoutApartmentsNestedInput
-    client?: ClientUpdateOneWithoutApartmentsNestedInput
-    user?: UserUpdateOneWithoutApartmentsNestedInput
-  }
-
-  export type ApartmentUncheckedUpdateWithoutInterestedClientsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    number?: IntFieldUpdateOperationsInput | number
-    floor?: IntFieldUpdateOperationsInput | number
-    type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
-    area?: FloatFieldUpdateOperationsInput | number
-    threeDViewUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    pricePerM2?: FloatFieldUpdateOperationsInput | number
-    zone?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: IntFieldUpdateOperationsInput | number
-    clientId?: NullableIntFieldUpdateOperationsInput | number | null
-    userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  }
-
-  export type ApartmentUncheckedUpdateManyWithoutInterestedClientsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    number?: IntFieldUpdateOperationsInput | number
-    floor?: IntFieldUpdateOperationsInput | number
-    type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
-    area?: FloatFieldUpdateOperationsInput | number
-    threeDViewUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    price?: FloatFieldUpdateOperationsInput | number
-    pricePerM2?: FloatFieldUpdateOperationsInput | number
-    zone?: StringFieldUpdateOperationsInput | string
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    projectId?: IntFieldUpdateOperationsInput | number
-    clientId?: NullableIntFieldUpdateOperationsInput | number | null
-    userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ApartmentUpdateWithoutClientInput = {
@@ -13649,7 +13977,8 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     project?: ProjectUpdateOneRequiredWithoutApartmentsNestedInput
     user?: UserUpdateOneWithoutApartmentsNestedInput
     interestedClients?: ClientUpdateManyWithoutInterestedApartmentsNestedInput
@@ -13670,7 +13999,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: IntFieldUpdateOperationsInput | number
     userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interestedClients?: ClientUncheckedUpdateManyWithoutInterestedApartmentsNestedInput
   }
 
@@ -13689,7 +14019,67 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     projectId?: IntFieldUpdateOperationsInput | number
     userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApartmentUpdateWithoutInterestedClientsInput = {
+    number?: IntFieldUpdateOperationsInput | number
+    floor?: IntFieldUpdateOperationsInput | number
+    type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    area?: FloatFieldUpdateOperationsInput | number
+    threeDViewUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    pricePerM2?: FloatFieldUpdateOperationsInput | number
+    zone?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: ClientUpdateOneWithoutApartmentsNestedInput
+    project?: ProjectUpdateOneRequiredWithoutApartmentsNestedInput
+    user?: UserUpdateOneWithoutApartmentsNestedInput
+  }
+
+  export type ApartmentUncheckedUpdateWithoutInterestedClientsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    number?: IntFieldUpdateOperationsInput | number
+    floor?: IntFieldUpdateOperationsInput | number
+    type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    area?: FloatFieldUpdateOperationsInput | number
+    threeDViewUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    pricePerM2?: FloatFieldUpdateOperationsInput | number
+    zone?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: IntFieldUpdateOperationsInput | number
+    clientId?: NullableIntFieldUpdateOperationsInput | number | null
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApartmentUncheckedUpdateManyWithoutInterestedClientsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    number?: IntFieldUpdateOperationsInput | number
+    floor?: IntFieldUpdateOperationsInput | number
+    type?: EnumPropertyTypeFieldUpdateOperationsInput | $Enums.PropertyType
+    area?: FloatFieldUpdateOperationsInput | number
+    threeDViewUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    price?: FloatFieldUpdateOperationsInput | number
+    pricePerM2?: FloatFieldUpdateOperationsInput | number
+    zone?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    projectId?: IntFieldUpdateOperationsInput | number
+    clientId?: NullableIntFieldUpdateOperationsInput | number | null
+    userId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ApartmentCreateManyProjectInput = {
@@ -13707,7 +14097,8 @@ export namespace Prisma {
     notes?: string | null
     clientId?: number | null
     userId?: number | null
-    updatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ApartmentUpdateWithoutProjectInput = {
@@ -13722,7 +14113,8 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumApartmentStatusFieldUpdateOperationsInput | $Enums.ApartmentStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutApartmentsNestedInput
     user?: UserUpdateOneWithoutApartmentsNestedInput
     interestedClients?: ClientUpdateManyWithoutInterestedApartmentsNestedInput
@@ -13743,7 +14135,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     interestedClients?: ClientUncheckedUpdateManyWithoutInterestedApartmentsNestedInput
   }
 
@@ -13762,7 +14155,8 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     clientId?: NullableIntFieldUpdateOperationsInput | number | null
     userId?: NullableIntFieldUpdateOperationsInput | number | null
-    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ClientUpdateWithoutInterestedApartmentsInput = {
@@ -13772,8 +14166,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
-    createdBy?: UserUpdateOneRequiredWithoutClientsNestedInput
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUpdateManyWithoutClientNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutClientsNestedInput
   }
 
   export type ClientUncheckedUpdateWithoutInterestedApartmentsInput = {
@@ -13785,6 +14181,8 @@ export namespace Prisma {
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
     createdById?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     apartments?: ApartmentUncheckedUpdateManyWithoutClientNestedInput
   }
 
@@ -13797,6 +14195,8 @@ export namespace Prisma {
     provenance?: StringFieldUpdateOperationsInput | string
     status?: EnumClientStatusFieldUpdateOperationsInput | $Enums.ClientStatus
     createdById?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommentCreateManyTaskInput = {
