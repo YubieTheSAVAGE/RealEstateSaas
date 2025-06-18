@@ -1,6 +1,5 @@
 node_modules
 .env
-prisma/migrations
 to.do
 uploads/
 seed-admin.js
