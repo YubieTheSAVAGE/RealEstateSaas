@@ -92,22 +92,22 @@ const handleSave = async () => {
     { 
       field: 'name', 
       test: (v: string) => !v.trim(), 
-      message: "Project name is required" 
+      message: "le nom du projet est requis" 
     },
     { 
       field: 'numberOfApartments', 
       test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0,
-      message: "Number of properties is required and must be a positive integer"
+      message: "le nombre de propriétés est requis et doit être un entier positif"
     },
     { 
       field: 'totalSurface', 
       test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0,
-      message: "Total surface is required and must be a positive number"
+      message: "la surface totale est requise et doit être un nombre positif"
     },
     { 
       field: 'address', 
       test: (v: string) => !v.trim(), 
-      message: "Address is required" 
+      message: "l'adresse est requise" 
     }
   ];
 
@@ -205,7 +205,7 @@ const handleSave = async () => {
               <Input
                 name="name"
                 type="text"
-                placeholder="Project Name"
+                placeholder="le nom du projet"
                 onChange={handleChange}
               />
               {errors.name && (

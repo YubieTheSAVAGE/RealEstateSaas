@@ -10,6 +10,8 @@ import { Task } from "../kanban/types/types";
 import { formatNotificationDate, formatNotificationTime } from "../notifications/formatters";
 import { updateTask as updateTaskAPI, addComment as addCommentAPI, getTaskComments } from './taskDetailActions';
 import { TrashIcon } from "lucide-react";
+import { deleteTask } from "./deleteTask";
+import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 
 // Define a Comment type based on the Prisma schema
 interface Comment {
@@ -321,8 +323,22 @@ export default function TaskDetailModal({
           >
             Annuler
           </button>
-            <button
+          <span className="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+            <DeleteModal
+              itemId={String(task.id)}
+              heading="Supprimer la tâche"
+              description="Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible."
+              onDelete={() => {
+                deleteTask(String(task.id));
+                onClose(); // Close modal after deletion
+
+              }}
+              details={false}
+            />
+          </span>
+          {/* <button
             onClick={() => {
+                deleteTask(task.id);
               // Handle delete logic here
               console.log("Delete task logic goes here");
             }}
@@ -330,7 +346,7 @@ export default function TaskDetailModal({
             className="flex w-full items-center justify-center gap-1 rounded-lg border border-red-500 bg-red-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-600 hover:border-red-600 focus:ring-4 focus:ring-red-100 dark:border-red-500 dark:bg-red-500 dark:focus:ring-red-600/30 sm:w-auto"
             >
             <TrashIcon className="w-5 h-5" />
-            </button>
+          </button> */}
           <button
             onClick={handleSubmit}
             type="button"

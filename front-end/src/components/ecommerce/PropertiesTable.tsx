@@ -131,7 +131,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
                             : "error"
                       }
                     >
-                      {product.status || "Unknown"}
+                      {product.status === "AVAILABLE" ? "Disponible" : product.status === "RESERVED" ? "Réservé" : "Vendu"}
                     </Badge>
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">

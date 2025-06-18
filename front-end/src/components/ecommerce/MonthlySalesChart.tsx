@@ -87,13 +87,13 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
     xaxis: {
       categories: [
         "Jan",
-        "Feb",
+        "Fev",
         "Mar",
-        "Apr",
-        "May",
+        "Avr",
+        "Mai",
         "Jun",
         "Jul",
-        "Aug",
+        "Aoû",
         "Sep",
         "Oct",
         "Nov",

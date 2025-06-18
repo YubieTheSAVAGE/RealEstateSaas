@@ -17,7 +17,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
                         className="text-xl font-semibold text-gray-800 dark:text-white/90"
                         x-text="pageName"
                     >
-                        Project Details
+                        Détails du projet
                     </h2>
                 <Breadcrumb items={threeLayerItems} variant="withIcon" />
             </div>
