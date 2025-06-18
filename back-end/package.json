@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon src/server.js",
         "start": "node src/server.js",
-        "vercel-build": "prisma generate && prisma migrate deploy && npm run dev"
+        "vercel-build": "npx prisma generate && npx prisma migrate deploy && npm run dev"
     },
     "keywords": [],
     "author": "",
