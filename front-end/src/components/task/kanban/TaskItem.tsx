@@ -45,7 +45,16 @@ const TaskItem: React.FC<TaskItemProps> = ({
   // Handle task updates from the modal
   const handleTaskUpdate = async (updatedTask: Task) => {
     try {
-      // Call the API to update the task
+      // Check if this is a deletion
+      if (updatedTask._deleted) {
+        // For deletions, we just need to notify parent components
+        if (onTaskUpdated) {
+          onTaskUpdated(updatedTask);
+        }
+        return;
+      }
+      
+      // For normal updates, call the API
       await updateTask(updatedTask);
       
       // Update the local task state

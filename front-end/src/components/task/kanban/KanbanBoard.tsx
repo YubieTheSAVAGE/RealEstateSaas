@@ -67,9 +67,18 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({
   // Handle task updates from the modal
   const handleTaskUpdate = useCallback((updatedTask: Task) => {
     setFilteredTasks((prevTasks) => {
-      const updatedTasks = prevTasks.map((task) =>
-        task.id === updatedTask.id ? updatedTask : task
-      );
+      let updatedTasks;
+      
+      // Check if this is a deletion
+      if (updatedTask._deleted) {
+        // Filter out the deleted task
+        updatedTasks = prevTasks.filter(task => task.id !== updatedTask.id);
+      } else {
+        // Normal update - replace the task with updated version
+        updatedTasks = prevTasks.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task
+        );
+      }
 
       // Notify parent about the update
       if (onTasksUpdated) {

@@ -161,8 +161,7 @@ export default function PerformingAgents() {
                       style: "currency",
                       currency: "MAD",
                     })} */}
-                    {Math.floor(Math.random() * (900000 - 100000 + 1)) + 100000} MAD
-                  </TableCell>
+                    {Math.abs(agent.monthlySales).toFixed(2)}%                  </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {agent.monthlySales < 0 ? (
                       <Badge color="error">
@@ -172,7 +171,7 @@ export default function PerformingAgents() {
                     ) : (
                       <Badge color="success">
                         <ArrowUpIcon className="text-success-500" />
-                        {Math.abs(Math.random() * 100).toFixed(2)}%
+                        {agent.monthlySales.toFixed(2)}%
                       </Badge>
                     )}
                   </TableCell>

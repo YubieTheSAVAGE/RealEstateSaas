@@ -328,10 +328,17 @@ export default function TaskDetailModal({
               itemId={String(task.id)}
               heading="Supprimer la tâche"
               description="Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible."
-              onDelete={() => {
-                deleteTask(String(task.id));
+              onDelete={async () => {
+                const success = await deleteTask(String(task.id));
+                if (success) {
+                  // Notify the parent component that the task was deleted
+                  // Pass null or a special indicator to show the task was deleted
+                  onTaskUpdate({
+                    ...task,
+                    _deleted: true // Special flag to indicate deletion
+                  });
+                }
                 onClose(); // Close modal after deletion
-
               }}
               details={false}
             />

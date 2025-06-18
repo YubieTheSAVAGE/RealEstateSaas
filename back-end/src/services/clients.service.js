@@ -81,12 +81,18 @@ async function addNewClient(data, user) {
   // }
 
   // Process interested apartments
+  console.log("Interested apartments data:", data.interestedApartments);
   if (data.interestedApartments) {
     try {
       const interestedApartments = data.interestedApartments;
       if (Array.isArray(interestedApartments) && interestedApartments.length > 0) {
         clientData.interestedApartments = {
           connect: interestedApartments.map(apt => ({ id: parseInt(apt) }))
+        };
+      }else
+      {
+        clientData.interestedApartments = {
+          connect: interestedApartments ? [{ id: parseInt(interestedApartments) }] : [],
         };
       }
     } catch (err) {
@@ -148,12 +154,21 @@ async function updateClient(clientId, data, user) {
     provenance: data.provenance,
   };
 
-  if (data.apartmentId) {
+  console.log("Interested apartments data:", data.interestedApartments);
+  if (data.interestedApartments) {
     try {
-      const interestedApartments = data.apartmentId;
+      const interestedApartments = data.interestedApartments;
       if (Array.isArray(interestedApartments) && interestedApartments.length > 0) {
+        console.log("Updating interested apartments:", interestedApartments);
         clientData.interestedApartments = {
-          connect: interestedApartments.map(apt => ({ id: parseInt(apt) }))
+          set: [], // disconnect all existing interested apartments
+          connect: interestedApartments.map(apt => ({ id: parseInt(apt) })),
+        };
+      }else
+      {
+        clientData.interestedApartments = {
+          set: [], // disconnect all existing interested apartments if empty
+          connect: interestedApartments ? [{ id: parseInt(interestedApartments) }] : [],
         };
       }
     } catch (err) {
@@ -164,6 +179,16 @@ async function updateClient(clientId, data, user) {
   const updated = await prisma.client.update({
     where: { id: clientId },
     data: clientData,
+    include: {
+      apartments: true,
+      interestedApartments: {
+        include: {
+          project: {
+            select: { id: true, name: true }
+          }
+        }
+      },
+    }
   });
   return updated;
 }

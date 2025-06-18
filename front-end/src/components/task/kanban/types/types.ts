@@ -7,6 +7,7 @@ export interface Task {
   status: string;
   createdBy?: { name: string };
   comments: [];
+  _deleted?: boolean; // Special flag to indicate task deletion
 }
 
 export interface DropResult {

@@ -91,54 +91,39 @@ async function updateClient(request, reply) {
         .send({ error: "clientId must be a positive integer" });
     }
 
-    const data = {};
-    const allowed = ["name", "email", "phoneNumber", "status", "notes", "apartmentId"];
+    const { name, email, phoneNumber, status, notes, provenance, apartmentId } = request.body;
 
-    for (const key of allowed) {
-      if (request.body[key] !== undefined) {
-        data[key] = request.body[key];
-      }
-    }
-
-    if (Object.keys(data).length === 0) {
-      return reply
-        .code(400)
-        .send({
-          error: `At least one of ${allowed.join(", ")} must be provided`,
-        });
-    }
-
-    if (data.name !== undefined) {
-      if (typeof data.name !== "string" || data.name.trim() === "") {
+    if (name !== undefined) {
+      if (typeof name !== "string" || name.trim() === "") {
         return reply
           .code(400)
           .send({ error: "name must be a non-empty string" });
       }
-      data.name = data.name.trim();
+      // name = name.trim();
     }
-    if (data.email !== undefined && !validateEmail(data.email)) {
+    if (email !== undefined && !validateEmail(email)) {
       return reply.code(400).send({ error: "email is invalid" });
     }
     if (
-      data.phoneNumber !== undefined &&
-      !validatePhoneNumber(data.phoneNumber)
+      phoneNumber !== undefined &&
+      !validatePhoneNumber(phoneNumber)
     ) {
       return reply.code(400).send({ error: "phoneNumber is invalid" });
     }
-    if (data.status !== undefined && !ALLOWED_STATUSES.includes(data.status)) {
+    if (status !== undefined && !ALLOWED_STATUSES.includes(status)) {
       return reply
         .code(400)
         .send({
           error: `status must be one of: ${ALLOWED_STATUSES.join(", ")}`,
         });
     }
-    if (data.notes !== undefined && typeof data.notes !== "string") {
+    if (notes !== undefined && typeof notes !== "string") {
       return reply.code(400).send({ error: "notes must be a string" });
     }
 
     const updated = await clientService.updateClient(
       clientId,
-      data,
+      { name, email, phoneNumber, status, notes, provenance, interestedApartments: apartmentId },
       request.user
     );
     return reply.send(updated);
