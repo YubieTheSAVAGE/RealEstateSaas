@@ -43,7 +43,7 @@ export default function InterestTable({ ProjectDetails }: { ProjectDetails: Prop
   });
   const router = useRouter();
 
-  // Apply filters to properties
+  // Appliquer les filtres to properties
   const filteredProperties = useMemo(() => {
     return ProjectDetails.filter((property) => {
       const matchStatus =

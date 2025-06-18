@@ -87,7 +87,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
         <div className="overflow-hidden rounded-lg w-1/2">
           {!ProjectDetails.image ? (
             <div className="flex items-center justify-center h-56 bg-gray-100 dark:bg-gray-800 rounded-lg">
-              <span className="text-gray-500 dark:text-gray-400">No Image Available</span>
+              <span className="text-gray-500 dark:text-gray-400">Aucune image disponible</span>
             </div>
           ) : (
             <PhotoProvider

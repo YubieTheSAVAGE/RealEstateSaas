@@ -40,6 +40,12 @@ export default function RecentActivity() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const status ={
+    "AVAILABLE": "Disponible",
+    "RESERVED": "Réservé",
+    "SOLD": "Vendu"
+  }
+
   useEffect(() => {
     async function fetchActivities() {
       try {
@@ -279,7 +285,7 @@ export default function RecentActivity() {
                         </span>
                     // {activity.status.toLowerCase()}
                       )}
-                      {activity.status.toLowerCase()}
+                      {status[activity.status as keyof typeof status]}
                     </Badge>
                   </TableCell>
                 </TableRow>

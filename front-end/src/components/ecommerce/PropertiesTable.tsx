@@ -41,7 +41,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
     land: false,
   });
 
-  // Apply filters to properties
+  // Appliquer les filtres to properties
   const filteredProperties = useMemo(() => {
     return ProjectDetails.filter((property) => {
       const matchStatus =

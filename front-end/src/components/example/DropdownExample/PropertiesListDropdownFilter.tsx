@@ -209,7 +209,7 @@ export default function PropertiesListDropdownFilter({
               className="flex rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/5"
             >
               <Checkbox
-                label="Land"
+                label="Terrain"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
                 checked={filters.land}
                 onChange={() => handleCheckboxChange('land')}
@@ -237,13 +237,13 @@ export default function PropertiesListDropdownFilter({
             }}
             className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
           >
-            Clear all
+            Tout effacer
           </button>
           <button 
             onClick={closeDropdown}
             className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600"
           >
-            Apply Filters
+            Appliquer les filtres
           </button>
         </div>
       </Dropdown>

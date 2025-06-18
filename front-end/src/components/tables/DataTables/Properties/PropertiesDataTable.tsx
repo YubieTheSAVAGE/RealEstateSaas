@@ -23,6 +23,8 @@ import { Property } from "@/types/property";
 type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
 type SortOrder = "asc" | "desc";
 
+
+
 export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: Property[]; onRefresh?: () => void; }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -41,6 +43,17 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     "LAND": "Terrain",
     "AUTRE": "Autre",
   }
+  const status ={
+    "AVAILABLE": "Disponible",
+    "RESERVED": "Réservé",
+    "SOLD": "Vendu"
+  }
+
+  // const status = [
+  //   { value: "AVAILABLE", label: "Disponible" },
+  //   { value: "RESERVED", label: "Réservé" },
+  //   { value: "SOLD", label: "Vendu" },
+  // ]
 
 
   const [apartementsData, setApartementsData] = useState<Property[]>([]);
@@ -391,7 +404,8 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                         </span>
                         // {item.status.toLowerCase()}
                       )}
-                      {item.status.toLowerCase()}
+                      {status[item.status as keyof typeof status] || item.status}
+                      {/* {status[item.status as keyof typeof status]} */}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
