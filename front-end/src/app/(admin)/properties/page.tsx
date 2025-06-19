@@ -13,7 +13,6 @@ export default function Properties() {
         setIsLoading(true);
         // API call to fetch projects
         const data = await getApartements();
-        console.log("data", data);
         setApartementsData(data);
         setIsLoading(false);
     }, []);

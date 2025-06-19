@@ -13,12 +13,10 @@ export default async function getProperties() {
             method: "GET",
             headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }, // ✅ correct way to send JWT
         });
-        console.log("Response from getProperties:", res);
         if (!res.ok) {
             console.log("Error getting project:", res);
         }
         const data = await res.json();
-        console.log("Data from getProperties:", data);
         return data;
     } finally {
     }

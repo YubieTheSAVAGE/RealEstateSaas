@@ -118,11 +118,17 @@ async function update(apartmentId, data) {
     updateData.client = {
       disconnect: true
     };
+    updateData.user = {
+      disconnect: true
+    };
 
   } else if (data.clientId) {
     // If clientId is provided, connect to that client
     updateData.client = {
       connect: { id: parseInt(data.clientId, 10) }
+    };
+    updateData.user = {
+      connect: { id: parseInt(data.user.id, 10) }
     };
     if (data.status === "SOLD" || data.status === "RESERVED") {
       await prisma.client.update({
@@ -143,7 +149,8 @@ async function update(apartmentId, data) {
     data: updateData,
     include: {
       project: true,
-      client: true
+      client: true,
+      user: true,
     }
   });
   

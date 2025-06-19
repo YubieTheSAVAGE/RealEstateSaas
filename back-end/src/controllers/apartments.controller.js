@@ -152,8 +152,8 @@ async function updateApartment(request, reply) {
       }
     }
     let uploadedImage = null;
-    if (data.image && data.image.buffer) {
-    const { mimetype, buffer, filename } = data.image;
+    if (request.body.image && request.body.image.buffer) {
+      const { mimetype, buffer, filename } = request.body.image;
 
     const uniqueName = `${Date.now()}-${filename}`;
 
@@ -215,6 +215,7 @@ async function updateApartment(request, reply) {
       image: uploadedImage,
       zone : data.zone,
       clientId: parseInt(data.clientId, 10) || null,
+      user: request.user,
     });
     // const updated = await apartmentService.update(apartmentId, data);
     return reply.send(updated);
