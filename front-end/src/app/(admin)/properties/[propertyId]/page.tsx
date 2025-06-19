@@ -6,8 +6,8 @@ import PropertyDetails from "@/components/property/PropertyDetails";
 export default function PropertyPage({ params }: { params: Promise<{ propertyId: string }> }) {
     const { propertyId } = React.use(params);
     const threeLayerItems = [
-        { label: "Home", href: "/" },
-        { label: "Properties", href: "/properties" },
+        { label: "Accueil", href: "/" },
+        { label: "Propriétés", href: "/properties" },
         { label: propertyId },
     ];
 

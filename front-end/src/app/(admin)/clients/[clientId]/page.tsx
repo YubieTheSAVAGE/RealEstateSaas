@@ -10,7 +10,7 @@ export default async function ClientDetailsPage({ params }: { params: Promise<{ 
 
   const threeLayerItems = [
     { label: 'Accueil', href: '/' },
-    { label: 'Clients', href: '/clients' },
+    { label: 'Client', href: '/clients' },
     { label: clientId },
   ];
 

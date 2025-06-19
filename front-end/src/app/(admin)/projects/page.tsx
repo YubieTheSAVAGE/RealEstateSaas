@@ -39,7 +39,7 @@ export default function Projects() {
                     className="text-xl font-semibold text-gray-800 dark:text-white/90"
                     x-text="pageName"
                 >
-                    Projects
+                    Projets
                 </h2>
                 {userRole === "ADMIN" && (
                     <AddProjectModal onProjectAdded={fetchProjects}/>

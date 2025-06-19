@@ -211,7 +211,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
               onItemClick={toggleView}
               className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
-              {selectedView === 'count' ? 'Afficher la valeur (MAD)' : 'Show Count'}
+              {selectedView === 'count' ? 'Afficher la valeur (MAD)' : 'Afficher le nombre'}
             </DropdownItem>
             <DropdownItem
               onItemClick={closeDropdown}

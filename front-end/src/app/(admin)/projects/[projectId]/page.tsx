@@ -5,8 +5,8 @@ import React from "react";
 export default async function ProjectPage({ params }: { params: Promise<{ projectId: string }> }) {
     const { projectId } = await params;
     const threeLayerItems = [
-        { label: "Home", href: "/" },
-        { label: "Projects", href: "/projects" },
+        { label: "Accueil", href: "/" },
+        { label: "Projets", href: "/projects" },
         { label: projectId },
     ];
 

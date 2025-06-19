@@ -7,7 +7,7 @@ export default async function AgentDetailsPage({ params }: { params: Promise<{ a
   const { agentId } = await params;
 
   const threeLayerItems = [
-    { label: 'Home', href: '/' },
+    { label: 'Accueil', href: '/' },
     { label: 'Agents', href: '/agents' },
     { label: agentId },
   ];
