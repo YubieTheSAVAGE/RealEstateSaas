@@ -123,7 +123,7 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
             },
             total: {
               show: true,
-              label: "Total Sold",
+              label: "Total Vendues",
               color: "#000000",
               fontSize: "16px",
               fontWeight: "bold",
@@ -155,7 +155,7 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
       enabled: true,
       y: {
         formatter: function(value) {
-          return `${value} properties (${(value/totalSoldProperties*100).toFixed(1)}%)`;
+          return `${value} propriétés (${(value/totalSoldProperties*100).toFixed(1)}%)`;
         }
       }
     },
@@ -199,11 +199,11 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Ventes par type de propriététre note
+            Ventes par type de propriété
           </h3>
         </div>
         <div className="flex justify-center items-center h-64">
-          <p className="text-gray-500">No property data available</p>
+            <p className="text-gray-500">Aucune donnée de propriété disponible</p>
         </div>
       </div>
     );
@@ -213,7 +213,7 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
       <div className="flex items-center justify-between mb-5">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Ventes par type de propriététre note
+          Ventes par type de propriété
         </h3>
         <div className="relative h-fit">
           <button onClick={toggleDropdown} className="dropdown-toggle">

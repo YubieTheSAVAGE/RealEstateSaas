@@ -149,7 +149,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
   // Chart series data
   const series = [
     {
-      name: selectedView === 'count' ? "Sold Properties" : "Sales Value",
+      name: selectedView === 'count' ? "Propriétés vendues" : "Valeur des ventes",
       data: currentData,
     },
   ];

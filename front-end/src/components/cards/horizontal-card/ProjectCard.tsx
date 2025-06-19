@@ -174,7 +174,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
               <span className="text-gray-500 dark:text-gray-400">{ProjectDetails.totalSurface} m²</span>
               </div>
               <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-700 dark:text-gray-200">Properties:</span>
+                <span className="font-semibold text-gray-700 dark:text-gray-200">Propriétés:</span>
               <span className="text-gray-500 dark:text-gray-400">{totalSales} / {ProjectDetails.numberOfApartments}</span>
               </div>
               <div className="flex items-center gap-2">
