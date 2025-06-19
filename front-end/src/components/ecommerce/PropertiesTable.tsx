@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import PaginationWithIcon from "../ui/pagination/PaginationWitIcon";
 import { FaEye } from "react-icons/fa";
 import { Property } from "@/types/property";
+import { useRouter } from "next/navigation";
 
 const typeMap = {
   APARTMENT: "Appartement",
@@ -40,6 +41,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
     store: false,
     land: false,
   });
+  const router = useRouter();
 
   // Appliquer les filtres to properties
   const filteredProperties = useMemo(() => {
@@ -136,7 +138,7 @@ export default function PropertiesTable({ ProjectDetails }: { ProjectDetails: Pr
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     <div className="flex items-center gap-2">
-                      <button className="text-blue-500 hover:underline">
+                      <button className="text-blue-500 hover:underline" onClick={() => router.push(`/properties/${product.id}`)}>
                         <FaEye />
                       </button>
                     </div>
