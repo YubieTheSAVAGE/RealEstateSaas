@@ -8,7 +8,6 @@ import MonthlyTargetModal from "../example/ModalExample/MonthlyTargetModal";
 import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
 import getMonthlyTarget from "../example/ModalExample/getMonthlyTarget";
 
-// Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
