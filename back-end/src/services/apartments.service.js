@@ -211,62 +211,63 @@ async function getApartmentById(apartmentId) {
 }
 
 async function getMonthlyTarget() {
-  const date = new Date();
-  // If no date is provided, use current date
-  const targetDate = date ? new Date(date) : new Date();
-  
-  // Try to find a target where the provided date falls between startDate and endDate
+  const currentDate = new Date(); // Always use current system time
+
+  // Try to find a target where the current date is between startDate and endDate
   let target = await prisma.monthlyTarget.findFirst({
     where: {
-      startDate: { lte: targetDate },
-      endDate: { gte: targetDate }
-    }
+      startDate: { lte: currentDate },
+      endDate: { gte: currentDate },
+    },
   });
-  
-  // If no target found for the exact period, find the closest one
+
+  // If no exact match, find the closest target (by proximity to current date)
   if (!target) {
-    // Get all targets
     const allTargets = await prisma.monthlyTarget.findMany({
-      orderBy: { startDate: 'desc' }
+      orderBy: { startDate: 'desc' },
     });
-    
+
     if (allTargets.length > 0) {
-      // Find the closest target by date proximity
       target = allTargets.reduce((closest, current) => {
-        const currentStart = new Date(current.startDate);
-        const closestStart = closest ? new Date(closest.startDate) : null;
-        
-        // If no closest yet, use current
-        if (!closest) return current;
-        
-        // Calculate date differences
-        const currentDiff = Math.abs(currentStart.getTime() - targetDate.getTime());
-        const closestDiff = Math.abs(closestStart.getTime() - targetDate.getTime());
-        
-        // Return the closest one
+        const currentDiff = Math.abs(new Date(current.startDate).getTime() - currentDate.getTime());
+        const closestDiff = Math.abs(new Date(closest.startDate).getTime() - currentDate.getTime());
         return currentDiff < closestDiff ? current : closest;
-      }, null);
+      }, allTargets[0]); // Start with the first target as initial "closest"
     }
   }
-  
+
   return target;
 }
-
 
 async function setMonthlyTarget(target, startDate, endDate) {
   const startDateObj = new Date(startDate);
   const endDateObj = new Date(endDate);
   
+  // Check if there's a monthly target for the same month and year
   const existingTarget = await prisma.monthlyTarget.findFirst({
     where: {
-      startDate: { gte: startDateObj, lte: endDateObj },
+      startDate: {
+        gte: new Date(startDateObj.getFullYear(), startDateObj.getMonth(), 1),
+        lt: new Date(startDateObj.getFullYear(), startDateObj.getMonth() + 1, 1)
+      }
     },
   });
+
+  // If target exists for the same month, update it
   if (existingTarget) {
-    const err = new Error("Monthly target already exists for the given date range");
-    err.statusCode = 400;
-    throw err;
+    const updatedTarget = await prisma.monthlyTarget.update({
+      where: { id: existingTarget.id },
+      data: {
+        target,
+        startDate,
+        endDate,
+        updatedAt: new Date()
+      },
+    });
+    return updatedTarget;
   }
+  
+  // If no target exists for this month, create a new one
   const newTarget = await prisma.monthlyTarget.create({
     data: {
       target,
@@ -275,7 +276,6 @@ async function setMonthlyTarget(target, startDate, endDate) {
     },
   });
   return newTarget;
-
 }
 
 module.exports = {
