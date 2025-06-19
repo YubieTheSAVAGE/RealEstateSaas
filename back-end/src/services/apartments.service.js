@@ -109,6 +109,7 @@ async function update(apartmentId, data) {
     notes: data.notes !== undefined ? data.notes : existing.notes,
     pricePerM2: data.pricePerM2 ? parseFloat(data.pricePerM2) : existing.pricePerM2,
     zone: data.zone || existing.zone,
+    image: data.image || existing.image,
   };
 
   // Handle client association based on status
