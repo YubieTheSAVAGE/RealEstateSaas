@@ -4,6 +4,7 @@ import ProjectsDataTable from "@/components/tables/DataTables/Projects/ProjectsD
 import React, {useState, useEffect, useCallback} from "react";
 import getProjects from "@/components/tables/DataTables/Projects/getProperties";
 import { FallingLines } from "react-loader-spinner";
+import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
 
 export default function Projects() {
     const [projects, setProjects] = useState([]);
@@ -19,7 +20,18 @@ export default function Projects() {
     useEffect(() => {
       fetchProjects();
     }, [fetchProjects]);
-    
+
+
+    const [userRole, setUserRole] = useState<string | null>(null);
+
+    useEffect(() => {
+      const fetchUserRole = async () => {
+        const role = await getUserRoleFromToken();
+        setUserRole(role as string);
+      };
+      fetchUserRole();
+    }, []);
+
     return (
         <>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
@@ -29,7 +41,9 @@ export default function Projects() {
                 >
                     Projects
                 </h2>
-                <AddProjectModal onProjectAdded={fetchProjects}/>
+                {userRole === "ADMIN" && (
+                    <AddProjectModal onProjectAdded={fetchProjects}/>
+                )}
             </div>
             {isLoading ? (
                 <div className="flex mt-24 w-full items-center justify-center py-4">

@@ -149,7 +149,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
           <CardDescription>
             <div className="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">
               <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Type :</span> {property.type}
+                <span className="font-semibold">Type :</span> {property.type === "APARTMENT" ? "Appartement" : property.type === "VILLA" ? "Villa" : property.type === "LAND" ? "Terrain" : property.type === "DUPLEX" ? "Duplex"  : property.type === "STORE" ? "Magasin" : "Inconnu"}
               </div>
               <span className="border-b border-gray-200 dark:border-gray-700"></span>
               <div className="grid grid-cols-2 gap-2">

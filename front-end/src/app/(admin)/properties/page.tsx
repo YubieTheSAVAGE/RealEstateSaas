@@ -4,6 +4,7 @@ import PropertiesDataTable from "@/components/tables/DataTables/Properties/Prope
 import getApartements from "@/components/tables/DataTables/Properties/getApartements";
 import AddPropertyModal from "@/components/example/ModalExample/AddApartementsModal";
 import { FallingLines } from "react-loader-spinner";
+import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
 
 export default function Properties() {
     const [apartementsData, setApartementsData] = useState([]);
@@ -20,6 +21,15 @@ export default function Properties() {
     useEffect(() => {
         fetchApartements();
     }, [fetchApartements]);
+
+    const [userRole, setUserRole] = useState<string | null>(null);
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            const role = await getUserRoleFromToken();
+            setUserRole(role as string);
+        };
+        fetchUserRole();
+    }, []);
     return (
         <>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
@@ -29,7 +39,9 @@ export default function Properties() {
                 >
                     Properties
                 </h2>
-                <AddPropertyModal onApartementsAdded={fetchApartements}/>
+                {userRole === "ADMIN" && (
+                    <AddPropertyModal onApartementsAdded={fetchApartements}/>
+                )}
             </div>
             {/* <PageBreadcrumb pageTitle="Properties" /> */}
             {isLoading ? (
