@@ -32,7 +32,7 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
 
     React.useEffect(() => {
         fetchAgent();
-    });
+    }, [agentId]);
 
     const fetchApartements = async () => {
         // API call to fetch projects

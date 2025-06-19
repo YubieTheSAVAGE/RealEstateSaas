@@ -20,44 +20,40 @@ async function getTopPerformingAgents(limit = 5) {
       email: true,
       status: true,
       role: true,
-      clients: {
+      apartments: {
         select: {
           id: true,
-          apartments: {
+          price: true,
+          status: true,
+          updatedAt: true,
+          project: {
             select: {
               id: true,
-              price: true,
-              status: true,
-              updatedAt: true,
-              project: {
-                select: {
-                  id: true,
-                  name: true,
-                }
-              }
-            }
-          }
-        }
-      }
+              name: true,
+            },
+          },
+        },
+      },
     }
   });
 
   // Calculate performance metrics for each agent
   const agentsWithMetrics = agents.map(agent => {
-    const clientCount = agent.clients.length;
+    // const clientCount = agent.clients.length;
+    const apartmentCount = agent.apartments.length;
     
     // Flatten apartments across all clients
-    const allApartments = agent.clients.flatMap(client => client.apartments || []);
+    // const allApartments = agent.clients.flatMap(client => client.apartments || []);
     
     // Get sold apartments only
-    const soldApartments = allApartments.filter(apt => apt.status === 'SOLD');
+    const soldApartments = agent.apartments
     
     // Calculate total revenue from sold apartments
-    const salesRevenue = soldApartments.reduce((total, apt) => total + apt.price, 0);
+    const salesRevenue = agent.apartments.reduce((total, apt) => total + apt.price, 0);
     
     // Get most active project (project with most sales)
     const projectCounts = {};
-    soldApartments.forEach(apt => {
+    agent.apartments.forEach(apt => {
       const projectName = apt.project.name;
       projectCounts[projectName] = (projectCounts[projectName] || 0) + 1;
     });
@@ -107,7 +103,6 @@ async function getTopPerformingAgents(limit = 5) {
     return {
       id: agent.id,
       name: agent.name,
-      level: clientCount > 5 ? "Senior Agent" : "Junior Agent",
       project: topProject,
       salesRevenue,
       monthlySales,
@@ -135,6 +130,20 @@ async function findAllAgents() {
       status: true,
       notes: true,
       role: true,
+      apartments: {
+        select: {
+          id: true,
+          price: true,
+          status: true,
+          updatedAt: true,
+          project: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   })
 }

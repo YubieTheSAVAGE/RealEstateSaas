@@ -161,12 +161,12 @@ export default function PerformingAgents() {
                       style: "currency",
                       currency: "MAD",
                     })} */}
-                    {Math.abs(agent.monthlySales).toFixed(2)}%                  </TableCell>
+                    {Math.abs(agent.salesRevenue).toFixed(2)}                </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {agent.monthlySales < 0 ? (
                       <Badge color="error">
                         <ArrowDownIcon className="text-error-500" />
-                        {/* {Math.abs(agent.monthlySales).toFixed(2)}% */}
+                        {Math.abs(agent.monthlySales).toFixed(2)}%
                       </Badge>
                     ) : (
                       <Badge color="success">

@@ -6,8 +6,7 @@ import RecentActivity from "@/components/ecommerce/RecentActivity";
 import { StatsCard } from "@/components/ecommerce/StatsCard";
 import PerformingAgents from "@/components/ecommerce/TopPerformingAgents";
 import getApartements from "@/components/tables/DataTables/Properties/getApartements";
-import {getUserRoleFromToken} from "@/app/(auth)/signin/login";
-import { User } from "@/types/user";
+import {getUserRoleFromToken, getUserIdFromToken} from "@/app/(auth)/signin/login";
 import { FallingLines } from "react-loader-spinner";
 
 
@@ -27,7 +26,13 @@ export default function Ecommerce() {
             setApartementsData(data);
         }else {
             const data = await getApartements();
-            const filteredData = data.filter((item:User) => item.id.toString() === role);
+            console.log("Fetched Data:", data);
+            const userId = await getUserIdFromToken();
+            const filteredData = data.filter((apartment: { userId: string | number }) => {
+              console.log("User ID from token:", apartment.userId, userId);
+              return apartment.userId === userId;
+            });
+            console.log("Filtered Data:", filteredData);
             setApartementsData(filteredData);
         }
         setIsLoading(false);

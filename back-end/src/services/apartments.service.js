@@ -6,7 +6,8 @@ async function getAllApartments() {
     include: {
       project: true,
       client: true,
-      interestedClients: true
+      interestedClients: true,
+      user: true,
     },
   });
 }

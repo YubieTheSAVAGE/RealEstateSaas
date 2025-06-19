@@ -26,6 +26,7 @@ export interface Agent {
     area: number;
     price: number;
     status: 'AVAILABLE' | 'RESERVED' | 'SOLD';
+    updatedAt?: Date;
   }[];
   
   createdTasks?: {

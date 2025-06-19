@@ -21,10 +21,11 @@ import deleteAgents from "./deleteAgents";
 import { Agent as BaseAgent } from "@/types/Agent";
 type Agent = BaseAgent & {
   totalSales?: number;
-  monthlySales?: number;
+  monthlySalesCount?: number;
 };
 type SortKey = "id" | "name" | "email" | "phone" | "status" | "totalSales" | "monthlySales";
 type SortOrder = "asc" | "desc";
+
 
 export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agent[], onClientEdit: (id: number) => void }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,6 +48,35 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
     fetchData();
   }, [agents]); // Add agents as a dependency to re-fetch when it changes
 
+
+  useEffect(() => {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
+    
+      const agentsWithMonthlySales = agents.map(agent => {
+        if (!agent.apartments) return { ...agent, monthlySalesCount: 0 };
+    
+        // Count apartments sold this month based on updatedat
+        const monthlySalesCount = agent.apartments.reduce((count, apartment) => {
+          // Check if updatedat exists
+          if (apartment.updatedAt) {
+            const updatedDate = new Date(apartment.updatedAt);
+            const month = updatedDate.getMonth();
+            const year = updatedDate.getFullYear();
+            
+            if (month === currentMonth && year === currentYear) {
+              return count + 1; // Increment count for each apartment updated this month
+            }
+          }
+          return count;
+        }, 0);
+    
+        return { ...agent, monthlySalesCount };
+      });
+    
+      setData(agentsWithMonthlySales);
+    }, [agents]);
 
   const handleDelete = async (id: string) => {
     // Implement the delete logic here
@@ -119,7 +149,7 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="text-gray-500 dark:text-gray-400"> Afficher </span>
-          <div className="relative z-20 bg-transparent">
+          <div className="relative ./src/components/tables/DataTables/Agents/AgentsDataTable.tsxz-20 bg-transparent">
             <select
               className="w-full py-2 pl-3 pr-8 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none dark:bg-dark-900 h-9 bg-none shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
               value={itemsPerPage}
@@ -206,14 +236,14 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
                       <button className="flex flex-col gap-0.5">
                         <AngleUpIcon
                           className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "asc"
-                              ? "text-brand-500"
-                              : ""
+                            ? "text-brand-500"
+                            : ""
                             }`}
                         />
                         <AngleDownIcon
                           className={`text-gray-300 dark:text-gray-700 ${sortKey === key && sortOrder === "desc"
-                              ? "text-brand-500"
-                              : ""
+                            ? "text-brand-500"
+                            : ""
                             }`}
                         />
                       </button>
@@ -262,10 +292,10 @@ export default function AgentsDataTable({ agents, onClientEdit }: { agents: Agen
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.totalSales || 0}
+                    {item.apartments?.length || 0}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100  dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.monthlySales || 0}
+                    {item.monthlySalesCount || 0}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">

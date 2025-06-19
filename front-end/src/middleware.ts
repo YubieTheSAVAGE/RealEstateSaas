@@ -7,9 +7,6 @@ function checkRoleAccess(pathname: string, role: string): boolean {
   if (role === 'ADMIN') {
     return true;
   } else if (role === 'AGENT') {
-    console.log(`User role: ${role}`);
-    console.log(`Requested path: ${pathname}`);
-    console.log(`Agent routes: ${AgentRoutes}`);
     return AgentRoutes.some(route => pathname.startsWith(route));
   }
   return false;
@@ -53,8 +50,6 @@ export function middleware(request: NextRequest) {
 
   // Check role-based access
   const role = decoded.role;
-  console.log(`User role: ${role}`);
-  console.log(`Requested path: ${path}`);
   if (role && !checkRoleAccess(path, role)) {
     console.log(`Unauthorized access attempt by role: ${role} to path: ${path}`);
     return NextResponse.redirect(new URL('/unauthorized', request.url));

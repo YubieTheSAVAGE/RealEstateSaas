@@ -78,3 +78,18 @@ export const getUserRoleFromToken = async () => {
     return null;
   }
 }
+
+export const getUserIdFromToken = async () => {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(AUTHENTICATION_COOKIE)?.value;
+    if (!token) {
+      return null;
+    }
+    const decodedToken = jwtDecode<DecodedToken>(token);
+    return decodedToken.id;
+  } catch (error) {
+    console.error("Erreur lors du décodage du token :", error);
+    return null;
+  }
+};
