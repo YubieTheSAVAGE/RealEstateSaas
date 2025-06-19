@@ -9,7 +9,6 @@ import TextArea from "../../form/input/TextArea";
 import { Task } from "../kanban/types/types";
 import { formatNotificationDate, formatNotificationTime } from "../notifications/formatters";
 import { updateTask as updateTaskAPI, addComment as addCommentAPI, getTaskComments } from './taskDetailActions';
-import { TrashIcon } from "lucide-react";
 import { deleteTask } from "./deleteTask";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 

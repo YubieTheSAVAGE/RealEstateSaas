@@ -146,7 +146,7 @@ export default function DataTableThree() {
   );
 
   // Calculate total pages and current data slice
-  const totalEntrées= tableRowData.length;
+  const totalEntries= tableRowData.length;
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = Math.min(startIndex + rowsPerPage, totalEntries);
 

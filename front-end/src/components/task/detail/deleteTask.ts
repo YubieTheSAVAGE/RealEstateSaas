@@ -3,7 +3,6 @@
 import { API_URL } from "@/app/common/constants/api";
 import { cookies } from "next/headers";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
-import { Task } from "../kanban/types/types";
 
 export async function deleteTask(taskId: string): Promise<boolean> {
   try {

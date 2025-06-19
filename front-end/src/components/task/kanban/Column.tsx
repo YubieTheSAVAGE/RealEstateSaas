@@ -3,7 +3,6 @@ import React, { useState, useRef } from "react";
 import { Task, DropResult } from "./types/types";
 import TaskItem from "./TaskItem";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
-import { HorizontaLDots } from "@/icons";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { useDrop } from "react-dnd";
 
@@ -26,9 +25,6 @@ const Column: React.FC<ColumnProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
   function closeDropdown() {
     setIsOpen(false);
   }
