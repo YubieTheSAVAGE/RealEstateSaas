@@ -157,23 +157,25 @@ export default function InterestTable({ ProjectDetails }: { ProjectDetails: Prop
             )}
           </TableBody>
         </Table>
-        <div className="w-full border-t border-gray-200 dark:border-gray-800">
-          <div className="flex items-center justify-between py-4">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Page {currentPage} de {totalPages}
-            </span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Affichage de {currentData.length} sur {filteredProperties.length} propriétés
-            </span>
-          </div>
-            <div className="flex items-center justify-center py-0">
-            <PaginationWithIcon
-              totalPages={totalPages}
-              initialPage={1}
-              onPageChange={setCurrentPage}
-            />
+        {currentData.length > 0 && (
+          <div className="w-full border-t border-gray-200 dark:border-gray-800">
+            <div className="flex items-center justify-between py-4">
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Page {currentPage} de {totalPages}
+              </span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">
+                Affichage de {currentData.length} sur {filteredProperties.length} propriétés
+              </span>
             </div>
-        </div>
+              <div className="flex items-center justify-center py-0">
+              <PaginationWithIcon
+                totalPages={totalPages}
+                initialPage={1}
+                onPageChange={setCurrentPage}
+              />
+              </div>
+          </div>
+        )}
       </div>
     </div>
   );
