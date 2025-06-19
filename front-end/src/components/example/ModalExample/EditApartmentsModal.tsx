@@ -99,7 +99,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
   // State for form fields
   interface FormDataState {
     id: number | string; // Changed to number | string to handle both cases
-    floor: number;
+    floor: number | string;
     number: number;
     type: string;
     area: number;
@@ -157,7 +157,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
       { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "La superficie doit être un nombre positif ou est requise" },
       { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix doit être un nombre positif ou est requis" },
       { field: "status", test: (v: string) => !v, message: "Le statut est requis" },
-      { field: "floor", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "L'étage doit être un nombre positif ou est requis" },
+      { field: "floor", test: (v: string) => v === "" || v === undefined || v === null || isNaN(Number(v)) || Number(v) < 0, message: "L'étage est requis" },
       { field: "zone", test: (v: string) => !v, message: "La zone est requise" },
       { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix par m² doit être un nombre positif ou est requis" },
     ];

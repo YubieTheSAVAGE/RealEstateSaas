@@ -3,7 +3,7 @@ const { isPositiveInt } = require("../utils/helpers");
 
 const path = require("path");
 const fs = require("fs");
-const { client } = require("../utils/prisma");
+const { client, user } = require("../utils/prisma");
 
 const ALLOWED_TYPES = ["APARTMENT", "DUPLEX", "VILLA", "STORE", "LAND"];
 const ALLOWED_STATUSES = ["AVAILABLE", "RESERVED", "SOLD", "CANCELLED"];
@@ -112,6 +112,7 @@ async function createApartment(request, reply) {
       image: uploadedImage,
       clientId: parseInt(clientId, 10) || null,
       zone,
+      user: request.user,
     });
     return reply.code(201).send(newApartment);
   } catch (err) {
@@ -141,9 +142,15 @@ async function updateApartment(request, reply) {
       "pricePerM2",
       "zone",
       "clientId",
+      "image",
+      "user"
     ];
-    const data = {};
-
+    const data = {};    
+    for (const key of allowed) {
+      if (request.body[key] !== undefined) {
+        data[key] = request.body[key];
+      }
+    }
     let uploadedImage = null;
     if (data.image && data.image.buffer) {
     const { mimetype, buffer, filename } = data.image;
@@ -162,11 +169,6 @@ async function updateApartment(request, reply) {
     await fs.promises.writeFile(dest, buffer);
 
      uploadedImage = "https://realestatesaas.onrender.com" + path.join('/uploads', uniqueName);
-    }
-    for (const key of allowed) {
-      if (request.body[key] !== undefined) {
-        data[key] = request.body[key];
-      }
     }
     if (Object.keys(data).length === 0) {
       return reply.code(400).send({
