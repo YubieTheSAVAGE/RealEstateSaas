@@ -20,7 +20,7 @@ import EditClientModal from "@/components/example/ModalExample/EditClientModal";
 import { FaEye } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import deleteClient from "./deleteClient"; // Assuming you have a delete function
-type SortKey = "id" | "name" | "email" | "phone" | "interest";
+type SortKey = "id" | "name" | "email" | "phoneNumber";
 type SortOrder = "asc" | "desc";
 
 interface ClientsDataTableProps {
@@ -120,6 +120,19 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const currentData = clientsData.slice(startIndex, endIndex);
 
+  // sort the currentData based on sortKey and sortOrder
+  currentData.sort((a, b) => {
+    if (sortKey === "id") {
+      const idA = typeof a[sortKey] === "number" ? a[sortKey] : Number.parseInt(String(a[sortKey]).replace(/\$|,/g, ""));
+      const idB = typeof b[sortKey] === "number" ? b[sortKey] : Number.parseInt(String(b[sortKey]).replace(/\$|,/g, ""));
+      return sortOrder === "asc" ? idA - idB : idB - idA;
+    }
+    return sortOrder === "asc"
+      ? String(a[sortKey]).localeCompare(String(b[sortKey]))
+      : String(b[sortKey]).localeCompare(String(a[sortKey]));
+  });
+
+
   return (
     <div className="overflow-hidden rounded-xl bg-white dark:bg-white/[0.03]">
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
@@ -199,7 +212,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
                 {[
                   { key: "name", label: "Projet" },
                   { key: "email", label: "Email" },
-                  { key: "number", label: "Numéro" },
+                  { key: "phoneNumber", label: "Numéro" },
                   { key: "status", label: "Statut" },
                 ].map(({ key, label }) => (
                   <TableCell
