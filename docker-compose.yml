@@ -10,24 +10,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - NEXT_PUBLIC_API_URL=http://backend:3001
     command: npm run dev  # 👈 Dev command
-
-  backend:
-    build:
-      context: ./back-end
-      dockerfile: Dockerfile
-    volumes:
-      - ./back-end:/app
-      - /app/node_modules
-    ports:
-      - "3001:3001"
-    environment:
-      - DATABASE_URL=postgresql://postgres.cswbsprvgjoyueeygaps:QXEPNwI05aEGdOcb@aws-0-us-east-2.pooler.supabase.com:5432/postgres
-    command: npm run dev  # 👈 Use ts-node-dev or nodemon for backend
-    depends_on:
-      - db
-
   db:
     image: postgres:15
     restart: always
@@ -39,6 +23,22 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    volumes:
+      - ./back-end:/app
+      - /app/node_modules
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
+    command: npm run dev  # 👈 Use ts-node-dev or nodemon for backend
+    depends_on:
+      - db
+
 
 volumes:
   pgdata:
