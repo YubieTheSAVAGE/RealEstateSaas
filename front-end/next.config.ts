@@ -1,11 +1,7 @@
 import type { NextConfig } from "next";
 
-module.exports = {
-  output:"standalone",
-}
-
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "standalone",
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',
@@ -23,7 +19,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "3001", // Match the port from the error message
+        port: "3001",
       },
     ],
   },
