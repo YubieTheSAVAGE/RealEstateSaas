@@ -13,7 +13,8 @@
         "migrate:dev": "prisma migrate dev",
         "migrate:deploy": "prisma migrate deploy",
         "migrate:status": "prisma migrate status",
-        "generate": "prisma generate"
+        "generate": "prisma generate",
+        "postinstall": "prisma generate"
     },
     "keywords": [],
     "author": "",
