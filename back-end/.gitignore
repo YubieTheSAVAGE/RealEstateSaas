@@ -3,3 +3,4 @@ node_modules
 to.do
 uploads/
 seed-admin.js
+prisma/generated/
