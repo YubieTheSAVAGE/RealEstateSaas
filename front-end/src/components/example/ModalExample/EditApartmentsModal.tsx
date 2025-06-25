@@ -100,7 +100,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
   interface FormDataState {
     id: number | string; // Changed to number | string to handle both cases
     floor: number | string;
-    number: number;
+    number: number | string; // Changed to allow string values
     type: string;
     area: number;
     threeDViewUrl: string;
@@ -116,7 +116,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
   const [formData, setFormData] = useState<FormDataState>({
     id: PropertyData?.id || 0,
     floor: PropertyData?.floor || 0,
-    number: PropertyData?.number || 0,
+    number: PropertyData?.number || "",
     type: PropertyData?.type || "",
     area: PropertyData?.area || 0,
     threeDViewUrl: PropertyData?.threeDViewUrl || "",
@@ -292,8 +292,8 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
           Edit
         </DropdownItem>
       ) : (
-        <span className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer">
-          <PencilIcon onClick={openModal} />
+        <span className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400 cursor-pointer"  onClick={openModal}>
+          <PencilIcon />
         </span>
       )}
       <Modal
@@ -366,8 +366,8 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                 <Input
                   defaultValue={PropertyData?.number}
                   name="number"
-                  type="number"
-                  placeholder="ex: 10"
+                  type="text"
+                  placeholder="ex: 10A"
                   onChange={handleChange}
                 />
                 {errors.number && (

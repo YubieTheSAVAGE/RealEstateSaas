@@ -99,7 +99,7 @@ async function createApartment(request, reply) {
       uploadedImage = "http://localhost:3001" + path.join('/uploads', uniqueName);
     }
     const newApartment = await apartmentService.create(projectId, {
-      number : parseInt(number, 10),
+      number,
       floor : parseInt(floor, 10),
       type,
       area: parseInt(area, 10),
@@ -202,7 +202,7 @@ async function updateApartment(request, reply) {
     }
 
     const updated = await apartmentService.update(apartmentId, {
-      number : parseInt(data.number, 10),
+      number :data.number,
       floor : parseInt(data.floor, 10),
       type: data.type,
       area: parseInt(data.area, 10),

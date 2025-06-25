@@ -38,7 +38,7 @@ const ProjectMap = ({ projectName, projectLocation }: ProjectMapProps) => {
   return (
     <Map
       defaultCenter={[32.2340593, -7.9465522]} // [latitude, longitude]
-      defaultZoom={15}
+      defaultZoom={17}
       height={400}
     >
       <Marker 

@@ -351,8 +351,8 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 <Label>Numéro <span className="text-red-500">*</span></Label>
                 <Input
                   name="number"
-                  type="number"
-                  placeholder="ex: 10"
+                  type="text"
+                  placeholder="ex: 10A"
                   onChange={handleChange}
                 />
                 {errors.number && (
