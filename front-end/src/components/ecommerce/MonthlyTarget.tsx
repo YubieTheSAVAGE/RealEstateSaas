@@ -272,7 +272,7 @@ export default function MonthlyTarget() {
           {role === "ADMIN" && (
             <div className="relative h-fit">
               <button onClick={toggleDropdown} className="dropdown-toggle">
-                <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+                <MoreDotIcon />
               </button>
               <Dropdown
                 isOpen={isOpen}
