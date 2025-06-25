@@ -1,3 +1,4 @@
+import MapView from "@/components/map/ProjectMap";
 import ProjectDetails from "@/components/project/ProjectDetails";
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
 import React from "react";
@@ -22,6 +23,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ projec
                 <Breadcrumb items={threeLayerItems} variant="withIcon" />
             </div>
             <div className="">
+                <MapView projectName="Project 1" projectLocation={{ latitude: 32.2340593, longitude: -7.9465522 }} />
                 <ProjectDetails projectId={projectId} />
             </div>
         </>
