@@ -1,5 +1,6 @@
 "use client";
 import ContractStatusHeader from "@/components/contract/ContractStatusheader";
+import ContractTemplate from "@/components/contract/ContractTemplate";
 import ContractsTable from "@/components/ecommerce/ContractsTable";
 import { Contract } from "@/types/Contract";
 import React, { useState } from "react";
@@ -81,7 +82,7 @@ const tabData: TabData[] = [
     id: "templates",
     label: "Templates",
     icon: <TbContract size={20} />,
-    content: <div>Templates</div>,
+    content: <ContractTemplate />,
   },
 ];
 
