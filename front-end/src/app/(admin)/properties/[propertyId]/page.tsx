@@ -1,7 +1,21 @@
-"use client";
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
 import React from "react";
 import PropertyDetails from "@/components/property/PropertyDetails";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ propertyId: string }> }): Promise<Metadata> {
+  const { propertyId } = await params;
+  
+  return {
+    title: `Propriété ${propertyId} - Immo 360`,
+    description: `Détails de la propriété ${propertyId} - Gestion immobilière Immo 360`,
+    icons: {
+      icon: "./favicon.ico",
+      shortcut: "./favicon.ico",
+      apple: "./favicon.ico",
+    },
+  };
+}
 
 export default function PropertyPage({ params }: { params: Promise<{ propertyId: string }> }) {
     const { propertyId } = React.use(params);

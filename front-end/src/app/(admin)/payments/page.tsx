@@ -1,7 +1,7 @@
-"use client";
 
 import Payment from "@/components/payment/Payment";
 import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
+
 
 export default function PaymentsPage() {
   const threeLayerItems = [

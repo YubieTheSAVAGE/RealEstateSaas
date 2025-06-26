@@ -4,10 +4,12 @@ import Breadcrumb from "@/components/ui/breadcrumb/Breadcrumb";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contrats",
+  title: "Contrats - Immo 360",
   description: "Gestion des contrats",
   icons: {
     icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
 };
 
