@@ -4,6 +4,7 @@ import { PlusIcon } from 'lucide-react'
 import TemplateCard from '../cards/card-with-icon/TemplateCard'
 import { ContractTemplate } from '@/types/ContractTemplate'
 import { Role, Status } from '@/types/user'
+import AddTemplateModal from '../example/ModalExample/AddTemplateModal'
 
 const templates: ContractTemplate[] = [
     {
@@ -178,10 +179,7 @@ export default function ContractTemplate() {
                     Templates sont utilisés pour générer des contrats.
                 </p>
             </div>
-            <Button className='bg-brand-500 text-white hover:bg-brand-600 w-full sm:w-auto'>
-                <PlusIcon className="w-4 h-4" />
-                Ajouter un template
-            </Button>
+            <AddTemplateModal onTemplateAdded={() => {}} />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-8">
             {templates.map((template) => (
