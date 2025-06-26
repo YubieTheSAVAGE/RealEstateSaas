@@ -171,19 +171,19 @@ Un dépôt de garantie de [MONTANT_DEPOT] MAD est versé par le Locataire au Pro
 export default function ContractTemplate() {
   return (
     <>
-        <div className="flex flex-row justify-between items-center gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 ">
             <div className="flex flex-col gap-2">
                 <h1 className="text-2xl font-bold">Templates</h1>
                 <p className="text-sm text-gray-500">
                     Templates sont utilisés pour générer des contrats.
                 </p>
             </div>
-            <Button className='bg-brand-500 text-white hover:bg-brand-600'>
+            <Button className='bg-brand-500 text-white hover:bg-brand-600 w-full sm:w-auto'>
                 <PlusIcon className="w-4 h-4" />
                 Ajouter un template
             </Button>
         </div>
-        <div className="flex flex-row gap-4 gap-y-8 mt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-8">
             {templates.map((template) => (
                 <TemplateCard key={template.id} template={template} />
             ))}
