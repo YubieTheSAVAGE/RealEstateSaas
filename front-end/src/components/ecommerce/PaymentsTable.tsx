@@ -6,27 +6,27 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import PropertiesListDropdownFilter from "../example/DropdownExample/PropertiesListDropdownFilter";
-import { Contract } from "@/types/Contract";
+import PaymentsDropdownFilter from "../example/DropdownExample/PaymentsDropdownFilter";
+import { Payment } from "@/types/Payment";
 import { FaDownload, FaEye } from "react-icons/fa";
 
-interface ContractsTableProps {
-  contracts: Contract[];
+interface PaymentsTableProps {
+  payments: Payment[];
 }
 
-export default function ContractsTable({ contracts }: ContractsTableProps) {
+export default function PaymentsTable({ payments }: PaymentsTableProps) {
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-           Liste des contrats
+           Liste des échéances
           </h3>
         </div>
 
         <div className="flex items-center gap-3">
-          <PropertiesListDropdownFilter />
+          <PaymentsDropdownFilter />
         </div>
       </div>
       <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
@@ -51,7 +51,7 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Template
+                  Montant
                 </TableCell>
                 <TableCell
                   isHeader
@@ -63,7 +63,7 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
                   isHeader
                   className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Date de génération
+                  Date d'échéance
                 </TableCell>
                 <TableCell
                   isHeader
@@ -80,44 +80,47 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {contracts && Array.isArray(contracts) && contracts.length > 0 ? (
-                contracts.map((contract : Contract) => (                
-                <TableRow key={contract.id} className="">
+              {payments && Array.isArray(payments) && payments.length > 0 ? (
+                payments.map((payment : Payment) => (                
+                <TableRow key={payment.id} className="">
                     <TableCell className="py-3">
                       <div className="flex items-center gap-3">
                         <div>
                           <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                            {contract.client.name}
+                            {payment.property.client?.name || payment.contract.client.name}
                           </p>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {contract.property.project.name} {contract.property.number}
+                      {payment.property.project.name} {payment.property.number}
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {contract.template.name}
+                      {payment.amount} MAD
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {contract.property.price} MAD
+                      {payment.property.price} MAD
+                      <p className="text-gray-500 text-theme-xs dark:text-gray-400">
+                        {((payment.amount / payment.property.price) * 100).toFixed(1)}% du prix total
+                      </p>
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {contract.createdAt.toLocaleDateString()}
+                      {payment.dueDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                       <Badge
                         size="sm"
                         color={
-                          contract.status?.toUpperCase() === "WAITING_CVALIDATION"
+                          payment.status?.toUpperCase() === "PENDING"
                             ? "waiting"
-                            : contract.status?.toUpperCase() === "VALIDATED_BY_CLIENT"
+                            : payment.status?.toUpperCase() === "PAID"
+                            ? "success"
+                            : payment.status?.toUpperCase() === "LATE"
                             ? "warning"
-                            : contract.status?.toUpperCase() === "LEGALIZED"
-                            ? "info"
-                            : "success"
+                            : "error"
                         }
                       >
-                        {contract.status === "WAITING_CVALIDATION" ? "En attente" : contract.status === "VALIDATED_BY_CLIENT" ? "Validé par le client" : contract.status === "LEGALIZED" ? "Validé par le notaire" : "Validé"}
+                        {payment.status === "PENDING" ? "En attente" : payment.status === "PAID" ? "Payé" : payment.status === "LATE" ? "En retard" : "Annulé"}
                       </Badge>
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">

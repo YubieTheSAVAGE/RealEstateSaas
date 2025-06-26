@@ -40,7 +40,14 @@ const contracts: Contract[] = [
     },
     property: {
       id: 1,
-      number: 'Lot A102',
+      number: '1',
+      project: {
+        id: 1,
+        name: 'Résidence Les Palmiers',
+        address: 'Address 1',
+        totalSurface: 100,
+        numberOfApartments: 10
+      },
       floor: 1,
       type: 'APARTMENT',
       area: 100,
@@ -49,15 +56,8 @@ const contracts: Contract[] = [
       zone: 'Zone A',
       status: 'AVAILABLE',
       projectId: 1,
-      project: {
-        id: 1,
-        name: 'Résidence Les Palmiers',
-        address: 'Address 1',
-        totalSurface: 100,
-        numberOfApartments: 10,
-      },
     },
-    status: 'LEGALIZED',
+    status: 'WAITING_CVALIDATION',
     createdAt: new Date(),
     updatedAt: new Date(),
   }
