@@ -9,12 +9,29 @@ import Badge from "../ui/badge/Badge";
 import ContractsDropdownFilter from "../example/DropdownExample/ContractsDropdownFilter";
 import { Contract } from "@/types/Contract";
 import { FaDownload, FaEye } from "react-icons/fa";
+import { useEffect, useState } from "react";
 
 interface ContractsTableProps {
   contracts: Contract[];
 }
 
 export default function ContractsTable({ contracts }: ContractsTableProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const formatDate = (date: Date) => {
+    if (!isClient) {
+      return ''; // Return empty string during SSR to prevent hydration mismatch
+    }
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -102,7 +119,7 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
                       {contract.property.price} MAD
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {contract.createdAt.toLocaleDateString()}
+                      {formatDate(contract.createdAt)}
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                       <Badge

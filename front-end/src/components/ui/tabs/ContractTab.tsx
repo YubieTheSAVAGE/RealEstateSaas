@@ -5,6 +5,7 @@ import ContractsTable from "@/components/ecommerce/ContractsTable";
 import { Contract } from "@/types/Contract";
 import React, { useState } from "react";
 import { TbContract, TbFile } from "react-icons/tb";
+import { Role, Status } from "@/types/user";
 
 export interface TabData {
   id: string;
@@ -29,6 +30,16 @@ const contracts: Contract[] = [
       createdAt: new Date(),
       updatedAt: new Date(),
       assignedProjects: [],
+      isDefault: false,
+      createdBy: {
+        id: 1,
+        name: 'User 1',
+        email: 'user1@example.com',
+        phoneNumber: '+1234567890',
+        role: Role.ADMIN,
+        status: Status.ACTIVE,
+        passwordHash: 'password',
+      },
     },
     client: {
       id: 1,
