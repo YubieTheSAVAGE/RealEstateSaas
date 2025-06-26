@@ -72,7 +72,7 @@ const tabData: TabData[] = [
     icon: <TbFile size={20} />,
     content: <>
       <div className="flex flex-col gap-4">
-        <ContractStatusHeader totalContracts={10} validContracts={10} legalizedContracts={10} validatedContracts={10} />
+        <ContractStatusHeader waitingContracts={10} validContracts={10} legalizedContracts={10} validatedContracts={10} />
         <ContractsTable contracts={contracts} />
       </div>
     </>,
