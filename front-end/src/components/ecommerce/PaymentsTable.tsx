@@ -6,7 +6,7 @@ import {
   TableRow,
 } from "../ui/table";
 import Badge from "../ui/badge/Badge";
-import ContractsDropdownFilter from "../example/DropdownExample/ContractsDropdownFilter";
+import PropertiesListDropdownFilter from "../example/DropdownExample/PropertiesListDropdownFilter";
 import { Contract } from "@/types/Contract";
 import { FaDownload, FaEye } from "react-icons/fa";
 
@@ -26,7 +26,7 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <ContractsDropdownFilter />
+          <PropertiesListDropdownFilter />
         </div>
       </div>
       <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
