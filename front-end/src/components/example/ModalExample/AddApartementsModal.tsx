@@ -33,6 +33,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
   // State for form fields
   const [formData, setFormData] = useState({
+    id: "",
     floor: "",
     number: "",
     type: "",
@@ -59,6 +60,16 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     zone: "",
     image: "",
     clientId: "",
+    prixBalconPct: "",
+    prixTerrassePct: "",
+    prixPiscine: "",
+    prixParking: "",
+    habitable: "",
+    balcon: "",
+    terrasse: "",
+    piscine: "",
+    prixTotal: "",
+    prixM2: "",
   });
 
   // Stepper state
@@ -106,6 +117,35 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     }
     return { main, balcon, terrasse, piscine, parking, total };
   }, [surfaces, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking]);
+
+  // Helper function to validate percentage input
+  const validatePercentage = (value: string, fieldName: string) => {
+    const num = Number(value);
+    if (value === "") return "";
+    if (isNaN(num)) return `${fieldName} doit être un nombre valide`;
+    if (num < 0) return `${fieldName} ne peut pas être négatif`;
+    if (num > 100) return `${fieldName} ne peut pas dépasser 100%`;
+    return "";
+  };
+
+  // Helper function to format price display
+  const formatPrice = (price: number) => {
+    if (isNaN(price) || price < 0) return "0 DH";
+    return `${price.toLocaleString()} DH`;
+  };
+
+  // Calculate individual prices for display
+  const balconPricePerM2 = React.useMemo(() => {
+    const m2 = Number(prixM2) || 0;
+    const pct = Number(prixBalconPct) || 0;
+    return m2 * (pct / 100);
+  }, [prixM2, prixBalconPct]);
+
+  const terrassePricePerM2 = React.useMemo(() => {
+    const m2 = Number(prixM2) || 0;
+    const pct = Number(prixTerrassePct) || 0;
+    return m2 * (pct / 100);
+  }, [prixM2, prixTerrassePct]);
 
   // Add click outside handler for dropdown
   useEffect(() => {
@@ -224,6 +264,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   }
   const handleCloseModal = () => {
     setFormData({
+      id: "",
       floor: "",
       number: "",
       type: "",
@@ -248,7 +289,33 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       zone: "",
       image: "",
       clientId: "",
+      prixBalconPct: "",
+      prixTerrassePct: "",
+      prixPiscine: "",
+      prixParking: "",
+      habitable: "",
+      balcon: "",
+      terrasse: "",
+      piscine: "",
+      prixTotal: "",
+      prixM2: "",
     });
+    // Reset surfaces and pricing states
+    setSurfaces({
+      habitable: "",
+      balcon: "",
+      terrasse: "",
+      piscine: "",
+    });
+    setPrixType("FIXE");
+    setPrixM2("");
+    setPrixTotal("");
+    setPrixBalconPct("50");
+    setPrixTerrassePct("30");
+    setPrixPiscine("");
+    setParkingDisponible(false);
+    setParkingInclus(false);
+    setPrixParking("");
     closeModal();
   }
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -337,6 +404,57 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     { label: "Surfaces & Tarification" },
   ];
 
+  // Add a function to check if step 0 is valid
+  const isStep0Valid = () => {
+    const requiredFields = ['id', 'number', 'type', 'status', 'floor', 'zone'];
+    const clientRequired = formData.status === "SOLD" || formData.status === "RESERVED";
+    
+    // Check all required fields
+    for (const field of requiredFields) {
+      const value = formData[field as keyof typeof formData];
+      if (!value || (typeof value === 'string' && value.trim() === '')) {
+        return false;
+      }
+    }
+    
+    // Check client field if required
+    if (clientRequired && (!formData.clientId || formData.clientId.trim() === '')) {
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Add a function to handle step navigation
+  const handleNextStep = () => {
+    if (isStep0Valid()) {
+      setStep(1);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    setStep(0);
+  };
+
+  // Helper function to validate positive number input
+  const validatePositiveNumber = (value: string, fieldName: string) => {
+    if (value === "") return "";
+    const num = Number(value);
+    if (isNaN(num)) return `${fieldName} doit être un nombre valide`;
+    if (num < 0) return `${fieldName} ne peut pas être négatif`;
+    if (num === 0) return `${fieldName} doit être supérieur à 0`;
+    return "";
+  };
+
+  // Helper function to validate non-negative number input (for floor, can be 0)
+  const validateNonNegativeNumber = (value: string, fieldName: string) => {
+    if (value === "") return "";
+    const num = Number(value);
+    if (isNaN(num)) return `${fieldName} doit être un nombre valide`;
+    if (num < 0) return `${fieldName} ne peut pas être négatif`;
+    return "";
+  };
+
   return (
     <>
       <Button size="sm" onClick={openModal}>
@@ -362,6 +480,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     name="id"
                     options={options}
                     placeholder="Sélectionner une option"
+                    defaultValue={formData.id.toString()}
                     onChange={(value, name) => handleSelectChange(value, name)}
                     className="dark:bg-dark-900"
                   />
@@ -373,13 +492,27 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     name="type"
                     options={type}
                     placeholder="Type"
+                    defaultValue={formData.type}
                     onChange={(value, name) => handleSelectChange(value, name)}
                   />
                   {errors.type && <p className="text-sm text-red-500 mt-1">{errors.type}</p>}
                 </div>
                 <div className="col-span-1">
                   <Label>Étage <span className="text-red-500">*</span></Label>
-                  <Input name="floor" type="number" placeholder="ex: 10" value={formData.floor} onChange={handleChange} />
+                  <Input 
+                    name="floor" 
+                    type="number" 
+                    placeholder="ex: 10" 
+                    value={formData.floor} 
+                    onChange={e => {
+                      const value = e.target.value;
+                      setFormData(prev => ({ ...prev, floor: value }));
+                      const error = validateNonNegativeNumber(value, "L'étage");
+                      setErrors(prev => ({ ...prev, floor: error }));
+                    }}
+                    min="0"
+                    step={1}
+                  />
                   {errors.floor && <p className="text-sm text-red-500 mt-1">{errors.floor}</p>}
                 </div>
                 <div className="col-span-1">
@@ -395,10 +528,10 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 <div className="col-span-1">
                   <Label>Statut <span className="text-red-500">*</span></Label>
                   <Select
-                    defaultValue={status[0].value}
                     options={status}
                     name="status"
                     placeholder=""
+                    defaultValue={formData.status}
                     onChange={(value, name) => handleSelectChange(value, name)}
                   />
                 </div>
@@ -452,7 +585,15 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               </div>
               <div className="flex items-center justify-end w-full gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button size="sm" variant="outline" onClick={handleCloseModal}>Fermer</Button>
-                <Button size="sm" type="submit">Suivant</Button>
+                <Button 
+                  size="sm" 
+                  type="button" 
+                  onClick={handleNextStep}
+                  disabled={!isStep0Valid()}
+                  className={!isStep0Valid() ? "opacity-50 cursor-not-allowed" : ""}
+                >
+                  Suivant
+                </Button>
               </div>
             </form>
           )}
@@ -462,19 +603,87 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 {/* Surfaces */}
                 <div className="col-span-1">
                   <Label>Surface habitable (m²) <span className="text-red-500">*</span></Label>
-                  <Input name="habitable" type="number" placeholder="ex: 100" value={surfaces.habitable} onChange={e => setSurfaces(s => ({ ...s, habitable: e.target.value }))} />
+                  <Input 
+                    name="habitable" 
+                    type="number" 
+                    placeholder="ex: 100" 
+                    value={surfaces.habitable} 
+                    onChange={e => {
+                      const value = e.target.value;
+                      setSurfaces(s => ({ ...s, habitable: value }));
+                      const error = validatePositiveNumber(value, "La surface habitable");
+                      setErrors(prev => ({ ...prev, habitable: error }));
+                    }}
+                    min="0.01"
+                    step={0.01}
+                  />
+                  {errors.habitable && <p className="text-sm text-red-500 mt-1">{errors.habitable}</p>}
                 </div>
                 <div className="col-span-1">
                   <Label>Surface balcon (m²)</Label>
-                  <Input name="balcon" type="number" placeholder="ex: 10" value={surfaces.balcon} onChange={e => setSurfaces(s => ({ ...s, balcon: e.target.value }))} />
+                  <Input 
+                    name="balcon" 
+                    type="number" 
+                    placeholder="ex: 10" 
+                    value={surfaces.balcon} 
+                    onChange={e => {
+                      const value = e.target.value;
+                      setSurfaces(s => ({ ...s, balcon: value }));
+                      if (value !== "") {
+                        const error = validateNonNegativeNumber(value, "La surface balcon");
+                        setErrors(prev => ({ ...prev, balcon: error }));
+                      } else {
+                        setErrors(prev => ({ ...prev, balcon: "" }));
+                      }
+                    }}
+                    min="0"
+                    step={0.01}
+                  />
+                  {errors.balcon && <p className="text-sm text-red-500 mt-1">{errors.balcon}</p>}
                 </div>
                 <div className="col-span-1">
                   <Label>Surface terrasse (m²)</Label>
-                  <Input name="terrasse" type="number" placeholder="ex: 10" value={surfaces.terrasse} onChange={e => setSurfaces(s => ({ ...s, terrasse: e.target.value }))} />
+                  <Input 
+                    name="terrasse" 
+                    type="number" 
+                    placeholder="ex: 10" 
+                    value={surfaces.terrasse} 
+                    onChange={e => {
+                      const value = e.target.value;
+                      setSurfaces(s => ({ ...s, terrasse: value }));
+                      if (value !== "") {
+                        const error = validateNonNegativeNumber(value, "La surface terrasse");
+                        setErrors(prev => ({ ...prev, terrasse: error }));
+                      } else {
+                        setErrors(prev => ({ ...prev, terrasse: "" }));
+                      }
+                    }}
+                    min="0"
+                    step={0.01}
+                  />
+                  {errors.terrasse && <p className="text-sm text-red-500 mt-1">{errors.terrasse}</p>}
                 </div>
                 <div className="col-span-1">
                   <Label>Surface piscine (m²)</Label>
-                  <Input name="piscine" type="number" placeholder="ex: 5" value={surfaces.piscine} onChange={e => setSurfaces(s => ({ ...s, piscine: e.target.value }))} />
+                  <Input 
+                    name="piscine" 
+                    type="number" 
+                    placeholder="ex: 5" 
+                    value={surfaces.piscine} 
+                    onChange={e => {
+                      const value = e.target.value;
+                      setSurfaces(s => ({ ...s, piscine: value }));
+                      if (value !== "") {
+                        const error = validateNonNegativeNumber(value, "La surface piscine");
+                        setErrors(prev => ({ ...prev, piscine: error }));
+                      } else {
+                        setErrors(prev => ({ ...prev, piscine: "" }));
+                      }
+                    }}
+                    min="0"
+                    step={0.01}
+                  />
+                  {errors.piscine && <p className="text-sm text-red-500 mt-1">{errors.piscine}</p>}
                 </div>
                 {/* Pricing type */}
                 <div className="col-span-2">
@@ -487,25 +696,143 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 {prixType === "FIXE" ? (
                   <div className="col-span-2">
                     <Label>Prix total (DH) <span className="text-red-500">*</span></Label>
-                    <Input name="prixTotal" type="number" placeholder="ex: 1000000" value={prixTotal} onChange={e => setPrixTotal(e.target.value)} />
+                    <Input 
+                      name="prixTotal" 
+                      type="number" 
+                      placeholder="ex: 1000000" 
+                      value={prixTotal} 
+                      onChange={e => {
+                        const value = e.target.value;
+                        setPrixTotal(value);
+                        const error = validatePositiveNumber(value, "Le prix total");
+                        setErrors(prev => ({ ...prev, prixTotal: error }));
+                      }}
+                      min="0.01"
+                      step={0.01}
+                    />
+                    {errors.prixTotal && <p className="text-sm text-red-500 mt-1">{errors.prixTotal}</p>}
                   </div>
                 ) : (
                   <>
                     <div className="col-span-1">
                       <Label>Prix par m² habitable (DH) <span className="text-red-500">*</span></Label>
-                      <Input name="prixM2" type="number" placeholder="ex: 10000" value={prixM2} onChange={e => setPrixM2(e.target.value)} />
+                      <Input 
+                        name="prixM2" 
+                        type="number" 
+                        placeholder="ex: 10000" 
+                        value={prixM2} 
+                        onChange={e => {
+                          const value = e.target.value;
+                          setPrixM2(value);
+                          const error = validatePositiveNumber(value, "Le prix par m²");
+                          setErrors(prev => ({ ...prev, prixM2: error }));
+                        }}
+                        min="0.01"
+                        step={0.01}
+                      />
+                      {errors.prixM2 && <p className="text-sm text-red-500 mt-1">{errors.prixM2}</p>}
                     </div>
                     <div className="col-span-1">
                       <Label>Prix balcon (% du prix au m² habitable)</Label>
-                      <Input name="prixBalconPct" type="number" placeholder="ex: 50" value={prixBalconPct} onChange={e => setPrixBalconPct(e.target.value)} />
+                      <Input 
+                        name="prixBalconPct" 
+                        type="number" 
+                        placeholder="ex: 50" 
+                        value={prixBalconPct} 
+                        onChange={e => {
+                          const value = e.target.value;
+                          setPrixBalconPct(value);
+                          // Validate and show error if needed
+                          const error = validatePercentage(value, "Le pourcentage balcon");
+                          if (error) {
+                            setErrors(prev => ({ ...prev, prixBalconPct: error }));
+                          } else {
+                            setErrors(prev => ({ ...prev, prixBalconPct: "" }));
+                          }
+                        }}
+                        min="0"
+                        max="100"
+                        step={0.01}
+                      />
+                      {prixM2 && surfaces.habitable && (
+                        <p className="text-xs text-gray-600 mt-1">
+                          Prix au m² balcon: {formatPrice(balconPricePerM2)} 
+                          {Number(surfaces.balcon) > 0 && (
+                            <span className="ml-2">
+                              (Total: {formatPrice(calcSummary.balcon)})
+                            </span>
+                          )}
+                        </p>
+                      )}
+                      {errors.prixBalconPct && (
+                        <p className="text-xs text-red-500 mt-1">{errors.prixBalconPct}</p>
+                      )}
                     </div>
                     <div className="col-span-1">
                       <Label>Prix terrasse (% du prix au m² habitable)</Label>
-                      <Input name="prixTerrassePct" type="number" placeholder="ex: 30" value={prixTerrassePct} onChange={e => setPrixTerrassePct(e.target.value)} />
+                      <Input 
+                        name="prixTerrassePct" 
+                        type="number" 
+                        placeholder="ex: 30" 
+                        value={prixTerrassePct} 
+                        onChange={e => {
+                          const value = e.target.value;
+                          setPrixTerrassePct(value);
+                          // Validate and show error if needed
+                          const error = validatePercentage(value, "Le pourcentage terrasse");
+                          if (error) {
+                            setErrors(prev => ({ ...prev, prixTerrassePct: error }));
+                          } else {
+                            setErrors(prev => ({ ...prev, prixTerrassePct: "" }));
+                          }
+                        }}
+                        min="0"
+                        max="100"
+                        step={0.1}
+                      />
+                      {prixM2 && surfaces.habitable && (
+                        <p className="text-xs text-gray-600 mt-1">
+                          Prix au m² terrasse: {formatPrice(terrassePricePerM2)}
+                          {Number(surfaces.terrasse) > 0 && (
+                            <span className="ml-2">
+                              (Total: {formatPrice(calcSummary.terrasse)})
+                            </span>
+                          )}
+                        </p>
+                      )}
+                      {errors.prixTerrassePct && (
+                        <p className="text-xs text-red-500 mt-1">{errors.prixTerrassePct}</p>
+                      )}
                     </div>
                     <div className="col-span-1">
                       <Label>Prix piscine (DH/m²)</Label>
-                      <Input name="prixPiscine" type="number" placeholder="ex: 5000" value={prixPiscine} onChange={e => setPrixPiscine(e.target.value)} />
+                      <Input 
+                        name="prixPiscine" 
+                        type="number" 
+                        placeholder="ex: 5000" 
+                        value={prixPiscine} 
+                        onChange={e => {
+                          const value = e.target.value;
+                          setPrixPiscine(value);
+                          // Validate positive number
+                          const num = Number(value);
+                          if (value !== "" && (isNaN(num) || num < 0)) {
+                            setErrors(prev => ({ ...prev, prixPiscine: "Le prix piscine doit être un nombre positif" }));
+                          } else {
+                            setErrors(prev => ({ ...prev, prixPiscine: "" }));
+                          }
+                        }}
+                        min="0"
+                        step={0.01}
+                      />
+                      {prixPiscine && surfaces.piscine && (
+                        <p className="text-xs text-gray-600 mt-1">
+                          Total piscine: {formatPrice(calcSummary.piscine)}
+                        </p>
+                      )}
+                      {errors.prixPiscine && (
+                        <p className="text-xs text-red-500 mt-1">{errors.prixPiscine}</p>
+                      )}
                     </div>
                   </>
                 )}
@@ -518,7 +845,25 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       {!parkingInclus && (
                         <div className="flex items-center gap-2">
                           <Label>Prix du parking (DH)</Label>
-                          <Input name="prixParking" type="number" placeholder="ex: 100000" value={prixParking} onChange={e => setPrixParking(e.target.value)} />
+                          <Input 
+                            name="prixParking" 
+                            type="number" 
+                            placeholder="ex: 100000" 
+                            value={prixParking} 
+                            onChange={e => {
+                              const value = e.target.value;
+                              setPrixParking(value);
+                              // Validate positive number
+                              const num = Number(value);
+                              if (value !== "" && (isNaN(num) || num < 0)) {
+                                setErrors(prev => ({ ...prev, prixParking: "Le prix parking doit être un nombre positif" }));
+                              } else {
+                                setErrors(prev => ({ ...prev, prixParking: "" }));
+                              }
+                            }}
+                            min="0"
+                            step={0.01}
+                          />
                         </div>
                       )}
                     </div>
@@ -538,7 +883,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 </div>
               </div>
               <div className="flex items-center justify-between w-full gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-                <Button size="sm" variant="outline" onClick={() => setStep(0)}>Précédent</Button>
+                <Button size="sm" variant="outline" onClick={handlePreviousStep}>Précédent</Button>
                 <Button size="sm" type="submit">Créer le lot</Button>
               </div>
             </form>
