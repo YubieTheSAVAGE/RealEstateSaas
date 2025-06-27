@@ -1,12 +1,11 @@
-import React from "react";
-import { Card, CardDescription, CardTitle } from "../../ui/card";
+import React, { useState } from "react";
 import { ContractTemplate } from "@/types/ContractTemplate";
-import { FaShieldAlt, FaHome, FaMapMarkerAlt, FaBuilding, FaFile } from "react-icons/fa";
-import { MdOutlineRealEstateAgent } from "react-icons/md";
+import { FaHome, FaBuilding, FaFile } from "react-icons/fa";
 import { PiDownloadSimple } from "react-icons/pi";
 import AssignTemplateModal from "@/components/example/ModalExample/AssignTemplateModal";
 import { Role, Status } from "@/types/user";
 import EditTemplateModal from "@/components/example/ModalExample/EditTemplateModal";
+import { downloadTemplate, previewTemplate, TemplateData, getDefaultTemplateData } from "@/utils/templateDownload";
 
 interface TemplateCardProps {
     template: ContractTemplate;
@@ -48,6 +47,9 @@ const dummyTemplate: ContractTemplate = {
 };
 
 export default function TemplateCard({ template }: TemplateCardProps) {
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
   // Dummy data for preview (replace with real data as needed)
   const assignedProject = template.assignedProjects[0];
   const projectLocation = assignedProject?.address || "Casablanca";
@@ -59,6 +61,41 @@ export default function TemplateCard({ template }: TemplateCardProps) {
     const lines = content.split('\n');
     return lines.slice(0, 5).join('\n');
   };
+
+  // Handle template download
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    setDownloadError(null);
+
+    try {
+      // Get default template data using examples from dynamicTags
+      const defaultData = getDefaultTemplateData();
+      
+      // Override with project-specific data if available
+      const templateData: TemplateData = {
+        ...defaultData,
+        project: {
+          name: assignedProject?.name || defaultData.project?.name,
+          address: assignedProject?.address || defaultData.project?.address
+        }
+      };
+
+      // Download the template
+      await downloadTemplate(template, templateData, 'docx');
+      
+      // Show success message (you could add a toast notification here)
+      console.log('Template downloaded successfully!');
+      
+    } catch (error) {
+      console.error('Download failed:', error);
+      setDownloadError(error instanceof Error ? error.message : 'Erreur lors du téléchargement');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  // Get preview content with replaced tags
+  const previewContent = previewTemplate(template);
 
   return (
     <div className="relative w-full max-w-md rounded-2xl border border-blue-200 bg-white shadow-lg p-0">
@@ -97,13 +134,38 @@ export default function TemplateCard({ template }: TemplateCardProps) {
             <FaHome className="mr-2 text-green-400" /> Aperçu du contenu
           </div>
           <div className="text-gray-700 text-sm font-semibold line-clamp-5 whitespace-pre-line">
-            {truncateContent(contentPreview)}
+            {truncateContent(previewContent)}
           </div>
         </div>
         {/* Buttons */}
         <div className="flex flex-col gap-2 mb-4">
           <AssignTemplateModal projects={dummyTemplate.assignedProjects} template={dummyTemplate} />
-          <button className="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg bg-white hover:bg-gray-50 transition flex items-center justify-center gap-2"><PiDownloadSimple />Télécharger ce template</button>
+          <button 
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className={`w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2 ${
+              isDownloading 
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                : 'bg-white hover:bg-gray-50'
+            }`}
+          >
+            {isDownloading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                Téléchargement...
+              </>
+            ) : (
+              <>
+                <PiDownloadSimple />
+                Télécharger ce template
+              </>
+            )}
+          </button>
+          {downloadError && (
+            <div className="text-red-500 text-sm text-center mt-2">
+              {downloadError}
+            </div>
+          )}
         </div>
         {/* Footer */}
         <div className="text-xs text-gray-400 text-center">Créé le {template.createdAt.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })} par {template.createdBy.name}</div>

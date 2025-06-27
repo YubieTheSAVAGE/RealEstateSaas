@@ -12,34 +12,101 @@ const templates: ContractTemplate[] = [
         name: 'Contrat de Réservation Standard',
         description: 'Template standard pour la réservation d\'appartements',
         isDefault: true,
-        content: `CONTRAT DE RÉSERVATION
+        content: `CONTRAT DE VENTE EN L'ÉTAT FUTUR D'ACHÈVEMENT (VEFA)
 
 Entre les soussignés :
 
-D'une part, [NOM_ENTREPRISE], société immobilière, dont le siège social est situé à [ADRESSE_ENTREPRISE], immatriculée au Registre du Commerce sous le numéro [RC_NUMBER], représentée par [NOM_REPRESENTANT] en qualité de [FONCTION_REPRESENTANT], ci-après dénommée "le Promoteur",
+La société {nom_entreprise}, 
+ICE : {ice_entreprise}
+Adresse : {adresse_entreprise}
+Téléphone : {telephone_entreprise}
+Email : {email_entreprise}
 
-Et d'autre part, [NOM_CLIENT], de nationalité [NATIONALITE], né(e) le [DATE_NAISSANCE], demeurant à [ADRESSE_CLIENT], titulaire de la carte d'identité nationale n° [CIN_NUMBER], ci-après dénommé(e) "le Réservataire",
+Ci-après dénommée "le Vendeur"
 
-Il a été convenu ce qui suit :
+ET
 
-ARTICLE 1 - OBJET
-Le présent contrat a pour objet la réservation par le Réservataire d'un appartement situé dans le projet immobilier "[NOM_PROJET]", sis à [ADRESSE_PROJET].
+M./Mme {nom_complet_client}
+Nom : {nom_client}
+Prénom : {prenom_client}
+Email : {email_client}
+Téléphone : {telephone_client}
+Numéro d'identité : {numero_id_client}
 
-ARTICLE 2 - DESCRIPTION DU BIEN
-L'appartement réservé est situé :
-- Immeuble : [NUMERO_IMMEUBLE]
-- Étage : [ETAGE]
-- Type : [TYPE_APPARTEMENT]
-- Surface : [SURFACE] m²
-- Prix : [PRIX] MAD
+Ci-après dénommé(e) "l'Acheteur"
 
-ARTICLE 3 - MONTANT DE LA RÉSERVATION
-Le montant de la réservation s'élève à [MONTANT_RESERVATION] MAD, payable selon les modalités suivantes :
-- Acompte à la signature : [ACOMPTE] MAD
-- Solde : [SOLDE] MAD
+IL A ÉTÉ CONVENU CE QUI SUIT :
 
-ARTICLE 4 - DURÉE ET CONDITIONS
-La réservation est valable pour une durée de [DUREE_RESERVATION] mois à compter de la date de signature du présent contrat.`,
+Article 1 - OBJET DU CONTRAT
+
+Le Vendeur vend et l'Acheteur achète en l'état futur d'achèvement, conformément aux dispositions du Dahir du 2 juin 1915, tel que modifié et complété, un lot dans le projet immobilier dénommé "{nom_project}" situé à l'adresse suivante : {adresse_project}.
+
+Article 2 - DÉSIGNATION DU LOT
+
+Le lot objet de la présente vente est désigné comme suit :
+- Numéro du lot : {numero_lot}
+- Surface totale : {surface_lot}
+- Surface habitable : {surface_habitable}
+- Surface balcon : {surface_balcon}
+- Surface terrasse : {surface_terrasse}
+- Surface piscine : {surface_piscine}
+- Parking inclus : {parking_inclus}
+
+Article 3 - PRIX ET MODALITÉS DE PAIEMENT
+
+Le prix de vente est fixé à {prix_total} (prix au mètre carré : {prix_metre_carre}).
+
+Modalités de paiement :
+- Acompte à la signature : {montant_acompte} ({pourcentage_acompte} du prix total)
+- Échéances : {echeances}
+- Solde à la livraison
+
+Article 4 - DATES IMPORTANTES
+
+- Date de signature du contrat : {date_signature}
+- Date d'échéance de l'acompte : {date_echeance}
+- Année de construction : {annee_courante}
+
+Article 5 - OBLIGATIONS DU VENDEUR
+
+Le Vendeur s'engage à :
+- Livrer le lot dans l'état d'achèvement conformément aux plans et spécifications
+- Respecter les délais de livraison convenus
+- Garantir la conformité aux normes en vigueur
+
+Article 6 - OBLIGATIONS DE L'ACHETEUR
+
+L'Acheteur s'engage à :
+- Payer les sommes dues selon l'échéancier convenu
+- Respecter les conditions d'occupation
+- Ne pas modifier la destination du lot sans accord préalable
+
+Article 7 - RÉSILIATION
+
+En cas de défaut de paiement de deux échéances consécutives, le Vendeur pourra résilier le présent contrat de plein droit.
+
+Article 8 - DROIT APPLICABLE
+
+Le présent contrat est soumis au droit marocain. Tout litige sera soumis aux tribunaux compétents du lieu de situation de l'immeuble.
+
+Fait à Casablanca, le {date_contrat}
+
+Le Vendeur                                    L'Acheteur
+{nom_entreprise}                              {nom_complet_client}
+
+Signature : _________________                 Signature : _________________
+
+Témoins :
+
+1. _________________                          2. _________________
+   Nom : _________________                       Nom : _________________
+   Adresse : _________________                   Adresse : _________________
+
+NOTES IMPORTANTES :
+- Ce contrat est soumis aux dispositions légales en vigueur
+- Toute modification doit faire l'objet d'un avenant signé par les deux parties
+- Les annexes font partie intégrante du présent contrat
+`,
         createdAt: new Date(),
         updatedAt: new Date(),
         assignedProjects: [
