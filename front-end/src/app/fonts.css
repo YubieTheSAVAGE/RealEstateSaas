@@ -1,0 +1,34 @@
+/* Local font fallbacks for Docker environments */
+
+/* Local Outfit font file as backup */
+@font-face {
+  font-family: 'Outfit-Local';
+  src: url('/fonts/outfit-variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* System font stack as fallback */
+@font-face {
+  font-family: 'Outfit-Fallback';
+  src: local('Arial'), local('Helvetica'), local('sans-serif');
+  font-display: swap;
+}
+
+/* CSS custom properties for font fallbacks */
+:root {
+  --font-fallback: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-outfit-fallback: 'Outfit', 'Outfit-Local', var(--font-fallback);
+}
+
+/* Ensure font loading doesn't block rendering */
+.font-outfit {
+  font-family: var(--font-outfit-sans), var(--font-outfit-fallback);
+  font-display: swap;
+}
+
+/* Debug styles to check if font is loading */
+.font-debug {
+  font-family: 'Outfit', 'Outfit-Local', sans-serif !important;
+} 

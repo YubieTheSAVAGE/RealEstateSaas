@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       test: /\.svg$/,
       use: ["@svgr/webpack"],
     });
+    
     return config;
   },
   images: {
@@ -22,6 +23,20 @@ const nextConfig: NextConfig = {
         port: "3001",
       },
     ],
+  },
+  // Add headers for font loading
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+        ],
+      },
+    ];
   },
 };
 

@@ -1,6 +1,7 @@
 // "use client";
 import { Outfit } from "next/font/google";
 import "./globals.css";
+import "./fonts.css";
 import "swiper/swiper-bundle.css";
 import "simplebar-react/dist/simplebar.min.css";
 import "flatpickr/dist/flatpickr.css";
@@ -12,6 +13,8 @@ import { Metadata } from "next";
 const outfit = Outfit({
   variable: "--font-outfit-sans",
   subsets: ["latin"],
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -31,8 +34,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        {/* <NextTopLoader /> */}
-      <body suppressHydrationWarning={true} className={`${outfit.variable} dark:bg-gray-900 bg-gray-25`}>
+      <head>
+        {/* Preconnect to Google Fonts for better performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body suppressHydrationWarning={true} className={`${outfit.variable} dark:bg-gray-900 bg-gray-25`} style={{ fontFamily: 'var(--font-outfit-sans), "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
         {/* <NextTopLoader /> */}
         <NextTopLoader />
           <ThemeProvider>
