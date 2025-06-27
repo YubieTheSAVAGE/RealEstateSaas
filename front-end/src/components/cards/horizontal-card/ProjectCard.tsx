@@ -119,10 +119,10 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
 
   return (
     <div>
-      <div className="flex flex-col gap-5 mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-lg transition-all duration-300 dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-start sm:gap-6">
-        <div className="w-full">
+      <div className="relative flex flex-col gap-5 mb-6  rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-lg transition-all duration-300 dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-start sm:gap-6">
+        <div className="w-full flex flex-col gap-6 ">
           {/* Project Header with Progress */}
-          <div className="mb-6">
+          <div className="mt-6 sm:mt-0">
             <div className="flex items-start justify-between mb-1">
               <div>
                 <div className="font-bold text-lg text-gray-900 dark:text-gray-100">{ProjectDetails.name}</div>
@@ -170,7 +170,8 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
               </ol>
             </div>
           </div>
-          <div className="overflow-hidden rounded-lg w-full ">
+          {/* Project Image */}
+          <div className="overflow-hidden rounded-lg w-full">
             {!ProjectDetails.image ? (
               <div className="flex items-center justify-center h-56 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div className="text-center">
@@ -236,27 +237,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
             )}
           </div>
         </div>
-        <div className="relative w-full pt-12">
-          <div className="absolute right-0 top-0 h-fit">
-            <button onClick={toggleDropdown} className="dropdown-toggle p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
-              <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
-            </button>
-            <Dropdown
-              isOpen={isOpen}
-              onClose={closeDropdown}
-              className="w-40 p-2"
-            >
-              <EditProjectModal ProjectData={ProjectDetails} details={true} onRefresh={handleRefresh} />
-              <ConstructionsProgressModal id={ProjectDetails.id?.toString() ?? ""} percentage={ProjectDetails.progress ?? 8} status={ProjectDetails.status ?? "planification"} />
-              <DeleteModal
-                itemId={ProjectDetails.id?.toString()}
-                heading="Delete Project"
-                description="Are you sure you want to delete this project? This action cannot be undone."
-                onDelete={handleDelete}
-                details={true}
-              />
-            </Dropdown>
-          </div>
+        <div className="relative w-full pt-0 sm:pt-12">
           <CardDescription>
             <div className="space-y-4">
               {/* Location & Surface Group */}
@@ -362,6 +343,26 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
           </CardDescription>
           {/* <EditProjectModal ProjectData={ProjectDetails}  details={true} /> */}
           
+        </div>
+        <div className="absolute right-2 top-2 h-fit">
+          <button onClick={toggleDropdown} className="dropdown-toggle p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200">
+            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+          </button>
+          <Dropdown
+            isOpen={isOpen}
+            onClose={closeDropdown}
+            className="w-40 p-2"
+          >
+            <EditProjectModal ProjectData={ProjectDetails} details={true} onRefresh={handleRefresh} />
+            <ConstructionsProgressModal id={ProjectDetails.id?.toString() ?? ""} percentage={ProjectDetails.progress ?? 8} status={ProjectDetails.status ?? "planification"} />
+            <DeleteModal
+              itemId={ProjectDetails.id?.toString()}
+              heading="Delete Project"
+              description="Are you sure you want to delete this project? This action cannot be undone."
+              onDelete={handleDelete}
+              details={true}
+            />
+          </Dropdown>
         </div>
       </div>
       <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 mb-6">
