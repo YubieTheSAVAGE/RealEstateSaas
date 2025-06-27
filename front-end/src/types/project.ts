@@ -3,7 +3,7 @@ import { Property } from './property';
 export interface Project {
   id: number;
   name: string;
-  image?: string | null;
+  image?: File | null;
   address: string;
   totalSurface: number;
   numberOfApartments: number;

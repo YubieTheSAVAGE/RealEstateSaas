@@ -31,6 +31,8 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
     address: ProjectData?.address || "",
     image: null as File | null, // Store as File object instead of string
   });
+  console.log("ProjectData", ProjectData);
+  console.log("formData", formData);
 
   // State for validation errors
   const [errors, setErrors] = useState({
@@ -192,7 +194,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
             <div className="col-span-1">
               <Label>Nom <span className="text-red-500">*</span></Label>
               <Input
-                defaultValue={ProjectData?.name}
+                value={formData.name}
                 name="name"
                 type="text"
                 placeholder="Nom du projet"
@@ -208,7 +210,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
             <div className="col-span-1">
               <Label>Nombre total de biens <span className="text-red-500">*</span></Label>
               <Input
-                defaultValue={ProjectData?.numberOfApartments}
+                value={formData.numberOfApartments}
                 name="numberOfApartments"
                 type="number"
                 placeholder="ex: 10"
@@ -224,7 +226,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
             <div className="col-span-1">
               <Label>Surface totale <span className="text-red-500">*</span></Label>
               <Input
-                defaultValue={ProjectData?.totalSurface}
+                value={formData.totalSurface}
                 name="totalSurface"
                 type="number"
                 placeholder="ex: 1000 m²"
@@ -240,7 +242,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
             <div className="col-span-1">
               <Label>Adresse <span className="text-red-500">*</span></Label>
               <Input
-                defaultValue={ProjectData?.address}
+                value={formData.address}
                 name="address"
                 type="text"
                 placeholder="ex: 123 Rue Principale"
