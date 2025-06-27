@@ -9,14 +9,15 @@ import MultiSelect from "../../form/MultiSelect";
 import { Textarea } from "@/components/ui/textarea";
 import { Role, Status } from "@/types/user";
 import { dynamicTags, tagCategories } from "@/data/dynamicTags"; // You need to create this or fetch from API
-import { PlusIcon } from "lucide-react";
+import { Edit2Icon, PlusIcon } from "lucide-react";
 import Checkbox from "@/components/form/input/Checkbox";
+import { ContractTemplate } from "@/types/ContractTemplate";
 
-interface AddTemplateModalProps {
-  onTemplateAdded?: () => void; // Callback to refresh template list
+interface EditTemplateModalProps {
+  template: ContractTemplate;
 }
 
-export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalProps) {
+export default function EditTemplateModal({ template }: EditTemplateModalProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   // State for form fields
@@ -35,18 +36,18 @@ export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalPr
       status: Status;
     };
   }>({
-    name: "",
-    description: "",
-    content: "",
-    isDefault: false,
-    assignedProjects: [],
+    name: template.name,
+    description: template.description,
+    content: template.content,
+    isDefault: template.isDefault,
+    assignedProjects: template.assignedProjects.map((project) => project.id.toString()),
     createdBy: {
-      id: 1,
-      name: "Ahmed Benali",
-      email: "ahmed.benali@immo360.ma",
-      phoneNumber: "+212661234567",
-      role: Role.ADMIN,
-      status: Status.ACTIVE,
+      id: template.createdBy.id,
+      name: template.createdBy.name,
+      email: template.createdBy.email,
+      phoneNumber: template.createdBy.phoneNumber,
+      role: template.createdBy.role,
+      status: template.createdBy.status,
     }
   });
 
@@ -70,7 +71,7 @@ export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalPr
   // Example state for tag filtering
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Example project options
+  // Example project options for MultiSelect
   const projectOptions = [
     { value: "1", text: "Projet A", selected: false },
     { value: "2", text: "Projet B", selected: false },
@@ -157,10 +158,7 @@ export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalPr
 
   return (
     <>
-      <Button className='bg-brand-500 text-white hover:bg-brand-600 w-full sm:w-auto' onClick={openModal}>
-        <PlusIcon className="w-4 h-4" />
-        Ajouter un template
-      </Button>
+      <Edit2Icon className="w-6 h-6 text-gray-400 hover:text-blue-500 cursor-pointer absolute top-9 -right-4" onClick={openModal} />
       <Modal
         isOpen={isOpen}
         onClose={closeModal}
@@ -177,6 +175,7 @@ export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalPr
                 type="text"
                 placeholder="Saisir le nom du template"
                 onChange={handleChange}
+                value={formData.name}
               />
             </div>
             <div>
@@ -186,6 +185,7 @@ export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalPr
                 type="text"
                 placeholder="Description du template"
                 onChange={handleChange}
+                value={formData.description}
               />
             </div>
             <div>
@@ -262,7 +262,7 @@ export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalPr
 
           {/* Action buttons */}
           <div className="flex justify-center gap-4 mt-8">
-            <Button type="submit" className="bg-blue-600 text-white px-8 py-2 rounded-lg">Créer le template</Button>
+            <Button type="submit" className="bg-blue-600 text-white px-8 py-2 rounded-lg">Modifier le template</Button>
             <Button type="button" variant="outline" onClick={closeModal} className="px-8 py-2 rounded-lg">Annuler</Button>
           </div>
         </form>

@@ -6,6 +6,7 @@ import { MdOutlineRealEstateAgent } from "react-icons/md";
 import { PiDownloadSimple } from "react-icons/pi";
 import AssignTemplateModal from "@/components/example/ModalExample/AssignTemplateModal";
 import { Role, Status } from "@/types/user";
+import EditTemplateModal from "@/components/example/ModalExample/EditTemplateModal";
 
 interface TemplateCardProps {
     template: ContractTemplate;
@@ -64,6 +65,9 @@ export default function TemplateCard({ template }: TemplateCardProps) {
       {/* Top colored icon/avatar */}
       <div className="absolute -top-6 left-6 bg-green-500 rounded-full p-3 shadow-md">
         <FaFile className="text-white text-2xl" />
+      </div>
+      <div className="absolute -top-6 right-6">
+        <EditTemplateModal template={template} />
       </div>
       {/* Card content */}
       <div className="pt-10 pb-6 px-6">
