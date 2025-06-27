@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import "swiper/swiper-bundle.css";
@@ -7,11 +7,22 @@ import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import NextTopLoader from "nextjs-toploader";
+import { Metadata } from "next";
 
 const outfit = Outfit({
   variable: "--font-outfit-sans",
   subsets: ["latin"],
 });
+
+export const metadata: Metadata = {
+  title: "Immo 360",
+  description: "Gestion immobilière",
+  icons: {
+    icon: "./favicon.ico",
+    shortcut: "./favicon.ico",
+    apple: "./favicon.ico",
+  },
+};
 
 export default function RootLayout({
   children,

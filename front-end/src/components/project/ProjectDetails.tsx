@@ -6,6 +6,7 @@ import ProjectCard from "../cards/horizontal-card/ProjectCard";
 import PropertiesTable from "../ecommerce/PropertiesTable";
 import { Project } from "@/types/project";
 import { FallingLines } from "react-loader-spinner";
+import MapView from "@/components/map/ProjectMap";
 
 interface ProjectDetailsProps {
     projectId: string;
@@ -44,6 +45,9 @@ export default function ProjectDetails({ projectId }: ProjectDetailsProps) {
     }
     return (
         <div>
+            <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-6">
+                <MapView projectName="Project 1" projectLocation={{ latitude: 32.2340593, longitude: -7.9465522 }} />
+            </div>
             <ProjectCard ProjectDetails={project} onRefresh={fetchProject}  />
             <PropertiesTable ProjectDetails={project.apartments || []} />
         </div>

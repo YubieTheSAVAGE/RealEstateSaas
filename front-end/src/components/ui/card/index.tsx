@@ -7,6 +7,7 @@ interface CardProps {
 
 interface CardTitleProps {
   children: ReactNode;
+  className?: string;
 }
 
 interface CardDescriptionProps {
@@ -23,9 +24,9 @@ const Card: React.FC<CardProps> = ({ children }) => {
 };
 
 // CardTitle Component
-const CardTitle: React.FC<CardTitleProps> = ({ children }) => {
+const CardTitle: React.FC<CardTitleProps> = ({ children, className }) => {
   return (
-    <h4 className="mb-1 font-medium text-gray-800 text-theme-xl dark:text-white/90">
+    <h4 className={`mb-1 font-medium text-gray-800 text-theme-sm dark:text-white/90 sm:text-theme-xl sm:font-semibold ${className}`}>
       {children}
     </h4>
   );

@@ -10,6 +10,8 @@ import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsM
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import deleteApartement from "@/components/tables/DataTables/Properties/deleteApartement";
 import { useRouter } from "next/navigation";
+import { AiOutlineFileDone } from "react-icons/ai";
+import ReservationProcessModal from "@/components/example/ModalExample/ReservationProcessModal";
 
 interface PropertyCardProps {
   property: Property;
@@ -201,7 +203,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
                           : "Inconnu"}
                   </Badge>
                   {property?.client && property.client.id && property.client.name ? (
-                    <span>pour <span className="hover:text-blue-500 hover:underline font-semibold cursor-pointer" onClick={() => router.push(`/clients/${property.client!.id}`)}> {property.client!.name}</span></span>
+                    <>
+                      <span className="flex items-center gap-2">
+                        <span>pour <span className="hover:text-blue-500 hover:underline font-semibold cursor-pointer" onClick={() => router.push(`/clients/${property.client!.id}`)}> {property.client!.name}</span></span>
+                        <ReservationProcessModal property={property} />
+                      </span>
+                    </>
                   ) : null}
                 </span>
               </div>

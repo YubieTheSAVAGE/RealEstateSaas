@@ -13,4 +13,5 @@ export const AgentRoutes = [
     '/clients',
     '/tasks',
     '/home',
+    '/contracts',
 ];

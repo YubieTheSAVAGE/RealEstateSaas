@@ -104,6 +104,7 @@ async function updateProject(request, reply) {
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
       const dest = path.join(uploadsDir, uniqueName);
       await fs.promises.writeFile(dest, buffer);
+
       // Use environment variable for base URL or default to localhost for development
       const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
       uploadedImage = baseUrl + path.join('/uploads', uniqueName);

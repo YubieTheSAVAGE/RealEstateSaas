@@ -2,7 +2,7 @@ import React from "react";
 import ComponentCard from "../../common/ComponentCard";
 import DefaultTab from "./DefaultTab";
 import TabWithUnderline from "./TabWithUnderline";
-import TabWithUnderlineAndIcon from "./TabWithUnderlineAndIcon";
+import TabWithUnderlineAndIcon from "./ContractTab";
 import TabWithBadge from "./TabWithBadge";
 import VerticalTabs from "./VerticalTabs";
 

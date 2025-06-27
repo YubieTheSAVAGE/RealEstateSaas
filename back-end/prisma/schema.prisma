@@ -55,7 +55,7 @@ model Project {
 
 model Apartment {
   id                Int             @id @default(autoincrement())
-  number            Int
+  number            String
   floor             Int
   type              PropertyType    @default(APARTMENT)
   area              Float

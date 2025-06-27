@@ -10,9 +10,10 @@ import {
   HorizontaLDots,
   UserCircleIcon,
 } from "../icons/index";
-import { BiBuildings, BiBookContent, BiTask } from "react-icons/bi";
+import { BiBuildings, BiBookContent, BiTask, BiFile, BiCreditCard } from "react-icons/bi";
 import { FaUsers } from "react-icons/fa";
 import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
+import { TbContract } from "react-icons/tb";
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -44,6 +45,18 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "Clients",
     path: "/clients",
+    roles: ["ADMIN", "AGENT"],
+  },
+  {
+    name: "Contrats",
+    icon: <TbContract size="1.5em" />,
+    path: "/contracts",
+    roles: ["ADMIN", "AGENT"],
+  },
+  {
+    name: "Paiements",
+    icon: <BiCreditCard size="1.5em" />,
+    path: "/payments",
     roles: ["ADMIN", "AGENT"],
   },
   {

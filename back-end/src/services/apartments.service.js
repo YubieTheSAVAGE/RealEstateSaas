@@ -48,7 +48,7 @@ async function create(projectId, data) {
   
   // Prepare the apartment data
   const apartmentData = {
-    number: parseInt(data.number, 10),
+    number: data.number,
     floor: parseInt(data.floor, 10),
     type: data.type,
     area: parseFloat(data.area),
@@ -100,7 +100,7 @@ async function update(apartmentId, data) {
 
   // Prepare update data
   const updateData = {
-    number: data.number ? parseInt(data.number, 10) : existing.number,
+    number: data.number ? data.number : existing.number,
     floor: data.floor ? parseInt(data.floor, 10) : existing.floor,
     type: data.type || existing.type,
     area: data.area ? parseFloat(data.area) : existing.area,

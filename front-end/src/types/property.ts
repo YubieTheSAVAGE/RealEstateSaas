@@ -6,7 +6,7 @@ export type ApartmentStatus = "AVAILABLE" | "RESERVED" | "SOLD";
 
 export interface Property {
   id: number;
-  number: number;
+  number: string;
   floor: number;
   type: PropertyType;
   area: number;

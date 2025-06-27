@@ -1,9 +1,21 @@
-'use client';
-
 import React from 'react';
 import Breadcrumb from '@/components/ui/breadcrumb/Breadcrumb';
 import ClientDetails from '@/components/client/ClientDetails';
+import { Metadata } from "next";
 
+export async function generateMetadata({ params }: { params: Promise<{ clientId: string }> }): Promise<Metadata> {
+  const { clientId } = await params;
+  
+  return {
+    title: `Client ${clientId} - Immo 360`,
+    description: `Détails du client ${clientId} - Gestion immobilière Immo 360`,
+    icons: {
+      icon: "./favicon.ico",
+      shortcut: "./favicon.ico",
+      apple: "./favicon.ico",
+    },
+  };
+}
 
 export default async function ClientDetailsPage({ params }: { params: Promise<{ clientId: string }> }) {
   const { clientId } = await params;

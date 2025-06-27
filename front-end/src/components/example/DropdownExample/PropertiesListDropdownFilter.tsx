@@ -112,7 +112,7 @@ export default function PropertiesListDropdownFilter({
 
       <Dropdown
         key={JSON.stringify(filters)}
-        className="absolute top-full z-40 mt-2 w-full min-w-[260px] rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-[#1E2635]"
+        className="absolute top-full z-0 mt-2 w-full min-w-[260px] rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-[#1E2635]"
         isOpen={isOpen}
         onClose={closeDropdown}
       >

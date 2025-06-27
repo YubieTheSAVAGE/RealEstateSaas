@@ -96,13 +96,12 @@ async function createApartment(request, reply) {
 
     const dest = path.join(uploadsDir, uniqueName);
     await fs.promises.writeFile(dest, buffer);
-
      // Use environment variable for base URL or default to localhost for development
      const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
      uploadedImage = baseUrl + path.join('/uploads', uniqueName);
     }
     const newApartment = await apartmentService.create(projectId, {
-      number : parseInt(number, 10),
+      number,
       floor : parseInt(floor, 10),
       type,
       area: parseInt(area, 10),
@@ -207,7 +206,7 @@ async function updateApartment(request, reply) {
     }
 
     const updated = await apartmentService.update(apartmentId, {
-      number : parseInt(data.number, 10),
+      number :data.number,
       floor : parseInt(data.floor, 10),
       type: data.type,
       area: parseInt(data.area, 10),
