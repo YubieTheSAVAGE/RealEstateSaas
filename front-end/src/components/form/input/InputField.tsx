@@ -61,7 +61,7 @@ const Input: FC<InputProps> = ({
         name={name}
         placeholder={placeholder}
         defaultValue={defaultValue}
-        value={inputValue}
+        {...(onChange ? { value: inputValue } : {})}
         onChange={onChange}
         min={min}
         max={max}

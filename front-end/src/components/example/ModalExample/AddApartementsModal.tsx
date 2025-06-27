@@ -12,8 +12,10 @@ import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import getClient from "@/components/tables/DataTables/Clients/getClient";
 import { Client } from "@/types/client";
-// import { Property } from "@/types/property";
 import { Project } from "@/types/project";
+import Stepper from "../../ui/stepper/Stepper";
+import Radio from "../../form/input/Radio";
+import Checkbox from "../../form/input/Checkbox";
 
 interface AddPropertyModalProps {
   onApartementsAdded?: () => void; // Callback to refresh project list
@@ -35,7 +37,6 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     number: "",
     type: "",
     area: "",
-    threeDViewUrl: "",
     price: "",
     status: "AVAILABLE",
     notes: "",
@@ -59,6 +60,52 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     image: "",
     clientId: "",
   });
+
+  // Stepper state
+  const [step, setStep] = useState(0);
+
+  // New fields for annex surfaces, parking, and pricing
+  const [surfaces, setSurfaces] = useState({
+    habitable: "",
+    balcon: "",
+    terrasse: "",
+    piscine: "",
+  });
+  const [prixType, setPrixType] = useState("FIXE"); // "FIXE" or "M2"
+  const [prixM2, setPrixM2] = useState("");
+  const [prixTotal, setPrixTotal] = useState("");
+  const [prixBalconPct, setPrixBalconPct] = useState("50");
+  const [prixTerrassePct, setPrixTerrassePct] = useState("30");
+  const [prixPiscine, setPrixPiscine] = useState("");
+  const [parkingDisponible, setParkingDisponible] = useState(false);
+  const [parkingInclus, setParkingInclus] = useState(false);
+  const [prixParking, setPrixParking] = useState("");
+
+  // Calculation logic
+  const calcSummary = React.useMemo(() => {
+    const hab = Number(surfaces.habitable) || 0;
+    const bal = Number(surfaces.balcon) || 0;
+    const ter = Number(surfaces.terrasse) || 0;
+    const pis = Number(surfaces.piscine) || 0;
+    const m2 = Number(prixM2) || 0;
+    const balPct = Number(prixBalconPct) / 100;
+    const terPct = Number(prixTerrassePct) / 100;
+    const pisPrix = Number(prixPiscine) || 0;
+    const parkPrix = Number(prixParking) || 0;
+    let main = 0, balcon = 0, terrasse = 0, piscine = 0, parking = 0, total = 0;
+    if (prixType === "FIXE") {
+      total = Number(prixTotal) || 0;
+      main = total;
+    } else {
+      main = hab * m2;
+      balcon = bal * (m2 * balPct);
+      terrasse = ter * (m2 * terPct);
+      piscine = pis * pisPrix;
+      parking = parkingDisponible && !parkingInclus ? parkPrix : 0;
+      total = main + balcon + terrasse + piscine + parking;
+    }
+    return { main, balcon, terrasse, piscine, parking, total };
+  }, [surfaces, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking]);
 
   // Add click outside handler for dropdown
   useEffect(() => {
@@ -181,7 +228,6 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       number: "",
       type: "",
       area: "",
-      threeDViewUrl: "",
       price: "",
       status: "AVAILABLE",
       notes: "",
@@ -285,6 +331,12 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     handleCloseModal();
   };
 
+  // Stepper steps
+  const steps = [
+    { label: "Informations de base" },
+    { label: "Surfaces & Tarification" },
+  ];
+
   return (
     <>
       <Button size="sm" onClick={openModal}>
@@ -293,228 +345,204 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       <Modal
         isOpen={isOpen}
         onClose={handleCloseModal}
-        className="max-w-[584px] p-5 lg:p-10 m-4"
+        className="max-w-2xl p-5 lg:p-10 m-4"
       >
-        <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-          Informations du bien
-        </h4>
-        
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold">Ajouter un bien</h1>
+        </div>
+        <Stepper steps={steps} currentStep={step} className="mb-6" />
         <div className="custom-scrollbar max-h-[70vh] overflow-y-auto px-1">
-          <form onSubmit={(e) => e.preventDefault()}>
-            <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-              <div className="col-span-1">
-                <Label>Projet <span className="text-red-500">*</span></Label>
-                <Select
-                  name="id"
-                  options={options}
-                  placeholder="Sélectionner une option"
-                  onChange={(value, name) => handleSelectChange(value, name)}
-                  className="dark:bg-dark-900"
-                />
-                {errors.id && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.id}
-                  </p>
-                )}
-              </div>
-              <div className="col-span-1">
-                <Label>Type <span className="text-red-500">*</span></Label>
-                <Select
-                  name="type"
-                  options={type}
-                  placeholder="Type"
-                  onChange={(value, name) => handleSelectChange(value, name)}
-                />
-                {errors.type && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.type}
-                  </p>
-                )}
-              </div>
-
-              <div className="col-span-1">
-                <Label>Étage <span className="text-red-500">*</span></Label>
-                <Input
-                  name="floor"
-                  type="number"
-                  placeholder="ex: 10"
-                  onChange={handleChange}
-                />
-                {errors.floor && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.floor}
-                  </p>
-                )}
-
-              </div>
-              <div className="col-span-1">
-                <Label>Numéro <span className="text-red-500">*</span></Label>
-                <Input
-                  name="number"
-                  type="text"
-                  placeholder="ex: 10A"
-                  onChange={handleChange}
-                />
-                {errors.number && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.number}
-                  </p>
-                )}
-              </div>
-
-              <div className="col-span-1">
-                <Label>Superficie <span className="text-red-500">*</span></Label>
-                <Input
-                  name="area"
-                  type="number"
-                  placeholder="ex: 10"
-                  onChange={handleChange}
-                />
-                {errors.area && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.area}
-                  </p>
-                )}
-              </div>
-              <div className="col-span-1">
-                <Label>Prix/m² <span className="text-red-500">*</span></Label>
-                <Input
-                  name="pricePerM2"
-                  type="number"
-                  placeholder="ex: 10"
-                  onChange={handleChange}
-                />
-                {errors.pricePerM2 && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.pricePerM2}
-                  </p>
-                )}
-              </div>
-
-              <div className="col-span-1">
-                <Label>Zone <span className="text-red-500">*</span></Label>
-                <Input
-                  name="zone"
-                  type="text"
-                  placeholder="ex: Zone 1"
-                  onChange={handleChange}
-                />
-                {errors.zone && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.zone}
-                  </p>
-                )}
-              </div>
-
-              <div className="col-span-1">
-                <Label>Lien 3D</Label>
-                <Input
-                  name="threeDViewUrl"
-                  type="text"
-                  placeholder="ex: 10"
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-span-1">
-                <Label>Prix total <span className="text-red-500">*</span></Label>
-                <Input
-                  name="price"
-                  type="number"
-                  placeholder="ex: 10"
-                  onChange={handleChange}
-                />
-                {errors.price && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.price}
-                  </p>
-                )}
-              </div>
-              <div className="col-span-1">
-                <Label>Statut <span className="text-red-500">*</span></Label>
-                <Select
-                  defaultValue={status[0].value}
-                  options={status}
-                  name="status"
-                  placeholder=""
-                  onChange={(value, name) => handleSelectChange(value, name)}
-                />
-              </div>
-              {(formData.status === "SOLD" || formData.status === "RESERVED") && (
-                <div className="col-span-1" ref={clientSearchRef}>
-                  <Label>Client <span className="text-red-500">*</span></Label>
-                  <div className="relative">
-                    <div onClick={() => setShowClientDropdown(true)}>
-                      <Input
-                        name="clientSearch"
-                        type="text"
-                        defaultValue={clientSearch}
-                        onChange={handleClientSearch}
-                        placeholder="Rechercher un client..."
-                        className="w-full"
-                      />
-                    </div>
-                    {showClientDropdown && filteredClients.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto dark:bg-dark-900 dark:border-dark-700">
-                        {filteredClients.map((client) => (
-                          <div
-                            key={client.value}
-                            className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-800"
-                            onClick={() => handleClientSelect(client)}
-                          >
-                            {client.label}
-                          </div>
-                        ))}
+          {step === 0 && (
+            <form onSubmit={e => { e.preventDefault(); setStep(1); }}>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+                {/* Project, Type, Floor, Number, Zone, Status, Client, Plan, Notes */}
+                <div className="col-span-1">
+                  <Label>Projet <span className="text-red-500">*</span></Label>
+                  <Select
+                    name="id"
+                    options={options}
+                    placeholder="Sélectionner une option"
+                    onChange={(value, name) => handleSelectChange(value, name)}
+                    className="dark:bg-dark-900"
+                  />
+                  {errors.id && <p className="text-sm text-red-500 mt-1">{errors.id}</p>}
+                </div>
+                <div className="col-span-1">
+                  <Label>Type <span className="text-red-500">*</span></Label>
+                  <Select
+                    name="type"
+                    options={type}
+                    placeholder="Type"
+                    onChange={(value, name) => handleSelectChange(value, name)}
+                  />
+                  {errors.type && <p className="text-sm text-red-500 mt-1">{errors.type}</p>}
+                </div>
+                <div className="col-span-1">
+                  <Label>Étage <span className="text-red-500">*</span></Label>
+                  <Input name="floor" type="number" placeholder="ex: 10" value={formData.floor} onChange={handleChange} />
+                  {errors.floor && <p className="text-sm text-red-500 mt-1">{errors.floor}</p>}
+                </div>
+                <div className="col-span-1">
+                  <Label>Numéro <span className="text-red-500">*</span></Label>
+                  <Input name="number" type="text" placeholder="ex: 10A" value={formData.number} onChange={handleChange} />
+                  {errors.number && <p className="text-sm text-red-500 mt-1">{errors.number}</p>}
+                </div>
+                <div className="col-span-1">
+                  <Label>Zone <span className="text-red-500">*</span></Label>
+                  <Input name="zone" type="text" placeholder="ex: Zone 1" value={formData.zone} onChange={handleChange} />
+                  {errors.zone && <p className="text-sm text-red-500 mt-1">{errors.zone}</p>}
+                </div>
+                <div className="col-span-1">
+                  <Label>Statut <span className="text-red-500">*</span></Label>
+                  <Select
+                    defaultValue={status[0].value}
+                    options={status}
+                    name="status"
+                    placeholder=""
+                    onChange={(value, name) => handleSelectChange(value, name)}
+                  />
+                </div>
+                {(formData.status === "SOLD" || formData.status === "RESERVED") && (
+                  <div className="col-span-1" ref={clientSearchRef}>
+                    <Label>Client <span className="text-red-500">*</span></Label>
+                    <div className="relative">
+                      <div onClick={() => setShowClientDropdown(true)}>
+                        <Input
+                          name="clientSearch"
+                          type="text"
+                          defaultValue={clientSearch}
+                          onChange={handleClientSearch}
+                          placeholder="Rechercher un client..."
+                          className="w-full"
+                        />
                       </div>
-                    )}
-                    {showClientDropdown && filteredClients.length === 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg dark:bg-dark-900 dark:border-dark-700">
-                        <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
-                          Aucun client trouvé
+                      {showClientDropdown && filteredClients.length > 0 && (
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto dark:bg-dark-900 dark:border-dark-700">
+                          {filteredClients.map((client) => (
+                            <div
+                              key={client.value}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-800"
+                              onClick={() => handleClientSelect(client)}
+                            >
+                              {client.label}
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    )}
+                      )}
+                      {showClientDropdown && filteredClients.length === 0 && (
+                        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg dark:bg-dark-900 dark:border-dark-700">
+                          <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
+                            Aucun client trouvé
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {errors.clientId && <p className="text-sm text-red-500 mt-1">{errors.clientId}</p>}
                   </div>
-                  {errors.clientId && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {errors.clientId}
-                    </p>
+                )}
+                <div className="col-span-2">
+                  <Label>Plan</Label>
+                  <FileInput name="image" onChange={handleFileChange} />
+                  {formData.image && <p className="mt-1 text-xs text-green-600">Fichier sélectionné : {formData.image.name}</p>}
+                </div>
+                <div className="col-span-2">
+                  <Label>Notes</Label>
+                  <TextArea value={formData.notes} rows={3} placeholder="Ajouter des notes ici" onChange={handleTextAreaChange} />
+                </div>
+              </div>
+              <div className="flex items-center justify-end w-full gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+                <Button size="sm" variant="outline" onClick={handleCloseModal}>Fermer</Button>
+                <Button size="sm" type="submit">Suivant</Button>
+              </div>
+            </form>
+          )}
+          {step === 1 && (
+            <form onSubmit={e => { e.preventDefault(); handleSave(); }}>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+                {/* Surfaces */}
+                <div className="col-span-1">
+                  <Label>Surface habitable (m²) <span className="text-red-500">*</span></Label>
+                  <Input name="habitable" type="number" placeholder="ex: 100" value={surfaces.habitable} onChange={e => setSurfaces(s => ({ ...s, habitable: e.target.value }))} />
+                </div>
+                <div className="col-span-1">
+                  <Label>Surface balcon (m²)</Label>
+                  <Input name="balcon" type="number" placeholder="ex: 10" value={surfaces.balcon} onChange={e => setSurfaces(s => ({ ...s, balcon: e.target.value }))} />
+                </div>
+                <div className="col-span-1">
+                  <Label>Surface terrasse (m²)</Label>
+                  <Input name="terrasse" type="number" placeholder="ex: 10" value={surfaces.terrasse} onChange={e => setSurfaces(s => ({ ...s, terrasse: e.target.value }))} />
+                </div>
+                <div className="col-span-1">
+                  <Label>Surface piscine (m²)</Label>
+                  <Input name="piscine" type="number" placeholder="ex: 5" value={surfaces.piscine} onChange={e => setSurfaces(s => ({ ...s, piscine: e.target.value }))} />
+                </div>
+                {/* Pricing type */}
+                <div className="col-span-2">
+                  <Label>Type de prix <span className="text-red-500">*</span></Label>
+                  <div className="flex gap-6 mt-2">
+                    <Radio id="prix-fixe" name="prixType" value="FIXE" checked={prixType === "FIXE"} label="Prix fixe" onChange={setPrixType} />
+                    <Radio id="prix-m2" name="prixType" value="M2" checked={prixType === "M2"} label="Prix au m²" onChange={setPrixType} />
+                  </div>
+                </div>
+                {prixType === "FIXE" ? (
+                  <div className="col-span-2">
+                    <Label>Prix total (DH) <span className="text-red-500">*</span></Label>
+                    <Input name="prixTotal" type="number" placeholder="ex: 1000000" value={prixTotal} onChange={e => setPrixTotal(e.target.value)} />
+                  </div>
+                ) : (
+                  <>
+                    <div className="col-span-1">
+                      <Label>Prix par m² habitable (DH) <span className="text-red-500">*</span></Label>
+                      <Input name="prixM2" type="number" placeholder="ex: 10000" value={prixM2} onChange={e => setPrixM2(e.target.value)} />
+                    </div>
+                    <div className="col-span-1">
+                      <Label>Prix balcon (% du prix au m² habitable)</Label>
+                      <Input name="prixBalconPct" type="number" placeholder="ex: 50" value={prixBalconPct} onChange={e => setPrixBalconPct(e.target.value)} />
+                    </div>
+                    <div className="col-span-1">
+                      <Label>Prix terrasse (% du prix au m² habitable)</Label>
+                      <Input name="prixTerrassePct" type="number" placeholder="ex: 30" value={prixTerrassePct} onChange={e => setPrixTerrassePct(e.target.value)} />
+                    </div>
+                    <div className="col-span-1">
+                      <Label>Prix piscine (DH/m²)</Label>
+                      <Input name="prixPiscine" type="number" placeholder="ex: 5000" value={prixPiscine} onChange={e => setPrixPiscine(e.target.value)} />
+                    </div>
+                  </>
+                )}
+                {/* Parking */}
+                <div className="col-span-2 flex flex-col gap-2 mt-2">
+                  <Checkbox label="Parking disponible" checked={parkingDisponible} onChange={setParkingDisponible} />
+                  {parkingDisponible && (
+                    <div className="flex gap-4 items-center ml-4">
+                      <Checkbox label="Inclus dans le prix" checked={parkingInclus} onChange={setParkingInclus} />
+                      {!parkingInclus && (
+                        <div className="flex items-center gap-2">
+                          <Label>Prix du parking (DH)</Label>
+                          <Input name="prixParking" type="number" placeholder="ex: 100000" value={prixParking} onChange={e => setPrixParking(e.target.value)} />
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-              <div className="col-span-2">
-                <Label>Plan</Label>
-                <FileInput
-                  name="image"
-                  onChange={handleFileChange} // Use the specialized handler
-                />
-                {formData.image && (
-                  <p className="mt-1 text-xs text-green-600">
-                    Fichier sélectionné : {formData.image.name}
-                  </p>
-                )}
               </div>
-
-              <div className="col-span-1 sm:col-span-2">
-                <Label>Notes</Label>
-                <TextArea
-                  value={formData.notes}
-                  rows={3}
-                  placeholder="Ajouter des notes ici"
-                  onChange={handleTextAreaChange}
-                />
+              {/* Calculation summary */}
+              <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 className="font-semibold mb-2">Calcul du prix total</h4>
+                <div className="space-y-1 text-sm">
+                  <div>Surface habitable ({surfaces.habitable || 0} m²): <span className="font-medium">{calcSummary.main.toLocaleString()} DH</span></div>
+                  {Number(surfaces.balcon) > 0 && <div>Balcon ({surfaces.balcon} m²): <span className="font-medium">{calcSummary.balcon.toLocaleString()} DH</span></div>}
+                  {Number(surfaces.terrasse) > 0 && <div>Terrasse ({surfaces.terrasse} m²): <span className="font-medium">{calcSummary.terrasse.toLocaleString()} DH</span></div>}
+                  {Number(surfaces.piscine) > 0 && <div>Piscine ({surfaces.piscine} m²): <span className="font-medium">{calcSummary.piscine.toLocaleString()} DH</span></div>}
+                  {parkingDisponible && <div>Parking: <span className="font-medium">{calcSummary.parking.toLocaleString()} DH</span></div>}
+                  <div className="mt-2 font-bold text-blue-900">Total: {calcSummary.total.toLocaleString()} DH</div>
+                </div>
               </div>
-            </div>
-          </form>
-        </div>
-
-        <div className="flex items-center justify-end w-full gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-          <Button size="sm" variant="outline" onClick={handleCloseModal}>
-            Fermer
-          </Button>
-          <Button size="sm" onClick={handleSave}>
-            Enregistrer
-          </Button>
+              <div className="flex items-center justify-between w-full gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+                <Button size="sm" variant="outline" onClick={() => setStep(0)}>Précédent</Button>
+                <Button size="sm" type="submit">Créer le lot</Button>
+              </div>
+            </form>
+          )}
         </div>
       </Modal>
     </>
