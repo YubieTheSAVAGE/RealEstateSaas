@@ -1,0 +1,36 @@
+# Use Ubuntu-based Node image to avoid credential issues
+FROM ubuntu:22.04
+
+# Install Node.js and other dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    postgresql-client \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install all dependencies without scripts
+RUN npm ci --ignore-scripts
+
+# Copy everything else
+COPY . .
+
+# Make entrypoint script executable
+RUN chmod +x scripts/dev-entrypoint.sh
+
+# Create uploads directory
+RUN mkdir -p src/uploads
+
+# Add health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
+
+EXPOSE 3001
+
+# Use development entrypoint
+ENTRYPOINT ["./scripts/dev-entrypoint.sh"]

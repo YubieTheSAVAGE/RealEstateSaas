@@ -54,6 +54,10 @@ app.register(multipart, {
 
 app.register(jwtPlugin, { secret: process.env.JWT_SECRET });
 
+// Health check endpoint
+app.get('/health', async (request, reply) => {
+  return { status: 'ok', timestamp: new Date().toISOString() };
+});
 
 app.register(authRoutes, { prefix: '/auth' });
 

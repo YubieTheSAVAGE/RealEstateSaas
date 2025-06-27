@@ -97,7 +97,9 @@ async function createApartment(request, reply) {
     const dest = path.join(uploadsDir, uniqueName);
     await fs.promises.writeFile(dest, buffer);
 
-     uploadedImage = "https://realestatesaas.onrender.com" + path.join('/uploads', uniqueName);
+     // Use environment variable for base URL or default to localhost for development
+     const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+     uploadedImage = baseUrl + path.join('/uploads', uniqueName);
     }
     const newApartment = await apartmentService.create(projectId, {
       number : parseInt(number, 10),
@@ -168,7 +170,9 @@ async function updateApartment(request, reply) {
     const dest = path.join(uploadsDir, uniqueName);
     await fs.promises.writeFile(dest, buffer);
 
-     uploadedImage = "https://realestatesaas.onrender.com" + path.join('/uploads', uniqueName);
+     // Use environment variable for base URL or default to localhost for development
+     const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+     uploadedImage = baseUrl + path.join('/uploads', uniqueName);
     }
     if (Object.keys(data).length === 0) {
       return reply.code(400).send({

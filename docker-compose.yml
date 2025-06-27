@@ -4,6 +4,7 @@ services:
     build:
       context: ./front-end
       dockerfile: Dockerfile
+      pull: false  # Use local cache to avoid credential issues
     volumes:
       - ./front-end:/app
       - /app/node_modules  # prevent overwriting node_modules with host
@@ -11,7 +12,34 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:3001
-    command: npm run dev  # 👈 Dev command
+    command: npm run dev
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile.minimal
+      pull: false  # Use local cache to avoid credential issues
+    volumes:
+      - ./back-end/src:/app/src
+      - ./back-end/prisma:/app/prisma
+      - ./back-end/package.json:/app/package.json
+      - ./back-end/package-lock.json:/app/package-lock.json
+      - uploads:/app/src/uploads  # Persist upload directory
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
+      - PORT=3001
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
+      - NODE_ENV=development
+    command: sh -c "sleep 10 && npx prisma generate && npx prisma migrate deploy && npm run dev"
+    depends_on:
+      - db
+    restart: unless-stopped
+
   db:
     image: postgres:15
     restart: always
@@ -23,22 +51,32 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  backend:
-    build:
-      context: ./back-end
-      dockerfile: Dockerfile
-    volumes:
-      - ./back-end:/app
-      - /app/node_modules
+  # MinIO for S3-compatible storage
+  minio:
+    image: minio/minio:latest
+    restart: always
     ports:
-      - "3001:3001"
+      - "9000:9000"
+      - "9001:9001"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
-    command: npm run dev  # 👈 Use ts-node-dev or nodemon for backend
-    depends_on:
-      - db
-
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
 volumes:
   pgdata:
+  uploads:
+  minio_data:

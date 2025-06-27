@@ -1,0 +1,45 @@
+version: '3.9'
+services:
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./front-end:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3001
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - backend
+
+  backend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./back-end:/app
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
+      - PORT=3001
+      - JWT_SECRET=your-secret-key-here
+      - NODE_ENV=development
+    command: sh -c "npm install && sleep 15 && npx prisma generate && npx prisma migrate deploy && mkdir -p src/uploads && npm run dev"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

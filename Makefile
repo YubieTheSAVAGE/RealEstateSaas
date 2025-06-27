@@ -12,7 +12,7 @@ all: frontend backend
 # Run both frontend and backend servers concurrently
 concurrent:
 	@echo "Starting frontend and backend servers concurrently..."
-	@cd frontend && npm run dev & cd backend && npm run dev
+	@cd front-end && npm run dev & cd back-end && npm run dev
 	@wait
 	@echo "Both servers have been started."
 # Stop both servers
@@ -27,14 +27,14 @@ restart-concurrent: stop concurrent
 # Clean up node_modules and reinstall dependencies
 clean:
 	@echo "Cleaning up node_modules and reinstalling dependencies..."
-	@cd frontend && rm -rf node_modules && npm install
-	@cd backend && rm -rf node_modules && npm install
+	@cd front-end && rm -rf node_modules && npm install
+	@cd back-end && rm -rf node_modules && npm install
 	@echo "Cleanup complete."
 # Install dependencies for both frontend and backend
 install:
 	@echo "Installing dependencies for frontend and backend..."
-	@cd frontend && npm install
-	@cd backend && npm install
+	@cd front-end && npm install
+	@cd back-end && npm install
 	@echo "Dependencies installed."
 # Run tests for both frontend and backend
 test:

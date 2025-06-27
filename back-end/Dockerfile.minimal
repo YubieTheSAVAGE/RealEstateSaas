@@ -1,0 +1,20 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install dependencies (bcryptjs doesn't need native compilation)
+RUN npm ci
+
+# Copy everything else
+COPY . .
+
+# Create uploads directory
+RUN mkdir -p src/uploads
+
+EXPOSE 3001
+
+# Simple command without health checks for now
+CMD ["npm", "run", "dev"]

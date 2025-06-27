@@ -1,19 +1,32 @@
 const prisma = require("../utils/prisma");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 async function createUser() {
   try {
-    const passwordHash = await bcrypt.hash("password123", 10);
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { email: "test@immo360.com" }
+    });
+
+    if (existingUser) {
+      console.log("User already exists:", existingUser.email);
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash("test123", 10);
     const user = await prisma.user.create({
       data: {
-        name: "Test User",
-        email: "test2@example.com",
+        name: "Admin User",
+        email: "test@immo360.com",
         phoneNumber: "1234567890",
         role: "ADMIN",
         passwordHash
       }
     });
-    console.log("User created successfully:", user);
+
+    // Remove password hash from output for security
+    delete user.passwordHash;
+    console.log("Admin user created successfully:", user);
   } catch (error) {
     console.error("Error creating user:", error);
   } finally {
