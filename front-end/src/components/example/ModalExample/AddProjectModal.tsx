@@ -30,7 +30,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     latitude: "",
     longitude: "",
     dossierFee: "",
-    agencyCommission: "",
+    commission: "",
     image: null as File | null, // Store as File object instead of string
     status: "",
   });
@@ -43,7 +43,7 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     latitude: "",
     longitude: "",
     dossierFee: "",
-    agencyCommission: "",
+    commission: "",
     image: "",
     status: "",
   });
@@ -138,9 +138,9 @@ const handleSave = async () => {
       message: "Les frais de dossier sont requis et doivent être un nombre positif"
     },
     { 
-      field: 'agencyCommission', 
+      field: 'commission', 
       test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0,
-      message: "La commission d'agence est requise et doit être un nombre positif"
+      message: "La commission est requise et doit être un nombre positif"
     },
     {
       field: 'status',
@@ -168,7 +168,7 @@ const handleSave = async () => {
 
   try {
     await addProject(formDataToSend);
-    setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", latitude: "", longitude: "", dossierFee: "", agencyCommission: "", image: null, status: "" });
+    setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", latitude: "", longitude: "", dossierFee: "", commission: "", image: null, status: "" });
     onProjectAdded?.();
     closeModal();
   } catch (error) {
@@ -214,7 +214,7 @@ const handleSave = async () => {
       latitude: "",
       longitude: "",
       dossierFee: "",
-      agencyCommission: "",
+      commission: "",
       image: "",
       status: "",
     });
@@ -269,7 +269,7 @@ const handleSave = async () => {
                 <Input
                   name="name"
                   type="text"
-                  placeholder="le nom du projet"
+                  placeholder="e.g. Immo 360"
                   onChange={handleChange}
                   value={formData.name}
                 />
@@ -282,7 +282,7 @@ const handleSave = async () => {
                 <Input
                   name="numberOfApartments"
                   type="number"
-                  placeholder="e.g. 10"
+                  placeholder="e.g. 240"
                   onChange={handleChange}
                   value={formData.numberOfApartments}
                 />
@@ -295,7 +295,7 @@ const handleSave = async () => {
                 <Input
                   name="totalSurface"
                   type="number"
-                  placeholder="e.g. 1000 m²"
+                  placeholder="e.g. 1000(m²)"
                   onChange={handleChange}
                   value={formData.totalSurface}
                 />
@@ -308,7 +308,7 @@ const handleSave = async () => {
                 <Input
                   name="address"
                   type="text"
-                  placeholder="e.g. 123 Main St"
+                  placeholder="e.g. 123 Rue de la Paix"
                   onChange={handleChange}
                   value={formData.address}
                 />
@@ -346,7 +346,7 @@ const handleSave = async () => {
                 <Input
                   name="latitude"
                   type="number"
-                  placeholder="e.g. 35.5731"
+                  placeholder="e.g. 35.5731(°)"
                   onChange={handleChange}
                   value={formData.latitude}
                 />
@@ -359,7 +359,7 @@ const handleSave = async () => {
                 <Input
                   name="longitude"
                   type="number"
-                  placeholder="e.g. -7.573871"
+                  placeholder="e.g. -7.573871(°)"
                   onChange={handleChange}
                   value={formData.longitude}
                 />
@@ -379,7 +379,7 @@ const handleSave = async () => {
                 <Input
                   name="dossierFee"
                   type="number"
-                  placeholder="e.g. 12345"
+                  placeholder="e.g. 4500(MAD)"
                   onChange={handleChange}
                   value={formData.dossierFee}
                 />
@@ -388,16 +388,16 @@ const handleSave = async () => {
                 )}
               </div>
               <div className="col-span-1">
-                <Label>Commission d'agence <span className="text-red-500">*</span></Label>
+                <Label>Commission par M²</Label>
                 <Input
-                  name="agencyCommission"
+                  name="commission"
                   type="number"
-                  placeholder="% 2"
+                  placeholder="e.g. 2500(MAD/m²)"
                   onChange={handleChange}
-                  value={formData.agencyCommission}
+                  value={formData.commission}
                 />
-                {errors.agencyCommission && (
-                  <p className="text-sm text-red-500 mt-1">{errors.agencyCommission}</p>
+                {errors.commission && (
+                  <p className="text-sm text-red-500 mt-1">{errors.commission}</p>
                 )}
               </div>
             </div>
@@ -410,6 +410,7 @@ const handleSave = async () => {
               <FileInput
                 name="image"
                 onChange={handleFileChange}
+                placeholder="Sélectionnez un fichier"
               />
               {formData.image && (
                 <p className="mt-1 text-xs text-green-600">Fichier sélectionné : {formData.image.name}</p>
@@ -427,7 +428,7 @@ const handleSave = async () => {
               <TextArea
                 value={formData.notes}
                 name="notes"
-                placeholder="Saisissez votre notes here..."
+                placeholder="Saisissez vos notes ici..."
                 rows={6}
                 onChange={handleTextareaChange}
               />

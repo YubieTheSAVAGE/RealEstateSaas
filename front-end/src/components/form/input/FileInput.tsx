@@ -1,19 +1,42 @@
-import React, { FC } from "react";
+import React, { FC, useRef, useState } from "react";
 
 interface FileInputProps {
   className?: string;
   name?: string;
+  placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const FileInput: FC<FileInputProps> = ({ className, onChange, name }) => {
+const FileInput: FC<FileInputProps> = ({ className, onChange, name, placeholder }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [fileName, setFileName] = useState<string>("");
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFileName(e.target.files[0].name);
+    }
+    onChange?.(e);
+  };
+
   return (
-    <input
-      type="file"
-      name={name}
-      className={`focus:border-ring-brand-300 h-11 w-full overflow-hidden rounded-lg border border-gray-300 bg-transparent text-sm text-gray-500 shadow-theme-xs transition-colors file:mr-5 file:border-collapse file:cursor-pointer file:rounded-l-lg file:border-0 file:border-r file:border-solid file:border-gray-200 file:bg-gray-50 file:py-3 file:pl-3.5 file:pr-3 file:text-sm file:text-gray-700 placeholder:text-gray-400 hover:file:bg-gray-100 focus:outline-hidden focus:file:ring-brand-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:text-white/90 dark:file:border-gray-800 dark:file:bg-white/[0.03] dark:file:text-gray-400 dark:placeholder:text-gray-400 ${className}`}
-      onChange={onChange}
-    />
+    <div className="relative">
+      <input
+        ref={fileInputRef}
+        type="file"
+        name={name}
+        className="hidden"
+        onChange={handleFileChange}
+      />
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className={`focus:border-ring-brand-300 h-11 w-full overflow-hidden rounded-lg border border-gray-300 bg-transparent text-sm text-gray-500 shadow-theme-xs transition-colors hover:bg-gray-50 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:text-white/90 dark:hover:bg-gray-800 ${className}`}
+      >
+        <span className={fileName ? "text-gray-700 dark:text-white" : "text-gray-400"}>
+          {fileName || placeholder || "Sélectionnez un fichier"}
+        </span>
+      </button>
+    </div>
   );
 };
 
