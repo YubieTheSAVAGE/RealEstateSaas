@@ -29,10 +29,8 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
     notes: ProjectData?.notes || "",
     totalSurface: ProjectData?.totalSurface || "",
     address: ProjectData?.address || "",
-    image: null as File | null, // Store as File object instead of string
+    image: ProjectData?.image?.toString() || null as string | File | null, // Allow both string and File
   });
-  console.log("ProjectData", ProjectData);
-  console.log("formData", formData);
 
   // State for validation errors
   const [errors, setErrors] = useState({
@@ -262,7 +260,10 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
               />
               {formData.image && (
                 <p className="text-sm text-green-500 mt-1">
-                  Fichier sélectionné: {formData.image.name}
+                  {typeof formData.image === 'string' 
+                    ? `Image existante: ${formData.image.split('/').pop() || 'Image'}` 
+                    : `Fichier sélectionné: ${formData.image.name}`
+                  }
                 </p>
               )}
               {errors.image && (
