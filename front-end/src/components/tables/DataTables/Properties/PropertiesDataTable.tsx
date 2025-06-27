@@ -250,8 +250,6 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                   { key: "project", label: "Projet" },
                   { key: "type", label: "Type" },
                   { key: "superficie", label: "Superficie" },
-                  { key: "pricePerM2", label: "Prix/m²" },
-                  { key: "zone", label: "Zone" },
                   { key: "price", label: "Prix" },
                   { key: "status", label: "Statut" },
                 ].map(({ key, label }) => (
@@ -317,17 +315,6 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.area} m²
-                  </TableCell>
-                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {(item.pricePerM2 ?? 0).toLocaleString("en-US", {
-                      style: "currency",
-                      currency: "MAD",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
-                    })}
-                  </TableCell>
-                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.zone}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.price.toLocaleString("en-US", {
@@ -402,10 +389,8 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                             />
                           </svg>
                         </span>
-                        // {item.status.toLowerCase()}
                       )}
                       {status[item.status as keyof typeof status] || item.status}
-                      {/* {status[item.status as keyof typeof status]} */}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
@@ -417,12 +402,10 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                         <FaEye />
                       </button>
                       <DeleteModal heading="Supprimer la propriété" itemId={item.id.toString()} description="Êtes-vous sûr de vouloir supprimer cette propriété ?" onDelete={() => handleDelete(item.id.toString())} />
-                      {/* <button className="text-gray-500 hover:text-warning-400 dark:text-gray-400 dark:hover:text-warning-400"> */}
                       <EditPropertyModal
                         PropertyData={item}
                         onRefresh={onRefresh}
                       />
-                      {/* </button> */}
                     </div>
                   </TableCell>
                 </TableRow>

@@ -25,17 +25,6 @@ export default function PropertyPage({ params }: { params: Promise<{ propertyId:
         { label: propertyId },
     ];
 
-    // const [properties, setProperties] = useState<any>(null);
-
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const result = await getApartmentsById(propertyId);
-    //         console.log("Property data:", result);
-    //         setProperties(result);
-    //     };
-    //     fetchData();
-    // }, [propertyId]);
-
     return (
         <>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">

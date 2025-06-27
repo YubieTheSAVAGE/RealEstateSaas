@@ -12,7 +12,6 @@ export default function PropertiesPageContent() {
     
     const fetchApartements = useCallback(async () => {
         setIsLoading(true);
-        // API call to fetch projects
         const data = await getApartements();
         setApartementsData(data);
         setIsLoading(false);
@@ -38,13 +37,12 @@ export default function PropertiesPageContent() {
                     className="text-xl font-semibold text-gray-800 dark:text-white/90"
                     x-text="pageName"
                 >
-                    Properties
+                    Propriétés
                 </h2>
                 {userRole === "ADMIN" && (
                     <AddPropertyModal onApartementsAdded={fetchApartements}/>
                 )}
             </div>
-            {/* <PageBreadcrumb pageTitle="Properties" /> */}
             {isLoading ? (
                 <div className="flex mt-24 w-full items-center justify-center py-4">
                     <FallingLines
