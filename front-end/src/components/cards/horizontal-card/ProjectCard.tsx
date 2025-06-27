@@ -21,6 +21,7 @@ import deleteProperties from "@/components/tables/DataTables/Projects/deleteProp
 import { useRouter } from "next/navigation";
 import { Project } from "@/types/project";
 import Badge from "@/components/ui/badge/Badge";
+import ConstructionsProgressModal from "@/components/example/ModalExample/ConstructionsProgressModal";
 
 interface ProjectCardProps {
   ProjectDetails: Project;
@@ -246,6 +247,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
               className="w-40 p-2"
             >
               <EditProjectModal ProjectData={ProjectDetails} details={true} onRefresh={handleRefresh} />
+              <ConstructionsProgressModal id={ProjectDetails.id?.toString() ?? ""} percentage={ProjectDetails.progress ?? 8} status={ProjectDetails.status ?? "planification"} />
               <DeleteModal
                 itemId={ProjectDetails.id?.toString()}
                 heading="Delete Project"
