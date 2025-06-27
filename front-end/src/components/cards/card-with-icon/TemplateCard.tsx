@@ -4,10 +4,47 @@ import { ContractTemplate } from "@/types/ContractTemplate";
 import { FaShieldAlt, FaHome, FaMapMarkerAlt, FaBuilding, FaFile } from "react-icons/fa";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
 import { PiDownloadSimple } from "react-icons/pi";
+import AssignTemplateModal from "@/components/example/ModalExample/AssignTemplateModal";
+import { Role, Status } from "@/types/user";
 
 interface TemplateCardProps {
     template: ContractTemplate;
 }
+
+const dummyTemplate: ContractTemplate = {
+  id: 1,
+  name: "Template 1",
+  description: "Description 1",
+  content: "CONTRAT DE RÉSERVATION Entre les soussignés : D'une part, [nom_entreprise],",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  assignedProjects: [
+    {
+      id: 1,
+      name: "Project 1",
+      numberOfApartments: 10,
+      address: "123 Main St",
+      totalSurface: 100,
+    },
+    {
+      id: 2,
+      name: "Project 2",
+      numberOfApartments: 20,
+      address: "456 Main St",
+      totalSurface: 200,
+    },
+  ],
+  createdBy: {
+    id: 1,
+    name: "John Doe",
+    email: "john.doe@example.com",
+    phoneNumber: "1234567890",
+    status: Status.ACTIVE,
+    role: Role.ADMIN,
+    passwordHash: "1234567890",
+  },
+  isDefault: true,
+};
 
 export default function TemplateCard({ template }: TemplateCardProps) {
   // Dummy data for preview (replace with real data as needed)
@@ -61,7 +98,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
         </div>
         {/* Buttons */}
         <div className="flex flex-col gap-2 mb-4">
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2"><MdOutlineRealEstateAgent />Assigner ce template</button>
+          <AssignTemplateModal projects={dummyTemplate.assignedProjects} template={dummyTemplate} />
           <button className="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg bg-white hover:bg-gray-50 transition flex items-center justify-center gap-2"><PiDownloadSimple />Télécharger ce template</button>
         </div>
         {/* Footer */}
