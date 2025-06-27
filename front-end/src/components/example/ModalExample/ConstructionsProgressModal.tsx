@@ -7,6 +7,7 @@ import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { Label } from "@/components/ui/label";
 import Select from "@/components/form/Select";
 import Slider from "@/components/ui/slider/Slider";
+import MultiImageUpload from "@/components/ui/multi-image-upload/MultiImageUpload";
 
 interface ConstructionsProgressModalProps {
   id: string;
@@ -18,10 +19,15 @@ export default function ConstructionsProgressModal({ percentage, status }: Const
   const { isOpen, openModal, closeModal } = useModal();
   const [percentageValue, setPercentageValue] = useState(percentage);
   const [statusValue, setStatusValue] = useState(status);
+  const [uploadedImages, setUploadedImages] = useState<File[]>([]);
 
   const handleSave = () => {
     // Handle save logic here
-    console.log("Saving changes...", { percentageValue, statusValue });
+    console.log("Saving changes...", { 
+      percentageValue, 
+      statusValue, 
+      uploadedImages: uploadedImages.map(img => img.name) 
+    });
     closeModal();
   };
 
@@ -67,6 +73,15 @@ export default function ConstructionsProgressModal({ percentage, status }: Const
                 onChange={setPercentageValue}
                 label="Pourcentage de progression"
                 showValue={true}
+              />
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <MultiImageUpload
+                images={uploadedImages}
+                onChange={setUploadedImages}
+                label="Photos des travaux"
+                maxImages={8}
               />
             </div>
             
