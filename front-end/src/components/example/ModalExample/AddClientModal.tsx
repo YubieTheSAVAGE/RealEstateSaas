@@ -6,7 +6,7 @@ import Label from "../../form/Label"
 import Input from "../../form/input/InputField"
 import { useModal } from "@/hooks/useModal"
 import Select from "../../form/Select"
-import { Trash2, Search } from "lucide-react"
+import { Trash2, Search, X } from "lucide-react"
 import addClient from "@/app/(admin)/clients/addClient"
 import { Textarea } from "@/components/ui/textarea"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
@@ -49,6 +49,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     identityType: "",
     firstName: "",
     lastName: "",
+    identityNumber: "",
   })
 
   // State for file inputs
@@ -71,6 +72,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     identityType: "",
     firstName: "",
     lastName: "",
+    identityNumber: "",
   })
 
   // State for projects and their apartments
@@ -198,6 +200,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
         identityVerso: "",
         firstName: "",
         lastName: "",
+        identityNumber: "",
       });
       setSelectedApartments([]);
       setIdentityRecto(null);
@@ -220,6 +223,16 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     // Required field validation
     if (!formData.name.trim()) {
       newErrors.name = "Le nom est requis";
+      valid = false;
+    }
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "Le prénom est requis";
+      valid = false;
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Le nom est requis";
       valid = false;
     }
 
@@ -251,6 +264,11 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
     // Validate identity documents
     if (formData.status === "CLIENT") {
+      if (!formData.identityNumber.trim()) {
+        newErrors.identityNumber = "Le numéro de pièce d'identité est requis";
+        valid = false;
+      }
+
       if (!identityRecto) {
         newErrors.identityRecto = "Le recto de la pièce d'identité est requis";
         valid = false;
@@ -419,6 +437,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     setFilteredApartments(filtered)
   }
 
+  // Add function to clear search
+  const clearSearch = () => {
+    setSearchQuery("")
+    setFilteredApartments(currentProjectApartments)
+  }
+
   // Update the useEffect that handles project changes
   useEffect(() => {
     if (formData.projectId) {
@@ -474,6 +498,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   name="firstName"
                   type="text"
                   placeholder="ex: Jean"
+                  value={formData.firstName}
                   onChange={handleChange}
                   error={!!errors.firstName}
                 />
@@ -488,6 +513,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   name="lastName"
                   type="text"
                   placeholder="ex: Dupont"
+                  value={formData.lastName}
                   onChange={handleChange}
                   error={!!errors.lastName}
                 />
@@ -513,6 +539,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   name="email"
                   type="text"
                   placeholder="ex: jean.dupont@exemple.com"
+                  value={formData.email}
                   onChange={handleChange}
                   error={!!errors.email}
                 />
@@ -527,6 +554,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   name="phoneNumber"
                   type="phone"
                   placeholder="ex: 06-12-34-56-78"
+                  value={formData.phoneNumber}
                   onChange={handleChange}
                   error={!!errors.phoneNumber}
                 />
@@ -542,6 +570,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   name="whatsappNumber"
                   type="phone"
                   placeholder="ex: 06-12-34-56-78"
+                  value={formData.whatsappNumber}
                   onChange={handleChange}
                   error={!!errors.whatsappNumber}
                 />
@@ -552,13 +581,13 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               {/* Project and Apartment Selection Section */}
               <div className="col-span-2">
                 <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
-                  Biens intéressés <span className="text-red-500">*</span>
+                  Biens intéressés
                 </h5>
                 <div className="flex flex-col gap-4 p-4 border rounded-lg">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="col-span-2">
                       <Label>
-                        Projet <span className="text-red-500">*</span>
+                        Projet
                       </Label>
                       <Select
                         options={projects}
@@ -572,7 +601,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                     </div>
                     {formData.projectId && (
                       <div className="col-span-2">
-                        <Label>Rechercher des biens <span className="text-red-500">*</span></Label>
+                        <Label>Rechercher des biens</Label>
                         <div className="relative">
                           <div className="relative">
                             <input
@@ -580,9 +609,18 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                               value={searchQuery}
                               onChange={handleSearchChange}
                               placeholder="Rechercher par type ou numéro..."
-                              className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-3 py-2 pl-10 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                            {searchQuery && (
+                              <button
+                                type="button"
+                                onClick={clearSearch}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                              >
+                                <X size={16} />
+                              </button>
+                            )}
                           </div>
                           {searchQuery && filteredApartments.length > 0 && (
                             <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
@@ -679,6 +717,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   name="provenance"
                   type="text"
                   placeholder="ex: Google, Recommandation"
+                  value={formData.provenance}
                   onChange={handleChange}
                   error={!!errors.provenance}
                 />
@@ -707,8 +746,11 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                     name="identityNumber"
                     type="text"
                     placeholder="ex: AB234567890"
+                    value={formData.identityNumber}
                     onChange={handleChange}
+                    error={!!errors.identityNumber}
                   />
+                  {errors.identityNumber && <p className="mt-1 text-sm text-red-500">{errors.identityNumber}</p>}
                 </div>
                 </>
               )}
@@ -789,6 +831,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   rows={3}
                   name="notes"
                   placeholder="ex: Notes concernant le client"
+                  value={formData.notes}
                   onChange={handleTextareaChange}
                 />
               </div>
