@@ -49,11 +49,6 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     "SOLD": "Vendu"
   }
 
-  // const status = [
-  //   { value: "AVAILABLE", label: "Disponible" },
-  //   { value: "RESERVED", label: "Réservé" },
-  //   { value: "SOLD", label: "Vendu" },
-  // ]
 
 
   const [apartementsData, setApartementsData] = useState<Property[]>([]);
@@ -63,18 +58,26 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
       const formattedData: Property[] = apartmentsData.map((item: Property) => ({
         id: item.id ?? "",
         number: item.number ?? "",
-        floor: item.floor ?? "",
-        type: item.type ?? "",
-        area: item.area ?? 0,
-        price: item.price ?? 0,
-        status: item.status ?? "",
-        pricePerM2: item.pricePerM2 ?? 0,
+        floor: item.floor ?? 0,
+        type: item.type ?? "APARTMENT",
+        habitable: item.habitable ?? 0,
+        balcon: item.balcon ?? 0,
+        terrasse: item.terrasse ?? 0,
+        piscine: item.piscine ?? 0,
+        totalArea: item.totalArea ?? 0,
+        mezzanineArea: item.mezzanineArea ?? 0,
+        mezzaninePrice: item.mezzaninePrice ?? 0,
+        prixType: item.prixType ?? "FIXE",
+        prixTotal: item.prixTotal ?? 0,
+        prixM2: item.prixM2 ?? 0,
         zone: item.zone ?? "",
         project: item.project ?? { id: "", name: "" },
-        projectId: item.projectId ?? item.project?.id ?? "",
-        threeDViewUrl: item.threeDViewUrl ?? "",
         notes: item.notes ?? "",
         client: item.client ?? null,
+        parkingDisponible: item.parkingDisponible ?? false,
+        parkingInclus: item.parkingInclus ?? false,
+        status: item.status ?? "AVAILABLE",
+        
       }));
       setApartementsData(formattedData);
     } else {
@@ -125,13 +128,13 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
       case "type":
         return item.type || "";
       case "superficie":
-        return item.area || "";
+        return item.habitable || "";
       case "price":
-        return item.price ?? 0;
+        return item.prixTotal ?? 0;
       case "status":
         return item.status || "";
       case "pricePerM2":
-        return item.pricePerM2 ?? 0;
+        return item.prixM2 ?? 0;
       case "zone":
         return item.zone || "";
       case "etage":
@@ -160,7 +163,6 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   });
 
   const totalFilteredItems = filteredData.length;
-  // const totalFilteredPages = Math.ceil(totalFilteredItems / itemsPerPage);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalFilteredItems);
@@ -308,16 +310,16 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
               {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
-                    {item.project.name}
+                    {item.project.name} {item.number}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {type[item.type as keyof typeof type] || item.type}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.area} m²
+                    {item.habitable ? item.habitable + " m²" : item.totalArea ? item.totalArea + " m²" : "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.price.toLocaleString("en-US", {
+                    {item.prixTotal.toLocaleString("fr-FR", {
                       style: "currency",
                       currency: "MAD",
                       minimumFractionDigits: 0,

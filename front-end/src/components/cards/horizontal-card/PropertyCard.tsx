@@ -4,14 +4,11 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import 'react-photo-view/dist/react-photo-view.css';
 import { MoreDotIcon } from "@/icons";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
-import { CardDescription, CardTitle } from "@/components/ui/card";
-import Badge from "@/components/ui/badge/Badge";
 import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsModal";
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import deleteApartement from "@/components/tables/DataTables/Properties/deleteApartement";
 import { useRouter } from "next/navigation";
-import { AiOutlineFileDone } from "react-icons/ai";
-import ReservationProcessModal from "@/components/example/ModalExample/ReservationProcessModal";
+import { FaBuilding, FaHashtag, FaMapMarkerAlt, FaCheckCircle, FaUser, FaRulerCombined, FaCouch, FaUmbrellaBeach, FaWarehouse, FaCar, FaStickyNote } from 'react-icons/fa';
 
 interface PropertyCardProps {
   property: Property;
@@ -55,173 +52,158 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
   };
 
   return (
-    <div>
-      <div className="flex flex-col gap-5 mb-6 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] sm:flex-row sm:items-center sm:gap-6">
-        <div className="overflow-hidden rounded-lg w-1/2">
-          {!property.image ? (
-            <div className="flex items-center justify-center h-56 bg-gray-100 dark:bg-gray-800 rounded-lg">
-              <span className="text-gray-500 dark:text-gray-400">Aucune image disponible</span>
+    <div className="flex flex-col md:flex-row gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      {/* Left: Details */}
+      <div className="flex-1 flex flex-col gap-4 min-w-[320px]">
+        {/* General Info */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-blue-50 rounded-lg p-3 flex items-center gap-2">
+            <FaBuilding className="text-blue-400" />
+            <div>
+              <div className="text-xs text-gray-500">Étage</div>
+              <div className="font-bold text-lg">{property.floor ?? '-'}</div>
             </div>
-          ) : (
-            <PhotoProvider
-              maskOpacity={0.7}
-              toolbarRender={({ onRotate, rotate, onScale, scale }) => {
-                return (
-                  <>
-                    <svg
-                      className="PhotoView-Slider__toolbarIcon"
-                      onClick={() => onRotate(rotate + 90)}
-                      width="44"
-                      height="44"
-                      fill="white"
-                      viewBox="0 0 768 768"
-                    >
-                      <path d="M565.5 202.5l75-75v225h-225l103.5-103.5c-34.5-34.5-82.5-57-135-57-106.5 0-192 85.5-192 192s85.5 192 192 192c84 0 156-52.5 181.5-127.5h66c-28.5 111-127.5 192-247.5 192-141 0-255-115.5-255-256.5s114-256.5 255-256.5c70.5 0 135 28.5 181.5 75z" />
-                    </svg>
-                    <svg
-                      className="PhotoView-Slider__toolbarIcon"
-                      width="44"
-                      height="44"
-                      viewBox="0 0 768 768"
-                      fill="white"
-                      onClick={() => onScale(scale + 0.5)}
-                    >
-                      <path d="M384 640.5q105 0 180.75-75.75t75.75-180.75-75.75-180.75-180.75-75.75-180.75 75.75-75.75 180.75 75.75 180.75 180.75 75.75zM384 64.5q132 0 225.75 93.75t93.75 225.75-93.75 225.75-225.75 93.75-225.75-93.75-93.75-225.75 93.75-225.75 225.75-93.75zM415.5 223.5v129h129v63h-129v129h-63v-129h-129v-63h129v-129h63z" />
-                    </svg>
-                    <svg
-                      className="PhotoView-Slider__toolbarIcon"
-                      width="44"
-                      height="44"
-                      viewBox="0 0 768 768"
-                      fill="white"
-                      onClick={() => onScale(scale - 0.5)}
-                    >
-                      <path d="M384 640.5q105 0 180.75-75.75t75.75-180.75-75.75-180.75-180.75-75.75-180.75 75.75-75.75 180.75 75.75 180.75 180.75 75.75zM384 64.5q132 0 225.75 93.75t93.75 225.75-93.75 225.75-225.75 93.75-225.75-93.75-93.75-225.75 93.75-225.75 225.75-93.75zM223.5 352.5h321v63h-321v-63z" />
-                    </svg>
-                  </>
-                );
-              }}
-            >
-              {property?.image ? (
-                <PhotoView src={property.image}>
-                  <img
-                    width={448}
-                    height={320}
-                    src={property.image}
-                    alt="card"
-                    className="overflow-hidden rounded-lg object-cover object-center transition-all duration-200 ease-in-out hover:scale-105 shadow-md border border-gray-200 dark:border-gray-700 w-full h-full max-h-[320px]"
-                  />
-                </PhotoView>
-              ) : (
-                <div className="flex items-center justify-center h-full w-full bg-gray-100 rounded-lg text-gray-400 text-lg font-semibold">
-                  Aucune image disponible
-                </div>
-              )}
+          </div>
+          <div className="bg-indigo-50 rounded-lg p-3 flex items-center gap-2">
+            <FaHashtag className="text-indigo-400" />
+            <div>
+              <div className="text-xs text-gray-500">Numéro</div>
+              <div className="font-bold text-lg">{property.number}</div>
+            </div>
+          </div>
+          <div className="bg-purple-50 rounded-lg p-3 flex items-center gap-2">
+            <FaMapMarkerAlt className="text-purple-400" />
+            <div>
+              <div className="text-xs text-gray-500">Zone</div>
+              <div className="font-bold text-lg">{property.zone ?? '-'}</div>
+            </div>
+          </div>
+          <div className="bg-green-50 rounded-lg p-3 flex items-center gap-2">
+            <FaCheckCircle className="text-green-400" />
+            <div>
+              <div className="text-xs text-gray-500">Statut</div>
+              <div className="font-bold text-lg">
+                {property.status === 'AVAILABLE' ? 'Disponible' : property.status === 'RESERVED' ? 'Réservé' : property.status === 'SOLD' ? 'Vendu' : 'Inconnu'}
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Reservation/Client */}
+        {property.status === 'RESERVED' && property.client && (
+          <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2 mt-1">
+            <FaUser className="text-yellow-400" />
+            <div>
+              <div className="text-xs text-gray-500">Réservé à</div>
+              <div className="font-bold text-base">{property.client.name}</div>
+              <div className="text-xs text-gray-400">Client réservataire</div>
+            </div>
+          </div>
+        )}
+        {/* Surfaces & Espaces */}
+        <div className="grid grid-cols-2 gap-3 mt-2">
+          {property.habitable !== undefined && (
+            <div className="bg-green-50 rounded-lg p-3 flex items-center gap-2">
+              <FaRulerCombined className="text-green-400" />
+              <div>
+                <div className="text-xs text-gray-500">Superficie</div>
+                <div className="font-bold text-lg">{property.habitable} m²</div>
+              </div>
+            </div>
+          )}
+          {property.balcon !== undefined && property.balcon > 0 && (
+            <div className="bg-cyan-50 rounded-lg p-3 flex items-center gap-2">
+              <FaCouch className="text-cyan-400" />
+              <div>
+                <div className="text-xs text-gray-500">Balcon</div>
+                <div className="font-bold text-lg">{property.balcon} m²</div>
+              </div>
+            </div>
+          )}
+          {property.terrasse !== undefined && property.terrasse > 0 && (
+            <div className="bg-pink-50 rounded-lg p-3 flex items-center gap-2">
+              <FaUmbrellaBeach className="text-pink-400" />
+              <div>
+                <div className="text-xs text-gray-500">Terrasse</div>
+                <div className="font-bold text-lg">{property.terrasse} m²</div>
+              </div>
+            </div>
+          )}
+          {property.totalArea !== undefined && (
+            <div className="bg-orange-50 rounded-lg p-3 flex items-center gap-2">
+              <FaWarehouse className="text-orange-400" />
+              <div>
+                <div className="text-xs text-gray-500">Surface totale</div>
+                <div className="font-bold text-lg">{property.totalArea} m²</div>
+              </div>
+            </div>
+          )}
+          <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2">
+            <FaCar className="text-yellow-400" />
+            <div>
+              <div className="text-xs text-gray-500">Parking</div>
+              <div className="font-bold text-lg">{property.parkingInclus ? 'inclus' : property.parkingDisponible ? 'disponible' : 'non inclus'}</div>
+            </div>
+          </div>
+        </div>
+        {/* Notes */}
+        {property.notes && (
+          <div className="bg-gray-50 rounded-lg p-3 flex items-center gap-2 mt-2">
+            <FaStickyNote className="text-gray-400" />
+            <div>
+              <div className="text-xs text-gray-500">Notes</div>
+              <div className="text-sm text-gray-700">{property.notes}</div>
+            </div>
+          </div>
+        )}
+      </div>
+      {/* Right: Image & Summary */}
+      <div className="flex flex-col gap-4 w-full md:w-[420px] max-w-[480px]">
+        {/* Property Image */}
+        <div className="rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center h-48">
+          {property.image ? (
+            <PhotoProvider>
+              <PhotoView src={property.image}>
+                <img src={property.image} alt="property" className="object-cover w-full h-48" />
+              </PhotoView>
             </PhotoProvider>
+          ) : (
+            <span className="text-gray-400 text-lg">Aucune image disponible</span>
           )}
         </div>
-        <div className="relative w-full">
-          <div className="absolute right-0 h-fit ">
-            <button onClick={toggleDropdown} className="dropdown-toggle">
-              <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
-            </button>
-            <Dropdown
-              isOpen={isOpen}
-              onClose={closeDropdown}
-              className="w-40 p-2"
-            >
-              <EditPropertyModal
-                PropertyData={property}
-                details={true}
-                onRefresh={handleRefresh}
-              />
-              <DeleteModal
-                itemId={property.id.toString()}
-                heading="Supprimer le bien"
-                description="Êtes-vous sûr de vouloir supprimer ce bien ? Cette action est irréversible."
-                onDelete={() => handleDelete(property.id.toString())}
-                details={true}
-              />
-            </Dropdown>
+        {/* Summary */}
+        <div className="bg-gray-50 rounded-lg p-4 flex flex-col gap-3">
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-500">Projet</span>
+            <span className="bg-gray-200 rounded px-2 py-1 text-xs font-semibold">{property.project?.name ?? '-'}</span>
           </div>
-          {property.project?.name && (
-            <CardTitle>{property.project.name}</CardTitle>
-          )}
-
-          <CardDescription>
-            <div className="flex flex-col gap-1 text-sm text-gray-600 dark:text-gray-400">
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Type :</span> {property.type === "APARTMENT" ? "Appartement" : property.type === "VILLA" ? "Villa" : property.type === "LAND" ? "Terrain" : property.type === "DUPLEX" ? "Duplex"  : property.type === "STORE" ? "Magasin" : "Inconnu"}
-              </div>
-              <span className="border-b border-gray-200 dark:border-gray-700"></span>
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Étage :</span> {property.floor}
-              </div>
-              <span className="border-b border-gray-200 dark:border-gray-700"></span>
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Numéro :</span> {property.number}
-              </div>
-              <span className="border-b border-gray-200 dark:border-gray-700"></span>
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Zone :</span> {property.zone}
-              </div>
-              <span className="border-b border-gray-200 dark:border-gray-700"></span>
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Superficie :</span> {property.area} m²
-              </div>
-              <span className="border-b border-gray-200 dark:border-gray-700"></span>
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Prix/m² :</span> <span className="text-success-600">{property.pricePerM2.toLocaleString('fr-FR', {
-                  style: 'currency',
-                  currency: 'MAD',
-                })} / m²</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold">Prix :</span> <span className="text-success-600">{property.price.toLocaleString('fr-FR', {
-                  style: 'currency',
-                  currency: 'MAD',
-                })}</span>
-              </div>
-              <span className="border-b border-gray-200 dark:border-gray-700"></span>
-              <div className="grid grid-cols-2 gap-2">
-                <span className="font-semibold flex">Statut :</span>
-                <span className="flex items-center gap-2">
-                  <Badge
-                    className="w-fit"
-                    size="sm"
-                    color={
-                      property.status?.toUpperCase() === "AVAILABLE"
-                        ? "success"
-                        : property.status?.toUpperCase() === "RESERVED"
-                          ? "warning"
-                          : "error"
-                    }
-                  >
-                    {property.status === "AVAILABLE" ? "Disponible"
-                      : property.status === "RESERVED" ? "Réservé"
-                        : property.status === "SOLD" ? "Vendu"
-                          : "Inconnu"}
-                  </Badge>
-                  {property?.client && property.client.id && property.client.name ? (
-                    <>
-                      <span className="flex items-center gap-2">
-                        <span>pour <span className="hover:text-blue-500 hover:underline font-semibold cursor-pointer" onClick={() => router.push(`/clients/${property.client!.id}`)}> {property.client!.name}</span></span>
-                        <ReservationProcessModal property={property} />
-                      </span>
-                    </>
-                  ) : null}
-                </span>
-              </div>
-              {property.notes && (
-                <>
-                  <span className="border-b border-gray-200 dark:border-gray-700"></span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <span className="font-semibold">Notes :</span> {property.notes}
-                  </div>
-                </>
-              )}
-            </div>
-          </CardDescription>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-500">Type de prix</span>
+            <span className="text-blue-500 font-semibold text-sm">
+              {property.prixType === 'FIXE' ? 'Prix fixe' : property.prixType === 'M2' ? 'Prix au m²' : '-'}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-500">Prix Total</span>
+            <span className="text-green-600 font-bold text-lg">
+              {property.prixTotal?.toLocaleString('fr-FR', { minimumFractionDigits: 0 })} DH
+            </span>
+          </div>
+        </div>
+        {/* Actions Dropdown */}
+        <div className="flex justify-end">
+          <button onClick={toggleDropdown} className="dropdown-toggle">
+            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+          </button>
+          <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
+            <EditPropertyModal PropertyData={property} details={true} onRefresh={handleRefresh} />
+            <DeleteModal 
+              itemId={property?.id?.toString() || ''} 
+              heading="Supprimer le bien" 
+              description="Êtes-vous sûr de vouloir supprimer ce bien ? Cette action est irréversible." 
+              onDelete={() => handleDelete(property?.id?.toString() || '')} 
+              details={true} 
+            />
+          </Dropdown>
         </div>
       </div>
     </div>
