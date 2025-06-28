@@ -85,7 +85,7 @@ export default function ClientsTable({ ProjectDetails }: { ProjectDetails: Prope
                     {type[product.type as keyof typeof type] || product.type || "Residential"}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {product.price ? `$${product.price}` : 'N/A'}
+                    {product.prixTotal ? `${product.prixTotal}` : 'N/A'}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     <Badge
