@@ -8,6 +8,7 @@ import { TbBuilding, TbContract, TbCreditCard, TbFile } from "react-icons/tb";
 import { Role, Status } from "@/types/user";
 import CompanyCard from "@/components/cards/card-with-icon/CompanyCard";
 import { Company } from "@/types/Company";
+import Subsctiption from "@/components/settings/Subsctiption";
 
 export interface TabData {
   id: string;
@@ -44,7 +45,7 @@ const tabData: TabData[] = [
     id: "Subscription",
     label: "Abonnement",
     icon: <TbCreditCard size={20} />,
-    content: <ContractTemplate />,
+    content: <Subsctiption />,
   },
 ];
 
