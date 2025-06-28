@@ -8,7 +8,7 @@ import EditPropertyModal from "@/components/example/ModalExample/EditApartmentsM
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import deleteApartement from "@/components/tables/DataTables/Properties/deleteApartement";
 import { useRouter } from "next/navigation";
-import { FaBuilding, FaHashtag, FaMapMarkerAlt, FaCheckCircle, FaUser, FaRulerCombined, FaCouch, FaUmbrellaBeach, FaWarehouse, FaCar, FaStickyNote } from 'react-icons/fa';
+import { FaBuilding, FaHashtag, FaMapMarkerAlt, FaCheckCircle, FaUser, FaRulerCombined, FaCouch, FaUmbrellaBeach, FaWarehouse, FaCar, FaStickyNote, FaHome, FaStore, FaSeedling } from 'react-icons/fa';
 
 interface PropertyCardProps {
   property: Property;
@@ -19,13 +19,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
-  function closeDropdown() {
-    setIsOpen(false);
-  }
-
   if (!property) {
     return (
       <div className="flex items-center justify-center h-[160px] w-full bg-gray-100 rounded-lg text-gray-400">
@@ -34,6 +27,34 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
     );
   }
 
+  // Property type mapping
+  const typeMap = {
+    "APARTMENT": "Appartement",
+    "VILLA": "Villa", 
+    "DUPLEX": "Duplex",
+    "STORE": "Magasin",
+    "LAND": "Terrain",
+  };
+
+  // Property type icon mapping
+  const typeIconMap = {
+    "APARTMENT": FaBuilding,
+    "VILLA": FaHome,
+    "DUPLEX": FaBuilding,
+    "STORE": FaStore,
+    "LAND": FaSeedling,
+  };
+
+  // Get type display info
+  const typeDisplay = typeMap[property.type as keyof typeof typeMap] || property.type;
+  const TypeIcon = typeIconMap[property.type as keyof typeof typeIconMap] || FaBuilding;
+
+  function toggleDropdown() {
+    setIsOpen(!isOpen);
+  }
+  function closeDropdown() {
+    setIsOpen(false);
+  }
 
   const handleDelete = async (id: string) => {
     // Implement delete logic here
@@ -52,16 +73,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-col-reverse md:flex-row gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       {/* Left: Details */}
       <div className="flex-1 flex flex-col gap-4 min-w-[320px]">
         {/* General Info */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-blue-50 rounded-lg p-3 flex items-center gap-2">
-            <FaBuilding className="text-blue-400" />
+          <div className="bg-teal-50 rounded-lg p-3 flex items-center gap-2">
+            <TypeIcon className="text-teal-400" />
             <div>
-              <div className="text-xs text-gray-500">Étage</div>
-              <div className="font-bold text-lg">{property.floor ?? '-'}</div>
+              <div className="text-xs text-gray-500">Type</div>
+              <div className="font-bold text-lg">{typeDisplay}</div>
             </div>
           </div>
           <div className="bg-indigo-50 rounded-lg p-3 flex items-center gap-2">
@@ -71,13 +92,24 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
               <div className="font-bold text-lg">{property.number}</div>
             </div>
           </div>
-          <div className="bg-purple-50 rounded-lg p-3 flex items-center gap-2">
-            <FaMapMarkerAlt className="text-purple-400" />
-            <div>
-              <div className="text-xs text-gray-500">Zone</div>
-              <div className="font-bold text-lg">{property.zone ?? '-'}</div>
+          {(property.type === 'APARTMENT') && (
+            <div className="bg-blue-50 rounded-lg p-3 flex items-center gap-2">
+              <FaBuilding className="text-blue-400" />
+              <div>
+                <div className="text-xs text-gray-500">Étage</div>
+                <div className="font-bold text-lg">{property.floor ?? '-'}</div>
+              </div>
             </div>
-          </div>
+          )}
+          {(property.type === 'APARTMENT' || property.type === 'VILLA' || property.type === 'DUPLEX') && (
+            <div className="bg-purple-50 rounded-lg p-3 flex items-center gap-2">
+              <FaMapMarkerAlt className="text-purple-400" />
+              <div>
+                <div className="text-xs text-gray-500">Zone</div>
+                <div className="font-bold text-lg">{property.zone ?? '-'}</div>
+              </div>
+            </div>
+          )}
           <div className="bg-green-50 rounded-lg p-3 flex items-center gap-2">
             <FaCheckCircle className="text-green-400" />
             <div>
@@ -94,8 +126,18 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
             <FaUser className="text-yellow-400" />
             <div>
               <div className="text-xs text-gray-500">Réservé à</div>
-              <div className="font-bold text-base">{property.client.name}</div>
+              <div className="font-bold text-base">{property.client?.name}</div>
               <div className="text-xs text-gray-400">Client réservataire</div>
+            </div>
+          </div>
+        )}
+        {property.status === 'SOLD' && (
+          <div className="bg-red-50 rounded-lg p-3 flex items-center gap-2 mt-1">
+            <FaCheckCircle className="text-red-400" />
+            <div>
+              <div className="text-xs text-gray-500">Vendu à</div>
+              <div className="font-bold text-base">{property.client?.name}</div>
+              <div className="text-xs text-gray-400">Client acheteur</div>
             </div>
           </div>
         )}
@@ -128,6 +170,24 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
               </div>
             </div>
           )}
+          {property.mezzanineArea !== undefined && property.mezzanineArea > 0 && (
+            <div className="bg-lime-50 rounded-lg p-3 flex items-center gap-2">
+              <FaWarehouse className="text-lime-400" />
+              <div>
+                <div className="text-xs text-gray-500">Mezzanine</div>
+                <div className="font-bold text-lg">{property.mezzanineArea} m²</div>
+              </div>
+            </div>
+          )}
+          {property.piscine !== undefined && property.piscine > 0 && (
+            <div className="bg-blue-50 rounded-lg p-3 flex items-center gap-2">
+              <FaUmbrellaBeach className="text-blue-400" />
+              <div>
+                <div className="text-xs text-gray-500">Piscine</div>
+                <div className="font-bold text-lg">{property.piscine} m²</div>
+              </div>
+            </div>
+          )}
           {property.totalArea !== undefined && (
             <div className="bg-orange-50 rounded-lg p-3 flex items-center gap-2">
               <FaWarehouse className="text-orange-400" />
@@ -137,13 +197,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
               </div>
             </div>
           )}
-          <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2">
-            <FaCar className="text-yellow-400" />
-            <div>
-              <div className="text-xs text-gray-500">Parking</div>
-              <div className="font-bold text-lg">{property.parkingInclus ? 'inclus' : property.parkingDisponible ? 'disponible' : 'non inclus'}</div>
+          {(property.type === 'APARTMENT' || property.type === 'VILLA' || property.type === 'DUPLEX') && (
+            <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2">
+              <FaCar className="text-yellow-400" />
+              <div>
+                <div className="text-xs text-gray-500">Parking</div>
+                <div className="font-bold text-lg">
+                  {property.parkingInclus ? 'inclus' : property.parkingDisponible ? 'disponible' : 'non disponible'}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         {/* Notes */}
         {property.notes && (
@@ -158,6 +222,22 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
       </div>
       {/* Right: Image & Summary */}
       <div className="flex flex-col gap-4 w-full md:w-[420px] max-w-[480px]">
+        {/* Actions Dropdown */}
+        <div className="flex justify-end">
+          <button onClick={toggleDropdown} className="dropdown-toggle">
+            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+          </button>
+          <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
+            <EditPropertyModal PropertyData={property} details={true} onRefresh={handleRefresh} />
+            <DeleteModal 
+              itemId={property?.id?.toString() || ''} 
+              heading="Supprimer le bien" 
+              description="Êtes-vous sûr de vouloir supprimer ce bien ? Cette action est irréversible." 
+              onDelete={() => handleDelete(property?.id?.toString() || '')} 
+              details={true} 
+            />
+          </Dropdown>
+        </div>
         {/* Property Image */}
         <div className="rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center h-48">
           {property.image ? (
@@ -185,25 +265,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500">Prix Total</span>
             <span className="text-green-600 font-bold text-lg">
-              {property.prixTotal?.toLocaleString('fr-FR', { minimumFractionDigits: 0 })} DH
+              {property.prixTotal?.toLocaleString('fr-FR', { minimumFractionDigits: 0 })} MAD
             </span>
           </div>
-        </div>
-        {/* Actions Dropdown */}
-        <div className="flex justify-end">
-          <button onClick={toggleDropdown} className="dropdown-toggle">
-            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
-          </button>
-          <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
-            <EditPropertyModal PropertyData={property} details={true} onRefresh={handleRefresh} />
-            <DeleteModal 
-              itemId={property?.id?.toString() || ''} 
-              heading="Supprimer le bien" 
-              description="Êtes-vous sûr de vouloir supprimer ce bien ? Cette action est irréversible." 
-              onDelete={() => handleDelete(property?.id?.toString() || '')} 
-              details={true} 
-            />
-          </Dropdown>
         </div>
       </div>
     </div>

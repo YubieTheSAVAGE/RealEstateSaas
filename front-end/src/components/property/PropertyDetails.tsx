@@ -7,6 +7,7 @@ import { Property } from "@/types/property";
 import getApartmentsById from "@/app/(admin)/properties/getApartmentsById";
 import { FallingLines } from "react-loader-spinner";
 import InterestedClientTable from "../ecommerce/InterstedClientTable";
+import { dummyProperties } from "../tables/DataTables/Properties/dummyProperties"; // test data
 
 interface PropertyDetailsProps {
     propertyId: string;
@@ -14,7 +15,7 @@ interface PropertyDetailsProps {
 
 export default function PropertyDetails({ propertyId }: PropertyDetailsProps) {
     const router = useRouter();
-    const [property, setProperty] = useState<Property | null>(null);
+    const [property, setProperty] = useState<Property | null>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     
     const fetchData = async () => {
