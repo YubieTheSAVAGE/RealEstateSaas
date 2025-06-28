@@ -83,7 +83,7 @@ export default function PaginationWithIcon({
   );
 
   return (
-    <div className="flex items-center justify-between gap-8 px-6 py-4 sm:justify-normal">
+    <div className="flex items-center justify-between gap-4 px-6 py-4 sm:justify-normal">
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
