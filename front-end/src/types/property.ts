@@ -5,22 +5,52 @@ export type PropertyType = "APARTMENT" | "DUPLEX" | "VILLA" | "STORE" | "LAND";
 export type ApartmentStatus = "AVAILABLE" | "RESERVED" | "SOLD";
 
 export interface Property {
+  // Core identification fields
   id: number;
   number: string;
-  floor: number;
   type: PropertyType;
-  area: number;
-  threeDViewUrl?: string | null;
-  price: number;
-  pricePerM2: number;
-  zone: string;
-  image?: string | null;
   status: ApartmentStatus;
+  
+  // Location and structural information
+  floor?: number;
+  zone?: string;
+  
+  // Media and documentation
+  image?: string | null;
   notes?: string | null;
-  projectId: number;
+  
+  // Relationships
+  project: Project;
   client?: Client | null;
   userId?: number | null;
-  project: Project;
   interestedClients?: Client[] | null; // List of clients interested in this property
+  
+  // Timestamps
   updatedAt?: Date | string | undefined; // Use Date for consistency, can be string if coming from API
+  
+  // Surface measurements for Villa, Apartment, Duplex
+  habitable?: number; // Surface habitable in m²
+  balcon?: number; // Surface balcon in m²
+  terrasse?: number; // Surface terrasse in m²
+  piscine?: number; // Surface piscine in m²
+  
+  // Land and Store specific measurements
+  totalArea?: number; // Surface totale for Land and Store types
+  mezzanineArea?: number; // Surface mezzanine for Store type
+  mezzaninePrice?: number; // Prix mezzanine for Store type
+  
+  // Pricing configuration
+  prixType?: "FIXE" | "M2"; // Type de prix: fixe or per m²
+  prixTotal: number; // Prix total for FIXE type
+  prixM2?: number; // Prix par m² for M2 type
+  
+  // Percentage-based pricing for annexes
+  prixBalconPct?: number; // Pourcentage du prix au m² pour balcon
+  prixTerrassePct?: number; // Pourcentage du prix au m² pour terrasse
+  prixPiscine?: number; // Prix piscine par m²
+  
+  // Parking configuration and pricing
+  parkingDisponible?: boolean; // Whether parking is available
+  parkingInclus?: boolean; // Whether parking is included in price
+  prixParking?: number; // Prix du parking
 }
