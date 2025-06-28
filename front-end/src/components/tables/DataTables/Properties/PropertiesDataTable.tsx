@@ -19,6 +19,7 @@ import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import { useRouter } from "next/navigation";
 import deleteApartement from "./deleteApartement";
 import { Property } from "@/types/property";
+import ReservationProcessModal from "@/components/example/ModalExample/ReservationProcessModal";
 
 type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
 type SortOrder = "asc" | "desc";
@@ -408,6 +409,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                         PropertyData={item}
                         onRefresh={onRefresh}
                       />
+                      <ReservationProcessModal property={item} payments={item.client?.payments || []} />
                     </div>
                   </TableCell>
                 </TableRow>

@@ -6,8 +6,8 @@ import Label from "../../form/Label";
 import Input from "../../form/input/InputField";  
 import Stepper from "../../ui/stepper/Stepper";
 import { useModal } from "@/hooks/useModal";
-import { AiOutlineFileDone, AiOutlineDownload, AiOutlineCalendar, AiOutlineFileText, AiOutlineCheckCircle, AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
-import { FaCheckCircle } from "react-icons/fa";
+import { AiOutlineCalendar, AiOutlineFileText, AiOutlineCheckCircle, AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
+import { FaCheckCircle, FaUser } from "react-icons/fa";
 import Select from "../../form/Select";
 import {ContractTemplate} from "@/types/ContractTemplate";
 import { Role, Status, User } from "@/types/user";
@@ -16,6 +16,8 @@ import { Contract } from "@/types/Contract";
 import { Property } from "@/types/property";
 import { Client } from "@/types/client";
 import { PaymentValidator, PaymentValidationResult } from "@/utils/paymentValidation";
+import { usePathname } from 'next/navigation'
+import { TbFileAlert } from "react-icons/tb";
 
 const steps = [
   { 
@@ -219,9 +221,12 @@ Un dépôt de garantie de [MONTANT_DEPOT] MAD est versé par le Locataire au Pro
 
 interface ReservationProcessModalProps {
   property: Property;
+  payments: Payment[];
 }
 
-export default function ReservationProcessModal({ property }: ReservationProcessModalProps) {
+export default function ReservationProcessModal({ property, payments }: ReservationProcessModalProps) {
+  const pathname = usePathname();
+  const isPropertyPage = pathname.startsWith('/properties/') && pathname !== '/properties'; 
   const { isOpen, openModal, closeModal } = useModal();
   const [step, setStep] = useState(0);
   const [newMontant, setNewMontant] = useState(0);
@@ -230,6 +235,17 @@ export default function ReservationProcessModal({ property }: ReservationProcess
   const [echeances, setEcheances] = useState<Payment[]>([]);
   const [validationError, setValidationError] = useState<string>("");
   const [showFirstPaymentSuggestion, setShowFirstPaymentSuggestion] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
+
+  // Shake animation effect
+  useEffect(() => {
+    const shakeInterval = setInterval(() => {
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 1000); // Shake for 1 second
+    }, 3000); // Shake every 3 seconds
+
+    return () => clearInterval(shakeInterval);
+  }, []);
 
   // Enhanced first payment handler with validation
   const handleFirstPayment = () => {
@@ -401,6 +417,7 @@ export default function ReservationProcessModal({ property }: ReservationProcess
                 </p>
               )}
             </div>
+            
 
             {/* First Payment Quick Add */}
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -682,10 +699,60 @@ export default function ReservationProcessModal({ property }: ReservationProcess
 
   return (
     <>
-      <AiOutlineFileDone 
-        className="text-green-500 text-lg hover:text-green-600 cursor-pointer transition-colors" 
-        onClick={openModal} 
-      />
+      {!isPropertyPage && (
+        <TbFileAlert 
+          size={18} 
+          onClick={openModal} 
+          className={`cursor-pointer text-gray-500 hover:text-red-600 transition-all duration-300 ${
+            isShaking ? 'animate-shake' : ''
+          }`}
+          style={{
+            animation: isShaking ? 'shake 1s ease-in-out' : 'none'
+          }}
+        />
+      )}
+      {isPropertyPage && (
+      <div 
+        className={`bg-yellow-50 rounded-lg p-3 flex items-center gap-2 mt-1 cursor-pointer transition-all duration-300 relative ${
+          isShaking ? 'animate-shake' : ''
+        }`} 
+        onClick={openModal}
+        style={{
+          animation: isShaking ? 'shake 1s ease-in-out' : 'none'
+        }}
+      >
+        {/* Payment Setup Required Indicator */}
+        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
+          !
+        </div>
+        
+        <FaUser className="text-yellow-400" />
+        <div className="flex-1">
+          <div className="text-xs text-gray-500">Réservé à</div>
+          <div className="font-bold text-base">{property.client?.name}</div>
+          <div className="text-xs text-gray-400">Client réservataire</div>
+          <div className="text-xs text-red-600 font-medium mt-1">
+            ⚠️ Paiements à configurer
+          </div>
+        </div>
+        
+        {/* Arrow indicator */}
+        <div className="text-gray-400 text-sm">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
+      </div>
+      )}
+      {/* Add CSS for shake animation */}
+      <style jsx>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+      `}</style>
+
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] p-5 lg:p-10">
         <div>
           <div className="flex justify-between items-center mb-4">

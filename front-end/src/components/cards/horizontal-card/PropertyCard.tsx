@@ -9,6 +9,230 @@ import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import deleteApartement from "@/components/tables/DataTables/Properties/deleteApartement";
 import { useRouter } from "next/navigation";
 import { FaBuilding, FaHashtag, FaMapMarkerAlt, FaCheckCircle, FaUser, FaRulerCombined, FaCouch, FaUmbrellaBeach, FaWarehouse, FaCar, FaStickyNote, FaHome, FaStore, FaSeedling } from 'react-icons/fa';
+import ReservationProcessModal from "@/components/example/ModalExample/ReservationProcessModal";
+import { Payment } from "@/types/Payment";
+
+// Test payments array for testing the conditional logic
+const testPayments: Payment[] = [
+  {
+    id: 1,
+    amount: 50000,
+    dueDate: new Date('2024-03-15'),
+    status: 'PENDING',
+    proofOfPayment: null,
+    property: {
+      id: 1,
+      number: 'A101',
+      type: 'APARTMENT',
+      status: 'RESERVED',
+      project: {
+        id: 1,
+        name: 'Résidence Les Palmiers',
+        address: 'Avenue Mohammed V, Casablanca',
+        numberOfProperties: 120,
+        totalSurface: 15000,
+        latitude: 33.5779,
+        longitude: -7.5911,
+        folderFees: 10000,
+        commissionPerM2: 1000,
+        status: "construction",
+        progress: 60,
+      },
+      prixTotal: 250000,
+      client: {
+        id: 1,
+        name: 'Ahmed Benali',
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        email: 'ahmed.benali@email.com',
+        phoneNumber: '+212661234567',
+        provenance: 'Website',
+        status: 'CLIENT',
+        createdById: 1,
+      }
+    },
+    createdAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-02-15'),
+    isFirstPayment: true,
+    percentageOfTotal: 20
+  },
+  {
+    id: 2,
+    amount: 50000,
+    dueDate: new Date('2024-04-15'),
+    status: 'PENDING',
+    proofOfPayment: null,
+    property: {
+      id: 1,
+      number: 'A101',
+      type: 'APARTMENT',
+      status: 'RESERVED',
+      project: {
+        id: 1,
+        name: 'Résidence Les Palmiers',
+        address: 'Avenue Mohammed V, Casablanca',
+        numberOfProperties: 120,
+        totalSurface: 15000,
+        latitude: 33.5779,
+        longitude: -7.5911,
+        folderFees: 10000,
+        commissionPerM2: 1000,
+        status: "construction",
+        progress: 60,
+      },
+      prixTotal: 250000,
+      client: {
+        id: 1,
+        name: 'Ahmed Benali',
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        email: 'ahmed.benali@email.com',
+        phoneNumber: '+212661234567',
+        provenance: 'Website',
+        status: 'CLIENT',
+        createdById: 1,
+      }
+    },
+    createdAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-02-15'),
+    isFirstPayment: false,
+    percentageOfTotal: 20
+  },
+  {
+    id: 3,
+    amount: 75000,
+    dueDate: new Date('2024-05-15'),
+    status: 'PENDING',
+    proofOfPayment: null,
+    property: {
+      id: 1,
+      number: 'A101',
+      type: 'APARTMENT',
+      status: 'RESERVED',
+      project: {
+        id: 1,
+        name: 'Résidence Les Palmiers',
+        address: 'Avenue Mohammed V, Casablanca',
+        numberOfProperties: 120,
+        totalSurface: 15000,
+        latitude: 33.5779,
+        longitude: -7.5911,
+        folderFees: 10000,
+        commissionPerM2: 1000,
+        status: "construction",
+        progress: 60,
+      },
+      prixTotal: 250000,
+      client: {
+        id: 1,
+        name: 'Ahmed Benali',
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        email: 'ahmed.benali@email.com',
+        phoneNumber: '+212661234567',
+        provenance: 'Website',
+        status: 'CLIENT',
+        createdById: 1,
+      }
+    },
+    createdAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-02-15'),
+    isFirstPayment: false,
+    percentageOfTotal: 30
+  },
+  {
+    id: 4,
+    amount: 75000,
+    dueDate: new Date('2024-06-15'),
+    status: 'PENDING',
+    proofOfPayment: null,
+    property: {
+      id: 1,
+      number: 'A101',
+      type: 'APARTMENT',
+      status: 'RESERVED',
+      project: {
+        id: 1,
+        name: 'Résidence Les Palmiers',
+        address: 'Avenue Mohammed V, Casablanca',
+        numberOfProperties: 120,
+        totalSurface: 15000,
+        latitude: 33.5779,
+        longitude: -7.5911,
+        folderFees: 10000,
+        commissionPerM2: 1000,
+        status: "construction",
+        progress: 60,
+      },
+      prixTotal: 250000,
+      client: {
+        id: 1,
+        name: 'Ahmed Benali',
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        email: 'ahmed.benali@email.com',
+        phoneNumber: '+212661234567',
+        provenance: 'Website',
+        status: 'CLIENT',
+        createdById: 1,
+      }
+    },
+    createdAt: new Date('2024-02-15'),
+    updatedAt: new Date('2024-02-15'),
+    isFirstPayment: false,
+    percentageOfTotal: 30
+  }
+];
+
+// Alternative test data for different scenarios:
+// 1. No payments (empty array) - should show ReservationProcessModal
+const noPayments: Payment[] = [];
+
+// 2. Payments for different property - should show ReservationProcessModal
+const paymentsForDifferentProperty: Payment[] = [
+  {
+    id: 5,
+    amount: 60000,
+    dueDate: new Date('2024-03-20'),
+    status: 'PENDING',
+    proofOfPayment: null,
+    property: {
+      id: 2, // Different property ID
+      number: 'A102',
+      type: 'APARTMENT',
+      status: 'RESERVED',
+      project: {
+        id: 1,
+        name: 'Résidence Les Palmiers',
+        address: 'Avenue Mohammed V, Casablanca',
+        numberOfProperties: 120,
+        totalSurface: 15000,
+        latitude: 33.5779,
+        longitude: -7.5911,
+        folderFees: 10000,
+        commissionPerM2: 1000,
+        status: "construction",
+        progress: 60,
+      },
+      prixTotal: 300000,
+      client: {
+        id: 1,
+        name: 'Ahmed Benali',
+        firstName: 'Ahmed',
+        lastName: 'Benali',
+        email: 'ahmed.benali@email.com',
+        phoneNumber: '+212661234567',
+        provenance: 'Website',
+        status: 'CLIENT',
+        createdById: 1,
+      }
+    },
+    createdAt: new Date('2024-02-20'),
+    updatedAt: new Date('2024-02-20'),
+    isFirstPayment: true,
+    percentageOfTotal: 20
+  }
+];
 
 interface PropertyCardProps {
   property: Property;
@@ -26,6 +250,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
       </div>
     );
   }
+  
+  {/* test payments */}
+  // property.client!.payments = paymentsForDifferentProperty;
 
   // Property type mapping
   const typeMap = {
@@ -122,14 +349,22 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
         </div>
         {/* Reservation/Client */}
         {property.status === 'RESERVED' && property.client && (
-          <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2 mt-1">
-            <FaUser className="text-yellow-400" />
-            <div>
-              <div className="text-xs text-gray-500">Réservé à</div>
-              <div className="font-bold text-base">{property.client?.name}</div>
-              <div className="text-xs text-gray-400">Client réservataire</div>
-            </div>
-          </div>
+          <>
+            {/* Check if client has payments for this property */}
+            {(!property.client.payments || property.client.payments.length === 0 || 
+              !property.client.payments.some(payment => payment.property.id === property.id)) ? (
+              <ReservationProcessModal property={property} payments={property.client.payments || []} />
+            ) : (
+              <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2 mt-1">
+                <FaUser className="text-yellow-400" />
+                <div>
+                  <div className="text-xs text-gray-500">Réservé à</div>
+                  <div className="font-bold text-base">{property.client?.name}</div>
+                  <div className="text-xs text-gray-400">Client réservataire</div>
+                </div>
+              </div>
+            )}
+          </>
         )}
         {property.status === 'SOLD' && (
           <div className="bg-red-50 rounded-lg p-3 flex items-center gap-2 mt-1">
