@@ -2,10 +2,9 @@
 import ContractStatusHeader from "@/components/contract/ContractStatusheader";
 import ContractTemplate from "@/components/contract/ContractTemplate";
 import ContractsTable from "@/components/ecommerce/ContractsTable";
-import { Contract } from "@/types/Contract";
 import React, { useState } from "react";
 import { TbContract, TbFile } from "react-icons/tb";
-import { Role, Status } from "@/types/user";
+import { dummyContracts } from "@/components/contract/dummyContracts";
 
 export interface TabData {
   id: string;
@@ -19,61 +18,6 @@ interface TabButtonProps extends TabData {
   onClick: () => void;
 }
 
-const contracts: Contract[] = [
-  {
-    id: 1,
-    template: {
-      id: 1,
-      name: 'Template 1',
-      description: 'Description 1',
-      content: 'Template content here',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      assignedProjects: [],
-      isDefault: false,
-      createdBy: {
-        id: 1,
-        name: 'User 1',
-        email: 'user1@example.com',
-        phoneNumber: '+1234567890',
-        role: Role.ADMIN,
-        status: Status.ACTIVE,
-        passwordHash: 'password',
-      },
-    },
-    client: {
-      id: 1,
-      name: 'Client 1',
-      email: 'client1@example.com',
-      phoneNumber: '+1234567890',
-      provenance: 'Website',
-      status: 'CLIENT',
-      createdById: 1,
-    },
-    property: {
-      id: 1,
-      number: '1',
-      project: {
-        id: 1,
-        name: 'Résidence Les Palmiers',
-        address: 'Address 1',
-        totalSurface: 100,
-        numberOfApartments: 10
-      },
-      floor: 1,
-      type: 'APARTMENT',
-      area: 100,
-      price: 100000,
-      pricePerM2: 1000,
-      zone: 'Zone A',
-      status: 'AVAILABLE',
-      projectId: 1,
-    },
-    status: 'WAITING_CVALIDATION',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }
-]
 
 
 
@@ -85,7 +29,7 @@ const tabData: TabData[] = [
     content: <>
       <div className="flex flex-col gap-4">
         <ContractStatusHeader waitingContracts={10} validContracts={10} legalizedContracts={10} validatedContracts={10} />
-        <ContractsTable contracts={contracts} />
+        <ContractsTable contracts={dummyContracts} />
       </div>
     </>,
   },

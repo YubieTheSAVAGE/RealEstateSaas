@@ -18,7 +18,7 @@ interface PaymentsTableProps {
   payments: Payment[];
 }
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 10;
 
 export default function PaymentsTable({ payments }: PaymentsTableProps) {
   const [currentPage, setCurrentPage] = useState(1);

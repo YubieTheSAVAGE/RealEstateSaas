@@ -6,7 +6,10 @@ import React, { useState, useEffect } from "react";
 
 // Define the filter properties type
 export interface ContractsFilters {
-    status: string[];
+    waitingCValidation: boolean;
+    validatedByClient: boolean;
+    legalized: boolean;
+    validated: boolean;
 }
 
 // Define the component props type
@@ -21,7 +24,10 @@ export default function ContractsDropdownFilter({
 }: ContractsDropdownFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<ContractsFilters>({
-    status: [],
+    waitingCValidation: false,
+    validatedByClient: false,
+    legalized: false,
+    validated: false,
     ...initialFilters // Merge initial filters with default values
   });
 
@@ -33,16 +39,16 @@ export default function ContractsDropdownFilter({
   }, [filters, onFilterChange]);
 
   // Handle checkbox change
-  const handleCheckboxChange = (statusValue: string) => {
-    if (filters.status.includes(statusValue)) {
-      setFilters(prev => ({
+  const handleCheckboxChange = (statusValue: keyof ContractsFilters) => {
+    if (filters[statusValue]) {
+      setFilters(prev => ({ 
         ...prev,
-        status: prev.status.filter(value => value !== statusValue)
+        [statusValue]: !prev[statusValue]
       }));
     } else {
       setFilters(prev => ({
         ...prev,
-        status: [...prev.status, statusValue]
+        [statusValue]: true
       }));
     }
   };
@@ -96,9 +102,9 @@ export default function ContractsDropdownFilter({
           />
         </svg>
         Filtrer 
-        {filters.status.length > 0 && (
+        {Object.values(filters).some(value => value) && (
           <span className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-xs font-medium text-white">
-            {filters.status.length}
+            {Object.values(filters).filter(value => value).length}
           </span>
         )}
       </button>
@@ -117,8 +123,8 @@ export default function ContractsDropdownFilter({
               <Checkbox 
                 label="En attente"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                checked={filters.status.includes('WAITING_CVALIDATION')}
-                onChange={() => handleCheckboxChange('WAITING_CVALIDATION')}
+                checked={filters.waitingCValidation}
+                onChange={() => handleCheckboxChange('waitingCValidation')}
               />
             </DropdownItem>
           </li>
@@ -129,8 +135,8 @@ export default function ContractsDropdownFilter({
               <Checkbox
                 label="Validé par le client"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                checked={filters.status.includes('VALIDATED_BY_CLIENT')}
-                onChange={() => handleCheckboxChange('VALIDATED_BY_CLIENT')}
+                checked={filters.validatedByClient}
+                onChange={() => handleCheckboxChange('validatedByClient')}
               />
             </DropdownItem>
           </li>
@@ -141,8 +147,8 @@ export default function ContractsDropdownFilter({
               <Checkbox
                 label="Légalisé"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                checked={filters.status.includes('LEGALIZED')}
-                onChange={() => handleCheckboxChange('LEGALIZED')}
+                checked={filters.legalized}
+                onChange={() => handleCheckboxChange('legalized')}
               />
             </DropdownItem>
           </li>
@@ -153,8 +159,8 @@ export default function ContractsDropdownFilter({
               <Checkbox
                 label="Validé"
                 className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                checked={filters.status.includes('VALIDATED')}
-                onChange={() => handleCheckboxChange('VALIDATED')}
+                checked={filters.validated}
+                onChange={() => handleCheckboxChange('validated')}
               />
             </DropdownItem>
           </li>
@@ -215,7 +221,10 @@ export default function ContractsDropdownFilter({
           <button 
             onClick={() => {
               setFilters({
-                status: []
+                waitingCValidation: false,
+                validatedByClient: false,
+                legalized: false,
+                validated: false
               });
             }}
             className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
