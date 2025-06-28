@@ -250,14 +250,16 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     }
 
     // Validate identity documents
-    if (!identityRecto) {
-      newErrors.identityRecto = "Le recto de la pièce d'identité est requis";
-      valid = false;
-    }
+    if (formData.status === "CLIENT") {
+      if (!identityRecto) {
+        newErrors.identityRecto = "Le recto de la pièce d'identité est requis";
+        valid = false;
+      }
 
-    if (!identityVerso) {
-      newErrors.identityVerso = "Le verso de la pièce d'identité est requis";
-      valid = false;
+      if (formData.identityType === "Carte d'identité" && !identityVerso) {
+        newErrors.identityVerso = "Le verso de la pièce d'identité est requis";
+        valid = false;
+      }
     }
 
     setErrors(newErrors);
@@ -302,7 +304,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
   // Handle project selection change
   const handleSelectChange = (selectedValue: string, name: string) => {
-    console.log("Selected value:", selectedValue, name)
 
     if (name === "projectId") {
       // Find the project name for the selected project ID
@@ -685,62 +686,102 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               </div>
 
               {/* Identity Type */}
-              <div className="col-span-1">
-                <Label>
-                  Type de pièce d'identité <span className="text-red-500">*</span>
-                </Label>
-                <Select
-                  options={IdentityType}
-                  name="identityType"
-                  placeholder="Sélectionner un type"
-                  onChange={(value, name) => handleSelectChange(value, name)}
-                />
-              </div>
+              {formData.status === "CLIENT" && (
+                <> 
+                <div className="col-span-1">
+                  <Label>
+                    Type de pièce d'identité <span className="text-red-500">*</span>
+                  </Label>
+                  <Select
+                    options={IdentityType}
+                    name="identityType"
+                    placeholder="Sélectionner un type"
+                    onChange={(value, name) => handleSelectChange(value, name)}
+                  />
+                </div>
+                <div className="col-span-1">
+                  <Label>
+                    Numéro de pièce d'identité <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    name="identityNumber"
+                    type="text"
+                    placeholder="ex: AB234567890"
+                    onChange={handleChange}
+                  />
+                </div>
+                </>
+              )}
 
               {/* Identity Document Upload Section */}
-              <div className="col-span-2">
-                <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
-                  Pièce d'identité <span className="text-red-500">*</span>
-                </h5>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="col-span-1">
-                    <Label>
-                      Recto <span className="text-red-500">*</span>
-                    </Label>
-                    <FileInput
-                      name="identityRecto"
-                      onChange={(e) => handleFileChange(e, 'recto')}
-                      placeholder="Sélectionnez le recto"
-                    />
-                    {identityRecto && (
-                      <p className="mt-1 text-sm text-green-600">
-                        ✓ {identityRecto.name}
-                      </p>
-                    )}
-                    {errors.identityRecto && <p className="mt-1 text-sm text-red-500">{errors.identityRecto}</p>}
-                  </div>
+              {formData.status === "CLIENT" && formData.identityType && (
+                <div className="col-span-2">
+                  <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
+                    Pièce d'identité <span className="text-red-500">*</span>
+                  </h5>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {formData.identityType === "Passport" ? (
+                      // Single file input for passport
+                      <div className="col-span-1 sm:col-span-2">
+                        <Label>
+                          Passport <span className="text-red-500">*</span>
+                        </Label>
+                        <FileInput
+                          name="identityRecto"
+                          onChange={(e) => handleFileChange(e, 'recto')}
+                          placeholder="Sélectionnez le passport"
+                        />
+                        {identityRecto && (
+                          <p className="mt-1 text-sm text-green-600">
+                            ✓ {identityRecto.name}
+                          </p>
+                        )}
+                        {errors.identityRecto && <p className="mt-1 text-sm text-red-500">{errors.identityRecto}</p>}
+                      </div>
+                    ) : (
+                      // Two file inputs for carte d'identité
+                      <>
+                        <div className="col-span-1">
+                          <Label>
+                            Recto <span className="text-red-500">*</span>
+                          </Label>
+                          <FileInput
+                            name="identityRecto"
+                            onChange={(e) => handleFileChange(e, 'recto')}
+                            placeholder="Sélectionnez le recto"
+                          />
+                          {identityRecto && (
+                            <p className="mt-1 text-sm text-green-600">
+                              ✓ {identityRecto.name}
+                            </p>
+                          )}
+                          {errors.identityRecto && <p className="mt-1 text-sm text-red-500">{errors.identityRecto}</p>}
+                        </div>
 
-                  <div className="col-span-1">
-                    <Label>
-                      Verso <span className="text-red-500">*</span>
-                    </Label>
-                    <FileInput
-                      name="identityVerso"
-                      onChange={(e) => handleFileChange(e, 'verso')}
-                      placeholder="Sélectionnez le verso"
-                    />
-                    {identityVerso && (
-                      <p className="mt-1 text-sm text-green-600">
-                        ✓ {identityVerso.name}
-                      </p>
+                        <div className="col-span-1">
+                          <Label>
+                            Verso <span className="text-red-500">*</span>
+                          </Label>
+                          <FileInput
+                            name="identityVerso"
+                            onChange={(e) => handleFileChange(e, 'verso')}
+                            placeholder="Sélectionnez le verso"
+                          />
+                          {identityVerso && (
+                            <p className="mt-1 text-sm text-green-600">
+                              ✓ {identityVerso.name}
+                            </p>
+                          )}
+                          {errors.identityVerso && <p className="mt-1 text-sm text-red-500">{errors.identityVerso}</p>}
+                        </div>
+                      </>
                     )}
-                    {errors.identityVerso && <p className="mt-1 text-sm text-red-500">{errors.identityVerso}</p>}
                   </div>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Formats acceptés : JPG, PNG, GIF. Taille maximale : 5MB par fichier.
+                  </p>
                 </div>
-                <p className="mt-2 text-xs text-gray-500">
-                  Formats acceptés : JPG, PNG, GIF. Taille maximale : 5MB par fichier.
-                </p>
-              </div>
+              )}
 
               <div className="col-span-1 sm:col-span-2">
                 <Label>Notes</Label>
@@ -765,7 +806,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               <Button
                 size="sm"
                 onClick={handleSave}
-                disabled={isSubmitting || selectedApartments.length === 0 || !identityRecto || !identityVerso}
+                disabled={
+                  isSubmitting || 
+                  selectedApartments.length === 0 || 
+                  (formData.status === "CLIENT" && !identityRecto) || 
+                  (formData.status === "CLIENT" && formData.identityType === "Carte d'identité" && !identityVerso)
+                }
               >
                 {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
               </Button>
