@@ -57,6 +57,21 @@ services:
       timeout: 5s
       retries: 5
 
+  # pgAdmin for database GUI
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+
   # MinIO for S3-compatible storage
   minio:
     image: minio/minio:latest
@@ -80,3 +95,4 @@ volumes:
   pgdata:
   uploads:
   minio_data:
+  pgadmin_data:
