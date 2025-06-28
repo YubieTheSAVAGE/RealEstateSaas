@@ -9,7 +9,7 @@ import {
 import Badge from "../ui/badge/Badge";
 import PaymentsDropdownFilter, { PaymentsFilters } from "../example/DropdownExample/PaymentsDropdownFilter";
 import { Payment } from "@/types/Payment";
-import { FaDownload, FaEye } from "react-icons/fa";
+import { FaDownload, FaEye, FaSearch } from "react-icons/fa";
 import PaginationWithIcon from "../ui/pagination/PaginationWitIcon";
 import { useState, useMemo, useEffect } from "react";
 import { PropertyFilters } from "../example/DropdownExample/PropertiesListDropdownFilter";
@@ -22,6 +22,7 @@ const PAGE_SIZE = 3;
 
 export default function PaymentsTable({ payments }: PaymentsTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState<PaymentsFilters>({
     pending: false,
     paid: false,
@@ -31,14 +32,24 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
   // Calculate pagination
   const filteredPayments = useMemo(() => {
     return payments.filter((payment) => {
+      // Status filter
       const matchStatus =
         (!filters.pending && !filters.paid && !filters.late) ||
         (filters.pending && payment.status?.toUpperCase() === "PENDING") ||
         (filters.paid && payment.status?.toUpperCase() === "PAID") ||
         (filters.late && payment.status?.toUpperCase() === "LATE");
-      return matchStatus;
+
+      // Search filter
+      const searchLower = searchTerm.toLowerCase();
+      const matchSearch = !searchTerm || 
+        payment.property.project.name.toLowerCase().includes(searchLower) ||
+        payment.property.number.toLowerCase().includes(searchLower) ||
+        (payment.property.client?.name || "").toLowerCase().includes(searchLower) ||
+        (payment.contract?.client?.name || "").toLowerCase().includes(searchLower);
+
+      return matchStatus && matchSearch;
     });
-  }, [payments, filters]);
+  }, [payments, filters, searchTerm]);
 
   const totalPages = Math.ceil(filteredPayments.length / PAGE_SIZE);
   const currentData = filteredPayments.slice(
@@ -47,12 +58,12 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
   );
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to page 1 whenever filters change
-  }, [filters]);
+    setCurrentPage(1); // Reset to page 1 whenever filters or search change
+  }, [filters, searchTerm]);
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
-      <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
            Liste des échéances
@@ -60,6 +71,17 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Search Input */}
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+            <input
+              type="text"
+              placeholder="client, numéro ou projet..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 w-64"
+            />
+          </div>
           <PaymentsDropdownFilter onFilterChange={setFilters} initialFilters={filters} />
         </div>
       </div>
@@ -146,11 +168,11 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
                         size="sm"
                         color={
                           payment.status?.toUpperCase() === "PENDING"
-                            ? "waiting"
+                            ? "warning"
                             : payment.status?.toUpperCase() === "PAID"
                             ? "success"
                             : payment.status?.toUpperCase() === "LATE"
-                            ? "warning"
+                            ? "error"
                             : "error"
                         }
                       >
