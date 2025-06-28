@@ -11,6 +11,7 @@ import addClient from "@/app/(admin)/clients/addClient"
 import { Textarea } from "@/components/ui/textarea"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
+import FileInput from "../../form/input/FileInput"
 // import MultiSelect from "@/components/form/MultiSelect"
 import { Property } from "@/types/property"
 import { Project } from "@/types/project"
@@ -42,7 +43,17 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     provenance: "",
     projectId: "",
     apartmentId: [] as string[],
+    whatsappNumber: "",
+    identityRecto: "",
+    identityVerso: "",
+    identityType: "",
+    firstName: "",
+    lastName: "",
   })
+
+  // State for file inputs
+  const [identityRecto, setIdentityRecto] = useState<File | null>(null)
+  const [identityVerso, setIdentityVerso] = useState<File | null>(null)
 
   // State for validation errors
   const [errors, setErrors] = useState({
@@ -54,6 +65,12 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     provenance: "",
     projectId: "",
     apartmentId: [] as string[],
+    identityRecto: "",
+    identityVerso: "",
+    whatsappNumber: "",
+    identityType: "",
+    firstName: "",
+    lastName: "",
   })
 
   // State for projects and their apartments
@@ -88,6 +105,42 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     }))
   }
 
+  // Handle file input changes
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fileType: 'recto' | 'verso') => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type (images only)
+      if (!file.type.startsWith('image/')) {
+        setErrors(prev => ({
+          ...prev,
+          [fileType === 'recto' ? 'identityRecto' : 'identityVerso']: "Veuillez sélectionner un fichier image"
+        }))
+        return
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({
+          ...prev,
+          [fileType === 'recto' ? 'identityRecto' : 'identityVerso']: "Le fichier ne doit pas dépasser 5MB"
+        }))
+        return
+      }
+
+      if (fileType === 'recto') {
+        setIdentityRecto(file)
+      } else {
+        setIdentityVerso(file)
+      }
+
+      // Clear errors
+      setErrors(prev => ({
+        ...prev,
+        [fileType === 'recto' ? 'identityRecto' : 'identityVerso']: ""
+      }))
+    }
+  }
+
   const handleSave = async () => {
     // Validate form before submission
     if (!validateForm()) {
@@ -113,6 +166,14 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       formDataToSend.append("apartmentId", id)
     })
 
+    // Add identity document files
+    if (identityRecto) {
+      formDataToSend.append("identityRecto", identityRecto)
+    }
+    if (identityVerso) {
+      formDataToSend.append("identityVerso", identityVerso)
+    }
+
     try {
       console.log("Form data to send:", formDataToSend)
       await addClient(formDataToSend)
@@ -131,8 +192,16 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
         provenance: "",
         projectId: "",
         apartmentId: [],
+        identityType: "",
+        whatsappNumber: "",
+        identityRecto: "",
+        identityVerso: "",
+        firstName: "",
+        lastName: "",
       });
       setSelectedApartments([]);
+      setIdentityRecto(null);
+      setIdentityVerso(null);
 
       closeModal()
     } catch (error) {
@@ -177,6 +246,17 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
     if (selectedApartments.length === 0) {
       newErrors.apartmentId = ["Au moins un bien doit être sélectionné"];
+      valid = false;
+    }
+
+    // Validate identity documents
+    if (!identityRecto) {
+      newErrors.identityRecto = "Le recto de la pièce d'identité est requis";
+      valid = false;
+    }
+
+    if (!identityVerso) {
+      newErrors.identityVerso = "Le verso de la pièce d'identité est requis";
       valid = false;
     }
 
@@ -244,13 +324,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
       [name]: "",
     }))
   }
-
-  // Handle multi-select change for apartments
-  // const handleMultiSelectChange = (selected: string[]) => {
-  //   console.log("Selected apartments:", selected)
-  //   setTempSelectedApartments(selected)
-  // }
-
+  
   // Add selected apartments to the list
   const handleAddApartments = () => {
     if (tempSelectedApartments.length === 0 || !formData.projectId) return
@@ -372,234 +446,332 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     }))
   }
 
+  const IdentityType = [
+    { value: "Carte d'identité", label: "Carte d'identité" },
+    { value: "Passport", label: "Passport" },
+  ]
+
   return (
     <>
       <Button size="sm" onClick={openModal}>
         Ajouter un client
       </Button>
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Informations du prospect
-          </h4>
+      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10 max-h-[90vh] overflow-hidden">
+        <div className="max-h-[calc(90vh-120px)] overflow-y-auto no-scrollbar scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+          <form onSubmit={(e) => e.preventDefault()}>
+            <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
+              Informations du prospect
+            </h4>
 
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            <div className="col-span-1">
-              <Label>
-                Nom complet <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="name"
-                type="text"
-                placeholder="ex: Jean Dupont"
-                onChange={handleChange}
-                error={!!errors.name}
-              />
-              {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
-            </div>
-            <div className="col-span-1">
-              <Label>
-                Statut <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                options={status}
-                name="status"
-                placeholder=""
-                defaultValue={status[1].value}
-                onChange={(value, name) => handleSelectChange(value, name)}
-              />
-            </div>
-            <div className="col-span-1">
-              <Label>
-                Email <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="email"
-                type="text"
-                placeholder="ex: jean.dupont@exemple.com"
-                onChange={handleChange}
-                error={!!errors.email}
-              />
-              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
-            </div>
+            <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+              {/* first Name */}
+              <div className="col-span-1">
+                <Label>
+                  Prénom <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="firstName"
+                  type="text"
+                  placeholder="ex: Jean"
+                  onChange={handleChange}
+                  error={!!errors.firstName}
+                />
+                {errors.firstName && <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>}
+              </div>
+              {/* last Name */}
+              <div className="col-span-1">
+                <Label>
+                  Nom <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="lastName"
+                  type="text"
+                  placeholder="ex: Dupont"
+                  onChange={handleChange}
+                  error={!!errors.lastName}
+                />
+                {errors.lastName && <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>}
+              </div>
+              <div className="col-span-1">
+                <Label>
+                  Statut <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  options={status}
+                  name="status"
+                  placeholder=""
+                  defaultValue={status[1].value}
+                  onChange={(value, name) => handleSelectChange(value, name)}
+                />
+              </div>
+              <div className="col-span-1">
+                <Label>
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="email"
+                  type="text"
+                  placeholder="ex: jean.dupont@exemple.com"
+                  onChange={handleChange}
+                  error={!!errors.email}
+                />
+                {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+              </div>
 
-            <div className="col-span-1">
-              <Label>
-                Numéro de téléphone <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="phoneNumber"
-                type="phone"
-                placeholder="ex: 06-12-34-56-78"
-                onChange={handleChange}
-                error={!!errors.phoneNumber}
-              />
-              {errors.phoneNumber && <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>}
-            </div>
+              <div className="col-span-1">
+                <Label>
+                  Numéro de téléphone <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="phoneNumber"
+                  type="phone"
+                  placeholder="ex: 06-12-34-56-78"
+                  onChange={handleChange}
+                  error={!!errors.phoneNumber}
+                />
+                {errors.phoneNumber && <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>}
+              </div>
 
-            {/* Project and Apartment Selection Section */}
-            <div className="col-span-2">
-              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
-                Biens intéressés <span className="text-red-500">*</span>
-              </h5>
-              <div className="flex flex-col gap-4 p-4 border rounded-lg">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="col-span-2">
-                    <Label>
-                      Projet <span className="text-red-500">*</span>
-                    </Label>
-                    <Select
-                      options={projects}
-                      name="projectId"
-                      placeholder="Sélectionner un projet"
-                      onChange={(value, name) => handleSelectChange(value, name)}
-                    />
-                    {errors.apartmentId && errors.apartmentId.length > 0 && selectedApartments.length === 0 && (
-                      <p className="mt-1 text-sm text-red-500">{errors.apartmentId[0]}</p>
-                    )}
-                  </div>
-                  {formData.projectId && (
+              {/* WhatsApp number */}
+              <div className="col-span-1">
+                <Label>
+                  Numéro de WhatsApp
+                </Label>
+                <Input
+                  name="whatsappNumber"
+                  type="phone"
+                  placeholder="ex: 06-12-34-56-78"
+                  onChange={handleChange}
+                  error={!!errors.whatsappNumber}
+                />
+                {errors.whatsappNumber && <p className="mt-1 text-sm text-red-500">{errors.whatsappNumber}</p>}
+              </div>
+
+
+              {/* Project and Apartment Selection Section */}
+              <div className="col-span-2">
+                <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
+                  Biens intéressés <span className="text-red-500">*</span>
+                </h5>
+                <div className="flex flex-col gap-4 p-4 border rounded-lg">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="col-span-2">
-                      <Label>Rechercher des biens <span className="text-red-500">*</span></Label>
-                      <div className="relative">
+                      <Label>
+                        Projet <span className="text-red-500">*</span>
+                      </Label>
+                      <Select
+                        options={projects}
+                        name="projectId"
+                        placeholder="Sélectionner un projet"
+                        onChange={(value, name) => handleSelectChange(value, name)}
+                      />
+                      {errors.apartmentId && errors.apartmentId.length > 0 && selectedApartments.length === 0 && (
+                        <p className="mt-1 text-sm text-red-500">{errors.apartmentId[0]}</p>
+                      )}
+                    </div>
+                    {formData.projectId && (
+                      <div className="col-span-2">
+                        <Label>Rechercher des biens <span className="text-red-500">*</span></Label>
                         <div className="relative">
-                          <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            placeholder="Rechercher par type ou numéro..."
-                            className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={searchQuery}
+                              onChange={handleSearchChange}
+                              placeholder="Rechercher par type ou numéro..."
+                              className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                          </div>
+                          {searchQuery && filteredApartments.length > 0 && (
+                            <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+                              {filteredApartments.map((apt) => (
+                                <div
+                                  key={apt.value}
+                                  className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                                  onClick={() => {
+                                    if (!tempSelectedApartments.includes(apt.value)) {
+                                      setTempSelectedApartments([...tempSelectedApartments, apt.value])
+                                    }
+                                  }}
+                                >
+                                  {apt.text}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        {searchQuery && filteredApartments.length > 0 && (
-                          <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
-                            {filteredApartments.map((apt) => (
-                              <div
-                                key={apt.value}
-                                className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => {
-                                  if (!tempSelectedApartments.includes(apt.value)) {
-                                    setTempSelectedApartments([...tempSelectedApartments, apt.value])
-                                  }
-                                }}
-                              >
-                                {apt.text}
-                              </div>
-                            ))}
+                        {tempSelectedApartments.length > 0 && (
+                          <div className="mt-2">
+                            <div className="flex flex-wrap gap-2">
+                              {tempSelectedApartments.map((id) => {
+                                const apt = currentProjectApartments.find((a) => a.value === id)
+                                return (
+                                  <div
+                                    key={id}
+                                    className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 rounded-full"
+                                  >
+                                    <span>{apt?.text}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setTempSelectedApartments(tempSelectedApartments.filter(t => t !== id))}
+                                      className="text-blue-600 hover:text-blue-800"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+                                )
+                              })}
+                            </div>
                           </div>
                         )}
                       </div>
-                      {tempSelectedApartments.length > 0 && (
-                        <div className="mt-2">
-                          <div className="flex flex-wrap gap-2">
-                            {tempSelectedApartments.map((id) => {
-                              const apt = currentProjectApartments.find((a) => a.value === id)
-                              return (
-                                <div
-                                  key={id}
-                                  className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 rounded-full"
-                                >
-                                  <span>{apt?.text}</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => setTempSelectedApartments(tempSelectedApartments.filter(t => t !== id))}
-                                    className="text-blue-600 hover:text-blue-800"
-                                  >
-                                    ×
-                                  </button>
-                                </div>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )}
+                    )}
+                  </div>
+
+                  {formData.projectId && tempSelectedApartments.length > 0 && (
+                    <div className="flex justify-end">
+                      <Button size="sm" onClick={handleAddApartments}>
+                        Ajouter les biens sélectionnés
+                      </Button>
                     </div>
                   )}
                 </div>
-
-                {formData.projectId && tempSelectedApartments.length > 0 && (
-                  <div className="flex justify-end">
-                    <Button size="sm" onClick={handleAddApartments}>
-                      Ajouter les biens sélectionnés
-                    </Button>
-                  </div>
-                )}
               </div>
-            </div>
 
-            {/* Selected Apartments Display */}
-            {selectedApartments.length > 0 && (
-              <div className="col-span-2 mt-2">
-                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">
-                  Biens sélectionnés
-                </h5>
-                <div className="p-4 border rounded-lg">
-                  {selectedApartments.map((project) => (
-                    <div key={project.projectId} className="mb-4">
-                      <h6 className="mb-2 font-medium">{project.projectName}</h6>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {project.apartments.map((apt) => (
-                          <div key={apt.id} className="flex items-center justify-between p-2 border rounded">
-                            <span className="text-sm truncate">{apt.name}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveApartment(project.projectId, apt.id)}
-                              className="p-1 text-red-500 hover:text-red-700"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        ))}
+              {/* Selected Apartments Display */}
+              {selectedApartments.length > 0 && (
+                <div className="col-span-2 mt-2">
+                  <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">
+                    Biens sélectionnés
+                  </h5>
+                  <div className="p-4 border rounded-lg">
+                    {selectedApartments.map((project) => (
+                      <div key={project.projectId} className="mb-4">
+                        <h6 className="mb-2 font-medium">{project.projectName}</h6>
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          {project.apartments.map((apt) => (
+                            <div key={apt.id} className="flex items-center justify-between p-2 border rounded">
+                              <span className="text-sm truncate">{apt.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveApartment(project.projectId, apt.id)}
+                                className="p-1 text-red-500 hover:text-red-700"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
+              )}
+
+              {/* Provenance */}
+              <div className="col-span-1 sm:col-span-2">
+                <Label>
+                  Comment nous avez-vous connu ? <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="provenance"
+                  type="text"
+                  placeholder="ex: Google, Recommandation"
+                  onChange={handleChange}
+                  error={!!errors.provenance}
+                />
+                {errors.provenance && <p className="mt-1 text-sm text-red-500">{errors.provenance}</p>}
               </div>
-            )}
 
-            <div className="col-span-1 sm:col-span-2">
-              <Label>
-                Comment nous avez-vous connu ? <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="provenance"
-                type="text"
-                placeholder="ex: Google, Recommandation"
-                onChange={handleChange}
-                error={!!errors.provenance}
-              />
-              {errors.provenance && <p className="mt-1 text-sm text-red-500">{errors.provenance}</p>}
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Notes</Label>
-              <Textarea
-                rows={3}
-                name="notes"
-                placeholder="ex: Notes concernant le client"
-                onChange={handleTextareaChange}
-              />
-            </div>
-          </div>
+              {/* Identity Type */}
+              <div className="col-span-1">
+                <Label>
+                  Type de pièce d'identité <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  options={IdentityType}
+                  name="identityType"
+                  placeholder="Sélectionner un type"
+                  onChange={(value, name) => handleSelectChange(value, name)}
+                />
+              </div>
 
-          <div className="flex items-center justify-end w-full gap-3 mt-6">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={closeModal}
-              disabled={isSubmitting}
-            >
-              Fermer
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleSave}
-              disabled={isSubmitting || selectedApartments.length === 0}
-            >
-              {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
-            </Button>
-          </div>
-        </form>
+              {/* Identity Document Upload Section */}
+              <div className="col-span-2">
+                <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
+                  Pièce d'identité <span className="text-red-500">*</span>
+                </h5>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="col-span-1">
+                    <Label>
+                      Recto <span className="text-red-500">*</span>
+                    </Label>
+                    <FileInput
+                      name="identityRecto"
+                      onChange={(e) => handleFileChange(e, 'recto')}
+                      placeholder="Sélectionnez le recto"
+                    />
+                    {identityRecto && (
+                      <p className="mt-1 text-sm text-green-600">
+                        ✓ {identityRecto.name}
+                      </p>
+                    )}
+                    {errors.identityRecto && <p className="mt-1 text-sm text-red-500">{errors.identityRecto}</p>}
+                  </div>
+
+                  <div className="col-span-1">
+                    <Label>
+                      Verso <span className="text-red-500">*</span>
+                    </Label>
+                    <FileInput
+                      name="identityVerso"
+                      onChange={(e) => handleFileChange(e, 'verso')}
+                      placeholder="Sélectionnez le verso"
+                    />
+                    {identityVerso && (
+                      <p className="mt-1 text-sm text-green-600">
+                        ✓ {identityVerso.name}
+                      </p>
+                    )}
+                    {errors.identityVerso && <p className="mt-1 text-sm text-red-500">{errors.identityVerso}</p>}
+                  </div>
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  Formats acceptés : JPG, PNG, GIF. Taille maximale : 5MB par fichier.
+                </p>
+              </div>
+
+              <div className="col-span-1 sm:col-span-2">
+                <Label>Notes</Label>
+                <Textarea
+                  rows={3}
+                  name="notes"
+                  placeholder="ex: Notes concernant le client"
+                  onChange={handleTextareaChange}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end w-full gap-3 mt-6">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={closeModal}
+                disabled={isSubmitting}
+              >
+                Fermer
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={isSubmitting || selectedApartments.length === 0 || !identityRecto || !identityVerso}
+              >
+                {isSubmitting ? 'Enregistrement...' : 'Enregistrer'}
+              </Button>
+            </div>
+          </form>
+        </div>
       </Modal>
     </>
   )
