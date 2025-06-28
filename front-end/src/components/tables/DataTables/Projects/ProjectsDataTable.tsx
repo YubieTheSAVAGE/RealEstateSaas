@@ -18,6 +18,7 @@ import EditProjectModal from "@/components/example/ModalExample/EditProjectModal
 import DeleteModal from "@/components/example/ModalExample/DeleteModal";
 import { useRouter } from "next/navigation";
 import { Project } from "@/types/project";
+import Badge from "@/components/ui/badge/Badge";
 
 type SortKey = "id" | "project" | "totalSales";
 type SortOrder = "asc" | "desc";
@@ -211,9 +212,9 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
               <TableRow>
                 {[
                   { key: "project", label: "Projet" },
+                  { key: "numberOfApartments", label: "Nombre de propriétés" },
                   { key: "totalSales", label: "Ventes totales" },
-                  // { key: "", label: "" },
-                  // { key: "status", label: "Status" },
+                  { key: "status", label: "Statut" },
                 ].map(({ key, label }) => (
                   <TableCell
                     key={key}
@@ -271,7 +272,21 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                     {item.name}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
+                    {item.apartments?.length || 0}
+                  </TableCell>
+                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.totalSales}
+                  </TableCell>
+                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
+                    <Badge
+                      variant={item.status === "planification" ? "light" : "solid"}
+                      className="text-white font-semibold px-3 py-1"
+                      color={item.status === "planification" ? "warning" : item.status === "construction" ? "primary" : "success"}
+                    >
+                      {item.status === "planification" ? "Planning" : 
+                      item.status === "construction" ? "Under Construction" : 
+                      item.status === "done" ? "Completed" : item.status}
+                    </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
                     <div className="flex items-center justify-center w-full gap-2">
