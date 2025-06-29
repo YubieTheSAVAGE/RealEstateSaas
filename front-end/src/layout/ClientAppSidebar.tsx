@@ -29,13 +29,13 @@ const navItems: NavItem[] = [
   {
     name: "Echéances",
     icon: <BiCreditCard size="1.5em" />,
-    path: "/payments",
+    path: "/client/payments",
     roles: ["CLIENT", "ADMIN"],
   },
   {
     icon: <BiBuildings size="1.5em" />,
     name: "Propriétés",
-    path: "/properties",
+    path: "/client/properties",
     roles: ["CLIENT", "ADMIN"],
   },
 ];
