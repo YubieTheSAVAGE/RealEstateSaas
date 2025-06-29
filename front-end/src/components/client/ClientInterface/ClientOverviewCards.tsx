@@ -66,7 +66,7 @@ export const ProjectProgressCarousel: React.FC<{
             {prop.project.progress?.toFixed(1) ?? "-"}%
           </div>
           <div className="text-base text-green-700 font-medium">
-            {prop.project.name}
+            {prop.project.name} - {prop.number} 
           </div>
           <div className="text-sm text-green-500 mt-1">Progress du Travaux</div>
           <div className="text-xs text-gray-500 mt-2">
