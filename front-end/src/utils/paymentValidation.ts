@@ -16,6 +16,36 @@ export interface PaymentPlan {
   firstPaymentPercentage: number;
 }
 
+export interface FirstPaymentCalculation {
+  baseAmount: number; // 20% of total price
+  folderFees: number;
+  extrasTotal: number;
+  commissionTotal: number;
+  totalFirstPayment: number;
+  breakdown: {
+    balcon?: number;
+    terrasse?: number;
+    piscine?: number;
+    parking?: number;
+    mezzanine?: number;
+  };
+}
+
+export interface TotalPaymentBreakdown {
+  basePrice: number;
+  folderFees: number;
+  commissionTotal: number;
+  parkingPrice: number;
+  totalPayment: number;
+  surfaceBreakdown: {
+    habitable: number;
+    balcon: number;
+    terrasse: number;
+    piscine: number;
+    totalSurface: number;
+  };
+}
+
 export class PaymentValidator {
   private static readonly MIN_FIRST_PAYMENT_PERCENTAGE = 20; // 20%
   private static readonly MAX_FIRST_PAYMENT_PERCENTAGE = 100; // 100%
@@ -224,5 +254,181 @@ export class PaymentValidator {
       firstPaymentAmount,
       firstPaymentPercentage: (firstPaymentAmount / totalPropertyPrice) * 100
     };
+  }
+
+  /**
+   * Calculates the complete first payment breakdown
+   */
+  static calculateFirstPaymentBreakdown(
+    property: any,
+    folderFees: number = 0
+  ): FirstPaymentCalculation {
+    if (!property || !property.prixTotal || property.prixTotal <= 0) {
+      return {
+        baseAmount: 0,
+        folderFees: 0,
+        extrasTotal: 0,
+        commissionTotal: 0,
+        totalFirstPayment: 0,
+        breakdown: {}
+      };
+    }
+
+    // Calculate commission total
+    const commissionTotal = this.calculateCommissionTotal(property);
+
+    // Calculate extras total (only for M2 pricing)
+    const { total: extrasTotal, breakdown } = this.calculateExtrasTotal(property);
+
+    let baseAmount: number;
+    let totalFirstPayment: number;
+
+    if (property.prixType === "FIXE") {
+      // Case "FIXE": prixTotal includes extras
+      baseAmount = property.prixTotal * 0.2;
+      totalFirstPayment = baseAmount + folderFees + commissionTotal;
+    } else if (property.prixType === "M2") {
+      // Case "M2": prixTotal excludes commission, need to add extras separately
+      baseAmount = property.prixTotal * 0.2;
+      totalFirstPayment = baseAmount + extrasTotal + folderFees + commissionTotal;
+    } else {
+      // Fallback for unknown pricing type
+      baseAmount = property.prixTotal * 0.2;
+      totalFirstPayment = baseAmount + folderFees + commissionTotal;
+    }
+
+    return {
+      baseAmount,
+      folderFees,
+      extrasTotal,
+      commissionTotal,
+      totalFirstPayment,
+      breakdown
+    };
+  }
+
+  /**
+   * Calculates the complete total payment breakdown
+   */
+  static calculateTotalPaymentBreakdown(
+    property: any,
+    folderFees: number = 0
+  ): TotalPaymentBreakdown {
+    if (!property || !property.prixTotal || property.prixTotal <= 0) {
+      return {
+        basePrice: 0,
+        folderFees: 0,
+        commissionTotal: 0,
+        parkingPrice: 0,
+        totalPayment: 0,
+        surfaceBreakdown: {
+          habitable: 0,
+          balcon: 0,
+          terrasse: 0,
+          piscine: 0,
+          totalSurface: 0
+        }
+      };
+    }
+
+    // Calculate surface breakdown
+    const habitable = property.habitable || 0;
+    const balcon = property.balcon || 0;
+    const terrasse = property.terrasse || 0;
+    const piscine = property.piscine || 0;
+    const totalSurface = habitable + balcon + terrasse + piscine;
+
+    // Calculate commission total
+    const commissionTotal = property.commissionPerM2 ? property.commissionPerM2 * totalSurface : 0;
+
+    // Calculate parking price
+    const parkingPrice = (property.parkingDisponible && !property.parkingInclus && property.prixParking) 
+      ? property.prixParking 
+      : 0;
+
+    // Calculate total payment
+    const totalPayment = property.prixTotal + folderFees + commissionTotal + parkingPrice;
+
+    return {
+      basePrice: property.prixTotal,
+      folderFees,
+      commissionTotal,
+      parkingPrice,
+      totalPayment,
+      surfaceBreakdown: {
+        habitable,
+        balcon,
+        terrasse,
+        piscine,
+        totalSurface
+      }
+    };
+  }
+
+  /**
+   * Calculates the total value of property extras (balcony, terrace, pool, etc.)
+   */
+  static calculateExtrasTotal(property: any): { total: number; breakdown: any } {
+    let total = 0;
+    const breakdown: any = {};
+
+    // Only calculate extras prices for M2 pricing type
+    if (property.prixType === "M2" && property.prixM2) {
+      // Calculate balcony cost
+      if (property.balcon && property.prixBalconPct) {
+        const balconCost = property.balcon * (property.prixM2 * property.prixBalconPct / 100);
+        breakdown.balcon = balconCost;
+        total += balconCost;
+      }
+
+      // Calculate terrace cost
+      if (property.terrasse && property.prixTerrassePct) {
+        const terrasseCost = property.terrasse * (property.prixM2 * property.prixTerrassePct / 100);
+        breakdown.terrasse = terrasseCost;
+        total += terrasseCost;
+      }
+
+      // Calculate pool cost
+      if (property.piscine && property.prixPiscine) {
+        const piscineCost = property.piscine * property.prixPiscine;
+        breakdown.piscine = piscineCost;
+        total += piscineCost;
+      }
+
+      // Calculate parking cost (if not included)
+      if (property.parkingDisponible && !property.parkingInclus && property.prixParking) {
+        breakdown.parking = property.prixParking;
+        total += property.prixParking;
+      }
+
+      // Calculate mezzanine cost (for stores)
+      if (property.mezzanineArea && property.mezzaninePrice) {
+        breakdown.mezzanine = property.mezzaninePrice;
+        total += property.mezzaninePrice;
+      }
+    }
+
+    return { total, breakdown };
+  }
+
+  /**
+   * Calculates the total commission amount
+   */
+  static calculateCommissionTotal(property: any): number {
+    if (!property.commissionPerM2 || property.commissionPerM2 <= 0) {
+      return 0;
+    }
+
+    // Calculate total surface for commission
+    const totalExtrasSurface = (property.balcon || 0) + (property.terrasse || 0) + (property.piscine || 0);
+    const totalSurface = (property.habitable || 0) + totalExtrasSurface;
+
+    // For land and store types, use totalArea if habitable is not available
+    if (!property.habitable && property.totalArea) {
+      const landStoreSurface = property.totalArea + (property.mezzanineArea || 0);
+      return landStoreSurface * property.commissionPerM2;
+    }
+
+    return totalSurface * property.commissionPerM2;
   }
 } 
