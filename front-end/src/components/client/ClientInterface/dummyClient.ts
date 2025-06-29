@@ -41,7 +41,7 @@ const dummyProperty: Property = {
       id: 3,
       amount: 100000,
       dueDate: new Date('2024-05-01'),
-      status: 'PAID',
+      status: 'LATE',
       proofOfPayment: null,
       property: dummyProperty,
       createdAt: new Date('2024-05-01'),
