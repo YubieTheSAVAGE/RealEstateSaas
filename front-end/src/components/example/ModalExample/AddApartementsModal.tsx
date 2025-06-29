@@ -107,7 +107,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
   // Helper functions - moved before calcSummary
   const shouldShowStandardFields = () => {
-    return ["APARTMENT"].includes(formData.type);
+    return ["APARTMENT", "DUPLEX", "VILLA"].includes(formData.type);
   };
 
   const needsFloorField = () => {
@@ -151,8 +151,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
           // For Land and Store types
           commissionTotal = commission * totalArea;
           if (isStoreType()) {
-            const mezzanineArea = Number(landStoreFields.mezzanineArea) || 0;
-            commissionTotal += commission * mezzanineArea;
+            commissionTotal += commission * (Number(landStoreFields.mezzanineArea) || 0);
           }
         }
         total += commissionTotal;
@@ -168,8 +167,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
         // For Land and Store types
         main = totalArea * m2;
         if (isStoreType()) {
-          const mezzanineArea = Number(landStoreFields.mezzanineArea) || 0;
-          mezzanine = mezzanineArea * m2 + mezzaninePrix;
+          mezzanine = mezzaninePrix;
         }
       }
       parking = parkingDisponible && !parkingInclus ? parkPrix : 0;
@@ -184,8 +182,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
           // For Land and Store types
           commissionTotal = commission * totalArea;
           if (isStoreType()) {
-            const mezzanineArea = Number(landStoreFields.mezzanineArea) || 0;
-            commissionTotal += commission * mezzanineArea;
+            commissionTotal += commission * (Number(landStoreFields.mezzanineArea) || 0);
           }
         }
         total += commissionTotal;
