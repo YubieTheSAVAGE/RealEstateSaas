@@ -237,15 +237,16 @@ export default function ReservationProcessModal({ property, payments }: Reservat
   const [showFirstPaymentSuggestion, setShowFirstPaymentSuggestion] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
 
+  property.prixTotal = 100000;
   // Shake animation effect
   useEffect(() => {
-    const shakeInterval = setInterval(() => {
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 1000); // Shake for 1 second
-    }, 3000); // Shake every 3 seconds
-
-    return () => clearInterval(shakeInterval);
+  const shakeInterval = setInterval(() => {
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 1000); // Shake for 1 second
+  }, 3000); // Shake every 3 seconds
+  return () => clearInterval(shakeInterval);
   }, []);
+
 
   // Enhanced first payment handler with validation
   const handleFirstPayment = () => {
