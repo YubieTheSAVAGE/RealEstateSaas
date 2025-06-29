@@ -1,6 +1,6 @@
 import { Client } from "./client";
 import { Project } from "./project";
-import { Payment } from "./Payment";
+import { PaymentPlan } from "./Payment";
 
 export type PropertyType = "APARTMENT" | "DUPLEX" | "VILLA" | "STORE" | "LAND";
 export type ApartmentStatus = "AVAILABLE" | "RESERVED" | "SOLD";
@@ -45,7 +45,7 @@ export interface Property {
   prixTotal: number; // Prix total for FIXE type
   commissionPerM2?: number;
   prixM2?: number; // Prix par m² for M2 type
-  payments?: Payment[] | null;
+  payments?: PaymentPlan;
   
   // Percentage-based pricing for annexes
   prixBalconPct?: number; // Pourcentage du prix au m² pour balcon

@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { Project } from "@/types/project";
 import Badge from "@/components/ui/badge/Badge";
 import ConstructionsProgressModal from "@/components/example/ModalExample/ConstructionsProgressModal";
+import { Property } from "@/types/property";
 
 interface ProjectCardProps {
   ProjectDetails: Project;
@@ -55,12 +56,12 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
 
   const calculateTotalSales = (ProjectDetails: Project) => {
     // Check if apartments array exists
-    if (!ProjectDetails.apartments || !Array.isArray(ProjectDetails.apartments)) {
+    if (!ProjectDetails.properties || !Array.isArray(ProjectDetails.properties)) {
       return 0;
     }
 
     // Count sold apartments
-    const soldCount = ProjectDetails.apartments.filter(
+    const soldCount = ProjectDetails.properties.filter(
       (apartment: { status: string }) => apartment.status === "SOLD"
     ).length;
 
@@ -75,13 +76,13 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
 
   const calculateTotalRevenue = (ProjectDetails: Project) => {
     // Check if apartments array exists
-    if (!ProjectDetails.apartments || !Array.isArray(ProjectDetails.apartments)) {
+    if (!ProjectDetails.properties || !Array.isArray(ProjectDetails.properties)) {
       return 0;
     }
     // Calculate total revenue from sold apartments
-    const totalRevenue = ProjectDetails.apartments.reduce((acc: number, apartment: { status: string; price: number }) => {
-      if (apartment.status === "SOLD") {
-        return acc + apartment.price;
+    const totalRevenue = ProjectDetails.properties.reduce((acc: number, property: Property) => {
+      if (property.status === "SOLD") {
+        return acc + property.prixTotal;
       }
       return acc;
     }, 0);
@@ -271,7 +272,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
                     <MdHome className="text-blue-600 text-lg" />
                     <span className="font-medium text-gray-700 dark:text-gray-300">Propriétés:</span>
                     <span className="font-bold text-blue-600 dark:text-blue-400">
-                      {totalSales} / {ProjectDetails.numberOfApartments}
+                      {totalSales} / {ProjectDetails.properties?.length}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -286,12 +287,12 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
                 <div className="mt-2">
                   <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                     <span>Progression des ventes</span>
-                    <span>{Math.round((totalSales / ProjectDetails.numberOfApartments) * 100)}%</span>
+                    <span>{Math.round((totalSales / (ProjectDetails.properties?.length ?? 0)) * 100)}%</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div 
                       className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${(totalSales / ProjectDetails.numberOfApartments) * 100}%` }}
+                      style={{ width: `${(totalSales / (ProjectDetails.properties?.length ?? 0)) * 100}%` }}
                     ></div>
                   </div>
                 </div>
@@ -303,13 +304,13 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
                   Frais & Commission
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <MdAttachMoney className="text-green-600 text-lg" />
                     <span className="font-medium text-gray-700 dark:text-gray-300">Commission de l'agence:</span>
                     <span className="font-bold text-green-600 dark:text-green-400">
                       {ProjectDetails.commission?.toLocaleString()} MAD
                     </span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center gap-2">
                     <MdReceipt className="text-green-600 text-lg" />
                     <span className="font-medium text-gray-700 dark:text-gray-300">Frais de dossier:</span>
@@ -372,7 +373,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
               <MdHome className="text-blue-500" />
               Distribution des propriétés
             </h3>
-            <PropertiesCategoryPieChart apartements={ProjectDetails.apartments ?? []}/>
+            <PropertiesCategoryPieChart properties={ProjectDetails.properties ?? []}/>
           </div>
         </div>
         <div className="col-span-2 sm:col-span-1">
@@ -381,7 +382,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
               <MdTrendingUp className="text-green-500" />
               Tendance des ventes mensuelles
             </h3>
-            <MonthlySalesChart apartements={ProjectDetails.apartments ?? []}/>
+            <MonthlySalesChart properties={ProjectDetails.properties ?? []}/>
           </div>
         </div>
       </div>

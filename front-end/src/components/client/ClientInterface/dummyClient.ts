@@ -205,8 +205,8 @@ const dummyProperty8: Property = {
     project: projectOcean,
     prixTotal: 4000000,
     parkingDisponible: true,
-    parkingInclus: true,
-    prixParking: 300000,
+    parkingInclus: false,
+    prixParking: 10000,
 };
 
 const dummyProperty9: Property = {

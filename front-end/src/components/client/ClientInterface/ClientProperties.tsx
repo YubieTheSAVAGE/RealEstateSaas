@@ -6,6 +6,7 @@ import ProgressBar from "@/components/progress-bar/ProgressBar";
 import { FaRegCheckSquare, FaHome, FaLayerGroup, FaSearch, FaFilter, FaSort, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { MdApartment, MdVilla, MdStore, MdLandscape, MdHome } from "react-icons/md";
 import { dummyClient } from "./dummyClient";
+import PropertyDetailsModal from "@/components/client/ClientInterface/PropertyDetailsModal";
 
 interface ClientPropertiesProps {
   client?: Client;
@@ -164,7 +165,7 @@ const ClientProperties: React.FC<ClientPropertiesProps> = ({ client }) => {
   const totalValue = groupedProperties.reduce((sum, group) => sum + group.totalValue, 0);
 
   return (
-    <div className="bg-gray-50 rounded-2xl p-8 shadow-lg">
+    <div className="bg-white rounded-2xl p-8 border border-gray-200 ">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
         <h3 className="text-xl font-bold text-gray-900">Détails des lots</h3>
         
@@ -244,7 +245,7 @@ const ClientProperties: React.FC<ClientPropertiesProps> = ({ client }) => {
                 className="w-full p-2 border border-gray-300 rounded-md"
               >
                 <option value="project">Projet</option>
-                <option value="progress">Progression</option>
+                <option value="progress">Travaux</option>
                 <option value="value">Valeur totale</option>
                 <option value="properties">Nombre de propriétés</option>
               </select>
@@ -288,7 +289,7 @@ const ClientProperties: React.FC<ClientPropertiesProps> = ({ client }) => {
                             label="none"
                           />
                         </div>
-                        <span className="text-gray-600">Progression: {group.projectProgress}%</span>
+                        <span className="text-gray-600">Travaux: {group.projectProgress}%</span>
                       </div>
                       
                       <span className="font-semibold text-green-600">
@@ -372,12 +373,7 @@ const ClientProperties: React.FC<ClientPropertiesProps> = ({ client }) => {
 
                         {/* Actions */}
                         <div className="flex gap-2">
-                          <button
-                            className="px-4 py-2 rounded-full border border-blue-500 text-blue-600 font-semibold text-sm bg-white hover:bg-blue-50 transition shadow"
-                            aria-label="Voir détails"
-                          >
-                            Détails
-                          </button>
+                          <PropertyDetailsModal property={property} />
                         </div>
                       </div>
                     ))}
