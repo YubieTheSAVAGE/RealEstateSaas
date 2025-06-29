@@ -112,35 +112,46 @@ const PaymentCard: React.FC<{ payment: Payment; index: number }> = ({ payment, i
   const propertyLabel = payment.property?.number || "";
   return (
     <div
-      className={`flex items-center justify-between p-6 rounded-2xl mb-5 border shadow-sm ${statusStyles[status]}`}
+      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 rounded-2xl mb-5 border shadow-sm ${statusStyles[status]}`}
       aria-label={`Paiement ${title}`}
     >
-      <div className="flex items-center gap-5">
-        <div>{getStatusIcon(status)}</div>
-        <div className="flex flex-col">
-          <div className="font-semibold text-base">{title}</div>
-          <div className="text-gray-500 text-sm">{propertyLabel}</div>
+      <div className="flex items-center gap-3 sm:gap-5 mb-4 sm:mb-0">
+        <div className="flex-shrink-0">{getStatusIcon(status)}</div>
+        <div className="flex flex-col min-w-0 flex-1">
+          <div className="font-semibold text-sm sm:text-base truncate">{title}</div>
+          <div className="text-gray-500 text-xs sm:text-sm truncate">{propertyLabel}</div>
         </div>
       </div>
-      <div className="flex items-center gap-10">
-        <div className="text-gray-700 text-base">
-          {formatDate(payment.dueDate)}
-          <br />
-          <span className="text-gray-400 text-sm">Date d'échéance</span>
+      
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 lg:gap-10">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <div className="text-gray-700 text-sm sm:text-base">
+            <span className="block sm:inline">{formatDate(payment.dueDate)}</span>
+            <br className="hidden sm:block" />
+            <span className="text-gray-400 text-xs sm:text-sm">Date d'échéance</span>
+          </div>
+          
+          <div className="font-bold text-sm sm:text-base text-gray-900">
+            <span className="block sm:inline">{payment.amount.toLocaleString("fr-FR")} DH</span>
+            {payment.percentageOfTotal && (
+              <span className="text-gray-500 font-normal text-xs sm:text-sm"> ({payment.percentageOfTotal}%)</span>
+            )}
+          </div>
         </div>
-        <div className="font-bold text-base text-gray-900">
-          {payment.amount.toLocaleString("fr-FR")} DH
-          {payment.percentageOfTotal && (
-            <span className="text-gray-500 font-normal text-sm"> ({payment.percentageOfTotal}%)</span>
+        
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <div className={`px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${badgeStyles[status]} w-fit`}>
+            {getStatusLabel(status)}
+          </div>
+          
+          {isLate && (
+            <span className="text-red-600 text-xs sm:text-sm">{getDaysLate(payment.dueDate)} jours de retard</span>
+          )}
+          
+          {status === "PAID" && (
+            <FaDownload size={16} className="hover:text-green-700 hover:cursor-pointer transition-colors sm:ml-2" />
           )}
         </div>
-        <div className={`px-4 py-1 rounded-full text-sm font-medium ${badgeStyles[status]}`}>{getStatusLabel(status)}</div>
-        {isLate && (
-          <span className="text-red-600 text-sm ml-2">{getDaysLate(payment.dueDate)} jours de retard</span>
-        )}
-        {status === "PAID" && (
-           <FaDownload size={18} className="hover:text-green-700 hover:cursor-pointer transition-colors" />
-        )}
       </div>
     </div>
   );
@@ -269,22 +280,22 @@ export const DueToPayments: React.FC<DueToPaymentsProps> = ({ payments }) => {
     );
   }
   return (
-    <div className="bg-white border border-gray-200 dark:bg-gray-800 rounded-2xl p-10  mx-auto mt-8">
-      <div className="text-2xl font-bold mb-1">Calendrier des échéances</div>
-      <div className="text-gray-500 text-base mb-8">Chronologie détaillée de vos paiements</div>
+    <div className="bg-white border border-gray-200 dark:bg-gray-800 rounded-2xl p-4 sm:p-6 lg:p-10 mx-auto mt-8">
+      <div className="text-xl sm:text-2xl font-bold mb-1">Calendrier des échéances</div>
+      <div className="text-gray-500 text-sm sm:text-base mb-6 sm:mb-8">Chronologie détaillée de vos paiements</div>
       {/* Controls */}
-      <div className="flex justify-between items-center gap-4 mb-6">
-      <div className="relative">
-        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
-        <input
-            type="text"
-            placeholder="Numéro de lot..."
-            value={propertyFilter}
-            onChange={(e) => setPropertyFilter(e.target.value)}
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 w-64"
-        />
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div className="relative w-full sm:w-auto">
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+          <input
+              type="text"
+              placeholder="Numéro de lot..."
+              value={propertyFilter}
+              onChange={(e) => setPropertyFilter(e.target.value)}
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 w-full sm:w-64"
+          />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full sm:w-auto">
           <ClientPaymentsDropdownFilter
             onFilterChange={handleDropdownFilterChange}
             initialFilters={dropdownFilters}
@@ -304,18 +315,18 @@ export const DueToPayments: React.FC<DueToPaymentsProps> = ({ payments }) => {
       {/* Pagination */}
       {filteredPayments.length > 0 && totalPages > 1 && (
         <div className="w-full border-t border-gray-200 dark:border-gray-800">
-          <div className="flex items-center justify-between py-4">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex flex-col sm:flex-row items-center justify-between py-4 gap-4">
+            <span className="text-sm text-gray-500 dark:text-gray-400 order-2 sm:order-1">
               Page {page} de {totalPages}
             </span>
-            <div className="flex items-center justify-center py-0">
+            <div className="flex items-center justify-center py-0 order-1 sm:order-2">
             <PaginationWithIcon
               totalPages={totalPages}
               initialPage={1}
               onPageChange={handlePageChange}
             />
             </div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-gray-500 dark:text-gray-400 order-3">
               Affichage de {paginatedPayments.length} sur {filteredPayments.length} paiements
             </span>
           </div>
