@@ -1,4 +1,5 @@
 import Breadcrumb from '@/components/ui/breadcrumb/Breadcrumb'
+import ClientProperties from '@/components/client/ClientInterface/ClientProperties'
 import React from 'react'
 
 export default function ClientPropertiesPage() {
@@ -25,6 +26,7 @@ export default function ClientPropertiesPage() {
         </span>
         <Breadcrumb items={breadcrumbItems} variant="withIcon" />
       </div>
+      <ClientProperties />
     </>
   )
 }

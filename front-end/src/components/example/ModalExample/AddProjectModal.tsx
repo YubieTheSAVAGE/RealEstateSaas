@@ -30,7 +30,6 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     latitude: "",
     longitude: "",
     dossierFee: "",
-    commission: "",
     image: null as File | null, // Store as File object instead of string
     status: "",
   });
@@ -43,7 +42,6 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     latitude: "",
     longitude: "",
     dossierFee: "",
-    commission: "",
     image: "",
     status: "",
   });
@@ -168,7 +166,7 @@ const handleSave = async () => {
 
   try {
     await addProject(formDataToSend);
-    setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", latitude: "", longitude: "", dossierFee: "", commission: "", image: null, status: "" });
+    setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", latitude: "", longitude: "", dossierFee: "", image: null, status: "" });
     onProjectAdded?.();
     closeModal();
   } catch (error) {
@@ -214,7 +212,6 @@ const handleSave = async () => {
       latitude: "",
       longitude: "",
       dossierFee: "",
-      commission: "",
       image: "",
       status: "",
     });
@@ -385,19 +382,6 @@ const handleSave = async () => {
                 />
                 {errors.dossierFee && (
                   <p className="text-sm text-red-500 mt-1">{errors.dossierFee}</p>
-                )}
-              </div>
-              <div className="col-span-1">
-                <Label>Commission par M²</Label>
-                <Input
-                  name="commission"
-                  type="number"
-                  placeholder="e.g. 2500(MAD/m²)"
-                  onChange={handleChange}
-                  value={formData.commission}
-                />
-                {errors.commission && (
-                  <p className="text-sm text-red-500 mt-1">{errors.commission}</p>
                 )}
               </div>
             </div>

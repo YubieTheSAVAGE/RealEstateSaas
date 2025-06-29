@@ -42,6 +42,7 @@ export interface Property {
   // Pricing configuration
   prixType?: "FIXE" | "M2"; // Type de prix: fixe or per m²
   prixTotal: number; // Prix total for FIXE type
+  commissionPerM2?: number;
   prixM2?: number; // Prix par m² for M2 type
   
   // Percentage-based pricing for annexes

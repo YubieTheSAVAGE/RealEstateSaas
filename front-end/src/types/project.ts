@@ -14,7 +14,6 @@ export interface Project {
   
   // Financial information
   folderFees: number;
-  commissionPerM2: number;
   totalSales?: number;
   
   // Project status and progress

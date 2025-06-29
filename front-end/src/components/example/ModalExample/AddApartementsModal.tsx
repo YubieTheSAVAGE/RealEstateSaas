@@ -73,6 +73,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     totalArea: "",
     mezzanineArea: "",
     mezzaninePrice: "",
+    commissionPerM2: "",
   });
 
   // Stepper state
@@ -102,6 +103,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   const [parkingDisponible, setParkingDisponible] = useState(false);
   const [parkingInclus, setParkingInclus] = useState(false);
   const [prixParking, setPrixParking] = useState("");
+  const [commissionPerM2, setCommissionPerM2] = useState("");
 
   // Helper functions - moved before calcSummary
   const shouldShowStandardFields = () => {
@@ -133,11 +135,28 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     const pisPrix = Number(prixPiscine) || 0;
     const parkPrix = Number(prixParking) || 0;
     const mezzaninePrix = Number(landStoreFields.mezzaninePrice) || 0;
-    let main = 0, balcon = 0, terrasse = 0, piscine = 0, parking = 0, mezzanine = 0, total = 0;
+    const commission = Number(commissionPerM2) || 0;
+    let main = 0, balcon = 0, terrasse = 0, piscine = 0, parking = 0, mezzanine = 0, total = 0, commissionTotal = 0;
     
     if (prixType === "FIXE") {
       total = Number(prixTotal) || 0;
       main = total;
+      
+      // Calculate commission for fixed price
+      if (commission > 0) {
+        if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
+          // For APARTMENT, VILLA, DUPLEX - use surfaces
+          commissionTotal = commission * (hab + bal + ter + pis);
+        } else {
+          // For Land and Store types
+          commissionTotal = commission * totalArea;
+          if (isStoreType()) {
+            const mezzanineArea = Number(landStoreFields.mezzanineArea) || 0;
+            commissionTotal += commission * mezzanineArea;
+          }
+        }
+        total += commissionTotal;
+      }
     } else {
       if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
         // For APARTMENT, VILLA, DUPLEX - use surfaces
@@ -155,9 +174,25 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       }
       parking = parkingDisponible && !parkingInclus ? parkPrix : 0;
       total = main + balcon + terrasse + piscine + parking + mezzanine;
+      
+      // Calculate commission for price per m²
+      if (commission > 0) {
+        if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
+          // For APARTMENT, VILLA, DUPLEX - use surfaces
+          commissionTotal = commission * (hab + bal + ter + pis);
+        } else {
+          // For Land and Store types
+          commissionTotal = commission * totalArea;
+          if (isStoreType()) {
+            const mezzanineArea = Number(landStoreFields.mezzanineArea) || 0;
+            commissionTotal += commission * mezzanineArea;
+          }
+        }
+        total += commissionTotal;
+      }
     }
-    return { main, balcon, terrasse, piscine, parking, mezzanine, total };
-  }, [surfaces, landStoreFields, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type]);
+    return { main, balcon, terrasse, piscine, parking, mezzanine, total, commissionTotal };
+  }, [surfaces, landStoreFields, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type, commissionPerM2]);
 
   // Helper function to validate percentage input
   const validatePercentage = (value: string, fieldName: string) => {
@@ -343,6 +378,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       totalArea: "",
       mezzanineArea: "",
       mezzaninePrice: "",
+      commissionPerM2: "",
     });
     // Reset surfaces and pricing states
     setSurfaces({
@@ -365,6 +401,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     setParkingDisponible(false);
     setParkingInclus(false);
     setPrixParking("");
+    setCommissionPerM2("");
     closeModal();
   }
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -607,6 +644,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       }
     }
     
+    // Add commission if provided
+    if (commissionPerM2) {
+      formDataToSend.append('commissionPerM2', commissionPerM2.toString());
+    }
+    
     if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
       Object.entries(surfaces).forEach(([key, value]) => {
         if (value) formDataToSend.append(key, value);
@@ -693,7 +735,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                         setErrors(prev => ({ ...prev, floor: error }));
                       }}
                       min="0"
-                      step={1}
+                      step={0.01}
                     />
                     {errors.floor && <p className="text-sm text-red-500 mt-1">{errors.floor}</p>}
                   </div>
@@ -960,6 +1002,30 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   </div>
                 </div>
                 
+                {/* Commission per m² for all property types */}
+                <div className="col-span-1">
+                  <Label>Commission par m² (DH)</Label>
+                  <Input 
+                    name="commissionPerM2" 
+                    type="number" 
+                    placeholder="ex: 500" 
+                    value={commissionPerM2 === "" ? "" : Number(commissionPerM2)} 
+                    onChange={e => {
+                      const value = e.target.value;
+                      setCommissionPerM2(value);
+                      if (value !== "") {
+                        const error = validateNonNegativeNumber(value, "La commission par m²");
+                        setErrors(prev => ({ ...prev, commissionPerM2: error }));
+                      } else {
+                        setErrors(prev => ({ ...prev, commissionPerM2: "" }));
+                      }
+                    }}
+                    min="0"
+                    step={0.01}
+                  />
+                  {errors.commissionPerM2 && <p className="text-sm text-red-500 mt-1">{errors.commissionPerM2}</p>}
+                </div>
+                
                 {prixType === "FIXE" ? (
                   <div className="col-span-2">
                     <Label>Prix total (DH) <span className="text-red-500">*</span></Label>
@@ -1156,6 +1222,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     {Number(surfaces.terrasse) > 0 && <div>Terrasse ({surfaces.terrasse} m²): <span className="font-medium">{calcSummary.terrasse.toLocaleString()} DH</span></div>}
                     {Number(surfaces.piscine) > 0 && <div>Piscine ({surfaces.piscine} m²): <span className="font-medium">{calcSummary.piscine.toLocaleString()} DH</span></div>}
                     {parkingDisponible && <div>Parking: <span className="font-medium">{calcSummary.parking.toLocaleString()} DH</span></div>}
+                    {Number(commissionPerM2) > 0 && (
+                      <div>Commission: <span className="font-medium">{calcSummary.commissionTotal.toLocaleString()} DH</span></div>
+                    )}
                     <div className="mt-2 font-bold text-blue-900">Total: {calcSummary.total.toLocaleString()} DH</div>
                   </div>
                 </div>
@@ -1170,6 +1239,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       <div>Mezzanine ({landStoreFields.mezzanineArea} m²): <span className="font-medium">{calcSummary.mezzanine.toLocaleString()} DH</span></div>
                     )}
                     {parkingDisponible && <div>Parking: <span className="font-medium">{calcSummary.parking.toLocaleString()} DH</span></div>}
+                    {Number(commissionPerM2) > 0 && (
+                      <div>Commission: <span className="font-medium">{calcSummary.commissionTotal.toLocaleString()} DH</span></div>
+                    )}
                     <div className="mt-2 font-bold text-blue-900">Total: {calcSummary.total.toLocaleString()} DH</div>
                   </div>
                 </div>
