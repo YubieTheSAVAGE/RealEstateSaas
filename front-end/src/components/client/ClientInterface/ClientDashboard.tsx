@@ -1,6 +1,6 @@
 import React from 'react'
-import ClientPaymentOverview from './ClientPaymentOverview'
 import { Client } from '@/types/client'
+import { NextDueCard, PaymentStatusCard, ProjectProgressCarousel } from './ClientOverviewCards'
 
 interface ClientDashboardProps {
   client: Client
@@ -18,7 +18,11 @@ export default function ClientDashboard({ client }: ClientDashboardProps) {
             Vous pouvez gérer vos propriétés, vos echéances et vos paiements ici
         </p>
       </div>
-        {/* <ClientPaymentOverview client={client} /> */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <PaymentStatusCard payments={client.payments || []} />
+        <NextDueCard payments={client.payments || []} />
+        <ProjectProgressCarousel properties={client.apartments || []} />
+      </div>
     </>
   )
 }
