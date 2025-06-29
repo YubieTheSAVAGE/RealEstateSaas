@@ -1,4 +1,5 @@
 import ClientPaymentOverview from '@/components/client/ClientInterface/ClientPaymentOverview'
+import DueToPayments from '@/components/client/ClientInterface/dueToPayments'
 import { dummyClient } from '@/components/client/ClientInterface/dummyClient'
 import Breadcrumb from '@/components/ui/breadcrumb/Breadcrumb'
 import React from 'react'
@@ -28,6 +29,7 @@ export default function ClientPaymentsPage() {
         <Breadcrumb items={breadcrumbItems} variant="withIcon" />
       </div>
       <ClientPaymentOverview client={dummyClient} />
+      <DueToPayments payments={dummyClient.payments || []} />
     </>
   )
 }
