@@ -269,7 +269,7 @@ const ClientAppSidebar: React.FC = () => {
           }`}
       >
         <Link href="/home">
-          {isExpanded || isHovered || isMobileOpen ? (
+          {isExpanded || isHovered ? (
             <>
               <Image
                 className="dark:hidden mx-4"

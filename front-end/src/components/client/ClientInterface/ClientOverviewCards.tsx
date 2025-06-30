@@ -84,10 +84,3 @@ export const ProjectProgressCarousel: React.FC<{
     </div>
   );
 };
-
-// --- Example usage (to be used in ClientOverview.tsx) ---
-// <div className="flex gap-4">
-//   <PaymentStatusCard payments={client.payments || []} />
-//   <NextDueCard payments={client.payments || []} />
-//   <ProjectProgressCarousel properties={client.apartments || []} />
-// </div> 
