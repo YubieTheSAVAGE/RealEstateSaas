@@ -42,12 +42,12 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
   // Calculate total sales for a project based on sold apartments
   const calculateTotalSales = (projectItem: Project) => {
     // Check if apartments array exists
-    if (!projectItem.apartments || !Array.isArray(projectItem.apartments)) {
+    if (!projectItem.properties || !Array.isArray(projectItem.properties)) {
       return 0;
     }
 
     // Count sold apartments
-    const soldCount = projectItem.apartments.filter(
+    const soldCount = projectItem.properties.filter(
       (apartment: { status: string }) => apartment.status === "SOLD"
     ).length;
 
@@ -136,7 +136,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="text-gray-500 dark:text-gray-400"> Afficher </span>
-          <div className="relative z-20 bg-transparent">
+          <div className="relative z-0 bg-transparent">
             <select
               className="w-full py-2 pl-3 pr-8 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none dark:bg-dark-900 h-9 bg-none shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
               value={itemsPerPage}
@@ -272,7 +272,7 @@ export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps)
                     {item.name}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.apartments?.length || 0}
+                    {item.properties?.length || 0}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.totalSales}
