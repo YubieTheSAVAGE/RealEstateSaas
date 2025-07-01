@@ -166,106 +166,108 @@ export default function AddTemplateModal({ onTemplateAdded }: AddTemplateModalPr
         onClose={closeModal}
         className="max-w-3xl p-5 lg:p-10"
       >
-        <form onSubmit={(e) => e.preventDefault()}>
-          <h2 className="text-md sm:text-xl font-bold text-center mb-8 ">les information du template</h2>
-          {/* Responsive grid for top fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-            <div>
-              <Label>Nom du template <span className="text-red-500">*</span></Label>
-              <Input
-                name="name"
-                type="text"
-                placeholder="Saisir le nom du template"
-                onChange={handleChange}
-              />
+        <div className="max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-gray-800 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 dark:[&::-webkit-scrollbar-thumb]:hover:bg-gray-500">
+          <form onSubmit={(e) => e.preventDefault()}>
+            <h2 className="text-md sm:text-xl font-bold text-center mb-8 ">les information du template</h2>
+            {/* Responsive grid for top fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+              <div>
+                <Label>Nom du template <span className="text-red-500">*</span></Label>
+                <Input
+                  name="name"
+                  type="text"
+                  placeholder="Saisir le nom du template"
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <Label>Description <span className="text-red-500">*</span></Label>
+                <Input
+                  name="description"
+                  type="text"
+                  placeholder="Description du template"
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <Checkbox
+                  checked={formData.isDefault}
+                  onChange={handleCheckboxChange}
+                  label="Définir comme template par défaut"
+                />    
+              </div>
+              <div className="md:col-span-2">
+                <MultiSelect
+                  label="Assigné à"
+                  options={projectOptions}
+                  defaultSelected={formData.assignedProjects}
+                  onChange={handleSelectChange}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <Label>Contenu du contrat <span className="text-red-500">*</span></Label>
+                <Textarea
+                  className="h-48"
+                  name="content"
+                  placeholder="Contenu du contrat avec balises dynamiques ..."
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange(e)}
+                  value={formData.content}
+                  ref={textareaRef}
+                />
+              </div>
             </div>
-            <div>
-              <Label>Description <span className="text-red-500">*</span></Label>
-              <Input
-                name="description"
-                type="text"
-                placeholder="Description du template"
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <Checkbox
-                checked={formData.isDefault}
-                onChange={handleCheckboxChange}
-                label="Définir comme template par défaut"
-              />    
-            </div>
-            <div className="md:col-span-2">
-              <MultiSelect
-                label="Assigné à"
-                options={projectOptions}
-                defaultSelected={formData.assignedProjects}
-                onChange={handleSelectChange}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <Label>Contenu du contrat <span className="text-red-500">*</span></Label>
-              <Textarea
-                className="h-48"
-                name="content"
-                placeholder="Contenu du contrat avec balises dynamiques ..."
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleChange(e)}
-                value={formData.content}
-                ref={textareaRef}
-              />
-            </div>
-          </div>
 
-          {/* Dynamic tags section */}
-          <div className="mb-4">
-            <div className="flex flex-wrap gap-2 mb-3">
-              <button
-                type="button"
-                className={`px-3 py-1 rounded-full border font-semibold transition ${selectedCategory === "all" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
-                onClick={() => setSelectedCategory("all")}
-              >
-                Toutes les balises
-              </button>
-              {tagCategories.map((cat: { value: string; label: string }) => (
-                <button
-                  key={cat.value}
-                  type="button"
-                  className={`px-3 py-1 rounded-full border font-semibold transition ${categoryColors[cat.value] || "bg-gray-100 text-gray-600"} ${selectedCategory === cat.value ? "ring-2 ring-offset-2 ring-blue-400" : "hover:opacity-80"}`}
-                  onClick={() => setSelectedCategory(cat.value)}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-            <div className="flex gap-4 overflow-x-auto pb-2">
-              {filteredTags.map((tag: { key: string; category: string; categoryLabel: string; label: string; description?: string; example?: string }) => (
+            {/* Dynamic tags section */}
+            <div className="mb-4">
+              <div className="flex flex-wrap gap-2 mb-3">
                 <button
                   type="button"
-                  key={tag.key}
-                  className={`min-w-[250px] rounded-xl shadow p-4 flex flex-col gap-2 border-2 border-transparent transition hover:border-blue-400 active:scale-95 focus:outline-none ${categoryColors[tag.category] || "bg-gray-50 text-gray-700"}`}
-                  onClick={() => handleInsertTag(tag.key)}
-                  title="Insérer la balise dans le contenu"
+                  className={`px-3 py-1 rounded-full border font-semibold transition ${selectedCategory === "all" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+                  onClick={() => setSelectedCategory("all")}
                 >
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="bg-white/80 border px-2 py-1 rounded text-xs font-mono text-gray-700">{tag.key}</span>
-                    <span className={`px-2 py-1 rounded text-xs font-semibold ${categoryColors[tag.category] || "bg-gray-100 text-gray-600"}`}>{tag.categoryLabel}</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-base">{tag.label}</div>
-                    <div className="text-xs text-gray-700">{tag.description ?? ""}</div>
-                    <div className="text-xs text-gray-500">Exemple: {tag.example ?? ""}</div>
-                  </div>
+                  Toutes les balises
                 </button>
-              ))}
+                {tagCategories.map((cat: { value: string; label: string }) => (
+                  <button
+                    key={cat.value}
+                    type="button"
+                    className={`px-3 py-1 rounded-full border font-semibold transition ${categoryColors[cat.value] || "bg-gray-100 text-gray-600"} ${selectedCategory === cat.value ? "ring-2 ring-offset-2 ring-blue-400" : "hover:opacity-80"}`}
+                    onClick={() => setSelectedCategory(cat.value)}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-4 overflow-x-auto pb-2">
+                {filteredTags.map((tag: { key: string; category: string; categoryLabel: string; label: string; description?: string; example?: string }) => (
+                  <button
+                    type="button"
+                    key={tag.key}
+                    className={`min-w-[250px] rounded-xl shadow p-4 flex flex-col gap-2 border-2 border-transparent transition hover:border-blue-400 active:scale-95 focus:outline-none ${categoryColors[tag.category] || "bg-gray-50 text-gray-700"}`}
+                    onClick={() => handleInsertTag(tag.key)}
+                    title="Insérer la balise dans le contenu"
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="bg-white/80 border px-2 py-1 rounded text-xs font-mono text-gray-700">{tag.key}</span>
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${categoryColors[tag.category] || "bg-gray-100 text-gray-600"}`}>{tag.categoryLabel}</span>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-base">{tag.label}</div>
+                      <div className="text-xs text-gray-700">{tag.description ?? ""}</div>
+                      <div className="text-xs text-gray-500">Exemple: {tag.example ?? ""}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Action buttons */}
-          <div className="flex justify-center gap-4 mt-8">
-            <Button type="submit" className="bg-blue-600 text-white px-8 py-2 rounded-lg">Créer le template</Button>
-            <Button type="button" variant="outline" onClick={closeModal} className="px-8 py-2 rounded-lg">Annuler</Button>
-          </div>
-        </form>
+            {/* Action buttons */}
+            <div className="flex justify-center gap-4 mt-8">
+              <Button type="submit" className="bg-blue-600 text-white px-8 py-2 rounded-lg">Créer le template</Button>
+              <Button type="button" variant="outline" onClick={closeModal} className="px-8 py-2 rounded-lg">Annuler</Button>
+            </div>
+          </form>
+        </div>
       </Modal>
     </>
   );

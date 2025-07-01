@@ -112,7 +112,7 @@ export default function MonthlyTargetModal({ onTargetAdded, targetData  }: Month
                 name="target"
                 type="number"
                 onChange={handleInputChange}
-                defaultValue={formData.target}
+                value={formData.target}
                 required
               />
             </div>
@@ -122,7 +122,7 @@ export default function MonthlyTargetModal({ onTargetAdded, targetData  }: Month
                 name="startDate"
                 type="date"
                 onChange={handleInputChange}
-                defaultValue={formData.startDate}
+                value={formData.startDate}
                 required
               />
             </div>
@@ -132,7 +132,7 @@ export default function MonthlyTargetModal({ onTargetAdded, targetData  }: Month
                 name="endDate"
                 type="date"
                 onChange={handleInputChange}
-                defaultValue={formData.endDate}
+                value={formData.endDate}
                 required
               />
             </div>

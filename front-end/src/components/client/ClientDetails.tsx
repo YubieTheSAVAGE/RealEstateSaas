@@ -45,8 +45,6 @@ export default function ClientDetails({ clientId }: ClientDetailsProps) {
                 <ClientCard client={client} onRefresh={fetchClient} />
                 <ClientNoteCard clientNote={client.notes || ""} />
                 <ClientPropertiesCard ClientProperties={client.apartments || []} />
-                <div className="col-span-2">
-                </div>
             </div>
             <InterestTable ProjectDetails={client.interestedApartments || []} />
         </div>

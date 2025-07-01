@@ -164,6 +164,7 @@ export default function EditTemplateModal({ template }: EditTemplateModalProps) 
         onClose={closeModal}
         className="max-w-3xl p-5 lg:p-10"
       >
+         <div className="max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-400 dark:[&::-webkit-scrollbar-track]:bg-gray-800 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 dark:[&::-webkit-scrollbar-thumb]:hover:bg-gray-500">
         <form onSubmit={(e) => e.preventDefault()}>
           <h2 className="text-md sm:text-xl font-bold text-center mb-8 ">les information du template</h2>
           {/* Responsive grid for top fields */}
@@ -266,6 +267,7 @@ export default function EditTemplateModal({ template }: EditTemplateModalProps) 
             <Button type="button" variant="outline" onClick={closeModal} className="px-8 py-2 rounded-lg">Annuler</Button>
           </div>
         </form>
+        </div>
       </Modal>
     </>
   );

@@ -490,7 +490,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
               {/* first Name */}
-              <div className="col-span-1">
+              <div className="col-span-2 sm:col-span-1">
                 <Label>
                   Prénom <span className="text-red-500">*</span>
                 </Label>
@@ -505,7 +505,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 {errors.firstName && <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>}
               </div>
               {/* last Name */}
-              <div className="col-span-1">
+              <div className="col-span-2 sm:col-span-1">
                 <Label>
                   Nom <span className="text-red-500">*</span>
                 </Label>
@@ -519,7 +519,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 />
                 {errors.lastName && <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>}
               </div>
-              <div className="col-span-1">
+              <div className="col-span-2 sm:col-span-1">
                 <Label>
                   Statut <span className="text-red-500">*</span>
                 </Label>
@@ -531,7 +531,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                   onChange={(value, name) => handleSelectChange(value, name)}
                 />
               </div>
-              <div className="col-span-1">
+              <div className="col-span-2 sm:col-span-1">
                 <Label>
                   Email <span className="text-red-500">*</span>
                 </Label>
@@ -546,7 +546,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
               </div>
 
-              <div className="col-span-1">
+              <div className="col-span-2 sm:col-span-1">
                 <Label>
                   Numéro de téléphone <span className="text-red-500">*</span>
                 </Label>
@@ -562,7 +562,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               </div>
 
               {/* WhatsApp number */}
-              <div className="col-span-1">
+              <div className="col-span-2 sm:col-span-1">
                 <Label>
                   Numéro de WhatsApp
                 </Label>
@@ -627,7 +627,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                               {filteredApartments.map((apt) => (
                                 <div
                                   key={apt.value}
-                                  className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                                  className="px-3 py-2 cursor-pointer dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
                                   onClick={() => {
                                     if (!tempSelectedApartments.includes(apt.value)) {
                                       setTempSelectedApartments([...tempSelectedApartments, apt.value])
@@ -642,13 +642,13 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                         </div>
                         {tempSelectedApartments.length > 0 && (
                           <div className="mt-2">
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex fle-wrap gap-2">
                               {tempSelectedApartments.map((id) => {
                                 const apt = currentProjectApartments.find((a) => a.value === id)
                                 return (
                                   <div
                                     key={id}
-                                    className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 rounded-full"
+                                    className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 dark:bg-blue-900 rounded-full"
                                   >
                                     <span>{apt?.text}</span>
                                     <button
@@ -709,7 +709,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               )}
 
               {/* Provenance */}
-              <div className="col-span-1 sm:col-span-2">
+              <div className="col-span-2">
                 <Label>
                   Comment nous avez-vous connu ? <span className="text-red-500">*</span>
                 </Label>
@@ -727,7 +727,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
               {/* Identity Type */}
               {formData.status === "CLIENT" && (
                 <> 
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>
                     Type de pièce d'identité <span className="text-red-500">*</span>
                   </Label>
@@ -738,7 +738,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                     onChange={(value, name) => handleSelectChange(value, name)}
                   />
                 </div>
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>
                     Numéro de pièce d'identité <span className="text-red-500">*</span>
                   </Label>
@@ -783,7 +783,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                     ) : (
                       // Two file inputs for carte d'identité
                       <>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>
                             Recto <span className="text-red-500">*</span>
                           </Label>
@@ -800,7 +800,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                           {errors.identityRecto && <p className="mt-1 text-sm text-red-500">{errors.identityRecto}</p>}
                         </div>
 
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>
                             Verso <span className="text-red-500">*</span>
                           </Label>
@@ -825,7 +825,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 </div>
               )}
 
-              <div className="col-span-1 sm:col-span-2">
+              <div className="col-span-2">
                 <Label>Notes</Label>
                 <Textarea
                   rows={3}

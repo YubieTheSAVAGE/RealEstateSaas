@@ -61,7 +61,7 @@ export default function MonthlyTarget() {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate >= firstDayCurrentMonth && saleDate <= today) {
-          return acc + apartment.price;
+          return acc + apartment.prixTotal;
         }
       }
       return acc;
@@ -72,7 +72,7 @@ export default function MonthlyTarget() {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate >= firstDayPreviousMonth && saleDate <= lastDayPreviousMonth) {
-          return acc + apartment.price;
+          return acc + apartment.prixTotal;
         }
       }
       return acc;
@@ -83,7 +83,7 @@ export default function MonthlyTarget() {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate.toDateString() === today.toDateString()) {
-          return acc + apartment.price;
+          return acc + apartment.prixTotal;
         }
       }
       return acc;
@@ -94,7 +94,7 @@ export default function MonthlyTarget() {
       if (apartment.status === "SOLD") {
         const saleDate = new Date(apartment.updatedAt || "");
         if (saleDate.toDateString() === yesterday.toDateString()) {
-          return acc + apartment.price;
+          return acc + apartment.prixTotal;
         }
       }
       return acc;

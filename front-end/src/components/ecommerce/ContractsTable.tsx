@@ -82,16 +82,16 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
           </h3>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           {/* Search Input */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
             <input
               type="text"
               placeholder="client, numéro ou projet..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 w-64"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 w-full sm:w-64"
             />
           </div>
           <ContractsDropdownFilter onFilterChange={setFilters} initialFilters={filters} />
@@ -172,7 +172,7 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                       {formatDate(contract.createdAt)}
                     </TableCell>
-                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <TableCell className="py-3 pr-2 sm:pr-0 text-gray-500 text-theme-sm dark:text-gray-400">
                       <Badge
                         size="sm"
                         color={

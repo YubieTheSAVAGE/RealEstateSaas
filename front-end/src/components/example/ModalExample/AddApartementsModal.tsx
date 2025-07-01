@@ -681,7 +681,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       <Modal
         isOpen={isOpen}
         onClose={handleCloseModal}
-        className="max-w-2xl p-5 lg:p-10 m-4"
+        className="w-full max-w-4xl p-5 lg:p-10 m-4"
       >
         <div className="mb-4">
           <h1 className="text-2xl font-bold">Ajouter un bien</h1>
@@ -692,7 +692,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <form onSubmit={e => { e.preventDefault(); setStep(1); }}>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
                 {/* Project, Type, Floor, Number, Zone, Status, Client, Plan, Notes */}
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Projet <span className="text-red-500">*</span></Label>
                   <Select
                     name="id"
@@ -704,7 +704,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   />
                   {errors.id && <p className="text-sm text-red-500 mt-1">{errors.id}</p>}
                 </div>
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Type <span className="text-red-500">*</span></Label>
                   <Select
                     name="type"
@@ -718,7 +718,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 
                 {/* Conditional fields based on property type */}
                 {needsFloorField() && (
-                  <div className="col-span-1">
+                  <div className="col-span-2 sm:col-span-1">
                     <Label>Étage <span className="text-red-500">*</span></Label>
                     <Input 
                       name="floor" 
@@ -738,20 +738,20 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   </div>
                 )}
                 {(shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") && (
-                  <div className="col-span-1">
+                  <div className="col-span-2 sm:col-span-1">
                     <Label>Zone <span className="text-red-500">*</span></Label>
                     <Input name="zone" type="text" placeholder="ex: Zone 1" value={formData.zone} onChange={handleChange} />
                     {errors.zone && <p className="text-sm text-red-500 mt-1">{errors.zone}</p>}
                   </div>
                 )}
                 
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Numéro <span className="text-red-500">*</span></Label>
                   <Input name="number" type="text" placeholder="ex: 10A" value={formData.number} onChange={handleChange} />
                   {errors.number && <p className="text-sm text-red-500 mt-1">{errors.number}</p>}
                 </div>
                 
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Statut <span className="text-red-500">*</span></Label>
                   <Select
                     options={status}
@@ -763,7 +763,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 </div>
                 
                 {(formData.status === "SOLD" || formData.status === "RESERVED") && (
-                  <div className="col-span-1" ref={clientSearchRef}>
+                  <div className="col-span-2 sm:col-span-1" ref={clientSearchRef}>
                     <Label>Client <span className="text-red-500">*</span></Label>
                     <div className="relative">
                       <div onClick={() => setShowClientDropdown(true)}>
@@ -832,7 +832,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 {(shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") ? (
                   <>
                     {/* Surfaces for Villa, Apartment, Duplex */}
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface habitable (m²) <span className="text-red-500">*</span></Label>
                       <Input 
                         name="habitable" 
@@ -850,7 +850,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       />
                       {errors.habitable && <p className="text-sm text-red-500 mt-1">{errors.habitable}</p>}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface balcon (m²)</Label>
                       <Input 
                         name="balcon" 
@@ -872,7 +872,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       />
                       {errors.balcon && <p className="text-sm text-red-500 mt-1">{errors.balcon}</p>}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface terrasse (m²)</Label>
                       <Input 
                         name="terrasse" 
@@ -894,7 +894,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       />
                       {errors.terrasse && <p className="text-sm text-red-500 mt-1">{errors.terrasse}</p>}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface piscine (m²)</Label>
                       <Input 
                         name="piscine" 
@@ -920,7 +920,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 ) : (
                   <>
                     {/* Fields for Land and Store types */}
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface totale (m²) <span className="text-red-500">*</span></Label>
                       <Input 
                         name="totalArea" 
@@ -941,7 +941,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     
                     {isStoreType() && (
                       <>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Surface mezzanine (m²)</Label>
                           <Input 
                             name="mezzanineArea" 
@@ -963,7 +963,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                           />
                           {errors.mezzanineArea && <p className="text-sm text-red-500 mt-1">{errors.mezzanineArea}</p>}
                         </div>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix mezzanine (DH)</Label>
                           <Input 
                             name="mezzaninePrice" 
@@ -1000,7 +1000,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 </div>
                 
                 {/* Commission per m² for all property types */}
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Commission par m² (DH)</Label>
                   <Input 
                     name="commissionPerM2" 
@@ -1024,7 +1024,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 </div>
                 
                 {prixType === "FIXE" ? (
-                  <div className="col-span-2">
+                  <div className="col-span-2 sm:col-span-1">
                     <Label>Prix total (DH) <span className="text-red-500">*</span></Label>
                     <Input 
                       name="prixTotal" 
@@ -1044,7 +1044,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   </div>
                 ) : (
                   <>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Prix par m² (DH) <span className="text-red-500">*</span></Label>
                       <Input 
                         name="prixM2" 
@@ -1065,7 +1065,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     
                     {shouldShowStandardFields() && (
                       <>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix balcon (% du prix au m² habitable)</Label>
                           <Input 
                             name="prixBalconPct" 
@@ -1101,7 +1101,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                             <p className="text-xs text-red-500 mt-1">{errors.prixBalconPct}</p>
                           )}
                         </div>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix terrasse (% du prix au m² habitable)</Label>
                           <Input 
                             name="prixTerrassePct" 
@@ -1137,7 +1137,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                             <p className="text-xs text-red-500 mt-1">{errors.prixTerrassePct}</p>
                           )}
                         </div>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix piscine (DH/m²)</Label>
                           <Input 
                             name="prixPiscine" 
@@ -1211,9 +1211,9 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               
               {/* Conditional calculation summary */}
               {shouldShowStandardFields() && (
-                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold mb-2">Calcul du prix total</h4>
-                  <div className="space-y-1 text-sm">
+                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 dark:border-blue-200 dark:bg-blue-900 rounded-lg">
+                  <h4 className="font-semibold mb-2 dark:text-white">Calcul du prix total</h4>
+                  <div className="space-y-1 text-sm dark:text-gray-200">
                     <div>Surface habitable ({surfaces.habitable || 0} m²): <span className="font-medium">{calcSummary.main.toLocaleString()} DH</span></div>
                     {Number(surfaces.balcon) > 0 && <div>Balcon ({surfaces.balcon} m²): <span className="font-medium">{calcSummary.balcon.toLocaleString()} DH</span></div>}
                     {Number(surfaces.terrasse) > 0 && <div>Terrasse ({surfaces.terrasse} m²): <span className="font-medium">{calcSummary.terrasse.toLocaleString()} DH</span></div>}
@@ -1222,15 +1222,15 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     {Number(commissionPerM2) > 0 && (
                       <div>Commission: <span className="font-medium">{calcSummary.commissionTotal.toLocaleString()} DH</span></div>
                     )}
-                    <div className="mt-2 font-bold text-blue-900">Total: {calcSummary.total.toLocaleString()} DH</div>
+                    <div className="mt-2 font-bold text-blue-900 dark:text-blue-200">Total: {calcSummary.total.toLocaleString()} DH</div>
                   </div>
                 </div>
               )}
               
               {!shouldShowStandardFields() && (
-                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold mb-2">Calcul du prix total</h4>
-                  <div className="space-y-1 text-sm">
+                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 dark:border-blue-200 dark:bg-blue-900 rounded-lg">
+                  <h4 className="font-semibold mb-2 dark:text-white">Calcul du prix total</h4>
+                  <div className="space-y-1 text-sm dark:text-gray-200">
                     <div>Surface totale ({landStoreFields.totalArea || 0} m²): <span className="font-medium">{calcSummary.main.toLocaleString()} DH</span></div>
                     {isStoreType() && Number(landStoreFields.mezzanineArea) > 0 && (
                       <div>Mezzanine ({landStoreFields.mezzanineArea} m²): <span className="font-medium">{calcSummary.mezzanine.toLocaleString()} DH</span></div>
@@ -1239,11 +1239,10 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     {Number(commissionPerM2) > 0 && (
                       <div>Commission: <span className="font-medium">{calcSummary.commissionTotal.toLocaleString()} DH</span></div>
                     )}
-                    <div className="mt-2 font-bold text-blue-900">Total: {calcSummary.total.toLocaleString()} DH</div>
+                    <div className="mt-2 font-bold text-blue-900 dark:text-blue-200">Total: {calcSummary.total.toLocaleString()} DH</div>
                   </div>
                 </div>
               )}
-              
               <div className="flex items-center justify-between w-full gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button size="sm" variant="outline" onClick={handlePreviousStep}>Précédent</Button>
                 <Button size="sm" type="submit">Créer le lot</Button>

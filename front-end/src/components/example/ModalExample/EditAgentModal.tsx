@@ -150,6 +150,7 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
                 type="text"
                 placeholder="Nom complet"
                 onChange={handleChange}
+                value={formData.name}
               />
               {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
             </div>
@@ -172,6 +173,7 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
                 type="tel"
                 placeholder="ex: 06-12-34-56-78"
                 onChange={handleChange}
+                value={formData.phoneNumber}
               />
               {errors.phoneNumber && <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>}
             </div>
@@ -184,6 +186,7 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
                 type="email"
                 placeholder="email@exemple.com"
                 onChange={handleChange}
+                value={formData.email}
               />
               {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
             </div>
@@ -196,6 +199,7 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
                 type="password"
                 placeholder="••••••••"
                 onChange={handleChange}
+                value={formData.password}
               />
             </div>
 
@@ -208,6 +212,7 @@ export default function EditAgentModal({ AgentDetails, onAgentEdited, details }:
                 name="notes"
                 placeholder="Notes supplémentaires"
                 onChange={handleChange}
+                value={formData?.notes}
               />
             </div>
           </div>

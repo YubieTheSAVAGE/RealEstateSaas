@@ -304,13 +304,6 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
                   Frais & Commission
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {/* <div className="flex items-center gap-2">
-                    <MdAttachMoney className="text-green-600 text-lg" />
-                    <span className="font-medium text-gray-700 dark:text-gray-300">Commission de l'agence:</span>
-                    <span className="font-bold text-green-600 dark:text-green-400">
-                      {ProjectDetails.commission?.toLocaleString()} MAD
-                    </span>
-                  </div> */}
                   <div className="flex items-center gap-2">
                     <MdReceipt className="text-green-600 text-lg" />
                     <span className="font-medium text-gray-700 dark:text-gray-300">Frais de dossier:</span>

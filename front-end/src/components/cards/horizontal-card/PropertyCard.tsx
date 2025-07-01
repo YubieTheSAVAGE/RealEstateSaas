@@ -240,14 +240,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
 
   if (!property) {
     return (
-      <div className="flex items-center justify-center h-[160px] w-full bg-gray-100 rounded-lg text-gray-400">
+      <div className="flex items-center justify-center h-[160px] w-full bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-400 dark:text-gray-500">
         Aucune donnée disponible
       </div>
     );
   }
   
   {/* test payments */}
-  // property.client!.payments = paymentsForDifferentProperty;
+  // property.client!.payments = testPayments;
 
   // Property type mapping
   const typeMap = {
@@ -295,48 +295,48 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
   };
 
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="flex flex-col-reverse md:flex-row gap-6 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-white/[0.03] p-6 shadow-sm dark:shadow-gray-900/20">
       {/* Left: Details */}
       <div className="flex-1 flex flex-col gap-4 min-w-[320px]">
         {/* General Info */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-teal-50 rounded-lg p-3 flex items-center gap-2">
-            <TypeIcon className="text-teal-400" />
+          <div className="bg-teal-50 dark:bg-teal-900/20 rounded-lg p-3 flex items-center gap-2">
+            <TypeIcon className="text-teal-400 dark:text-teal-300" />
             <div>
-              <div className="text-xs text-gray-500">Type</div>
-              <div className="font-bold text-lg">{typeDisplay}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Type</div>
+              <div className="font-bold text-lg text-gray-900 dark:text-white">{typeDisplay}</div>
             </div>
           </div>
-          <div className="bg-indigo-50 rounded-lg p-3 flex items-center gap-2">
-            <FaHashtag className="text-indigo-400" />
+          <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-3 flex items-center gap-2">
+            <FaHashtag className="text-indigo-400 dark:text-indigo-300" />
             <div>
-              <div className="text-xs text-gray-500">Numéro</div>
-              <div className="font-bold text-lg">{property.number}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Numéro</div>
+              <div className="font-bold text-lg text-gray-900 dark:text-white">{property.number}</div>
             </div>
           </div>
           {(property.type === 'APARTMENT') && (
-            <div className="bg-blue-50 rounded-lg p-3 flex items-center gap-2">
-              <FaBuilding className="text-blue-400" />
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaBuilding className="text-blue-400 dark:text-blue-300" />
               <div>
-                <div className="text-xs text-gray-500">Étage</div>
-                <div className="font-bold text-lg">{property.floor ?? '-'}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Étage</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.floor ?? '-'}</div>
               </div>
             </div>
           )}
           {(property.type === 'APARTMENT' || property.type === 'VILLA' || property.type === 'DUPLEX') && (
-            <div className="bg-purple-50 rounded-lg p-3 flex items-center gap-2">
-              <FaMapMarkerAlt className="text-purple-400" />
+            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaMapMarkerAlt className="text-purple-400 dark:text-purple-300" />
               <div>
-                <div className="text-xs text-gray-500">Zone</div>
-                <div className="font-bold text-lg">{property.zone ?? '-'}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Zone</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.zone ?? '-'}</div>
               </div>
             </div>
           )}
-          <div className="bg-green-50 rounded-lg p-3 flex items-center gap-2">
-            <FaCheckCircle className="text-green-400" />
+          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 flex items-center gap-2">
+            <FaCheckCircle className="text-green-400 dark:text-green-300" />
             <div>
-              <div className="text-xs text-gray-500">Statut</div>
-              <div className="font-bold text-lg">
+              <div className="text-xs text-gray-500 dark:text-gray-400">Statut</div>
+              <div className="font-bold text-lg text-gray-900 dark:text-white">
                 {property.status === 'AVAILABLE' ? 'Disponible' : property.status === 'RESERVED' ? 'Réservé' : property.status === 'SOLD' ? 'Vendu' : 'Inconnu'}
               </div>
             </div>
@@ -350,89 +350,89 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
               !property.client.payments.some(payment => payment.property.id === property.id)) ? (
               <ReservationProcessModal property={property} payments={property.client.payments || []} />
             ) : (
-              <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2 mt-1">
-                <FaUser className="text-yellow-400" />
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 flex items-center gap-2 mt-1">
+                <FaUser className="text-yellow-400 dark:text-yellow-700" />
                 <div>
-                  <div className="text-xs text-gray-500">Réservé à</div>
-                  <div className="font-bold text-base">{property.client?.name}</div>
-                  <div className="text-xs text-gray-400">Client réservataire</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Réservé à</div>
+                  <div className="font-bold text-base text-gray-900 dark:text-white">{property.client?.name}</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500">Client réservataire</div>
                 </div>
               </div>
             )}
           </>
         )}
         {property.status === 'SOLD' && (
-          <div className="bg-red-50 rounded-lg p-3 flex items-center gap-2 mt-1">
-            <FaCheckCircle className="text-red-400" />
+          <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 flex items-center gap-2 mt-1">
+            <FaCheckCircle className="text-red-400 dark:text-red-300" />
             <div>
-              <div className="text-xs text-gray-500">Vendu à</div>
-              <div className="font-bold text-base">{property.client?.name}</div>
-              <div className="text-xs text-gray-400">Client acheteur</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Vendu à</div>
+              <div className="font-bold text-base text-gray-900 dark:text-white">{property.client?.name}</div>
+              <div className="text-xs text-gray-400 dark:text-gray-500">Client acheteur</div>
             </div>
           </div>
         )}
         {/* Surfaces & Espaces */}
         <div className="grid grid-cols-2 gap-3 mt-2">
           {property.habitable !== undefined && (
-            <div className="bg-green-50 rounded-lg p-3 flex items-center gap-2">
-              <FaRulerCombined className="text-green-400" />
+            <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaRulerCombined className="text-green-400 dark:text-green-300" />
               <div>
-                <div className="text-xs text-gray-500">Superficie</div>
-                <div className="font-bold text-lg">{property.habitable} m²</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Superficie</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.habitable} m²</div>
               </div>
             </div>
           )}
           {property.balcon !== undefined && property.balcon > 0 && (
-            <div className="bg-cyan-50 rounded-lg p-3 flex items-center gap-2">
-              <FaCouch className="text-cyan-400" />
+            <div className="bg-cyan-50 dark:bg-cyan-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaCouch className="text-cyan-400 dark:text-cyan-300" />
               <div>
-                <div className="text-xs text-gray-500">Balcon</div>
-                <div className="font-bold text-lg">{property.balcon} m²</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Balcon</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.balcon} m²</div>
               </div>
             </div>
           )}
           {property.terrasse !== undefined && property.terrasse > 0 && (
-            <div className="bg-pink-50 rounded-lg p-3 flex items-center gap-2">
-              <FaUmbrellaBeach className="text-pink-400" />
+            <div className="bg-pink-50 dark:bg-pink-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaUmbrellaBeach className="text-pink-400 dark:text-pink-300" />
               <div>
-                <div className="text-xs text-gray-500">Terrasse</div>
-                <div className="font-bold text-lg">{property.terrasse} m²</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Terrasse</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.terrasse} m²</div>
               </div>
             </div>
           )}
           {property.mezzanineArea !== undefined && property.mezzanineArea > 0 && (
-            <div className="bg-lime-50 rounded-lg p-3 flex items-center gap-2">
-              <FaWarehouse className="text-lime-400" />
+            <div className="bg-lime-50 dark:bg-lime-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaWarehouse className="text-lime-400 dark:text-lime-300" />
               <div>
-                <div className="text-xs text-gray-500">Mezzanine</div>
-                <div className="font-bold text-lg">{property.mezzanineArea} m²</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Mezzanine</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.mezzanineArea} m²</div>
               </div>
             </div>
           )}
           {property.piscine !== undefined && property.piscine > 0 && (
-            <div className="bg-blue-50 rounded-lg p-3 flex items-center gap-2">
-              <FaUmbrellaBeach className="text-blue-400" />
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaUmbrellaBeach className="text-blue-400 dark:text-blue-300" />
               <div>
-                <div className="text-xs text-gray-500">Piscine</div>
-                <div className="font-bold text-lg">{property.piscine} m²</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Piscine</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.piscine} m²</div>
               </div>
             </div>
           )}
           {property.totalArea !== undefined && (
-            <div className="bg-orange-50 rounded-lg p-3 flex items-center gap-2">
-              <FaWarehouse className="text-orange-400" />
+            <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaWarehouse className="text-orange-400 dark:text-orange-300" />
               <div>
-                <div className="text-xs text-gray-500">Surface totale</div>
-                <div className="font-bold text-lg">{property.totalArea} m²</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">Surface totale</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">{property.totalArea} m²</div>
               </div>
             </div>
           )}
           {(property.type === 'APARTMENT' || property.type === 'VILLA' || property.type === 'DUPLEX') && (
-            <div className="bg-yellow-50 rounded-lg p-3 flex items-center gap-2">
-              <FaCar className="text-yellow-400" />
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 flex items-center gap-2">
+              <FaCar className="text-yellow-400 dark:text-yellow-300" />
               <div>
-                <div className="text-xs text-gray-500">Parking</div>
-                <div className="font-bold text-lg">
+                <div className="text-xs text-gray-500 dark:text-gray-400">Parking</div>
+                <div className="font-bold text-lg text-gray-900 dark:text-white">
                   {property.parkingInclus ? 'inclus' : property.parkingDisponible ? 'disponible' : 'non disponible'}
                 </div>
               </div>
@@ -441,11 +441,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
         </div>
         {/* Notes */}
         {property.notes && (
-          <div className="bg-gray-50 rounded-lg p-3 flex items-center gap-2 mt-2">
-            <FaStickyNote className="text-gray-400" />
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 flex items-center gap-2 mt-2">
+            <FaStickyNote className="text-gray-400 dark:text-gray-500" />
             <div>
-              <div className="text-xs text-gray-500">Notes</div>
-              <div className="text-sm text-gray-700">{property.notes}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">Notes</div>
+              <div className="text-sm text-gray-700 dark:text-gray-300">{property.notes}</div>
             </div>
           </div>
         )}
@@ -455,7 +455,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
         {/* Actions Dropdown */}
         <div className="flex justify-end">
           <button onClick={toggleDropdown} className="dropdown-toggle">
-            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+            <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300" />
           </button>
           <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
             <EditPropertyModal PropertyData={property} details={true} onRefresh={handleRefresh} />
@@ -469,7 +469,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
           </Dropdown>
         </div>
         {/* Property Image */}
-        <div className="rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center h-48">
+        <div className="rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex items-center justify-center h-48">
           {property.image ? (
             <PhotoProvider>
               <PhotoView src={property.image}>
@@ -477,24 +477,24 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
               </PhotoView>
             </PhotoProvider>
           ) : (
-            <span className="text-gray-400 text-lg">Aucune image disponible</span>
+            <span className="text-gray-400 dark:text-gray-500 text-lg">Aucune image disponible</span>
           )}
         </div>
         {/* Summary */}
-        <div className="bg-gray-50 rounded-lg p-4 flex flex-col gap-3">
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 flex flex-col gap-3">
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Projet</span>
-            <span className="bg-gray-200 rounded px-2 py-1 text-xs font-semibold">{property.project?.name ?? '-'}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Projet</span>
+            <span className="bg-gray-200 dark:bg-gray-600 rounded px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300">{property.project?.name ?? '-'}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Type de prix</span>
-            <span className="text-blue-500 font-semibold text-sm">
+            <span className="text-xs text-gray-500 dark:text-gray-400">Type de prix</span>
+            <span className="text-blue-500 dark:text-blue-400 font-semibold text-sm">
               {property.prixType === 'FIXE' ? 'Prix fixe' : property.prixType === 'M2' ? 'Prix au m²' : '-'}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-500">Prix Total</span>
-            <span className="text-green-600 font-bold text-lg">
+            <span className="text-xs text-gray-500 dark:text-gray-400">Prix Total</span>
+            <span className="text-green-600 dark:text-green-400 font-bold text-lg">
               {property.prixTotal?.toLocaleString('fr-FR', { minimumFractionDigits: 0 })} MAD
             </span>
           </div>

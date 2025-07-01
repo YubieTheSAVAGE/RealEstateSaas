@@ -55,13 +55,15 @@ export default function AgentDetails({ agentId }: AgentDetailsProps) {
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2">
-                <AgentCard agent={agent} onEdit={() => {fetchAgent()}}/>
-                <MonthlySalesChart apartements={apartementsData} />
-                <span className="col-span-2">
+                <div className="col-span-2 sm:col-span-1">
+                    <AgentCard agent={agent} onEdit={() => {fetchAgent()}}/>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                    <MonthlySalesChart properties={apartementsData} />
+                </div>
+                <div className="col-span-2">
                     <StatsCard apartments={apartementsData} />
-                </span>
-
-                <div className="col-span-2"></div>
+                </div>
             </div>
         </div>
     );
