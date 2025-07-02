@@ -5,8 +5,14 @@ const path = require("path");
 const fs = require("fs");
 const { client, user } = require("../utils/prisma");
 
-const ALLOWED_TYPES = ["APARTMENT", "DUPLEX", "VILLA", "STORE", "LAND"];
-const ALLOWED_STATUSES = ["AVAILABLE", "RESERVED", "SOLD", "CANCELLED"];
+const ALLOWED_TYPES = [
+  "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE", "STUDIO", "LOFT", "TOWNHOUSE",
+  "STORE", "OFFICE", "WAREHOUSE",
+  "LAND",
+  "GARAGE", "PARKING"
+];
+const ALLOWED_STATUSES = ["AVAILABLE", "RESERVED", "SOLD"];
+const ALLOWED_PRICE_TYPES = ["FIXE", "M2"];
 const ALLOWED = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 
 async function getAllApartments(request, reply) {
@@ -54,14 +60,38 @@ async function createApartment(request, reply) {
         )}`,
       });
     }
-    if (!isPositiveInt(parseInt(floor, 10))) {
-      return reply.code(400).send({ error: "floor must be a positive integer" });
+    // Floor validation - only required for property types that have floors
+    const typesWithoutFloor = ["LAND", "GARAGE", "PARKING"];
+    if (!typesWithoutFloor.includes(type)) {
+      if (!floor || !isPositiveInt(parseInt(floor, 10))) {
+        return reply.code(400).send({ error: "floor is required and must be a positive integer for this property type" });
+      }
     }
     if (typeof status !== "string" || !ALLOWED_STATUSES.includes(status)) {
       return reply.code(400).send({
         error: `status is required and must be one of: ${ALLOWED_STATUSES.join(
           ", "
         )}`,
+      });
+    }
+
+    // Validate price - it's required
+    if (!price || isNaN(parseFloat(price))) {
+      return reply.code(400).send({
+        error: "price is required and must be a valid number"
+      });
+    }
+
+    // Validate optional numeric fields
+    if (area !== undefined && area !== null && isNaN(parseFloat(area))) {
+      return reply.code(400).send({
+        error: "area, if provided, must be a valid number"
+      });
+    }
+
+    if (pricePerM2 !== undefined && pricePerM2 !== null && isNaN(parseFloat(pricePerM2))) {
+      return reply.code(400).send({
+        error: "pricePerM2, if provided, must be a valid number"
       });
     }
 

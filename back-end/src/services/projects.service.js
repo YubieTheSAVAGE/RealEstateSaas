@@ -20,15 +20,29 @@ async function findProjectById(projectId) {
 }
 
 async function addNewProject(data) {
+  // Build the project data object
+  const projectData = {
+    name: data.name,
+    numberOfApartments: parseInt(data.numberOfApartments, 10),
+    totalSurface: parseInt(data.totalSurface, 10),
+    address: data.address,
+    notes: data.notes,
+    image: data.image,
+  };
+
+  // Add optional enhanced fields if provided
+  if (data.latitude !== undefined) projectData.latitude = data.latitude;
+  if (data.longitude !== undefined) projectData.longitude = data.longitude;
+  if (data.folderFees !== undefined) projectData.folderFees = data.folderFees;
+  if (data.commissionPerM2 !== undefined) projectData.commissionPerM2 = data.commissionPerM2;
+  if (data.totalSales !== undefined) projectData.totalSales = data.totalSales;
+  if (data.status !== undefined) projectData.status = data.status;
+  if (data.progress !== undefined) projectData.progress = data.progress;
+  if (data.constructionPhotos !== undefined) projectData.constructionPhotos = data.constructionPhotos;
+
   const project = await prisma.project.create({
-    data: {
-      name: data.name,
-      numberOfApartments: parseInt(data.numberOfApartments, 10),
-      totalSurface: parseInt(data.totalSurface, 10),
-      address: data.address,
-      notes: data.notes,
-      image: data.image,
-    },
+    data: projectData,
+    include: { apartments: true }, // Include apartments in response
   });
   return project;
 }

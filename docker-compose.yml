@@ -5,6 +5,7 @@ services:
       context: ./front-end
       dockerfile: Dockerfile
       pull: false  # Use local cache to avoid credential issues
+    platform: linux/amd64
     volumes:
       - ./front-end:/app
       - /app/node_modules  # prevent overwriting node_modules with host
@@ -12,6 +13,7 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:3001
+      - NEXT_FONT_GOOGLE_MOCKED_RESPONSES='[{"url":"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap","content":"/* mocked */"}]'
     command: npm run dev
     depends_on:
       - backend
@@ -35,7 +37,8 @@ services:
       - PORT=3001
       - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
       - NODE_ENV=development
-    command: sh -c "sleep 10 && npx prisma generate && npx prisma migrate deploy && npm run dev"
+      - BASE_URL=http://localhost:3001
+    command: sh -c "sleep 10 && npx prisma migrate reset --force && npx prisma generate && npm run dev"
     depends_on:
       - db
     restart: unless-stopped

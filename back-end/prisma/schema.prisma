@@ -41,31 +41,46 @@ model Client {
 }
 
 model Project {
-  id                 Int         @id @default(autoincrement())
+  id                 Int           @id @default(autoincrement())
   name               String
   image              String?
   address            String
   totalSurface       Int
   numberOfApartments Int
   notes              String?
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+
+  // Enhanced fields for frontend compatibility
+  latitude           Float?
+  longitude          Float?
+  folderFees         Float?
+  commissionPerM2    Float?
+  totalSales         Float?
+  status             ProjectStatus @default(PLANIFICATION)
+  progress           Int           @default(0)
+  constructionPhotos String[]      @default([])
+
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
   apartments         Apartment[]
 }
 
 model Apartment {
   id                Int             @id @default(autoincrement())
   number            String
-  floor             Int
+  floor             Int?
   type              PropertyType    @default(APARTMENT)
-  area              Float
+  area              Float?
   threeDViewUrl     String?
-  price             Float
-  pricePerM2        Float
-  zone              String
+  price             Float           // This maps to prixTotal in frontend
+  pricePerM2        Float?          // This maps to prixM2 in frontend
+  zone              String?
   image             String?
   status            ApartmentStatus @default(AVAILABLE)
   notes             String?
+
+  // Enhanced fields for better frontend compatibility
+  prixType          PriceType?      @default(FIXE)
+
   projectId         Int
   clientId          Int?
   userId            Int?
@@ -116,8 +131,27 @@ enum PropertyType {
   APARTMENT
   DUPLEX
   VILLA
+  PENTHOUSE
+  STUDIO
+  LOFT
+  TOWNHOUSE
   STORE
+  OFFICE
+  WAREHOUSE
   LAND
+  GARAGE
+  PARKING
+}
+
+enum PriceType {
+  FIXE
+  M2
+}
+
+enum ProjectStatus {
+  PLANIFICATION
+  CONSTRUCTION
+  DONE
 }
 
 enum ApartmentStatus {

@@ -1,23 +1,25 @@
-FROM node:21.7.1-alpine
-
-# Install additional packages for better font handling
-RUN apk add --no-cache \
-    curl \
-    ca-certificates \
-    && update-ca-certificates
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm install
+# Install dependencies needed for native modules
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    libc6-compat
+
+COPY package*.json ./
+
+# Clear npm cache and install with platform-specific flags
+RUN npm cache clean --force
+RUN npm install --force --platform=linux --arch=x64
 
 COPY . .
 
-# Set environment variables for better font loading
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=development
+# Build the application
+# RUN npm run dev
 
 EXPOSE 3000
 
-# Use a more robust startup command with better error handling
-CMD ["sh", "-c", "npm run dev"]
+CMD ["npm", "run", "dev"]

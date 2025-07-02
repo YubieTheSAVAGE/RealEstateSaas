@@ -109,7 +109,8 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   };
 
   const needsFloorField = () => {
-    return formData.type === "APARTMENT";
+    const typesWithoutFloor = ["LAND", "GARAGE", "PARKING"];
+    return !typesWithoutFloor.includes(formData.type);
   };
 
   const isLandType = () => {
@@ -252,8 +253,16 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     { value: "APARTMENT", label: "Appartement" },
     { value: "DUPLEX", label: "Duplex" },
     { value: "VILLA", label: "Villa" },
+    { value: "PENTHOUSE", label: "Penthouse" },
+    { value: "STUDIO", label: "Studio" },
+    { value: "LOFT", label: "Loft" },
+    { value: "TOWNHOUSE", label: "Maison de ville" },
     { value: "STORE", label: "Magasin" },
+    { value: "OFFICE", label: "Bureau" },
+    { value: "WAREHOUSE", label: "Entrepôt" },
     { value: "LAND", label: "Terrain" },
+    { value: "GARAGE", label: "Garage" },
+    { value: "PARKING", label: "Parking" },
   ]
 
   const status = [
@@ -575,57 +584,61 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     if (validateForm()) return; // Stop execution if there are validation errors
 
     const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null) {
-        if (value instanceof File) {
-          formDataToSend.append(key, value);
-        } else {
-          formDataToSend.append(key, String(value));
-        }
-      }
-    });
 
-    // Add land/store specific fields if applicable
-    if (isLandType() || isStoreType()) {
-      formDataToSend.append('totalArea', landStoreFields.totalArea);
-      if (isStoreType()) {
-        formDataToSend.append('mezzanineArea', landStoreFields.mezzanineArea);
-        formDataToSend.append('mezzaninePrice', landStoreFields.mezzaninePrice);
-      }
-    }
+    // ✅ FIX: Send only the fields the backend expects with correct names
 
-    // Add surfaces and pricing data for all property types
-    formDataToSend.append('prixType', prixType);
-    if (prixType === "FIXE") {
-      formDataToSend.append('prixTotal', prixTotal);
-    } else {
-      formDataToSend.append('prixM2', prixM2);
-      if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
-        formDataToSend.append('prixBalconPct', prixBalconPct);
-        formDataToSend.append('prixTerrassePct', prixTerrassePct);
-        formDataToSend.append('prixPiscine', prixPiscine);
-      }
+    // Project ID (needed for the API endpoint)
+    formDataToSend.append('id', formData.id);
+
+    // Basic required fields
+    formDataToSend.append('number', formData.number);
+    formDataToSend.append('type', formData.type);
+    formDataToSend.append('status', formData.status);
+
+    // Optional fields - floor only for property types that have floors
+    const typesWithoutFloor = ["LAND", "GARAGE", "PARKING"];
+    if (formData.floor && !typesWithoutFloor.includes(formData.type)) {
+      formDataToSend.append('floor', formData.floor);
     }
-    
+    if (formData.zone) formDataToSend.append('zone', formData.zone);
+    if (formData.notes) formDataToSend.append('notes', formData.notes);
+    if (formData.clientId) formDataToSend.append('clientId', formData.clientId);
+    if (formData.image) formDataToSend.append('image', formData.image);
+
+    // ✅ FIX: Calculate and send the required 'price' field
+    const calculatedPrice = prixType === "FIXE" ?
+      Number(prixTotal) || 0 :
+      calcSummary.total || 0;
+    formDataToSend.append('price', calculatedPrice.toString());
+
+    // ✅ FIX: Calculate and send the 'area' field
+    let totalArea = 0;
     if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
-      Object.entries(surfaces).forEach(([key, value]) => {
-        if (value) formDataToSend.append(key, value);
-      });
+      totalArea = Number(surfaces.habitable) || 0;
+    } else {
+      totalArea = Number(landStoreFields.totalArea) || 0;
     }
-    
-    if (parkingDisponible) {
-      formDataToSend.append('parkingInclus', parkingInclus.toString());
-      if (!parkingInclus) {
-        formDataToSend.append('prixParking', prixParking);
-      }
+    if (totalArea > 0) formDataToSend.append('area', totalArea.toString());
+
+    // ✅ FIX: Send pricePerM2 if using M2 pricing
+    if (prixType === "M2" && prixM2) {
+      formDataToSend.append('pricePerM2', prixM2);
     }
 
-    await addApartments(formDataToSend);
-    console.log("Saving project with data:", formData);
-    if (onApartementsAdded) {
-      onApartementsAdded(); // Call the refresh callback to update the project list
+    // ✅ FIX: Send prixType for backend compatibility
+    formDataToSend.append('prixType', prixType);
+
+    try {
+      await addApartments(formDataToSend);
+      console.log("Property saved successfully");
+      if (onApartementsAdded) {
+        onApartementsAdded(); // Call the refresh callback to update the project list
+      }
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error saving property:", error);
+      // Handle error appropriately
     }
-    handleCloseModal();
   };
 
   // Stepper steps
