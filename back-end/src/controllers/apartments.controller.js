@@ -61,10 +61,20 @@ async function createApartment(request, reply) {
       });
     }
     // Floor validation - only required for property types that have floors
-    const typesWithoutFloor = ["LAND", "GARAGE", "PARKING"];
-    if (!typesWithoutFloor.includes(type)) {
+    const typesWithFloor = [
+      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+    ];
+    const typesWithoutFloor = ["LAND", "GARAGE", "PARKING", "STORE"];
+
+    if (typesWithFloor.includes(type)) {
       if (!floor || !isPositiveInt(parseInt(floor, 10))) {
         return reply.code(400).send({ error: "floor is required and must be a positive integer for this property type" });
+      }
+    } else if (typesWithoutFloor.includes(type)) {
+      // These types should not have a floor - ignore floor value if provided
+      if (floor) {
+        console.log(`Warning: Floor value provided for ${type} property type, ignoring...`);
       }
     }
     if (typeof status !== "string" || !ALLOWED_STATUSES.includes(status)) {

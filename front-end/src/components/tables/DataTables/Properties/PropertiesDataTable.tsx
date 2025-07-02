@@ -35,14 +35,20 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   const router = useRouter();
   // Define the ProjectData type
 
-  const type =
-  {
+  const type = {
     "APARTMENT": "Appartement",
+    "DUPLEX": "Duplex",
     "VILLA": "Villa",
-    "BUREAU": "Bureau",
+    "PENTHOUSE": "Penthouse",
+    "STUDIO": "Studio",
+    "LOFT": "Loft",
+    "TOWNHOUSE": "Maison de ville",
     "STORE": "Magasin",
+    "OFFICE": "Bureau",
+    "WAREHOUSE": "Entrepôt",
     "LAND": "Terrain",
-    "AUTRE": "Autre",
+    "GARAGE": "Garage",
+    "PARKING": "Parking",
   }
   const status ={
     "AVAILABLE": "Disponible",
@@ -56,29 +62,37 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   useEffect(() => {
     // Check if data exists and is an array before mapping
     if (apartmentsData && Array.isArray(apartmentsData)) {
-      const formattedData: Property[] = apartmentsData.map((item: Property) => ({
-        id: item.id ?? "",
+      const formattedData: Property[] = apartmentsData.map((item: any) => ({
+        // Core backend fields
+        id: item.id ?? 0,
         number: item.number ?? "",
-        floor: item.floor ?? 0,
+        floor: item.floor ?? null,
         type: item.type ?? "APARTMENT",
-        habitable: item.habitable ?? 0,
-        balcon: item.balcon ?? 0,
-        terrasse: item.terrasse ?? 0,
-        piscine: item.piscine ?? 0,
-        totalArea: item.totalArea ?? 0,
-        mezzanineArea: item.mezzanineArea ?? 0,
-        mezzaninePrice: item.mezzaninePrice ?? 0,
+        area: item.area ?? null,
+        price: item.price ?? 0,
+        pricePerM2: item.pricePerM2 ?? null,
+        zone: item.zone ?? null,
+        image: item.image ?? null,
+        notes: item.notes ?? null,
+        threeDViewUrl: item.threeDViewUrl ?? null,
         prixType: item.prixType ?? "FIXE",
-        prixTotal: item.prixTotal ?? 0,
-        prixM2: item.prixM2 ?? 0,
-        zone: item.zone ?? "",
-        project: item.project ?? { id: "", name: "" },
-        notes: item.notes ?? "",
-        client: item.client ?? null,
-        parkingDisponible: item.parkingDisponible ?? false,
-        parkingInclus: item.parkingInclus ?? false,
         status: item.status ?? "AVAILABLE",
-        
+
+        // Relationships
+        project: item.project ?? { id: 0, name: "" },
+        projectId: item.projectId ?? 0,
+        client: item.client ?? null,
+        clientId: item.clientId ?? null,
+        userId: item.userId ?? null,
+        interestedClients: item.interestedClients ?? null,
+
+        // Timestamps
+        createdAt: item.createdAt ?? new Date(),
+        updatedAt: item.updatedAt ?? new Date(),
+
+        // Legacy fields for backward compatibility
+        prixTotal: item.price ?? 0,  // Map backend price to frontend prixTotal
+        prixM2: item.pricePerM2 ?? null,  // Map backend pricePerM2 to frontend prixM2
       }));
       setApartementsData(formattedData);
     } else {
@@ -129,13 +143,13 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
       case "type":
         return item.type || "";
       case "superficie":
-        return item.habitable || "";
+        return item.area || 0;
       case "price":
-        return item.prixTotal ?? 0;
+        return item.price ?? 0;
       case "status":
         return item.status || "";
       case "pricePerM2":
-        return item.prixM2 ?? 0;
+        return item.pricePerM2 ?? 0;
       case "zone":
         return item.zone || "";
       case "etage":
@@ -317,10 +331,10 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                     {type[item.type as keyof typeof type] || item.type}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.habitable ? item.habitable + " m²" : item.totalArea ? item.totalArea + " m²" : "N/A"}
+                    {item.area ? item.area + " m²" : "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.prixTotal.toLocaleString("fr-FR", {
+                    {item.price.toLocaleString("fr-FR", {
                       style: "currency",
                       currency: "MAD",
                       minimumFractionDigits: 0,

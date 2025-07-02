@@ -109,8 +109,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   };
 
   const needsFloorField = () => {
-    const typesWithoutFloor = ["LAND", "GARAGE", "PARKING"];
-    return !typesWithoutFloor.includes(formData.type);
+    const typesWithFloor = [
+      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+    ];
+    return typesWithFloor.includes(formData.type);
   };
 
   const isLandType = () => {
@@ -596,8 +599,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     formDataToSend.append('status', formData.status);
 
     // Optional fields - floor only for property types that have floors
-    const typesWithoutFloor = ["LAND", "GARAGE", "PARKING"];
-    if (formData.floor && !typesWithoutFloor.includes(formData.type)) {
+    const typesWithFloor = [
+      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+    ];
+    if (formData.floor && typesWithFloor.includes(formData.type)) {
       formDataToSend.append('floor', formData.floor);
     }
     if (formData.zone) formDataToSend.append('zone', formData.zone);
@@ -744,7 +750,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                         <Input
                           name="clientSearch"
                           type="text"
-                          defaultValue={clientSearch}
+                          value={clientSearch}
                           onChange={handleClientSearch}
                           placeholder="Rechercher un client..."
                           className="w-full"

@@ -34,15 +34,32 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
 
   const type = {
     "APARTMENT": "Appartement",
-    'DUPLEX': "Duplex",
-    'VILLA': "Villa",
-    'STORE': "Magasin",
-    'LAND': "Terrain",
+    "DUPLEX": "Duplex",
+    "VILLA": "Villa",
+    "PENTHOUSE": "Penthouse",
+    "STUDIO": "Studio",
+    "LOFT": "Loft",
+    "TOWNHOUSE": "Maison de ville",
+    "STORE": "Magasin",
+    "OFFICE": "Bureau",
+    "WAREHOUSE": "Entrepôt",
+    "LAND": "Terrain",
+    "GARAGE": "Garage",
+    "PARKING": "Parking",
   }
   const typeOptions = Object.entries(type).map(([value, label]) => ({
     value,
     label,
   }));
+
+  // Function to check if the current property type needs a floor field
+  const needsFloorField = () => {
+    const typesWithFloor = [
+      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+    ];
+    return typesWithFloor.includes(formData.type);
+  };
 
   const fetchClients = async () => {
     const clients = await getClient();
@@ -157,10 +174,18 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
       { field: "area", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "La superficie doit être un nombre positif ou est requise" },
       { field: "price", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix doit être un nombre positif ou est requis" },
       { field: "status", test: (v: string) => !v, message: "Le statut est requis" },
-      { field: "floor", test: (v: string) => v === "" || v === undefined || v === null || isNaN(Number(v)) || Number(v) < 0, message: "L'étage est requis" },
       { field: "zone", test: (v: string) => !v, message: "La zone est requise" },
       { field: "pricePerM2", test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0, message: "Le prix par m² doit être un nombre positif ou est requis" },
     ];
+
+    // Add floor validation only for property types that need floors
+    if (needsFloorField()) {
+      validations.push({
+        field: "floor",
+        test: (v: string) => v === "" || v === undefined || v === null || isNaN(Number(v)) || Number(v) < 0,
+        message: "L'étage est requis pour ce type de propriété"
+      });
+    }
 
     validations.forEach(({ field, test, message }) => {
       if (test(formData[field as keyof typeof formData] as string)) {
@@ -179,8 +204,20 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     if (validateForm()) return; // Stop execution if there are validation errors
 
     const formDataToSend = new FormData();
+
+    // Define property types that can have floors
+    const typesWithFloor = [
+      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+    ];
+
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null) {
+        // Skip floor field for property types that don't have floors
+        if (key === 'floor' && !typesWithFloor.includes(formData.type)) {
+          return;
+        }
+
         if (value instanceof File) {
           formDataToSend.append(key, value);
         } else {
@@ -346,25 +383,27 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                 )}
               </div>
 
-              <div className="col-span-1">
-                <Label>Étage <span className="text-red-500">*</span></Label>
-                <Input
-                  defaultValue={PropertyData?.floor}
-                  name="floor"
-                  type="number"
-                  placeholder="ex: 10"
-                  onChange={handleChange}
-                />
-                {errors.floor && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.floor}
-                  </p>
-                )}
-              </div>
+              {needsFloorField() && (
+                <div className="col-span-1">
+                  <Label>Étage <span className="text-red-500">*</span></Label>
+                  <Input
+                    value={formData.floor}
+                    name="floor"
+                    type="number"
+                    placeholder="ex: 10"
+                    onChange={handleChange}
+                  />
+                  {errors.floor && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.floor}
+                    </p>
+                  )}
+                </div>
+              )}
               <div className="col-span-1">
                 <Label>Numéro <span className="text-red-500">*</span></Label>
                 <Input
-                  defaultValue={PropertyData?.number}
+                  value={formData.number}
                   name="number"
                   type="text"
                   placeholder="ex: 10A"
@@ -380,7 +419,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               <div className="col-span-1">
                 <Label>Superficie <span className="text-red-500">*</span></Label>
                 <Input
-                  defaultValue={PropertyData?.area}
+                  value={formData.area}
                   name="area"
                   type="number"
                   placeholder="ex: 10"
@@ -395,7 +434,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               <div className="col-span-1">
                 <Label>Prix/m² <span className="text-red-500">*</span></Label>
                 <Input
-                  defaultValue={PropertyData?.pricePerM2}
+                  value={formData.pricePerM2}
                   name="pricePerM2"
                   type="number"
                   placeholder="ex: 10"
@@ -411,7 +450,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               <div className="col-span-1">
                 <Label>Zone <span className="text-red-500">*</span></Label>
                 <Input
-                  defaultValue={PropertyData?.zone}
+                  value={formData.zone}
                   name="zone"
                   type="text"
                   placeholder="ex: Zone 1"
@@ -427,10 +466,10 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               <div className="col-span-1">
                 <Label>Lien 3D</Label>
                 <Input
-                  defaultValue={PropertyData?.threeDViewUrl ?? undefined}
+                  value={formData.threeDViewUrl}
                   name="threeDViewUrl"
                   type="text"
-                  placeholder="ex: 10"
+                  placeholder="ex: https://example.com/3d-view"
                   onChange={handleChange}
                 />
               </div>
@@ -438,10 +477,10 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
               <div className="col-span-1">
                 <Label>Prix total <span className="text-red-500">*</span></Label>
                 <Input
-                  defaultValue={PropertyData?.price}
+                  value={formData.price}
                   name="price"
                   type="number"
-                  placeholder="ex: 10"
+                  placeholder="ex: 850000"
                   onChange={handleChange}
                 />
                 {errors.price && (
@@ -473,7 +512,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                       <Input
                         name="clientSearch"
                         type="text"
-                        defaultValue={clientSearch}
+                        value={clientSearch}
                         onChange={handleClientSearch}
                         placeholder="Rechercher un client..."
                         className="w-full"

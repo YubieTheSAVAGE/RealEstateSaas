@@ -38,7 +38,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
       - NODE_ENV=development
       - BASE_URL=http://localhost:3001
-    command: sh -c "sleep 10 && npx prisma migrate reset --force && npx prisma generate && npm run dev"
+    command: sh -c "sleep 10 && npx prisma migrate deploy && npx prisma generate && npm run dev"
     depends_on:
       - db
     restart: unless-stopped
@@ -54,6 +54,8 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Alternative: Use bind mount for direct access to data
+      # - ./postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s

@@ -53,10 +53,16 @@ async function create(projectId, data) {
     throw err;
   }
 
+  // Define property types that can have floors
+  const typesWithFloor = [
+    "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+    "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+  ];
+
   // Prepare the apartment data
   const apartmentData = {
     number: data.number,
-    floor: data.floor ? parseInt(data.floor, 10) : null,
+    floor: typesWithFloor.includes(data.type) && data.floor ? parseInt(data.floor, 10) : null,
     type: data.type,
     area: data.area ? parseFloat(data.area) : null,
     threeDViewUrl: data.threeDViewUrl || null,
