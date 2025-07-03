@@ -61,7 +61,7 @@ export default function HomePageContent() {
         </div>
 
         <div className="col-span-12 xl:col-span-5">
-          <MonthlyTarget />
+          <MonthlyTarget userRole={userRole} />
         </div>
         {userRole == "ADMIN" && (
           <div className="width-full col-span-full">

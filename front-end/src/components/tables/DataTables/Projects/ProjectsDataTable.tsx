@@ -278,14 +278,72 @@ export default function ProjectsDataTable({ projects, onRefresh }: ProjectsDataT
                     {item.totalSales}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
-                    <Badge
-                      variant={item.status === "planification" ? "light" : "solid"}
-                      className="text-white font-semibold px-3 py-1"
-                      color={item.status === "planification" ? "warning" : item.status === "construction" ? "primary" : "success"}
+                  <Badge
+                      variant="light"
+                      color={
+                        item.status === "planification"
+                          ? "info"
+                          : item.status === "construction"
+                            ? "warning"
+                            : "success"
+                      }
+                      size="sm"
                     >
-                      {item.status === "planification" ? "Planning" : 
-                      item.status === "construction" ? "Under Construction" : 
-                      item.status === "done" ? "Completed" : item.status}
+                      {item.status === "planification" && (
+                        <span className="text-info-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {item.status === "construction" && (
+                        <span className="text-warning-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {item.status === "done" && (
+                        <span className="text-success-500">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M12 4.5v15m7.5-7.5h-15"
+                            />
+                          </svg>
+                        </span>
+                      )}
+                      {item.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
