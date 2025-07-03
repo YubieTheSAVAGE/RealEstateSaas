@@ -409,7 +409,10 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                         PropertyData={item}
                         onRefresh={onRefresh}
                       />
-                      <ReservationProcessModal property={item} payments={item.client?.payments || []} />
+                      {item.client && (!item.client.payments || item.client.payments.length === 0 || 
+                          !item.client.payments.some(payment => payment.property.id === item.id)) && (
+                        <ReservationProcessModal property={item} payments={item.client.payments || []} />
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
