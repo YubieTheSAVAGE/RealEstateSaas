@@ -212,9 +212,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
             <TableHeader className="border-t border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {[
-                  { key: "name", label: "Projet" },
-                  { key: "firstName", label: "Prénom" },
-                  { key: "lastName", label: "Nom" },
+                  { key: "fullName", label: "Nom complet" },
                   { key: "email", label: "Email" },
                   { key: "phoneNumber", label: "Numéro" },
                   { key: "status", label: "Statut" },
