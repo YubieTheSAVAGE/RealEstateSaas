@@ -5,7 +5,6 @@ import { MoreDotIcon } from "@/icons";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import MonthlyTargetModal from "../example/ModalExample/MonthlyTargetModal";
-import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
 import getMonthlyTarget from "../example/ModalExample/getMonthlyTarget";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -28,8 +27,7 @@ interface RevenueData {
 import getApartements from "../tables/DataTables/Properties/getApartements";
 import { Property } from "@/types/property";
 import { FallingLines } from "react-loader-spinner";
-export default function MonthlyTarget() {
-  const [role, setRole] = useState<string | null>(null);
+export default function MonthlyTarget({ userRole }: { userRole: string | null }) {
   const [targetData, setTargetData] = useState<MonthlyTargetData | null>(null);
   const [revenueData, setRevenueData] = useState<RevenueData>({
     totalRevenue: 0,
@@ -198,10 +196,6 @@ export default function MonthlyTarget() {
       setLoading(true);
       try {
         // Fetch user role
-        const userRole = await getUserRoleFromToken();
-        if (userRole) {
-          setRole(userRole);
-        }
 
         // Fetch monthly target data
         const monthlyTargetData = await getMonthlyTarget();
@@ -269,7 +263,7 @@ export default function MonthlyTarget() {
                 : "Objectif que vous avez défini pour chaque mois"}
             </p>
           </div>
-          {role === "ADMIN" && (
+          {userRole === "ADMIN" && (
             <div className="relative h-fit">
               <button onClick={toggleDropdown} className="dropdown-toggle">
                 <MoreDotIcon />

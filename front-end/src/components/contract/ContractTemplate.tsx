@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from '../ui/button'
 import { PlusIcon } from 'lucide-react'
 import TemplateCard from '../cards/card-with-icon/TemplateCard'
-import { ContractTemplate } from '@/types/ContractTemplate'
+import type { ContractTemplate } from '@/types/ContractTemplate'
 import { Role, Status } from '@/types/user'
 import AddTemplateModal from '../example/ModalExample/AddTemplateModal'
 

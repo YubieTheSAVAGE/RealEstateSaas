@@ -23,7 +23,7 @@ export default function ClientPropertiesCard({ ClientProperties }: { ClientPrope
           {ClientProperties.map((property) => (
             <div className="flex items-center justify-between mb-4" key={property.id}>
               <CardDescription key={property.id}>
-                {property.project.name} - {property.type} ({property.number}) - {property.price ? <span className="text-success-500">{`${property.price.toLocaleString()} MAD`}</span> : "Price not available"}
+                {property.project.name} - {property.type} ({property.number}) - {property.prixTotal ? <span className="text-success-500">{`${property.prixTotal.toLocaleString()} MAD`}</span> : "Price not available"}
               </CardDescription>
               <FaEye 
                className="inline-block ml-2 text-gray-600 hover:text-blue-600 dark:hover:text-gray-300 cursor-pointer" 

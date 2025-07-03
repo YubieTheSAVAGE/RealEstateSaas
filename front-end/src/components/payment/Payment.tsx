@@ -1,7 +1,7 @@
 import React from 'react'
 import PaymentStatusHeader from './PaymentStatusHeader'
 import PaymentsTable from '../ecommerce/PaymentsTable'
-import { Payment } from '@/types/Payment'
+import type { Payment } from '@/types/Payment'
 import { dummyPayments } from './dummyPayments'
 
 export default function Payment() {
