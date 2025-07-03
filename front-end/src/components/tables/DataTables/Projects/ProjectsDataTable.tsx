@@ -24,12 +24,12 @@ type SortKey = "id" | "project" | "totalSales";
 type SortOrder = "asc" | "desc";
 
 
-interface DataTableTwoProps {
+interface ProjectsDataTableProps {
   projects: Project[];
   onRefresh?: () => void; // Callback to refresh projects data
 }
 
-export default function DataTableTwo({ projects, onRefresh }: DataTableTwoProps) {
+export default function ProjectsDataTable({ projects, onRefresh }: ProjectsDataTableProps) {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
