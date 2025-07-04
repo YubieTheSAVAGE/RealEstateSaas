@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { Project } from "@/types/project";
 import Badge from "@/components/ui/badge/Badge";
 
-type SortKey = "id" | "project" | "totalSales";
+type SortKey = "id" | "project" | "totalSales" | "numberOfApartments" | "updatedAt";
 type SortOrder = "asc" | "desc";
 
 
@@ -33,7 +33,7 @@ export default function ProjectsDataTable({ projects, onRefresh }: ProjectsDataT
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortKey, setSortKey] = useState<SortKey>("project");
+  const [sortKey, setSortKey] = useState<SortKey>("updatedAt");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -68,7 +68,6 @@ export default function ProjectsDataTable({ projects, onRefresh }: ProjectsDataT
     }
   }, [projects]);
 
-  console.log("Project Data:", projectData);
 
   const handleDelete = async (id: string) => {
     const success: boolean = await deleteProperties(id);
@@ -116,6 +115,18 @@ export default function ProjectsDataTable({ projects, onRefresh }: ProjectsDataT
       return sortOrder === "asc"
         ? (a.totalSales ?? 0) - (b.totalSales ?? 0)
         : (b.totalSales ?? 0) - (a.totalSales ?? 0);
+    } else if (sortKey === "numberOfApartments") {
+      return sortOrder === "asc"
+        ? (a.properties?.length ?? 0) - (b.properties?.length ?? 0)
+        : (b.properties?.length ?? 0) - (a.properties?.length ?? 0);
+    } else if (sortKey === "project") {
+      return sortOrder === "asc"
+        ? (a.name?.localeCompare(b.name ?? "") ?? 0)
+        : (b.name?.localeCompare(a.name ?? "") ?? 0);
+    } else if (sortKey === "updatedAt") {
+      return sortOrder === "asc"
+        ? (a.updatedAt?.getTime() ?? 0) - (b.updatedAt?.getTime() ?? 0)
+        : (b.updatedAt?.getTime() ?? 0) - (a.updatedAt?.getTime() ?? 0);
     } else {
       const valueA = String(a[sortKey as keyof Project] || "").toLowerCase();
       const valueB = String(b[sortKey as keyof Project] || "").toLowerCase();
@@ -343,7 +354,7 @@ export default function ProjectsDataTable({ projects, onRefresh }: ProjectsDataT
                           </svg>
                         </span>
                       )}
-                      {item.status}
+                      {item.status === "done" ? "Terminé" : item.status === "construction" ? "En construction" : "Planification"}
                     </Badge>
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">

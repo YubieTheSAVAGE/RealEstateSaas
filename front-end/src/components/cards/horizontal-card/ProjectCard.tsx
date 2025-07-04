@@ -142,8 +142,12 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
                 {projectSteps.map((step, index) => (
                   <li key={step.key} className={`${index < projectSteps.length - 1 ? 'mb-6' : ''} ml-4`}>
                     <div 
-                      className={`absolute w-3 h-3 bg-white border-2 rounded-full -left-1.5 top-1.5 ${
-                        step.isActive || step.isCompleted ? 'border-blue-500' : 'border-gray-300'
+                      className={`absolute w-3 h-3 rounded-full -left-1.5 top-1.5 transition-all duration-300 ${
+                        step.isCompleted 
+                          ? 'bg-green-500 border-2 border-green-500' 
+                          : step.isActive 
+                            ? 'bg-blue-500 border-2 border-blue-500' 
+                            : 'bg-white border-2 border-gray-300 dark:border-gray-600'
                       }`}
                     ></div>
                     <div className="flex items-center justify-between">
@@ -323,13 +327,13 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
                   <MdInfo className="text-orange-600 text-lg" />
                   <span className="font-medium text-gray-700 dark:text-gray-300">Status:</span>
                   <Badge
-                    variant={ProjectDetails.status === "planification" ? "light" : "solid"}
-                    className="text-white font-semibold px-3 py-1"
-                    color={ProjectDetails.status === "planification" ? "warning" : ProjectDetails.status === "construction" ? "primary" : "success"}
+                    variant="light"
+                    color="warning"
+                    size="sm"
                   >
-                    {ProjectDetails.status === "planification" ? "Planning" : 
-                     ProjectDetails.status === "construction" ? "Under Construction" : 
-                     ProjectDetails.status === "done" ? "Completed" : ProjectDetails.status}
+                    {ProjectDetails.status === "planification" ? "Planification" : 
+                     ProjectDetails.status === "construction" ? "En construction" : 
+                     ProjectDetails.status === "done" ? "Terminé" : ProjectDetails.status}
                   </Badge>
                 </div>
               </div>
