@@ -237,6 +237,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
   const [totalPaymentBreakdown, setTotalPaymentBreakdown] = useState<TotalPaymentBreakdown | null>(null);
   const [paymentDivisions, setPaymentDivisions] = useState(4);
 
+  // Example data for sold property
   property.prixTotal = 687500;
   property.project.folderFees = 400;
   property.prixM2 = 13750;
@@ -247,13 +248,10 @@ export default function ReservationProcessModal({ property, payments }: Reservat
   property.habitable = 40;
   property.terrasse = 5;
   property.balcon = 5;
-  
   // Calculate prixM2 based on total price and surface area
-  // For M2 pricing: totalPrice = (habitable + balcon + terrasse + piscine) * prixM2
   const totalSurface = (property.habitable || 0) + (property.terrasse || 0) + (property.piscine || 0);
   property.prixM2 = totalSurface > 0 ? Math.round(property.prixTotal / totalSurface) : 0;
 
-  
   // Calculate first payment breakdown when property or folder fees change
   useEffect(() => {
     if (property && property.prixTotal) {
@@ -266,14 +264,20 @@ export default function ReservationProcessModal({ property, payments }: Reservat
 
   // Shake animation effect
   useEffect(() => {
-  const shakeInterval = setInterval(() => {
-    setIsShaking(true);
-    setTimeout(() => setIsShaking(false), 1000); // Shake for 1 second
-  }, 3000); // Shake every 3 seconds
-  return () => clearInterval(shakeInterval);
+    const shakeInterval = setInterval(() => {
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 1000);
+    }, 3000);
+    return () => clearInterval(shakeInterval);
   }, []);
 
-  // Enhanced first payment handler with validation
+  // Enhanced validation for sold properties
+  const validateSoldPropertyPayments = () => {
+    // Only validate if we're trying to proceed to next step, not when adding payments
+    return { isValid: true };
+  };
+
+  // Enhanced first payment handler with sold property validation
   const handleFirstPayment = () => {
     if (!property || !property.prixTotal || !newDate) {
       setValidationError("Please select a date for the first payment and ensure property has a valid price");
@@ -293,19 +297,18 @@ export default function ReservationProcessModal({ property, payments }: Reservat
       updatedAt: new Date(),
     };
 
-    setEcheances([newEcheance]); // Replace existing payments with first payment
+    setEcheances([newEcheance]);
     setNewMontant(recommendedAmount);
     setValidationError("");
   };
 
-  // Enhanced add payment handler with validation
+  // Enhanced add payment handler with sold property validation
   const handleAddEcheance = () => {
     if (!newMontant || !newDate || !property || !property.prixTotal) {
       setValidationError("Please fill in all required fields and ensure property has a valid price");
       return;
     }
 
-    // Only validate that amount is positive
     if (newMontant <= 0) {
       setValidationError("Payment amount must be greater than zero");
       return;
@@ -341,7 +344,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
     setValidationError("");
   };
 
-  // Generate default payment plan
+  // Enhanced generate default payment plan with sold property validation
   const handleGenerateDefaultPlan = () => {
     if (!property || !property.prixTotal) {
       setValidationError("Property price is required to generate payment plan");
@@ -369,27 +372,22 @@ export default function ReservationProcessModal({ property, payments }: Reservat
     }
   };
 
-  // Apply suggested first payment amount
-  const handleApplySuggestion = () => {
-    if (!property || !property.prixTotal) {
-      setValidationError("Property price is required");
-      return;
-    }
-    
-    const suggestedAmount = firstPaymentBreakdown?.totalFirstPayment || 0;
-    setNewMontant(suggestedAmount);
-    setValidationError("");
-  };
-
   // Remove échéance
-  const handleRemoveEcheance = (id: number) => {
-    setEcheances(echeances.filter(e => e.id !== id));
+  const handleRemoveEcheance = (id: string) => {
+    setEcheances(echeances.filter(e => e.id !== parseInt(id)));
   };
 
-  // Helper to check if Next button should be disabled
+  // Enhanced helper to check if Next button should be disabled
   const isNextDisabled = () => {
     if (!echeances || echeances.length === 0) return true;
     if (!totalPaymentBreakdown) return true;
+    
+    // For sold properties, require complete payment plan
+    if (property.status === 'SOLD') {
+      const sum = echeances.reduce((acc, e) => acc + (e.amount || 0), 0);
+      return sum < totalPaymentBreakdown.totalPayment;
+    }
+    
     const sum = echeances.reduce((acc, e) => acc + (e.amount || 0), 0);
     return sum <= totalPaymentBreakdown.totalPayment;
   };
@@ -400,6 +398,22 @@ export default function ReservationProcessModal({ property, payments }: Reservat
       case 0:
         return (
           <>
+            {/* Property Status Warning for Sold Properties */}
+            {property.status === 'SOLD' && (
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <TbFileAlert className="text-red-500 text-xl" />
+                  <h3 className="text-lg font-semibold text-red-900 dark:text-red-100">
+                    Propriété Vendue - Configuration des Paiements Requise
+                  </h3>
+                </div>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  Cette propriété est marquée comme vendue mais n'a pas de plan de paiement configuré. 
+                  Veuillez configurer le plan de paiement pour finaliser la vente.
+                </p>
+              </div>
+            )}
+
             {/* Total Payment Breakdown */}
             {totalPaymentBreakdown && property && property.prixTotal && (
               <div className="mb-6 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg">
@@ -481,7 +495,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                     onClick={handleGenerateDefaultPlan}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Générer un plan de paiement par défaut
+                    {property.status === 'SOLD' ? 'Générer un plan de paiement complet' : 'Générer un plan de paiement par défaut'}
                   </Button>
                 </>
               ) : (
@@ -493,7 +507,9 @@ export default function ReservationProcessModal({ property, payments }: Reservat
             
             {/* Manual Payment Addition */}
             <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Ajouter des paiements manuellement</h3>
+              <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+                {property.status === 'SOLD' ? 'Configuration des paiements pour la vente' : 'Ajouter des paiements manuellement'}
+              </h3>
               <div className="flex flex-row gap-4 mb-4">
                 <div className="w-full md:w-1/2">
                   <Label>Montant <span className="text-red-500">*</span></Label>
@@ -564,6 +580,15 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                       <span className="font-medium">Reste à payer:</span> {((totalPaymentBreakdown?.totalPayment || property.prixTotal) - echeances.reduce((sum, e) => sum + e.amount, 0)).toLocaleString()} MAD
                     </div>
                   </div>
+                  
+                  {/* Additional warning for sold properties with incomplete payments */}
+                  {property.status === 'SOLD' && echeances.reduce((sum, e) => sum + e.amount, 0) < (totalPaymentBreakdown?.totalPayment || property.prixTotal) && (
+                    <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded">
+                      <p className="text-yellow-700 dark:text-yellow-300 text-xs">
+                        ⚠️ Pour une propriété vendue, le plan de paiement doit couvrir le montant total.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -610,7 +635,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                         <div className="flex gap-1">
                           <button 
                             className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors text-red-500 dark:text-red-400"
-                            onClick={() => handleRemoveEcheance(e.id)}
+                            onClick={() => handleRemoveEcheance(e.id.toString())}
                           >
                             <AiOutlineDelete />
                           </button>
@@ -744,38 +769,43 @@ export default function ReservationProcessModal({ property, payments }: Reservat
         />
       )}
       {isPropertyPage && (
-      <div 
-        className={`bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3 flex items-center gap-2 mt-1 cursor-pointer transition-all duration-300 relative ${
-          isShaking ? 'animate-shake' : ''
-        }`} 
-        onClick={openModal}
-        style={{
-          animation: isShaking ? 'shake 1s ease-in-out' : 'none'
-        }}
-      >
-        {/* Payment Setup Required Indicator */}
-        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
-          !
-        </div>
-        
-        <FaUser className="text-yellow-400 dark:text-yellow-300" />
-        <div className="flex-1">
-          <div className="text-xs text-gray-500 dark:text-gray-400">Réservé à</div>
-          <div className="font-bold text-base text-gray-900 dark:text-white">{property.client?.name}</div>
-          <div className="text-xs text-gray-400 dark:text-gray-500">Client réservataire</div>
-          <div className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
-            ⚠️ Paiements à configurer
+        <div 
+          className={`${property.status === 'SOLD' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-yellow-50 dark:bg-yellow-900/20'} rounded-lg p-3 flex items-center gap-2 mt-1 cursor-pointer transition-all duration-300 relative ${
+            isShaking ? 'animate-shake' : ''
+          }`} 
+          onClick={openModal}
+          style={{
+            animation: isShaking ? 'shake 1s ease-in-out' : 'none'
+          }}
+        >
+          {/* Payment Setup Required Indicator */}
+          <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
+            !
+          </div>
+          
+          <FaUser className={property.status === 'SOLD' ? 'text-red-400 dark:text-red-300' : 'text-yellow-400 dark:text-yellow-300'} />
+          <div className="flex-1">
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {property.status === 'SOLD' ? 'Vendu à' : 'Réservé à'}
+            </div>
+            <div className="font-bold text-base text-gray-900 dark:text-white">{property.client?.name}</div>
+            <div className="text-xs text-gray-400 dark:text-gray-500">
+              {property.status === 'SOLD' ? 'Client acheteur' : 'Client réservataire'}
+            </div>
+            <div className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
+              ⚠️ {property.status === 'SOLD' ? 'Paiements à configurer pour la vente' : 'Paiements à configurer'}
+            </div>
+          </div>
+          
+          {/* Arrow indicator */}
+          <div className="text-gray-400 dark:text-gray-500 text-sm">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </div>
         </div>
-        
-        {/* Arrow indicator */}
-        <div className="text-gray-400 dark:text-gray-500 text-sm">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
-      </div>
       )}
+      
       {/* Add CSS for shake animation */}
       <style jsx>{`
         @keyframes shake {
@@ -788,7 +818,9 @@ export default function ReservationProcessModal({ property, payments }: Reservat
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] p-5 lg:p-10">
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Processus de réservation</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {property.status === 'SOLD' ? 'Configuration des Paiements - Propriété Vendue' : 'Processus de réservation'}
+            </h1>
           </div>
 
           {/* Stepper */}
@@ -824,14 +856,21 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                   </Button>
                 )}
               </div>
-              <Button 
-                size="sm" 
-                onClick={() => setStep(step + 1)}
-                className="min-w-[100px]"
-                disabled={isNextDisabled()}
-              >
-                {step === steps.length - 2 ? "Générer" : "Suivant"}
-              </Button>
+              <div className="flex items-center gap-3">
+                {property.status === 'SOLD' && isNextDisabled() && (
+                  <div className="text-xs text-red-600 dark:text-red-400">
+                    Plan de paiement incomplet
+                  </div>
+                )}
+                <Button 
+                  size="sm" 
+                  onClick={() => setStep(step + 1)}
+                  className="min-w-[100px]"
+                  disabled={isNextDisabled()}
+                >
+                  {step === steps.length - 2 ? "Générer" : "Suivant"}
+                </Button>
+              </div>
             </div>
           )}
         </div>

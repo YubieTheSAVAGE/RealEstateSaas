@@ -21,7 +21,7 @@ import deleteApartement from "./deleteApartement";
 import { Property } from "@/types/property";
 import ReservationProcessModal from "@/components/example/ModalExample/ReservationProcessModal";
 
-type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
+type SortKey = "project" | "number" | "type" | "habitable" | "prixTotal" | "status" | "updatedAt" | "floor" | "zone" | "totalArea" | "superficie" | "price";
 type SortOrder = "asc" | "desc";
 
 
@@ -29,8 +29,8 @@ type SortOrder = "asc" | "desc";
 export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: Property[]; onRefresh?: () => void; }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortKey, setSortKey] = useState<SortKey>("status");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+  const [sortKey, setSortKey] = useState<SortKey>("updatedAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
   // Define the ProjectData type
@@ -121,27 +121,51 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     );
   });
 
+  // Helper to get superficie value (matching the display logic)
+  const getSuperficieValue = (item: Property): number => {
+    if (item.habitable && item.habitable > 0) {
+      return item.habitable;
+    }
+    if (item.totalArea && item.totalArea > 0) {
+      return item.totalArea;
+    }
+    return 0;
+  };
+
   // Helper to get the value for sorting
   const getSortValue = (item: Property, key: SortKey): string | number => {
     switch (key) {
       case "project":
         return item.project?.name || "";
+      case "number":
+        return item.number || "";
       case "type":
-        return item.type || "";
+        return type[item.type as keyof typeof type] || item.type;
+      case "habitable":
+        return item.habitable ?? 0;
+      case "totalArea":
+        return item.totalArea ?? 0;
       case "superficie":
-        return item.habitable || "";
+        return getSuperficieValue(item);
+      case "prixTotal":
+        return item.prixTotal ?? 0;
       case "price":
+        // Alias for prixTotal to match the table header
         return item.prixTotal ?? 0;
       case "status":
-        return item.status || "";
-      case "pricePerM2":
-        return item.prixM2 ?? 0;
+        return status[item.status as keyof typeof status] || item.status;
+      case "floor":
+        return item.floor ?? 0;
       case "zone":
         return item.zone || "";
-      case "etage":
-        return item.floor || "";
-      case "id":
-        return item.id || "";
+      case "updatedAt":
+        // Handle both Date and string types for updatedAt
+        if (item.updatedAt instanceof Date) {
+          return item.updatedAt.getTime();
+        } else if (typeof item.updatedAt === "string") {
+          return new Date(item.updatedAt).getTime();
+        }
+        return 0;
       default:
         return "";
     }
@@ -154,6 +178,8 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
 
     if (typeof valueA === "number" && typeof valueB === "number") {
       return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+    } else if (typeof valueA === "string" && typeof valueB === "string") {
+      return sortOrder === "asc" ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
     } else {
       const strA = String(valueA).toLowerCase();
       const strB = String(valueB).toLowerCase();

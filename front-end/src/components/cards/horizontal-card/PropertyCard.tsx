@@ -361,15 +361,25 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
             )}
           </>
         )}
-        {property.status === 'SOLD' && (
-          <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 flex items-center gap-2 mt-1">
-            <FaCheckCircle className="text-red-400 dark:text-red-300" />
-            <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">Vendu à</div>
-              <div className="font-bold text-base text-gray-900 dark:text-white">{property.client?.name}</div>
-              <div className="text-xs text-gray-400 dark:text-gray-500">Client acheteur</div>
-            </div>
-          </div>
+        
+        {/* Sold Property Handling - Fixed to remove duplicate */}
+        {property.status === 'SOLD' && property.client && (
+          <>
+            {/* Check if client has payments for this property */}
+            {(!property.client.payments || property.client.payments.length === 0 || 
+              !property.client.payments.some(payment => payment.property.id === property.id)) ? (
+              <ReservationProcessModal property={property} payments={property.client.payments || []} />
+            ) : (
+              <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3 flex items-center gap-2 mt-1">
+                <FaCheckCircle className="text-red-400 dark:text-red-300" />
+                <div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Vendu à</div>
+                  <div className="font-bold text-base text-gray-900 dark:text-white">{property.client?.name}</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500">Client acheteur</div>
+                </div>
+              </div>
+            )}
+          </>
         )}
         {/* Surfaces & Espaces */}
         <div className="grid grid-cols-2 gap-3 mt-2">
