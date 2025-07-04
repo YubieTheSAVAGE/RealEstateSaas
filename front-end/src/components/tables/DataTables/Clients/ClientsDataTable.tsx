@@ -324,7 +324,7 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
               {currentData.map((item, i) => (
                 <TableRow key={i + 1}>
                   <TableCell className="px-4 py-4 font-medium text-gray-800 border border-gray-100 dark:border-white/[0.05] dark:text-white text-theme-sm whitespace-nowrap ">
-                    {item.name}
+                    {item.name ? item.name : item.firstName + " " + item.lastName}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     {item.email}
