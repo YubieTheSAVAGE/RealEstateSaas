@@ -33,7 +33,7 @@ const CHART_COLORS = [
   "#9d4edd", // Purple
 ];
 
-export default function PropertiesCategoryPieChart({ apartements }: { apartements: Property[] }) {
+export default function PropertiesCategoryPieChart({ properties }: { properties: Property[] }) {
   const [salesData, setSalesData] = useState<PropertySalesData[]>([]);
   const [totalSoldProperties, setTotalSoldProperties] = useState(0);
   
@@ -50,10 +50,10 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
 
   // Process data when apartements change
   useEffect(() => {
-    if (!apartements || apartements.length === 0) return;
+    if (!properties || properties.length === 0) return;
 
     // Filter only "SOLD" properties
-    const soldProperties = apartements.filter(apt => apt.status === "SOLD");
+    const soldProperties = properties.filter(apt => apt.status === "SOLD");
     setTotalSoldProperties(soldProperties.length);
 
     if (soldProperties.length === 0) {
@@ -80,7 +80,7 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
     });
 
     setSalesData(typesData);
-  }, [apartements]);
+  }, [properties]);
 
   // Derived chart data
   const chartLabels = useMemo(() => salesData.map(item => item.displayName), [salesData]);
@@ -194,7 +194,7 @@ export default function PropertiesCategoryPieChart({ apartements }: { apartement
     setIsOpen(false);
   }
 
-  if (!apartements || apartements.length === 0) {
+  if (!properties || properties.length === 0) {
     return (
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
         <div className="flex items-center justify-between mb-5">

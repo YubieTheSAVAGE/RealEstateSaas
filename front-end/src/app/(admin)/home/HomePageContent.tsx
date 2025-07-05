@@ -57,11 +57,11 @@ export default function HomePageContent() {
         <div className="col-span-12 space-y-6 xl:col-span-7">
           <StatsCard apartments={apartementsData} />
 
-          <MonthlySalesChart apartements={apartementsData} />
+          <MonthlySalesChart properties={apartementsData} />
         </div>
 
         <div className="col-span-12 xl:col-span-5">
-          <MonthlyTarget />
+          <MonthlyTarget userRole={userRole} />
         </div>
         {userRole == "ADMIN" && (
           <div className="width-full col-span-full">
@@ -69,7 +69,7 @@ export default function HomePageContent() {
           </div>
         )}
         <div className="col-span-12">
-          {/* <RecentActivity /> */}
+          <RecentActivity />
         </div>
       </div>
       )}

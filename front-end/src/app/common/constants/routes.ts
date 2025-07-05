@@ -15,10 +15,3 @@ export const AgentRoutes = [
     '/home',
     '/contracts',
 ];
-
-export const ClientRoutes = [
-    '/dashboard',
-    '/my-properties',
-    '/my-contracts',
-    '/my-payments',
-];

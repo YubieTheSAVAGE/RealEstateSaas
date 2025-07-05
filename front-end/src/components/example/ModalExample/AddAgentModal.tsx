@@ -137,10 +137,11 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
                 type="text"
                 placeholder="Nom complet"
                 onChange={handleChange}
+                value={formData.name}
               />
               {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2 sm:col-span-1">
               <Label>Statut <span className="text-red-500">*</span></Label>
               <Select
                 defaultValue={statusOptions[0].value}
@@ -151,47 +152,51 @@ export default function AddAgentModal({ onAgentAdded }: AddAgentModalProps) {
                 className="dark:bg-dark-900"
               />
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2 sm:col-span-1">
               <Label>Numéro de téléphone <span className="text-red-500">*</span></Label>
               <Input
                 name="phoneNumber"
                 type="tel"
                 placeholder="+1234567890"
                 onChange={handleChange}
+                value={formData.phoneNumber}
               />
               {errors.phoneNumber && <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>}
             </div>
 
-            <div className="col-span-1">
+            <div className="col-span-2 sm:col-span-1">
               <Label>Email <span className="text-red-500">*</span></Label>
               <Input
                 name="email"
                 type="email"
                 placeholder="email@exemple.com"
                 onChange={handleChange}
+                value={formData.email}
               />
               {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
             </div>
 
-            <div className="col-span-1">
+            <div className="col-span-2 sm:col-span-1">
               <Label>Mot de passe <span className="text-red-500">*</span></Label>
               <Input
                 name="password"
                 type="password"
                 placeholder="••••••••"
                 onChange={handleChange}
+                value={formData.password}
               />
               {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
             </div>
 
 
-            <div className="col-span-1 sm:col-span-2">
+            <div className="col-span-2 sm:col-span-2">
               <Label>Notes</Label>
               <Textarea
                 className="h-24"
                 name="notes"
                 placeholder="Notes supplémentaires"
                 onChange={handleChange}
+                value={formData.notes}
               />
             </div>
           </div>

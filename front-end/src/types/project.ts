@@ -6,7 +6,7 @@ export interface Project {
   name: string;
   
   // Project specifications
-  numberOfProperties: number;
+  numberOfApartments: number;
   totalSurface: number;
   address: string;
   latitude: number;
@@ -14,7 +14,6 @@ export interface Project {
   
   // Financial information
   folderFees: number;
-  // commissionPerM2: number;
   totalSales?: number;
   
   // Project status and progress
@@ -32,7 +31,7 @@ export interface Project {
   // Timestamps and tracking
   createdAt?: Date;
   updatedAt?: Date;
-  // lastUpdate?: string | Date;
+  lastUpdate?: string | Date;
   statusDates?: {
     planification?: string | Date;
     construction?: string | Date;

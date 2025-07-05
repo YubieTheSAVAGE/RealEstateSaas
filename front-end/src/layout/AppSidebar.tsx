@@ -10,11 +10,10 @@ import {
   HorizontaLDots,
   UserCircleIcon,
 } from "../icons/index";
-import { BiBuildings, BiBookContent, BiTask, BiFile, BiCreditCard } from "@/components/ui/icons/OptimizedIcons";
-import { FaUsers } from "@/components/ui/icons/OptimizedIcons";
+import { BiBuildings, BiBookContent, BiTask, BiFile, BiCreditCard } from "react-icons/bi";
+import { FaUsers } from "react-icons/fa";
 import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
-import { TbContract } from "@/components/ui/icons/OptimizedIcons";
-import { useOptimizedData } from "@/hooks/useOptimizedData";
+import { TbContract } from "react-icons/tb";
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -79,9 +78,9 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
   const [role, setRole] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchRole = async () => {
+      // You may need to import AUTHENTICATION_COOKIE and provide a suitable prevState (e.g., null or {})
       const result = await getUserRoleFromToken();
       console.log("Role fetched from token:", result);
       if (result) {
@@ -92,11 +91,6 @@ const AppSidebar: React.FC = () => {
     };
     fetchRole();
   }, []);
-
-  // Don't render admin sidebar for CLIENT role
-  if (role === 'CLIENT') {
-    return null;
-  }
 
   const renderMenuItems = (
     navItems: NavItem[],

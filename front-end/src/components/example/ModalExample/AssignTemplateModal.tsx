@@ -55,13 +55,13 @@ export default function AssignTemplateModal({
         >
           <div className="relative p-6 pb-0 flex items-center justify-between">
             <h2 className="font-semibold text-xl">Assigner le template</h2>
-            <button
+            {/* <button
               onClick={closeModal}
               className="absolute top-4 right-4 p-1 rounded hover:bg-gray-100 focus:outline-none"
               aria-label="Fermer"
             >
               <CloseLineIcon className="w-6 h-6 text-gray-400" />
-            </button>
+            </button> */}
           </div>
           <div className="p-6 pt-4">
             <div className="mb-4 font-semibold text-base">{template.name}</div>
@@ -84,18 +84,18 @@ export default function AssignTemplateModal({
                         : handleAssign(project.id.toString())
                     }
                     className={`w-full text-left rounded-xl border px-4 py-3 transition-all focus:outline-none
-                      ${isAssigned ? "border-primary-400 bg-primary-50" : "border-gray-200 bg-white"}
+                      ${isAssigned ? "border-primary-400 bg-primary-50 dark:bg-primary-900/20" : "border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700"}
                       ${isSelected && !isAssigned ? "ring-2 ring-blue-400" : ""}
                     `}
                     disabled={isAssigned}
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-base text-gray-900">{project.name}</div>
-                        <div className="text-xs text-gray-500">{project.address}</div>
+                        <div className="font-medium text-base text-gray-900 dark:text-gray-100">{project.name}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">{project.address}</div>
                       </div>
                       {isAssigned && (
-                        <span className="text-primary-600 font-semibold text-sm">Assigné</span>
+                        <span className="text-primary-600 dark:text-primary-400 font-semibold text-sm">Assigné</span>
                       )}
                     </div>
                   </button>

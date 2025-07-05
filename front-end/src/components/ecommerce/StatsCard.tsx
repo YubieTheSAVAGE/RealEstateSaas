@@ -8,7 +8,10 @@ import { Property } from "@/types/property";
 export const StatsCard = ({apartments}: {apartments: Property[]}) => {
   // Calculate statistics from apartment data
   const stats = useMemo(() => {
-    if (!apartments || apartments.length === 0) {
+    // Ensure apartments is an array before processing
+    const apartmentsArray = Array.isArray(apartments) ? apartments : [];
+    
+    if (!apartmentsArray || apartmentsArray.length === 0) {
       return {
         soldCount: 0,
         totalSales: 0,
@@ -19,14 +22,14 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
     }
 
     // Count sold properties
-    const soldProperties = apartments.filter(apt => apt.status === "SOLD");
+    const soldProperties = apartmentsArray.filter(apt => apt.status === "SOLD");
     const soldCount = soldProperties.length;
     
     // Calculate total sales amount
-    const totalSales = soldProperties.reduce((total, apt) => total + (apt.price || 0), 0);
+    const totalSales = soldProperties.reduce((total, apt) => total + (apt.prixTotal || 0), 0);
     
     // Get unique projects count
-    const uniqueProjects = new Set(apartments.map(apt => apt.projectId));
+    const uniqueProjects = new Set(apartmentsArray.map(apt => apt.project.id));
     const projectsCount = uniqueProjects.size;
     
     // Calculate percentage change (comparing to previous period)

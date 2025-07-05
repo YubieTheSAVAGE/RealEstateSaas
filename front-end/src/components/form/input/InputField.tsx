@@ -50,11 +50,8 @@ const Input: FC<InputProps> = ({
     inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
   }
 
-  // Determine if this should be a controlled or uncontrolled component
-  const isControlled = value !== undefined || onChange !== undefined;
-
-  // For controlled components, ensure value is always a string
-  const inputValue = isControlled ? String(value || "") : undefined;
+  // Ensure value is always a string to prevent controlled/uncontrolled input issues
+  const inputValue = value !== undefined ? String(value) : "";
 
   return (
     <div className="relative">
@@ -63,10 +60,8 @@ const Input: FC<InputProps> = ({
         id={id}
         name={name}
         placeholder={placeholder}
-        {...(isControlled
-          ? { value: inputValue, onChange }
-          : { defaultValue, onChange }
-        )}
+        {...(onChange ? { value: inputValue } : { defaultValue })}
+        onChange={onChange}
         min={min}
         max={max}
         step={step}

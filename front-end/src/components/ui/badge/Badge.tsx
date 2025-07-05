@@ -54,7 +54,7 @@ const Badge: React.FC<BadgeProps> = ({
       info: "bg-blue-light-50 text-blue-light-500 dark:bg-blue-light-500/15 dark:text-blue-light-500",
       light: "bg-gray-100 text-gray-700 dark:bg-white/5 dark:text-white/80",
       dark: "bg-gray-500 text-white dark:bg-white/5 dark:text-white",
-      waiting: "bg-yellow-50 text-yellow-500 dark:text-white",
+      waiting: "bg-yellow-50 text-yellow-500 dark:bg-yellow-500/15 dark:text-yellow-500",
     },
     solid: {
       primary: "bg-brand-500 text-white dark:text-white",

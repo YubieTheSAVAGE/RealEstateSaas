@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from '../ui/button'
 import { PlusIcon } from 'lucide-react'
 import TemplateCard from '../cards/card-with-icon/TemplateCard'
-import { ContractTemplate } from '@/types/ContractTemplate'
+import type { ContractTemplate } from '@/types/ContractTemplate'
 import { Role, Status } from '@/types/user'
 import AddTemplateModal from '../example/ModalExample/AddTemplateModal'
 
@@ -116,6 +116,11 @@ NOTES IMPORTANTES :
                 address: 'Avenue Mohammed V, Casablanca',
                 numberOfApartments: 120,
                 totalSurface: 15000,
+                latitude: 33.5779,
+                longitude: -7.5911,
+                folderFees: 1000,
+                status: "done",
+                progress: 50,
             }
         ],
         createdBy: {
@@ -171,6 +176,11 @@ Le Vendeur garantit à l'Acheteur la propriété paisible du bien vendu et s'eng
                 address: 'Boulevard de la Corniche, Casablanca',
                 numberOfApartments: 85,
                 totalSurface: 12000,
+                latitude: 33.5779,
+                longitude: -7.5911,
+                folderFees: 1000,
+                status: "done",
+                progress: 50,
             }
         ],
         createdBy: {
@@ -222,6 +232,11 @@ Un dépôt de garantie de [MONTANT_DEPOT] MAD est versé par le Locataire au Pro
                 address: 'Quartier Maarif, Casablanca',
                 numberOfApartments: 65,
                 totalSurface: 8000,
+                latitude: 33.5779,
+                longitude: -7.5911,
+                folderFees: 1000,
+                status: "done",
+                progress: 50,
             }
         ],
         createdBy: {

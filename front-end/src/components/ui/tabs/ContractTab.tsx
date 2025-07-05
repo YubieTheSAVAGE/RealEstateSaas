@@ -81,7 +81,7 @@ export default function ContractTab() {
   const [activeTab, setActiveTab] = useState<TabData["id"]>("contracts");
 
   return (
-    <div className="mb-4 p-6 border border-gray-200 rounded-xl dark:border-gray-800">
+    <div className="mb-4 p-6 border border-gray-200 rounded-xl dark:border-gray-800  dark:bg-white/[0.03]">
       <div className="border-b border-gray-200 dark:border-gray-800">
         <nav className="flex space-x-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-600">
           {tabData.map((tab) => (

@@ -13,7 +13,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 });
 
 
-export default function MonthlySalesChart({ apartements }: { apartements: Property[] }) {
+export default function MonthlySalesChart({ properties }: { properties: Property[] }) {
   const [monthlySalesCount, setMonthlySalesCount] = useState<number[]>(Array(12).fill(0));
   const [monthlySalesValue, setMonthlySalesValue] = useState<number[]>(Array(12).fill(0));
   const [selectedView, setSelectedView] = useState<'count' | 'value'>('count');
@@ -21,7 +21,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
   
   // Process apartment data when it changes
   useEffect(() => {
-    if (!apartements || !Array.isArray(apartements) || apartements.length === 0) return;
+    if (!properties || !Array.isArray(properties) || properties.length === 0) return;
     
     // Initialize arrays for each month
     const salesCountByMonth = Array(12).fill(0);
@@ -31,9 +31,9 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
     const currentYear = new Date().getFullYear();
     
     // Filter apartments with SOLD status and group by month (for current year only)
-    apartements.forEach(apartment => {
-      if (apartment.status === "SOLD" && apartment.updatedAt) {
-        const updatedDate = new Date(apartment.updatedAt);
+    properties.forEach(property => {
+      if (property.status === "SOLD" && property.updatedAt) {
+        const updatedDate = new Date(property.updatedAt);
         
         // Only include sales from current year
         if (updatedDate.getFullYear() === currentYear) {
@@ -43,14 +43,14 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
           salesCountByMonth[month]++;
           
           // Add price to the total value for the month
-          salesValueByMonth[month] += apartment.price || 0;
+          salesValueByMonth[month] += property.prixTotal || 0;
         }
       }
     });
     
     setMonthlySalesCount(salesCountByMonth);
     setMonthlySalesValue(salesValueByMonth);
-  }, [apartements]);
+  }, [properties]);
   
   // Current displayed data based on selected view
   const currentData = useMemo(() => {
@@ -225,7 +225,7 @@ export default function MonthlySalesChart({ apartements }: { apartements: Proper
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-          {apartements && apartements.length > 0 ? (
+          {properties && properties.length > 0 ? (
             <ReactApexChart
               options={options}
               series={series}

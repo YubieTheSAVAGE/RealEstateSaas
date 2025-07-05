@@ -21,7 +21,7 @@ import deleteApartement from "./deleteApartement";
 import { Property } from "@/types/property";
 import ReservationProcessModal from "@/components/example/ModalExample/ReservationProcessModal";
 
-type SortKey = "id" | "project" | "type" | "superficie" | "price" | "status" | "pricePerM2" | "zone" | "etage";
+type SortKey = "project" | "number" | "type" | "habitable" | "prixTotal" | "status" | "updatedAt" | "floor" | "zone" | "totalArea" | "superficie" | "price";
 type SortOrder = "asc" | "desc";
 
 
@@ -29,26 +29,20 @@ type SortOrder = "asc" | "desc";
 export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apartmentsData: Property[]; onRefresh?: () => void; }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [sortKey, setSortKey] = useState<SortKey>("status");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+  const [sortKey, setSortKey] = useState<SortKey>("updatedAt");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
   // Define the ProjectData type
 
-  const type = {
+  const type =
+  {
     "APARTMENT": "Appartement",
-    "DUPLEX": "Duplex",
     "VILLA": "Villa",
-    "PENTHOUSE": "Penthouse",
-    "STUDIO": "Studio",
-    "LOFT": "Loft",
-    "TOWNHOUSE": "Maison de ville",
+    "BUREAU": "Bureau",
     "STORE": "Magasin",
-    "OFFICE": "Bureau",
-    "WAREHOUSE": "Entrepôt",
     "LAND": "Terrain",
-    "GARAGE": "Garage",
-    "PARKING": "Parking",
+    "AUTRE": "Autre",
   }
   const status ={
     "AVAILABLE": "Disponible",
@@ -62,37 +56,29 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
   useEffect(() => {
     // Check if data exists and is an array before mapping
     if (apartmentsData && Array.isArray(apartmentsData)) {
-      const formattedData: Property[] = apartmentsData.map((item: any) => ({
-        // Core backend fields
-        id: item.id ?? 0,
+      const formattedData: Property[] = apartmentsData.map((item: Property) => ({
+        id: item.id ?? "",
         number: item.number ?? "",
-        floor: item.floor ?? null,
+        floor: item.floor ?? 0,
         type: item.type ?? "APARTMENT",
-        area: item.area ?? null,
-        price: item.price ?? 0,
-        pricePerM2: item.pricePerM2 ?? null,
-        zone: item.zone ?? null,
-        image: item.image ?? null,
-        notes: item.notes ?? null,
-        threeDViewUrl: item.threeDViewUrl ?? null,
+        habitable: item.habitable ?? 0,
+        balcon: item.balcon ?? 0,
+        terrasse: item.terrasse ?? 0,
+        piscine: item.piscine ?? 0,
+        totalArea: item.totalArea ?? 0,
+        mezzanineArea: item.mezzanineArea ?? 0,
+        mezzaninePrice: item.mezzaninePrice ?? 0,
         prixType: item.prixType ?? "FIXE",
-        status: item.status ?? "AVAILABLE",
-
-        // Relationships
-        project: item.project ?? { id: 0, name: "" },
-        projectId: item.projectId ?? 0,
+        prixTotal: item.prixTotal ?? 0,
+        prixM2: item.prixM2 ?? 0,
+        zone: item.zone ?? "",
+        project: item.project ?? { id: "", name: "" },
+        notes: item.notes ?? "",
         client: item.client ?? null,
-        clientId: item.clientId ?? null,
-        userId: item.userId ?? null,
-        interestedClients: item.interestedClients ?? null,
-
-        // Timestamps
-        createdAt: item.createdAt ?? new Date(),
-        updatedAt: item.updatedAt ?? new Date(),
-
-        // Legacy fields for backward compatibility
-        prixTotal: item.price ?? 0,  // Map backend price to frontend prixTotal
-        prixM2: item.pricePerM2 ?? null,  // Map backend pricePerM2 to frontend prixM2
+        parkingDisponible: item.parkingDisponible ?? false,
+        parkingInclus: item.parkingInclus ?? false,
+        status: item.status ?? "AVAILABLE",
+        
       }));
       setApartementsData(formattedData);
     } else {
@@ -135,27 +121,51 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
     );
   });
 
+  // Helper to get superficie value (matching the display logic)
+  const getSuperficieValue = (item: Property): number => {
+    if (item.habitable && item.habitable > 0) {
+      return item.habitable;
+    }
+    if (item.totalArea && item.totalArea > 0) {
+      return item.totalArea;
+    }
+    return 0;
+  };
+
   // Helper to get the value for sorting
   const getSortValue = (item: Property, key: SortKey): string | number => {
     switch (key) {
       case "project":
         return item.project?.name || "";
+      case "number":
+        return item.number || "";
       case "type":
-        return item.type || "";
+        return type[item.type as keyof typeof type] || item.type;
+      case "habitable":
+        return item.habitable ?? 0;
+      case "totalArea":
+        return item.totalArea ?? 0;
       case "superficie":
-        return item.area || 0;
+        return getSuperficieValue(item);
+      case "prixTotal":
+        return item.prixTotal ?? 0;
       case "price":
-        return item.price ?? 0;
+        // Alias for prixTotal to match the table header
+        return item.prixTotal ?? 0;
       case "status":
-        return item.status || "";
-      case "pricePerM2":
-        return item.pricePerM2 ?? 0;
+        return status[item.status as keyof typeof status] || item.status;
+      case "floor":
+        return item.floor ?? 0;
       case "zone":
         return item.zone || "";
-      case "etage":
-        return item.floor || "";
-      case "id":
-        return item.id || "";
+      case "updatedAt":
+        // Handle both Date and string types for updatedAt
+        if (item.updatedAt instanceof Date) {
+          return item.updatedAt.getTime();
+        } else if (typeof item.updatedAt === "string") {
+          return new Date(item.updatedAt).getTime();
+        }
+        return 0;
       default:
         return "";
     }
@@ -168,6 +178,8 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
 
     if (typeof valueA === "number" && typeof valueB === "number") {
       return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+    } else if (typeof valueA === "string" && typeof valueB === "string") {
+      return sortOrder === "asc" ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
     } else {
       const strA = String(valueA).toLowerCase();
       const strB = String(valueB).toLowerCase();
@@ -188,7 +200,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
       <div className="flex flex-col gap-2 px-4 py-4 border border-b-0 border-gray-100 dark:border-white/[0.05] rounded-t-xl sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <span className="text-gray-500 dark:text-gray-400"> Afficher </span>
-          <div className="relative z-20 bg-transparent">
+          <div className="relative z-0 bg-transparent">
             <select
               className="w-full py-2 pl-3 pr-8 text-sm text-gray-800 bg-transparent border border-gray-300 rounded-lg appearance-none dark:bg-dark-900 h-9 bg-none shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
               value={itemsPerPage}
@@ -331,10 +343,10 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                     {type[item.type as keyof typeof type] || item.type}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.area ? item.area + " m²" : "N/A"}
+                    {item.habitable ? item.habitable + " m²" : item.totalArea ? item.totalArea + " m²" : "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.price.toLocaleString("fr-FR", {
+                    {item.prixTotal.toLocaleString("fr-FR", {
                       style: "currency",
                       currency: "MAD",
                       minimumFractionDigits: 0,
@@ -410,7 +422,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                       {status[item.status as keyof typeof status] || item.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90 whitespace-nowrap ">
+                  <TableCell className="px-4 py-4 font-normal text-gray-800 border border-gray-100 dark:border-white/[0.05] text-theme-sm dark:text-white/90">
                     <div className="flex items-center w-full gap-2 justify-center">
                       <button
                         className="text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-600"
@@ -423,7 +435,10 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                         PropertyData={item}
                         onRefresh={onRefresh}
                       />
-                      <ReservationProcessModal property={item} payments={item.client?.payments || []} />
+                      {item.client && (!item.client.payments || item.client.payments.length === 0 || 
+                          !item.client.payments.some(payment => payment.property.id === item.id)) && (
+                        <ReservationProcessModal property={item} payments={item.client.payments || []} />
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

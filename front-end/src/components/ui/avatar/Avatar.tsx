@@ -45,7 +45,7 @@ const Avatar: React.FC<AvatarProps> = ({
         width="0"
         height="0"
         sizes="100vw"
-        src={src}
+        src={src as string}
         alt={alt}
         className="object-cover w-full rounded-full"
       />

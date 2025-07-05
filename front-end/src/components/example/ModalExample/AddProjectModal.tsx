@@ -29,13 +29,12 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     address: "",
     latitude: "",
     longitude: "",
-    folderFees: "",           // Fixed: was dossierFee
-    commissionPerM2: "",      // Fixed: was commission
-    totalSales: "",           // Added: missing field
-    progress: "0",            // Added: missing field
-    constructionPhotos: [] as string[], // Added: missing field
-    image: null as File | null,
-    status: "",
+    dossierFee: "",
+    progress: 0,
+    totalSales: 0,
+    commissionPerM2: 0,
+    status: "planification",
+    image: null as File | null, // Store as File object instead of string
   });
   // State for validation errors
   const [errors, setErrors] = useState({
@@ -45,13 +44,12 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     address: "",
     latitude: "",
     longitude: "",
-    folderFees: "",           // Fixed: was dossierFee
-    commissionPerM2: "",      // Fixed: was commission
-    totalSales: "",           // Added: missing field
-    progress: "",             // Added: missing field
-    constructionPhotos: "",   // Added: missing field
+    dossierFee: "",
     image: "",
     status: "",
+    progress: 0,
+    totalSales: 0,
+    commissionPerM2: 0,
   });
   
   // State for API errors
@@ -128,35 +126,20 @@ const handleSave = async () => {
       test: (v: string) => !v.trim(), 
       message: "l'adresse est requise" 
     },
-    {
-      field: 'latitude',
-      test: (v: string) => !v || isNaN(Number(v)) || Number(v) < -90 || Number(v) > 90,
-      message: "La latitude est requise et doit être entre -90 et 90"
+    { 
+      field: 'latitude', 
+      test: (v: string) => !v || isNaN(Number(v)),
+      message: "La latitude est requise et doit être un nombre"
     },
-    {
-      field: 'longitude',
-      test: (v: string) => !v || isNaN(Number(v)) || Number(v) < -180 || Number(v) > 180,
-      message: "La longitude est requise et doit être entre -180 et 180"
+    { 
+      field: 'longitude', 
+      test: (v: string) => !v || isNaN(Number(v)),
+      message: "La longitude est requise et doit être un nombre"
     },
-    {
-      field: 'folderFees',
+    { 
+      field: 'dossierFee', 
       test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0,
       message: "Les frais de dossier sont requis et doivent être un nombre positif"
-    },
-    {
-      field: 'commissionPerM2',
-      test: (v: string) => v && (isNaN(Number(v)) || Number(v) < 0),
-      message: "La commission doit être un nombre positif"
-    },
-    {
-      field: 'totalSales',
-      test: (v: string) => v && (isNaN(Number(v)) || Number(v) < 0),
-      message: "Le total des ventes doit être un nombre positif"
-    },
-    {
-      field: 'progress',
-      test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0 || Number(v) > 100,
-      message: "Le progrès doit être entre 0 et 100"
     },
     {
       field: 'status',
@@ -168,7 +151,7 @@ const handleSave = async () => {
   // Run validations
   validations.forEach(({ field, test, message }) => {
     if (test(formData[field as keyof typeof formData] as string)) {
-      newErrors[field as keyof typeof newErrors] = message;
+      newErrors[field as keyof typeof newErrors] = message as never;
       hasErrors = true;
     }
   });
@@ -178,30 +161,33 @@ const handleSave = async () => {
   const formDataToSend = new FormData();
   Object.entries(formData).forEach(([key, value]) => {
     if (value !== null && !(key === 'image' && !value)) {
-      formDataToSend.append(key, value as string | Blob);
+      // Map field names to match backend expectations
+      let backendKey = key;
+      let backendValue = value;
+      
+      // Convert dossierFee to folderFees for backend
+      if (key === 'dossierFee') {
+        backendKey = 'folderFees';
+      }
+      
+      // Convert status to uppercase for backend validation
+      if (key === 'status') {
+        backendValue = (value as string).toUpperCase();
+      }
+      
+      formDataToSend.append(backendKey, backendValue as string | Blob);
     }
   });
 
   try {
-    await addProject(formDataToSend);
-    setFormData({
-      name: "",
-      numberOfApartments: "",
-      notes: "",
-      totalSurface: "",
-      address: "",
-      latitude: "",
-      longitude: "",
-      folderFees: "",
-      commissionPerM2: "",
-      totalSales: "",
-      progress: "0",
-      constructionPhotos: [],
-      image: null,
-      status: ""
-    });
-    onProjectAdded?.();
-    closeModal();
+    const result = await addProject(formDataToSend);
+    if (result.error) {
+      setApiError(result.error);
+    } else {
+      setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", latitude: "", longitude: "", dossierFee: "", image: null, status: "planification", progress: 0, totalSales: 0, commissionPerM2: 0 });
+      onProjectAdded?.();
+      closeModal();
+    }
   } catch (error) {
     setApiError(error instanceof Error ? error.message : "Failed to add project");
   }
@@ -237,6 +223,21 @@ const handleSave = async () => {
   // Added logic to reset errors when the modal is closed
   const handleCloseModal = () => {
     closeModal();
+    setFormData({
+      name: "",
+      numberOfApartments: "",
+      notes: "",
+      totalSurface: "",
+      address: "",
+      latitude: "",
+      longitude: "",
+      dossierFee: "",
+      progress: 0,
+      totalSales: 0,
+      commissionPerM2: 0,
+      status: "planification",
+      image: null,
+    });
     setErrors({
       name: "",
       numberOfApartments: "",
@@ -244,13 +245,12 @@ const handleSave = async () => {
       address: "",
       latitude: "",
       longitude: "",
-      folderFees: "",
-      commissionPerM2: "",
-      totalSales: "",
-      progress: "",
-      constructionPhotos: "",
+      dossierFee: "",
       image: "",
       status: "",
+      progress: 0,
+      totalSales: 0,
+      commissionPerM2: 0,
     });
     setApiError("");
   };
@@ -357,9 +357,9 @@ const handleSave = async () => {
               <Select
                 name="status"
                 options={[
-                  { value: "PLANIFICATION", label: "Planification" },
-                  { value: "CONSTRUCTION", label: "En construction" },
-                  { value: "DONE", label: "Terminé" },
+                  { value: "planification", label: "Planification" },
+                  { value: "construction", label: "En construction" },
+                  { value: "done", label: "Terminé" },
                 ]}
                 placeholder="Sélectionner le statut du projet"
                 onChange={handleSelectChange}
@@ -411,65 +411,23 @@ const handleSave = async () => {
               <div className="col-span-1">
                 <Label>Frais de dossier <span className="text-red-500">*</span></Label>
                 <Input
-                  name="folderFees"
+                  name="dossierFee"
                   type="number"
                   placeholder="e.g. 4500(MAD)"
                   onChange={handleChange}
-                  value={formData.folderFees}
+                  value={formData.dossierFee}
                 />
-                {errors.folderFees && (
-                  <p className="text-sm text-red-500 mt-1">{errors.folderFees}</p>
-                )}
-              </div>
-              <div className="col-span-1">
-                <Label>Commission par M²</Label>
-                <Input
-                  name="commissionPerM2"
-                  type="number"
-                  placeholder="e.g. 2500(MAD/m²)"
-                  onChange={handleChange}
-                  value={formData.commissionPerM2}
-                />
-                {errors.commissionPerM2 && (
-                  <p className="text-sm text-red-500 mt-1">{errors.commissionPerM2}</p>
-                )}
-              </div>
-              <div className="col-span-1">
-                <Label>Total des ventes</Label>
-                <Input
-                  name="totalSales"
-                  type="number"
-                  placeholder="e.g. 25000000(MAD)"
-                  onChange={handleChange}
-                  value={formData.totalSales}
-                />
-                {errors.totalSales && (
-                  <p className="text-sm text-red-500 mt-1">{errors.totalSales}</p>
-                )}
-              </div>
-              <div className="col-span-1">
-                <Label>Progrès du projet <span className="text-red-500">*</span></Label>
-                <Input
-                  name="progress"
-                  type="number"
-                  min="0"
-                  max="100"
-                  placeholder="e.g. 25(%)"
-                  onChange={handleChange}
-                  value={formData.progress}
-                />
-                {errors.progress && (
-                  <p className="text-sm text-red-500 mt-1">{errors.progress}</p>
+                {errors.dossierFee && (
+                  <p className="text-sm text-red-500 mt-1">{errors.dossierFee}</p>
                 )}
               </div>
             </div>
             {/* Structure Section (Plan) */}
             <div className="flex items-center gap-2 mb-2 mt-2">
               <FileIcon className="w-6 h-6 text-purple-500" />
-              <span className="font-semibold text-gray-700 dark:text-white/90">Plan du projet</span>
+              <span className="font-semibold text-gray-700 dark:text-white/90">Plan</span>
             </div>
             <div className="mb-6">
-              <Label>Image principale du projet</Label>
               <FileInput
                 name="image"
                 onChange={handleFileChange}
@@ -480,32 +438,6 @@ const handleSave = async () => {
               )}
               {errors.image && (
                 <p className="text-sm text-red-500 mt-1">{errors.image}</p>
-              )}
-            </div>
-
-            {/* Construction Photos Section */}
-            <div className="mb-6">
-              <Label>Photos de construction (optionnel)</Label>
-              <div className="text-sm text-gray-500 mb-2">
-                Vous pouvez ajouter des URLs de photos de construction séparées par des virgules
-              </div>
-              <Input
-                name="constructionPhotos"
-                type="text"
-                placeholder="https://example.com/photo1.jpg, https://example.com/photo2.jpg"
-                onChange={(e) => {
-                  const urls = e.target.value.split(',').map(url => url.trim()).filter(url => url);
-                  setFormData(prev => ({ ...prev, constructionPhotos: urls }));
-                }}
-                value={formData.constructionPhotos.join(', ')}
-              />
-              {formData.constructionPhotos.length > 0 && (
-                <p className="mt-1 text-xs text-green-600">
-                  {formData.constructionPhotos.length} photo(s) ajoutée(s)
-                </p>
-              )}
-              {errors.constructionPhotos && (
-                <p className="text-sm text-red-500 mt-1">{errors.constructionPhotos}</p>
               )}
             </div>
             {/* Notes Section */}

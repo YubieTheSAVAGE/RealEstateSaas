@@ -1,4 +1,5 @@
 // "use client";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import "./fonts.css";
 import "swiper/swiper-bundle.css";
@@ -8,8 +9,13 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import NextTopLoader from "nextjs-toploader";
 import { Metadata } from "next";
-import PerformanceMonitor from "@/components/ui/PerformanceMonitor";
-import { outfit, fontFamily } from "@/lib/fonts";
+
+const outfit = Outfit({
+  variable: "--font-outfit-sans",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Immo 360",
@@ -33,9 +39,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body suppressHydrationWarning={true} className={`${outfit.variable} dark:bg-gray-900 bg-gray-25`} style={{ fontFamily }}>
+      <body suppressHydrationWarning={true} className={`${outfit.variable} dark:bg-gray-900 bg-gray-25`} style={{ fontFamily: 'var(--font-outfit-sans), "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+        {/* <NextTopLoader /> */}
         <NextTopLoader />
-        <PerformanceMonitor />
           <ThemeProvider>
             <SidebarProvider>
               {children}

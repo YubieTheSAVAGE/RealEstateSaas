@@ -11,7 +11,8 @@ const CustomMarker = ({ name }: { name: string }) => (
       fontSize: '12px', 
       fontWeight: 'bold',
       boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-      marginBottom: '5px'
+      marginBottom: '5px',
+      color: 'var(--text-color, #000)'
     }}>
       {name}
     </div>
@@ -37,15 +38,15 @@ interface ProjectMapProps {
 const ProjectMap = ({ projectName, projectLocation }: ProjectMapProps) => {
   return (
     <Map
-      defaultCenter={[32.2340593, -7.9465522]} // [latitude, longitude]
+      defaultCenter={[projectLocation.latitude, projectLocation.longitude]} // [latitude, longitude]
       defaultZoom={17}
       height={400}
     >
       <Marker 
         width={80}
-        anchor={[32.2340593, -7.9465522]}
+        anchor={[projectLocation.latitude, projectLocation.longitude]}
       >
-        <CustomMarker name="Project Location" />
+        <CustomMarker name={projectName} />
       </Marker>
       <ZoomControl />
     </Map>

@@ -15,7 +15,7 @@ import { Payment } from "@/types/Payment";
 import { Contract } from "@/types/Contract";
 import { Property } from "@/types/property";
 import { Client } from "@/types/client";
-import { PaymentValidator, PaymentValidationResult } from "@/utils/paymentValidation";
+import { PaymentValidator, PaymentValidationResult, FirstPaymentCalculation, TotalPaymentBreakdown } from "@/utils/paymentValidation";
 import { usePathname } from 'next/navigation'
 import { TbFileAlert } from "react-icons/tb";
 
@@ -78,12 +78,11 @@ La réservation est valable pour une durée de [DUREE_RESERVATION] mois à compt
             id: 1,
             name: 'Résidence Les Palmiers',
             address: 'Avenue Mohammed V, Casablanca',
-            numberOfProperties: 120,
+            numberOfApartments: 120,
             totalSurface: 15000,
             latitude: 33.5779,
             longitude: -7.5911,
             folderFees: 10000,
-            commissionPerM2: 1000,
             status: "planification",
             progress: 0,
         }
@@ -139,12 +138,11 @@ Le Vendeur garantit à l'Acheteur la propriété paisible du bien vendu et s'eng
             id: 2,
             name: 'Tours Marina',
             address: 'Boulevard de la Corniche, Casablanca',
-            numberOfProperties: 85,
+            numberOfApartments: 85,
             totalSurface: 12000,
             latitude: 33.5779,
             longitude: -7.5911,
             folderFees: 10000,
-            commissionPerM2: 1000,
             status: "planification",
             progress: 0,
         }
@@ -196,12 +194,11 @@ Un dépôt de garantie de [MONTANT_DEPOT] MAD est versé par le Locataire au Pro
             id: 3,
             name: 'Résidence Al Andalous',
             address: 'Quartier Maarif, Casablanca',
-            numberOfProperties: 65,
+            numberOfApartments: 65,
             totalSurface: 8000,
             latitude: 33.5779,
             longitude: -7.5911,
             folderFees: 10000,
-            commissionPerM2: 1000,
             status: "planification",
             progress: 0,
         }
@@ -231,36 +228,63 @@ export default function ReservationProcessModal({ property, payments }: Reservat
   const [step, setStep] = useState(0);
   const [newMontant, setNewMontant] = useState(0);
   const [newDate, setNewDate] = useState("");
+  const [folderFees, setFolderFees] = useState(property?.project?.folderFees || 0);
   const [selectedTemplate, setSelectedTemplate] = useState<ContractTemplate | null>(dummyTemplate[0]);
   const [echeances, setEcheances] = useState<Payment[]>([]);
   const [validationError, setValidationError] = useState<string>("");
-  const [showFirstPaymentSuggestion, setShowFirstPaymentSuggestion] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
+  const [firstPaymentBreakdown, setFirstPaymentBreakdown] = useState<FirstPaymentCalculation | null>(null);
+  const [totalPaymentBreakdown, setTotalPaymentBreakdown] = useState<TotalPaymentBreakdown | null>(null);
+  const [paymentDivisions, setPaymentDivisions] = useState(4);
+
+  // Example data for sold property
+  property.prixTotal = 687500;
+  property.project.folderFees = 400;
+  property.prixM2 = 13750;
+  property.commissionPerM2 = 2750;
+  property.prixType = "M2";
+  property.prixBalconPct = 100;
+  property.prixTerrassePct = 100;
+  property.habitable = 40;
+  property.terrasse = 5;
+  property.balcon = 5;
+  // Calculate prixM2 based on total price and surface area
+  const totalSurface = (property.habitable || 0) + (property.terrasse || 0) + (property.piscine || 0);
+  property.prixM2 = totalSurface > 0 ? Math.round(property.prixTotal / totalSurface) : 0;
+
+  // Calculate first payment breakdown when property or folder fees change
+  useEffect(() => {
+    if (property && property.prixTotal) {
+      const firstBreakdown = PaymentValidator.calculateFirstPaymentBreakdown(property, folderFees);
+      const totalBreakdown = PaymentValidator.calculateTotalPaymentBreakdown(property, folderFees);
+      setFirstPaymentBreakdown(firstBreakdown);
+      setTotalPaymentBreakdown(totalBreakdown);
+    }
+  }, [property, folderFees]);
 
   // Shake animation effect
   useEffect(() => {
     const shakeInterval = setInterval(() => {
       setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 1000); // Shake for 1 second
-    }, 3000); // Shake every 3 seconds
-
+      setTimeout(() => setIsShaking(false), 1000);
+    }, 3000);
     return () => clearInterval(shakeInterval);
   }, []);
 
-  // Enhanced first payment handler with validation
+  // Enhanced validation for sold properties
+  const validateSoldPropertyPayments = () => {
+    // Only validate if we're trying to proceed to next step, not when adding payments
+    return { isValid: true };
+  };
+
+  // Enhanced first payment handler with sold property validation
   const handleFirstPayment = () => {
     if (!property || !property.prixTotal || !newDate) {
       setValidationError("Please select a date for the first payment and ensure property has a valid price");
       return;
     }
 
-    const recommendedAmount = PaymentValidator.calculateRecommendedFirstPayment(property.prixTotal);
-    const validation = PaymentValidator.validateFirstPayment(recommendedAmount, property.prixTotal);
-
-    if (!validation.isValid) {
-      setValidationError(validation.error || "Invalid first payment amount");
-      return;
-    }
+    const recommendedAmount = firstPaymentBreakdown?.totalFirstPayment || 0;
 
     const newEcheance: Payment = {
       id: Date.now(),
@@ -273,40 +297,21 @@ export default function ReservationProcessModal({ property, payments }: Reservat
       updatedAt: new Date(),
     };
 
-    setEcheances([newEcheance]); // Replace existing payments with first payment
+    setEcheances([newEcheance]);
     setNewMontant(recommendedAmount);
     setValidationError("");
-    setShowFirstPaymentSuggestion(false);
   };
 
-  // Enhanced add payment handler with validation
+  // Enhanced add payment handler with sold property validation
   const handleAddEcheance = () => {
     if (!newMontant || !newDate || !property || !property.prixTotal) {
       setValidationError("Please fill in all required fields and ensure property has a valid price");
       return;
     }
 
-    // Validate the new payment amount
-    const validation = PaymentValidator.validateFirstPayment(newMontant, property.prixTotal);
-    
-    if (!validation.isValid) {
-      setValidationError(validation.error || "Invalid payment amount");
-      if (validation.suggestedAmount) {
-        setShowFirstPaymentSuggestion(true);
-      }
+    if (newMontant <= 0) {
+      setValidationError("Payment amount must be greater than zero");
       return;
-    }
-
-    // Check if this is the first payment and validate accordingly
-    if (echeances.length === 0) {
-      const firstPaymentValidation = PaymentValidator.validateFirstPayment(newMontant, property.prixTotal);
-      if (!firstPaymentValidation.isValid) {
-        setValidationError(firstPaymentValidation.error || "First payment validation failed");
-        if (firstPaymentValidation.suggestedAmount) {
-          setShowFirstPaymentSuggestion(true);
-        }
-        return;
-      }
     }
 
     const newEcheance: Payment = {
@@ -337,10 +342,9 @@ export default function ReservationProcessModal({ property, payments }: Reservat
     setNewMontant(0);
     setNewDate("");
     setValidationError("");
-    setShowFirstPaymentSuggestion(false);
   };
 
-  // Generate default payment plan
+  // Enhanced generate default payment plan with sold property validation
   const handleGenerateDefaultPlan = () => {
     if (!property || !property.prixTotal) {
       setValidationError("Property price is required to generate payment plan");
@@ -348,7 +352,8 @@ export default function ReservationProcessModal({ property, payments }: Reservat
     }
     
     try {
-      const defaultPlan = PaymentValidator.generateDefaultPaymentPlan(property.prixTotal, 4);
+      const totalAmount = totalPaymentBreakdown?.totalPayment || property.prixTotal;
+      const defaultPlan = PaymentValidator.generateDefaultPaymentPlan(totalAmount, 4);
       const defaultPayments: Payment[] = defaultPlan.payments.map((payment, index) => ({
         id: Date.now() + index,
         amount: payment.amount,
@@ -362,28 +367,29 @@ export default function ReservationProcessModal({ property, payments }: Reservat
 
       setEcheances(defaultPayments);
       setValidationError("");
-      setShowFirstPaymentSuggestion(false);
     } catch (error) {
       setValidationError(error instanceof Error ? error.message : "Failed to generate payment plan");
     }
   };
 
-  // Apply suggested first payment amount
-  const handleApplySuggestion = () => {
-    if (!property || !property.prixTotal) {
-      setValidationError("Property price is required");
-      return;
-    }
-    
-    const suggestedAmount = PaymentValidator.calculateRecommendedFirstPayment(property.prixTotal);
-    setNewMontant(suggestedAmount);
-    setValidationError("");
-    setShowFirstPaymentSuggestion(false);
+  // Remove échéance
+  const handleRemoveEcheance = (id: string) => {
+    setEcheances(echeances.filter(e => e.id !== parseInt(id)));
   };
 
-  // Remove échéance
-  const handleRemoveEcheance = (id: number) => {
-    setEcheances(echeances.filter(e => e.id !== id));
+  // Enhanced helper to check if Next button should be disabled
+  const isNextDisabled = () => {
+    if (!echeances || echeances.length === 0) return true;
+    if (!totalPaymentBreakdown) return true;
+    
+    // For sold properties, require complete payment plan
+    if (property.status === 'SOLD') {
+      const sum = echeances.reduce((acc, e) => acc + (e.amount || 0), 0);
+      return sum < totalPaymentBreakdown.totalPayment;
+    }
+    
+    const sum = echeances.reduce((acc, e) => acc + (e.amount || 0), 0);
+    return sum <= totalPaymentBreakdown.totalPayment;
   };
 
   // Step content
@@ -392,62 +398,118 @@ export default function ReservationProcessModal({ property, payments }: Reservat
       case 0:
         return (
           <>
+            {/* Property Status Warning for Sold Properties */}
+            {property.status === 'SOLD' && (
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
+                <div className="flex items-center gap-3 mb-3">
+                  <TbFileAlert className="text-red-500 text-xl" />
+                  <h3 className="text-lg font-semibold text-red-900 dark:text-red-100">
+                    Propriété Vendue - Configuration des Paiements Requise
+                  </h3>
+                </div>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  Cette propriété est marquée comme vendue mais n'a pas de plan de paiement configuré. 
+                  Veuillez configurer le plan de paiement pour finaliser la vente.
+                </p>
+              </div>
+            )}
+
+            {/* Total Payment Breakdown */}
+            {totalPaymentBreakdown && property && property.prixTotal && (
+              <div className="mb-6 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg">
+                <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-3">
+                  Détail du paiement total
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-300">Prix de base:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{totalPaymentBreakdown.basePrice.toLocaleString()} MAD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-300">Frais de dossier:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{totalPaymentBreakdown.folderFees.toLocaleString()} MAD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-300">Commission totale:</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{totalPaymentBreakdown.commissionTotal.toLocaleString()} MAD</span>
+                    </div>
+                    {totalPaymentBreakdown.parkingPrice > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-300">Prix parking:</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{totalPaymentBreakdown.parkingPrice.toLocaleString()} MAD</span>
+                      </div>
+                    )}
+                    <div className="border-t border-gray-200 dark:border-gray-600 pt-2 flex justify-between font-bold text-orange-800 dark:text-orange-200">
+                      <span>Total à payer:</span>
+                      <span>{totalPaymentBreakdown.totalPayment.toLocaleString()} MAD</span>
+                    </div>
+                  </div>
+                  
+                  {/* Surface Breakdown */}
+                  <div className="space-y-1">
+                    <div className="font-medium text-gray-700 dark:text-gray-200 mb-2">Détail des surfaces:</div>
+                    <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+                      <span>Surface habitable:</span>
+                      <span>{totalPaymentBreakdown.surfaceBreakdown.habitable} m²</span>
+                    </div>
+                    {totalPaymentBreakdown.surfaceBreakdown.balcon > 0 && (
+                      <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+                        <span>Balcon:</span>
+                        <span>{totalPaymentBreakdown.surfaceBreakdown.balcon} m²</span>
+                      </div>
+                    )}
+                    {totalPaymentBreakdown.surfaceBreakdown.terrasse > 0 && (
+                      <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+                        <span>Terrasse:</span>
+                        <span>{totalPaymentBreakdown.surfaceBreakdown.terrasse} m²</span>
+                      </div>
+                    )}
+                    {totalPaymentBreakdown.surfaceBreakdown.piscine > 0 && (
+                      <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+                        <span>Piscine:</span>
+                        <span>{totalPaymentBreakdown.surfaceBreakdown.piscine} m²</span>
+                      </div>
+                    )}
+                    <div className="border-t border-gray-200 dark:border-gray-600 pt-1 flex justify-between text-xs font-medium text-gray-700 dark:text-gray-200">
+                      <span>Surface totale:</span>
+                      <span>{totalPaymentBreakdown.surfaceBreakdown.totalSurface} m²</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Payment Plan Generation Section */}
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                Plan de paiement recommandé
+            <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                Plan de paiement
               </h3>
               {property && property.prixTotal ? (
                 <>
-                  <p className="text-sm text-blue-700 mb-3">
-                    Premier paiement: {PaymentValidator.calculateRecommendedFirstPayment(property.prixTotal).toLocaleString()} MAD 
-                    ({((PaymentValidator.calculateRecommendedFirstPayment(property.prixTotal) / property.prixTotal) * 100).toFixed(1)}% du prix total)
+                  <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
+                    Total à payer: {totalPaymentBreakdown?.totalPayment.toLocaleString() || property.prixTotal.toLocaleString()} MAD
                   </p>
                   <Button 
                     size="sm" 
                     onClick={handleGenerateDefaultPlan}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    Générer le plan de paiement par défaut
+                    {property.status === 'SOLD' ? 'Générer un plan de paiement complet' : 'Générer un plan de paiement par défaut'}
                   </Button>
                 </>
               ) : (
-                <p className="text-sm text-red-700 mb-3">
+                <p className="text-sm text-red-700 dark:text-red-400 mb-3">
                   Prix de la propriété non disponible
                 </p>
               )}
             </div>
             
-
-            {/* First Payment Quick Add */}
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <h3 className="text-lg font-semibold text-green-900 mb-2">
-                Premier paiement (20% minimum)
-              </h3>
-              <div className="flex gap-4 items-end">
-                <div className="flex-1">
-                  <Label>Date du premier paiement <span className="text-red-500">*</span></Label>
-                  <Input 
-                    type="date" 
-                    value={newDate}
-                    onChange={(e) => setNewDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-                <Button 
-                  size="sm" 
-                  onClick={handleFirstPayment}
-                  disabled={!newDate || !property || !property.prixTotal}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
-                  Ajouter le premier paiement
-                </Button>
-              </div>
-            </div>
-
             {/* Manual Payment Addition */}
             <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-3">Ajouter des paiements manuellement</h3>
+              <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
+                {property.status === 'SOLD' ? 'Configuration des paiements pour la vente' : 'Ajouter des paiements manuellement'}
+              </h3>
               <div className="flex flex-row gap-4 mb-4">
                 <div className="w-full md:w-1/2">
                   <Label>Montant <span className="text-red-500">*</span></Label>
@@ -459,10 +521,8 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                       const value = Number(e.target.value);
                       setNewMontant(value);
                       setValidationError("");
-                      setShowFirstPaymentSuggestion(false);
                     }}
-                    min={property && property.prixTotal ? PaymentValidator.calculateRecommendedFirstPayment(property.prixTotal).toString() : "0"}
-                    max={property && property.prixTotal ? property.prixTotal.toString() : "0"}
+                    min="0"
                   />
                 </div>
                 <div className="w-full md:w-1/2">
@@ -490,76 +550,74 @@ export default function ReservationProcessModal({ property, payments }: Reservat
 
               {/* Validation Error Display */}
               {validationError && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-700 text-sm">{validationError}</p>
-                  {showFirstPaymentSuggestion && (
-                    <Button 
-                      size="sm"   
-                      onClick={handleApplySuggestion}
-                      className="mt-2 bg-red-600 hover:bg-red-700 text-white text-xs"
-                    >
-                      Appliquer la suggestion
-                    </Button>
-                  )}
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
+                  <p className="text-red-700 dark:text-red-400 text-sm">{validationError}</p>
                 </div>
               )}
 
               {/* Payment Summary */}
               {echeances.length > 0 && property && property.prixTotal && (
-                <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                  <h4 className="font-semibold mb-2">Résumé des paiements</h4>
+                <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Résumé des paiements</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
+                    <div className="text-gray-700 dark:text-gray-200">
                       <span className="font-medium">Total des paiements:</span> {echeances.reduce((sum, e) => sum + e.amount, 0).toLocaleString()} MAD
                     </div>
-                    <div>
-                      <span className="font-medium">Prix de la propriété:</span> {property.prixTotal.toLocaleString()} MAD
+                    <div className="text-gray-700 dark:text-gray-200">
+                      <span className="font-medium">Prix de base:</span> {property.prixTotal.toLocaleString()} MAD
                     </div>
-                    <div>
+                    <div className="text-gray-700 dark:text-gray-200">
+                      <span className="font-medium">Frais de dossier:</span> {folderFees.toLocaleString()} MAD
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-200">
+                      <span className="font-medium">Commission:</span> {totalPaymentBreakdown?.commissionTotal.toLocaleString() || 0} MAD
+                    </div>
+                    <div className="text-gray-700 dark:text-gray-200">
                       <span className="font-medium">Premier paiement:</span> {echeances[0]?.amount.toLocaleString()} MAD 
-                        ({echeances[0] ? ((echeances[0].amount / property.prixTotal) * 100).toFixed(1) : 0}%)
+                        ({echeances[0] ? ((echeances[0].amount / (totalPaymentBreakdown?.totalPayment || property.prixTotal)) * 100).toFixed(1) : 0}%)
                     </div>
-                    <div>
-                      <span className="font-medium">Reste à payer:</span> {(property.prixTotal - echeances.reduce((sum, e) => sum + e.amount, 0)).toLocaleString()} MAD
+                    <div className="text-gray-700 dark:text-gray-200">
+                      <span className="font-medium">Reste à payer:</span> {((totalPaymentBreakdown?.totalPayment || property.prixTotal) - echeances.reduce((sum, e) => sum + e.amount, 0)).toLocaleString()} MAD
                     </div>
                   </div>
+                  
+                  {/* Additional warning for sold properties with incomplete payments */}
+                  {property.status === 'SOLD' && echeances.reduce((sum, e) => sum + e.amount, 0) < (totalPaymentBreakdown?.totalPayment || property.prixTotal) && (
+                    <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded">
+                      <p className="text-yellow-700 dark:text-yellow-300 text-xs">
+                        ⚠️ Pour une propriété vendue, le plan de paiement doit couvrir le montant total.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
             
             <div className="overflow-x-auto">
-              <table className="text-sm mb-4 w-full min-w-[600px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+              <table className="text-sm mb-4 w-full min-w-[600px] max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
                 <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-2">N</th>
-                    <th className="text-left py-2">Montant à payer</th>
-                    <th className="text-left py-2">Date d'échéance</th>
-                    <th className="text-left py-2">% du prix total</th>
-                    <th className="text-left py-2">Statut</th>
-                    <th className="text-left py-2">Actions</th>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="text-left py-2 text-gray-900 dark:text-white">N</th>
+                    <th className="text-left py-2 text-gray-900 dark:text-white">Montant à payer</th>
+                    <th className="text-left py-2 text-gray-900 dark:text-white">Date d'échéance</th>
+                    <th className="text-left py-2 text-gray-900 dark:text-white">% du prix total</th>
+                    <th className="text-left py-2 text-gray-900 dark:text-white">Statut</th>
+                    <th className="text-left py-2 text-gray-900 dark:text-white">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {echeances.map((e, index) => (
-                    <tr key={e.id} className="border-b border-gray-100">
-                      <td className="py-2">{index + 1}</td>
-                      <td className="py-2">{e.amount.toLocaleString()} MAD</td>
-                      <td className="py-2">{e.dueDate.toLocaleDateString()}</td>
+                    <tr key={e.id} className="border-b border-gray-100 dark:border-gray-700">
+                      <td className="py-2 text-gray-900 dark:text-white">{index + 1}</td>
+                      <td className="py-2 text-gray-900 dark:text-white">{e.amount.toLocaleString()} MAD</td>
+                      <td className="py-2 text-gray-900 dark:text-white">{e.dueDate.toLocaleDateString()}</td>
                       <td className="py-2">
                         {property && property.prixTotal ? (
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            index === 0 && (e.amount / property.prixTotal) * 100 >= 20
-                              ? "bg-green-100 text-green-600"
-                              : index === 0
-                              ? "bg-red-100 text-red-600"
-                              : "bg-gray-100 text-gray-600"
-                          }`}>
-                            {((e.amount / property.prixTotal) * 100).toFixed(1)}%
-                            {index === 0 && (e.amount / property.prixTotal) * 100 >= 20 && " ✓"}
-                            {index === 0 && (e.amount / property.prixTotal) * 100 < 20 && " ✗"}
+                          <span className="px-2 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            {((e.amount / (totalPaymentBreakdown?.totalPayment || property.prixTotal)) * 100).toFixed(1)}%
                           </span>
                         ) : (
-                          <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-600">
+                          <span className="px-2 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
                             N/A
                           </span>
                         )}
@@ -567,8 +625,8 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                       <td className="py-2">
                         <span className={`px-2 py-1 rounded-full text-xs ${
                           e.status === "PAID" 
-                            ? "bg-green-100 text-green-600" 
-                            : "bg-yellow-100 text-yellow-600"
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400" 
+                            : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400"
                         }`}>
                           {e.status}
                         </span>
@@ -576,8 +634,8 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                       <td className="py-2">
                         <div className="flex gap-1">
                           <button 
-                            className="p-1 hover:bg-red-100 rounded transition-colors text-red-500"
-                            onClick={() => handleRemoveEcheance(e.id)}
+                            className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors text-red-500 dark:text-red-400"
+                            onClick={() => handleRemoveEcheance(e.id.toString())}
                           >
                             <AiOutlineDelete />
                           </button>
@@ -591,8 +649,8 @@ export default function ReservationProcessModal({ property, payments }: Reservat
 
             {/* Empty state */}
             {echeances.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <AiOutlineCalendar className="text-4xl mx-auto mb-2 text-gray-300" />
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <AiOutlineCalendar className="text-4xl mx-auto mb-2 text-gray-300 dark:text-gray-600" />
                 <p>Aucune échéance ajoutée</p>
                 <p className="text-sm">Utilisez les options ci-dessus pour ajouter des échéances</p>
               </div>
@@ -649,11 +707,11 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                   };
                   setSelectedTemplate(templates[value as keyof typeof templates]);
                 }}
-                className="dark:bg-dark-900"
+                className="dark:bg-gray-800"
               />
               
               {selectedTemplate && (
-                <div className="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                <div className="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
                   <h4 className="font-medium text-gray-900 dark:text-white mb-2">
                     {selectedTemplate.name}
                   </h4>
@@ -667,7 +725,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                       <h5 className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                         Contenu du template:
                       </h5>
-                      <div className="text-sm text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-900 p-3 rounded border max-h-32 overflow-y-auto">
+                      <div className="text-sm text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-900 p-3 rounded border border-gray-200 dark:border-gray-600 max-h-32 overflow-y-auto">
                         {selectedTemplate.content}
                       </div>
                     </div>
@@ -675,14 +733,13 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                 </div>
               )}
             </div>
-            
           </div>
         );
       case 2:
         return (
           <div className="flex flex-col items-center justify-center py-8">
             <FaCheckCircle className="text-green-500 text-6xl mb-4" />
-            <div className="mb-6 font-medium text-center">
+            <div className="mb-6 font-medium text-center text-gray-900 dark:text-white">
               Le contrat a été généré avec succès
             </div>
             <div className="flex gap-3">
@@ -703,7 +760,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
         <TbFileAlert 
           size={18} 
           onClick={openModal} 
-          className={`cursor-pointer text-gray-500 hover:text-red-600 transition-all duration-300 ${
+          className={`cursor-pointer text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-500 transition-all duration-300 ${
             isShaking ? 'animate-shake' : ''
           }`}
           style={{
@@ -712,38 +769,43 @@ export default function ReservationProcessModal({ property, payments }: Reservat
         />
       )}
       {isPropertyPage && (
-      <div 
-        className={`bg-yellow-50 rounded-lg p-3 flex items-center gap-2 mt-1 cursor-pointer transition-all duration-300 relative ${
-          isShaking ? 'animate-shake' : ''
-        }`} 
-        onClick={openModal}
-        style={{
-          animation: isShaking ? 'shake 1s ease-in-out' : 'none'
-        }}
-      >
-        {/* Payment Setup Required Indicator */}
-        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
-          !
-        </div>
-        
-        <FaUser className="text-yellow-400" />
-        <div className="flex-1">
-          <div className="text-xs text-gray-500">Réservé à</div>
-          <div className="font-bold text-base">{property.client?.name}</div>
-          <div className="text-xs text-gray-400">Client réservataire</div>
-          <div className="text-xs text-red-600 font-medium mt-1">
-            ⚠️ Paiements à configurer
+        <div 
+          className={`${property.status === 'SOLD' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-yellow-50 dark:bg-yellow-900/20'} rounded-lg p-3 flex items-center gap-2 mt-1 cursor-pointer transition-all duration-300 relative ${
+            isShaking ? 'animate-shake' : ''
+          }`} 
+          onClick={openModal}
+          style={{
+            animation: isShaking ? 'shake 1s ease-in-out' : 'none'
+          }}
+        >
+          {/* Payment Setup Required Indicator */}
+          <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
+            !
+          </div>
+          
+          <FaUser className={property.status === 'SOLD' ? 'text-red-400 dark:text-red-300' : 'text-yellow-400 dark:text-yellow-300'} />
+          <div className="flex-1">
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {property.status === 'SOLD' ? 'Vendu à' : 'Réservé à'}
+            </div>
+            <div className="font-bold text-base text-gray-900 dark:text-white">{property.client?.name}</div>
+            <div className="text-xs text-gray-400 dark:text-gray-500">
+              {property.status === 'SOLD' ? 'Client acheteur' : 'Client réservataire'}
+            </div>
+            <div className="text-xs text-red-600 dark:text-red-400 font-medium mt-1">
+              ⚠️ {property.status === 'SOLD' ? 'Paiements à configurer pour la vente' : 'Paiements à configurer'}
+            </div>
+          </div>
+          
+          {/* Arrow indicator */}
+          <div className="text-gray-400 dark:text-gray-500 text-sm">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </div>
         </div>
-        
-        {/* Arrow indicator */}
-        <div className="text-gray-400 text-sm">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
-      </div>
       )}
+      
       {/* Add CSS for shake animation */}
       <style jsx>{`
         @keyframes shake {
@@ -756,7 +818,9 @@ export default function ReservationProcessModal({ property, payments }: Reservat
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] p-5 lg:p-10">
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold">Processus de réservation</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {property.status === 'SOLD' ? 'Configuration des Paiements - Propriété Vendue' : 'Processus de réservation'}
+            </h1>
           </div>
 
           {/* Stepper */}
@@ -774,13 +838,13 @@ export default function ReservationProcessModal({ property, payments }: Reservat
           </div>
 
           {/* Step Content */}
-          <div className="min-h-[300px] max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+          <div className="min-h-[300px] max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 hover:scrollbar-thumb-gray-400 dark:hover:scrollbar-thumb-gray-500">
             {renderStepContent()}
           </div>
 
           {/* Navigation Buttons */}
           {step < 2 && (
-            <div className="flex justify-between items-center mt-6 pt-6 border-t border-gray-200">
+            <div className="flex justify-between items-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <div>
                 {step > 0 && (
                   <Button 
@@ -792,13 +856,21 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                   </Button>
                 )}
               </div>
-              <Button 
-                size="sm" 
-                onClick={() => setStep(step + 1)}
-                className="min-w-[100px]"
-              >
-                {step === steps.length - 2 ? "Générer" : "Suivant"}
-              </Button>
+              <div className="flex items-center gap-3">
+                {property.status === 'SOLD' && isNextDisabled() && (
+                  <div className="text-xs text-red-600 dark:text-red-400">
+                    Plan de paiement incomplet
+                  </div>
+                )}
+                <Button 
+                  size="sm" 
+                  onClick={() => setStep(step + 1)}
+                  className="min-w-[100px]"
+                  disabled={isNextDisabled()}
+                >
+                  {step === steps.length - 2 ? "Générer" : "Suivant"}
+                </Button>
+              </div>
             </div>
           )}
         </div>

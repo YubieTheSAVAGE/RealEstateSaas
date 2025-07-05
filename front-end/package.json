@@ -4,14 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:turbo": "next dev --turbo",
-    "dev:fast": "next dev --turbo --experimental-https",
     "build": "next build",
-    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
-    "lint": "next lint",
-    "type-check": "tsc --noEmit",
-    "clean": "rm -rf .next out node_modules/.cache"
+    "lint": "next lint"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",

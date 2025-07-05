@@ -51,13 +51,13 @@ export default async function OptimizedHomePage() {
       {/* Charts - Lazy loaded */}
       <div className="lg:col-span-2">
         <Suspense fallback={<LoadingSpinner />}>
-          <MonthlySalesChart />
+          <MonthlySalesChart properties={dashboardData.apartments} />
         </Suspense>
       </div>
 
       <div>
         <Suspense fallback={<LoadingSpinner />}>
-          <PerformingAgents agents={dashboardData.topAgents} />
+          <PerformingAgents />
         </Suspense>
       </div>
 

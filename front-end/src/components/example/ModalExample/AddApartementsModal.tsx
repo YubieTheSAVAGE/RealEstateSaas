@@ -73,6 +73,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     totalArea: "",
     mezzanineArea: "",
     mezzaninePrice: "",
+    commissionPerM2: "",
   });
 
   // Stepper state
@@ -102,18 +103,15 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   const [parkingDisponible, setParkingDisponible] = useState(false);
   const [parkingInclus, setParkingInclus] = useState(false);
   const [prixParking, setPrixParking] = useState("");
+  const [commissionPerM2, setCommissionPerM2] = useState("");
 
   // Helper functions - moved before calcSummary
   const shouldShowStandardFields = () => {
-    return ["APARTMENT"].includes(formData.type);
+    return ["APARTMENT", "DUPLEX", "VILLA"].includes(formData.type);
   };
 
   const needsFloorField = () => {
-    const typesWithFloor = [
-      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
-      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
-    ];
-    return typesWithFloor.includes(formData.type);
+    return formData.type === "APARTMENT";
   };
 
   const isLandType = () => {
@@ -137,11 +135,27 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     const pisPrix = Number(prixPiscine) || 0;
     const parkPrix = Number(prixParking) || 0;
     const mezzaninePrix = Number(landStoreFields.mezzaninePrice) || 0;
-    let main = 0, balcon = 0, terrasse = 0, piscine = 0, parking = 0, mezzanine = 0, total = 0;
+    const commission = Number(commissionPerM2) || 0;
+    let main = 0, balcon = 0, terrasse = 0, piscine = 0, parking = 0, mezzanine = 0, total = 0, commissionTotal = 0;
     
     if (prixType === "FIXE") {
       total = Number(prixTotal) || 0;
       main = total;
+      
+      // Calculate commission for fixed price
+      if (commission > 0) {
+        if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
+          // For APARTMENT, VILLA, DUPLEX - use surfaces
+          commissionTotal = commission * (hab + bal + ter + pis);
+        } else {
+          // For Land and Store types
+          commissionTotal = commission * totalArea;
+          if (isStoreType()) {
+            commissionTotal += commission * (Number(landStoreFields.mezzanineArea) || 0);
+          }
+        }
+        total += commissionTotal;
+      }
     } else {
       if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
         // For APARTMENT, VILLA, DUPLEX - use surfaces
@@ -153,15 +167,29 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
         // For Land and Store types
         main = totalArea * m2;
         if (isStoreType()) {
-          const mezzanineArea = Number(landStoreFields.mezzanineArea) || 0;
-          mezzanine = mezzanineArea * m2 + mezzaninePrix;
+          mezzanine = mezzaninePrix;
         }
       }
       parking = parkingDisponible && !parkingInclus ? parkPrix : 0;
       total = main + balcon + terrasse + piscine + parking + mezzanine;
+      
+      // Calculate commission for price per m²
+      if (commission > 0) {
+        if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
+          // For APARTMENT, VILLA, DUPLEX - use surfaces
+          commissionTotal = commission * (hab + bal + ter + pis);
+        } else {
+          // For Land and Store types
+          commissionTotal = commission * totalArea;
+          if (isStoreType()) {
+            commissionTotal += commission * (Number(landStoreFields.mezzanineArea) || 0);
+          }
+        }
+        total += commissionTotal;
+      }
     }
-    return { main, balcon, terrasse, piscine, parking, mezzanine, total };
-  }, [surfaces, landStoreFields, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type]);
+    return { main, balcon, terrasse, piscine, parking, mezzanine, total, commissionTotal };
+  }, [surfaces, landStoreFields, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type, commissionPerM2]);
 
   // Helper function to validate percentage input
   const validatePercentage = (value: string, fieldName: string) => {
@@ -256,16 +284,8 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     { value: "APARTMENT", label: "Appartement" },
     { value: "DUPLEX", label: "Duplex" },
     { value: "VILLA", label: "Villa" },
-    { value: "PENTHOUSE", label: "Penthouse" },
-    { value: "STUDIO", label: "Studio" },
-    { value: "LOFT", label: "Loft" },
-    { value: "TOWNHOUSE", label: "Maison de ville" },
     { value: "STORE", label: "Magasin" },
-    { value: "OFFICE", label: "Bureau" },
-    { value: "WAREHOUSE", label: "Entrepôt" },
     { value: "LAND", label: "Terrain" },
-    { value: "GARAGE", label: "Garage" },
-    { value: "PARKING", label: "Parking" },
   ]
 
   const status = [
@@ -355,6 +375,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       totalArea: "",
       mezzanineArea: "",
       mezzaninePrice: "",
+      commissionPerM2: "",
     });
     // Reset surfaces and pricing states
     setSurfaces({
@@ -377,6 +398,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     setParkingDisponible(false);
     setParkingInclus(false);
     setPrixParking("");
+    setCommissionPerM2("");
     closeModal();
   }
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -587,64 +609,62 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     if (validateForm()) return; // Stop execution if there are validation errors
 
     const formDataToSend = new FormData();
-
-    // ✅ FIX: Send only the fields the backend expects with correct names
-
-    // Project ID (needed for the API endpoint)
-    formDataToSend.append('id', formData.id);
-
-    // Basic required fields
-    formDataToSend.append('number', formData.number);
-    formDataToSend.append('type', formData.type);
-    formDataToSend.append('status', formData.status);
-
-    // Optional fields - floor only for property types that have floors
-    const typesWithFloor = [
-      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
-      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
-    ];
-    if (formData.floor && typesWithFloor.includes(formData.type)) {
-      formDataToSend.append('floor', formData.floor);
-    }
-    if (formData.zone) formDataToSend.append('zone', formData.zone);
-    if (formData.notes) formDataToSend.append('notes', formData.notes);
-    if (formData.clientId) formDataToSend.append('clientId', formData.clientId);
-    if (formData.image) formDataToSend.append('image', formData.image);
-
-    // ✅ FIX: Calculate and send the required 'price' field
-    const calculatedPrice = prixType === "FIXE" ?
-      Number(prixTotal) || 0 :
-      calcSummary.total || 0;
-    formDataToSend.append('price', calculatedPrice.toString());
-
-    // ✅ FIX: Calculate and send the 'area' field
-    let totalArea = 0;
-    if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
-      totalArea = Number(surfaces.habitable) || 0;
-    } else {
-      totalArea = Number(landStoreFields.totalArea) || 0;
-    }
-    if (totalArea > 0) formDataToSend.append('area', totalArea.toString());
-
-    // ✅ FIX: Send pricePerM2 if using M2 pricing
-    if (prixType === "M2" && prixM2) {
-      formDataToSend.append('pricePerM2', prixM2);
-    }
-
-    // ✅ FIX: Send prixType for backend compatibility
-    formDataToSend.append('prixType', prixType);
-
-    try {
-      await addApartments(formDataToSend);
-      console.log("Property saved successfully");
-      if (onApartementsAdded) {
-        onApartementsAdded(); // Call the refresh callback to update the project list
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null) {
+        if (value instanceof File) {
+          formDataToSend.append(key, value);
+        } else {
+          formDataToSend.append(key, String(value));
+        }
       }
-      handleCloseModal();
-    } catch (error) {
-      console.error("Error saving property:", error);
-      // Handle error appropriately
+    });
+
+    // Add land/store specific fields if applicable
+    if (isLandType() || isStoreType()) {
+      formDataToSend.append('totalArea', landStoreFields.totalArea);
+      if (isStoreType()) {
+        formDataToSend.append('mezzanineArea', landStoreFields.mezzanineArea);
+        formDataToSend.append('mezzaninePrice', landStoreFields.mezzaninePrice);
+      }
     }
+
+    // Add surfaces and pricing data for all property types
+    formDataToSend.append('prixType', prixType);
+    if (prixType === "FIXE") {
+      formDataToSend.append('prixTotal', prixTotal);
+    } else {
+      formDataToSend.append('prixM2', prixM2);
+      if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
+        formDataToSend.append('prixBalconPct', prixBalconPct);
+        formDataToSend.append('prixTerrassePct', prixTerrassePct);
+        formDataToSend.append('prixPiscine', prixPiscine);
+      }
+    }
+    
+    // Add commission if provided
+    if (commissionPerM2) {
+      formDataToSend.append('commissionPerM2', commissionPerM2.toString());
+    }
+    
+    if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
+      Object.entries(surfaces).forEach(([key, value]) => {
+        if (value) formDataToSend.append(key, value);
+      });
+    }
+    
+    if (parkingDisponible) {
+      formDataToSend.append('parkingInclus', parkingInclus.toString());
+      if (!parkingInclus) {
+        formDataToSend.append('prixParking', prixParking);
+      }
+    }
+
+    await addApartments(formDataToSend);
+    console.log("Saving project with data:", formData);
+    if (onApartementsAdded) {
+      onApartementsAdded(); // Call the refresh callback to update the project list
+    }
+    handleCloseModal();
   };
 
   // Stepper steps
@@ -661,7 +681,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       <Modal
         isOpen={isOpen}
         onClose={handleCloseModal}
-        className="max-w-2xl p-5 lg:p-10 m-4"
+        className="w-full max-w-4xl p-5 lg:p-10 m-4"
       >
         <div className="mb-4">
           <h1 className="text-2xl font-bold">Ajouter un bien</h1>
@@ -672,7 +692,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
             <form onSubmit={e => { e.preventDefault(); setStep(1); }}>
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
                 {/* Project, Type, Floor, Number, Zone, Status, Client, Plan, Notes */}
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Projet <span className="text-red-500">*</span></Label>
                   <Select
                     name="id"
@@ -684,7 +704,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   />
                   {errors.id && <p className="text-sm text-red-500 mt-1">{errors.id}</p>}
                 </div>
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Type <span className="text-red-500">*</span></Label>
                   <Select
                     name="type"
@@ -698,7 +718,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 
                 {/* Conditional fields based on property type */}
                 {needsFloorField() && (
-                  <div className="col-span-1">
+                  <div className="col-span-2 sm:col-span-1">
                     <Label>Étage <span className="text-red-500">*</span></Label>
                     <Input 
                       name="floor" 
@@ -712,26 +732,26 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                         setErrors(prev => ({ ...prev, floor: error }));
                       }}
                       min="0"
-                      step={1}
+                      step={0.01}
                     />
                     {errors.floor && <p className="text-sm text-red-500 mt-1">{errors.floor}</p>}
                   </div>
                 )}
                 {(shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") && (
-                  <div className="col-span-1">
+                  <div className="col-span-2 sm:col-span-1">
                     <Label>Zone <span className="text-red-500">*</span></Label>
                     <Input name="zone" type="text" placeholder="ex: Zone 1" value={formData.zone} onChange={handleChange} />
                     {errors.zone && <p className="text-sm text-red-500 mt-1">{errors.zone}</p>}
                   </div>
                 )}
                 
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Numéro <span className="text-red-500">*</span></Label>
                   <Input name="number" type="text" placeholder="ex: 10A" value={formData.number} onChange={handleChange} />
                   {errors.number && <p className="text-sm text-red-500 mt-1">{errors.number}</p>}
                 </div>
                 
-                <div className="col-span-1">
+                <div className="col-span-2 sm:col-span-1">
                   <Label>Statut <span className="text-red-500">*</span></Label>
                   <Select
                     options={status}
@@ -743,14 +763,14 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 </div>
                 
                 {(formData.status === "SOLD" || formData.status === "RESERVED") && (
-                  <div className="col-span-1" ref={clientSearchRef}>
+                  <div className="col-span-2 sm:col-span-1" ref={clientSearchRef}>
                     <Label>Client <span className="text-red-500">*</span></Label>
                     <div className="relative">
                       <div onClick={() => setShowClientDropdown(true)}>
                         <Input
                           name="clientSearch"
                           type="text"
-                          value={clientSearch}
+                          defaultValue={clientSearch}
                           onChange={handleClientSearch}
                           placeholder="Rechercher un client..."
                           className="w-full"
@@ -812,7 +832,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 {(shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") ? (
                   <>
                     {/* Surfaces for Villa, Apartment, Duplex */}
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface habitable (m²) <span className="text-red-500">*</span></Label>
                       <Input 
                         name="habitable" 
@@ -830,7 +850,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       />
                       {errors.habitable && <p className="text-sm text-red-500 mt-1">{errors.habitable}</p>}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface balcon (m²)</Label>
                       <Input 
                         name="balcon" 
@@ -852,7 +872,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       />
                       {errors.balcon && <p className="text-sm text-red-500 mt-1">{errors.balcon}</p>}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface terrasse (m²)</Label>
                       <Input 
                         name="terrasse" 
@@ -874,7 +894,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                       />
                       {errors.terrasse && <p className="text-sm text-red-500 mt-1">{errors.terrasse}</p>}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface piscine (m²)</Label>
                       <Input 
                         name="piscine" 
@@ -900,7 +920,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                 ) : (
                   <>
                     {/* Fields for Land and Store types */}
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Surface totale (m²) <span className="text-red-500">*</span></Label>
                       <Input 
                         name="totalArea" 
@@ -921,7 +941,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     
                     {isStoreType() && (
                       <>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Surface mezzanine (m²)</Label>
                           <Input 
                             name="mezzanineArea" 
@@ -943,7 +963,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                           />
                           {errors.mezzanineArea && <p className="text-sm text-red-500 mt-1">{errors.mezzanineArea}</p>}
                         </div>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix mezzanine (DH)</Label>
                           <Input 
                             name="mezzaninePrice" 
@@ -979,8 +999,32 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   </div>
                 </div>
                 
+                {/* Commission per m² for all property types */}
+                <div className="col-span-2 sm:col-span-1">
+                  <Label>Commission par m² (DH)</Label>
+                  <Input 
+                    name="commissionPerM2" 
+                    type="number" 
+                    placeholder="ex: 500" 
+                    value={commissionPerM2 === "" ? "" : Number(commissionPerM2)} 
+                    onChange={e => {
+                      const value = e.target.value;
+                      setCommissionPerM2(value);
+                      if (value !== "") {
+                        const error = validateNonNegativeNumber(value, "La commission par m²");
+                        setErrors(prev => ({ ...prev, commissionPerM2: error }));
+                      } else {
+                        setErrors(prev => ({ ...prev, commissionPerM2: "" }));
+                      }
+                    }}
+                    min="0"
+                    step={0.01}
+                  />
+                  {errors.commissionPerM2 && <p className="text-sm text-red-500 mt-1">{errors.commissionPerM2}</p>}
+                </div>
+                
                 {prixType === "FIXE" ? (
-                  <div className="col-span-2">
+                  <div className="col-span-2 sm:col-span-1">
                     <Label>Prix total (DH) <span className="text-red-500">*</span></Label>
                     <Input 
                       name="prixTotal" 
@@ -1000,7 +1044,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   </div>
                 ) : (
                   <>
-                    <div className="col-span-1">
+                    <div className="col-span-2 sm:col-span-1">
                       <Label>Prix par m² (DH) <span className="text-red-500">*</span></Label>
                       <Input 
                         name="prixM2" 
@@ -1021,7 +1065,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                     
                     {shouldShowStandardFields() && (
                       <>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix balcon (% du prix au m² habitable)</Label>
                           <Input 
                             name="prixBalconPct" 
@@ -1057,7 +1101,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                             <p className="text-xs text-red-500 mt-1">{errors.prixBalconPct}</p>
                           )}
                         </div>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix terrasse (% du prix au m² habitable)</Label>
                           <Input 
                             name="prixTerrassePct" 
@@ -1093,7 +1137,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                             <p className="text-xs text-red-500 mt-1">{errors.prixTerrassePct}</p>
                           )}
                         </div>
-                        <div className="col-span-1">
+                        <div className="col-span-2 sm:col-span-1">
                           <Label>Prix piscine (DH/m²)</Label>
                           <Input 
                             name="prixPiscine" 
@@ -1167,33 +1211,38 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
               
               {/* Conditional calculation summary */}
               {shouldShowStandardFields() && (
-                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold mb-2">Calcul du prix total</h4>
-                  <div className="space-y-1 text-sm">
+                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 dark:border-blue-200 dark:bg-blue-900 rounded-lg">
+                  <h4 className="font-semibold mb-2 dark:text-white">Calcul du prix total</h4>
+                  <div className="space-y-1 text-sm dark:text-gray-200">
                     <div>Surface habitable ({surfaces.habitable || 0} m²): <span className="font-medium">{calcSummary.main.toLocaleString()} DH</span></div>
                     {Number(surfaces.balcon) > 0 && <div>Balcon ({surfaces.balcon} m²): <span className="font-medium">{calcSummary.balcon.toLocaleString()} DH</span></div>}
                     {Number(surfaces.terrasse) > 0 && <div>Terrasse ({surfaces.terrasse} m²): <span className="font-medium">{calcSummary.terrasse.toLocaleString()} DH</span></div>}
                     {Number(surfaces.piscine) > 0 && <div>Piscine ({surfaces.piscine} m²): <span className="font-medium">{calcSummary.piscine.toLocaleString()} DH</span></div>}
                     {parkingDisponible && <div>Parking: <span className="font-medium">{calcSummary.parking.toLocaleString()} DH</span></div>}
-                    <div className="mt-2 font-bold text-blue-900">Total: {calcSummary.total.toLocaleString()} DH</div>
+                    {Number(commissionPerM2) > 0 && (
+                      <div>Commission: <span className="font-medium">{calcSummary.commissionTotal.toLocaleString()} DH</span></div>
+                    )}
+                    <div className="mt-2 font-bold text-blue-900 dark:text-blue-200">Total: {calcSummary.total.toLocaleString()} DH</div>
                   </div>
                 </div>
               )}
               
               {!shouldShowStandardFields() && (
-                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold mb-2">Calcul du prix total</h4>
-                  <div className="space-y-1 text-sm">
+                <div className="mt-8 mb-4 p-4 bg-blue-50 border border-blue-200 dark:border-blue-200 dark:bg-blue-900 rounded-lg">
+                  <h4 className="font-semibold mb-2 dark:text-white">Calcul du prix total</h4>
+                  <div className="space-y-1 text-sm dark:text-gray-200">
                     <div>Surface totale ({landStoreFields.totalArea || 0} m²): <span className="font-medium">{calcSummary.main.toLocaleString()} DH</span></div>
                     {isStoreType() && Number(landStoreFields.mezzanineArea) > 0 && (
                       <div>Mezzanine ({landStoreFields.mezzanineArea} m²): <span className="font-medium">{calcSummary.mezzanine.toLocaleString()} DH</span></div>
                     )}
                     {parkingDisponible && <div>Parking: <span className="font-medium">{calcSummary.parking.toLocaleString()} DH</span></div>}
-                    <div className="mt-2 font-bold text-blue-900">Total: {calcSummary.total.toLocaleString()} DH</div>
+                    {Number(commissionPerM2) > 0 && (
+                      <div>Commission: <span className="font-medium">{calcSummary.commissionTotal.toLocaleString()} DH</span></div>
+                    )}
+                    <div className="mt-2 font-bold text-blue-900 dark:text-blue-200">Total: {calcSummary.total.toLocaleString()} DH</div>
                   </div>
                 </div>
               )}
-              
               <div className="flex items-center justify-between w-full gap-3 mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button size="sm" variant="outline" onClick={handlePreviousStep}>Précédent</Button>
                 <Button size="sm" type="submit">Créer le lot</Button>

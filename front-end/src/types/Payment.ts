@@ -6,7 +6,7 @@ export interface Payment {
     amount: number;
     dueDate: Date;
     status: "PENDING" | "PAID" | "LATE";
-    proofOfPayment: File | null;
+    proofOfPayment?: File | null;
     contract?: Contract;
     property: Property;
     createdAt: Date;

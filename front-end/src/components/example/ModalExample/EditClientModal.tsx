@@ -7,10 +7,12 @@ import Label from "../../form/Label"
 import Input from "../../form/input/InputField"
 import { useModal } from "@/hooks/useModal"
 import Select from "../../form/Select"
-import { Trash2, Search } from "lucide-react"
+import { Trash2, Search, X } from "lucide-react"
 import updateClient from "@/app/(admin)/clients/updateClient"
+import { Textarea } from "@/components/ui/textarea"
 import getProperties from "@/components/tables/DataTables/Projects/getProperties"
 import getProjectApartements from "@/components/tables/DataTables/Properties/getProjectApartements"
+import FileInput from "../../form/input/FileInput"
 import { PencilIcon } from "@/icons"
 import type { Client } from "@/types/client"
 import { Property } from "@/types/property"
@@ -60,36 +62,43 @@ interface ProjectApartment {
 
 export default function EditClientModal({ onClientUpdated, clientData, details }: EditClientModalProps) {
   const { isOpen, openModal, closeModal } = useModal()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // State for form fields
   const [formData, setFormData] = useState({
     id: clientData.id || "",
+    name: clientData.name || "",
     firstName: clientData.firstName || "",
     lastName: clientData.lastName || "",
-    name: clientData.name || "",
     email: clientData.email || "",
     phoneNumber: clientData.phoneNumber || "",
     whatsappNumber: clientData.whatsappNumber || "",
-    status: clientData.status || "PROSPECT",
+    status: clientData.status || "LEAD",
     notes: clientData.notes || "",
     provenance: clientData.provenance || "",
     projectId: "",
     apartmentId: [] as string[],
-    password: "",
-    confirmPassword: "",
+    identityType: clientData.identityType || "",
+    identityNumber: clientData.identityNumber || "",
   })
+
+  // State for file inputs
+  const [identityRecto, setIdentityRecto] = useState<File | null>(null)
+  const [identityVerso, setIdentityVerso] = useState<File | null>(null)
 
   // State for validation errors
   const [errors, setErrors] = useState({
+    name: "",
     firstName: "",
     lastName: "",
-    name: "",
     email: "",
     phoneNumber: "",
     whatsappNumber: "",
     provenance: "",
-    password: "",
-    confirmPassword: "",
+    identityType: "",
+    identityNumber: "",
+    identityRecto: "",
+    identityVerso: "",
   })
 
   // State for projects and their apartments
@@ -113,10 +122,16 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   useEffect(() => {
     console.log("Selected apartments:", selectedApartments)
   }, [selectedApartments])
+  
   // Status options
   const status = [
     { value: "CLIENT", label: "Client" },
-    { value: "PROSPECT", label: "Prospect" },
+    { value: "LEAD", label: "Prospect" },
+  ]
+
+  const IdentityType = [
+    { value: "Carte d'identité", label: "Carte d'identité" },
+    { value: "Passport", label: "Passport" },
   ]
 
   // Initialize existing apartments from clientData
@@ -126,8 +141,8 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       const projectMap = new Map<string, ProjectApartment>()
 
       clientData.interestedApartments.forEach((item: Property) => {
-        const projectId = item.projectId
-        const projectName = item.project.name
+        const projectId = item.project?.id
+        const projectName = item.project?.name
         const apartmentId = String(item.id)
         const apartmentNumber = item.number
         const apartmentName = item.type || `${item.number}`
@@ -154,9 +169,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
           }
         }
         // Add all apartments from this project
-        if (item.project.apartments && item.project.apartments.length > 0) {
+        if (item.project?.properties && item.project.properties.length > 0) {
           const project = projectMap.get(String(projectId))!
-          item.project.apartments.forEach((apartment) => {
+          item.project.properties.forEach((apartment) => {
             project.apartments.push({
               id: String(apartment.id),
               name: `${apartment.type} ${apartment.number || apartment.id}`,
@@ -169,7 +184,6 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       setSelectedApartments(Array.from(projectMap.values()))
     }
   }, [clientData])
-
 
   // Update form field values
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -186,18 +200,59 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     }))
   }
 
+  // Handle file input changes
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fileType: 'recto' | 'verso') => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type (images only)
+      if (!file.type.startsWith('image/')) {
+        setErrors(prev => ({
+          ...prev,
+          [fileType === 'recto' ? 'identityRecto' : 'identityVerso']: "Veuillez sélectionner un fichier image"
+        }))
+        return
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({
+          ...prev,
+          [fileType === 'recto' ? 'identityRecto' : 'identityVerso']: "Le fichier ne doit pas dépasser 5MB"
+        }))
+        return
+      }
+
+      if (fileType === 'recto') {
+        setIdentityRecto(file)
+      } else {
+        setIdentityVerso(file)
+      }
+
+      // Clear errors
+      setErrors(prev => ({
+        ...prev,
+        [fileType === 'recto' ? 'identityRecto' : 'identityVerso']: ""
+      }))
+    }
+  }
+
   const validateForm = (): boolean => {
     let valid = true;
     const newErrors = { ...errors };
 
     // Required field validation
+    if (!formData.name.trim()) {
+      newErrors.name = "Le nom est requis";
+      valid = false;
+    }
+
     if (!formData.firstName.trim()) {
       newErrors.firstName = "Le prénom est requis";
       valid = false;
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = "Le nom de famille est requis";
+      newErrors.lastName = "Le nom est requis";
       valid = false;
     }
 
@@ -217,32 +272,25 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       valid = false;
     }
 
-    // WhatsApp number validation (optional but must be valid if provided)
-    if (formData.whatsappNumber.trim() && !/^[+\d\s\-()]{7,20}$/.test(formData.whatsappNumber.trim())) {
-      newErrors.whatsappNumber = "Format de numéro WhatsApp invalide";
-      valid = false;
-    }
-
     if (!formData.provenance.trim()) {
       newErrors.provenance = "Ce champ est requis";
       valid = false;
     }
 
-    // Validate password if changing from PROSPECT to CLIENT
-    if (formData.status === "CLIENT" && clientData.status === "PROSPECT") {
-      if (!formData.password.trim()) {
-        newErrors.password = "Le mot de passe est requis pour créer un compte client";
-        valid = false;
-      } else if (formData.password.length < 6) {
-        newErrors.password = "Le mot de passe doit contenir au moins 6 caractères";
+    // Validate identity documents
+    if (formData.status === "CLIENT") {
+      if (!formData.identityNumber.trim()) {
+        newErrors.identityNumber = "Le numéro de pièce d'identité est requis";
         valid = false;
       }
 
-      if (!formData.confirmPassword.trim()) {
-        newErrors.confirmPassword = "Veuillez confirmer le mot de passe";
+      if (!identityRecto && !clientData.identityRecto) {
+        newErrors.identityRecto = "Le recto de la pièce d'identité est requis";
         valid = false;
-      } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
+      }
+
+      if (formData.identityType === "Carte d'identité" && !identityVerso && !clientData.identityVerso) {
+        newErrors.identityVerso = "Le verso de la pièce d'identité est requis";
         valid = false;
       }
     }
@@ -252,55 +300,56 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   };
 
   const handleSave = async () => {
-    console.log("🎯 [EditModal] Save button clicked");
-    console.log("📝 [EditModal] Form data:", formData);
-    console.log("👤 [EditModal] Original client data:", clientData);
-
     // Validate required fields
     if (!validateForm()) {
-      console.log("❌ [EditModal] Form validation failed");
       return;
     }
 
-    console.log("✅ [EditModal] Form validation passed");
+    setIsSubmitting(true);
 
     // Flatten all selected apartments into a single array of IDs
     const allApartmentIds = selectedApartments.flatMap((project) => project.apartments.map((apt) => apt.id))
 
-    // Prepare client data object
-    const clientDataToSend = {
-      id: formData.id,
-      firstName: formData.firstName.trim(),
-      lastName: formData.lastName.trim(),
-      email: formData.email.trim(),
-      phoneNumber: formData.phoneNumber.trim(),
-      whatsappNumber: formData.whatsappNumber.trim() || undefined,
-      status: formData.status as "PROSPECT" | "CLIENT",
-      notes: formData.notes.trim(),
-      provenance: formData.provenance.trim(),
-      apartmentId: allApartmentIds,
-      // Only include password if changing from PROSPECT to CLIENT
-      ...(formData.status === "CLIENT" && clientData.status === "PROSPECT" && {
-        password: formData.password
-      })
-    };
+    const formDataToSend = new FormData()
 
-    console.log("🚀 [EditModal] Sending client data to API...");
-    console.log("📋 [EditModal] Client data:", { ...clientDataToSend, password: clientDataToSend.password ? "[REDACTED]" : undefined });
+    // Add client ID for update
+    formDataToSend.append("id", formData.id as string)
+
+    // Add all form fields except apartmentId
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "apartmentId" && key !== "projectId") {
+        formDataToSend.append(key, value as string)
+      }
+    })
+
+    // Add all apartment IDs
+    allApartmentIds.forEach((id) => {
+      formDataToSend.append("apartmentId", id)
+    })
+
+    // Add identity document files
+    if (identityRecto) {
+      formDataToSend.append("identityRecto", identityRecto)
+    }
+    if (identityVerso) {
+      formDataToSend.append("identityVerso", identityVerso)
+    }
+
+    console.log("Formulaire envoyé:", formDataToSend)
 
     try {
-      await updateClient(clientDataToSend)
-      console.log("✅ [EditModal] Client updated successfully");
+      await updateClient(formDataToSend)
 
       if (onClientUpdated) {
-        console.log("🔄 [EditModal] Calling refresh callback");
         onClientUpdated() // Call the refresh callback to update the client list
       }
 
       closeModal()
     } catch (error) {
-      console.error("💥 [EditModal] Error updating client:", error)
+      console.error("Erreur lors de la mise à jour du client:", error)
       // Handle error (could add error state and display to user)
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -356,12 +405,11 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       ...prev,
       [name]: selectedValue,
     }))
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }))
   }
-
-  // Handle multi-select change for apartments
-  // const handleMultiSelectChange = (selected: string[]) => {
-  //   setTempSelectedApartments(selected)
-  // }
 
   // Add selected apartments to the list
   const handleAddApartments = () => {
@@ -442,8 +490,15 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       fetchApartmentsForProject(formData.projectId)
     } else {
       setCurrentProjectApartments([])
+      setFilteredApartments([])
+      setSearchQuery("")
     }
   }, [formData.projectId])
+
+  // Update the useEffect to initialize filtered apartments
+  useEffect(() => {
+    setFilteredApartments(currentProjectApartments)
+  }, [currentProjectApartments])
 
   function handleTextareaChange(event: React.ChangeEvent<HTMLTextAreaElement>): void {
     const { name, value } = event.target
@@ -474,6 +529,11 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     setFilteredApartments(filtered)
   }
 
+  // Add function to clear search
+  const clearSearch = () => {
+    setSearchQuery("")
+    setFilteredApartments(currentProjectApartments)
+  }
 
   return (
     <>
@@ -489,320 +549,400 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
           <PencilIcon onClick={openModal} />
         </span>
       )}
-      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
-            Modifier les informations du client
-          </h4>
+      <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[584px] p-5 lg:p-10 max-h-[90vh] overflow-hidden">
+        <div className="max-h-[calc(90vh-120px)] overflow-y-auto no-scrollbar scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
+          <form onSubmit={(e) => e.preventDefault()}>
+            <h4 className="mb-6 text-lg font-medium text-gray-800 dark:text-white/90">
+              Modifier les informations du client
+            </h4>
 
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
-            <div className="col-span-1">
-              <Label>
-                Prénom <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="firstName"
-                type="text"
-                placeholder="ex: Jean"
-                onChange={handleChange}
-                defaultValue={formData.firstName}
-              />
-              {errors.firstName && (
-                <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>
-              )}
-            </div>
-            <div className="col-span-1">
-              <Label>
-                Nom de famille <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="lastName"
-                type="text"
-                placeholder="ex: Dupont"
-                onChange={handleChange}
-                defaultValue={formData.lastName}
-              />
-              {errors.lastName && (
-                <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>
-              )}
-            </div>
-            <div className="col-span-1">
-              <Label>
-                Statut <span className="text-red-500">*</span>
-              </Label>
-              <Select
-                options={status}
-                name="status"
-                placeholder=""
-                defaultValue={formData.status}
-                onChange={(value, name) => handleSelectChange(value, name)}
-              />
-            </div>
-            <div className="col-span-1">
-              <Label>
-                Email <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="email"
-                type="text"
-                placeholder="ex: jean.dupont@exemple.com"
-                onChange={handleChange}
-                defaultValue={formData.email}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-              )}
-            </div>
+            <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
+              {/* first Name */}
+              <div className="col-span-2 sm:col-span-1">
+                <Label>
+                  Prénom <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="firstName"
+                  type="text"
+                  placeholder="ex: Jean"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  error={!!errors.firstName}
+                />
+                {errors.firstName && <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>}
+              </div>
+              {/* last Name */}
+              <div className="col-span-2 sm:col-span-1">
+                <Label>
+                  Nom <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="lastName"
+                  type="text"
+                  placeholder="ex: Dupont"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  error={!!errors.lastName}
+                />
+                {errors.lastName && <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>}
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <Label>
+                  Statut <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  options={status}
+                  name="status"
+                  placeholder=""
+                  defaultValue={formData.status}
+                  onChange={(value, name) => handleSelectChange(value, name)}
+                />
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <Label>
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="email"
+                  type="text"
+                  placeholder="ex: jean.dupont@exemple.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                />
+                {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+              </div>
 
-            <div className="col-span-1">
-              <Label>
-                Numéro de téléphone <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="phoneNumber"
-                type="phone"
-                placeholder="ex: 06-12-34-56-78"
-                onChange={handleChange}
-                defaultValue={formData.phoneNumber}
-              />
-              {errors.phoneNumber && (
-                <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>
-              )}
-            </div>
+              <div className="col-span-2 sm:col-span-1">
+                <Label>
+                  Numéro de téléphone <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="phoneNumber"
+                  type="phone"
+                  placeholder="ex: 06-12-34-56-78"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  error={!!errors.phoneNumber}
+                />
+                {errors.phoneNumber && <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>}
+              </div>
 
-            <div className="col-span-1">
-              <Label>
-                Numéro WhatsApp
-              </Label>
-              <Input
-                name="whatsappNumber"
-                type="phone"
-                placeholder="ex: 06-12-34-56-78 (optionnel)"
-                onChange={handleChange}
-                defaultValue={formData.whatsappNumber}
-              />
-              {errors.whatsappNumber && (
-                <p className="text-sm text-red-500 mt-1">{errors.whatsappNumber}</p>
-              )}
-            </div>
+              {/* WhatsApp number */}
+              <div className="col-span-2 sm:col-span-1">
+                <Label>
+                  Numéro de WhatsApp
+                </Label>
+                <Input
+                  name="whatsappNumber"
+                  type="phone"
+                  placeholder="ex: 06-12-34-56-78"
+                  value={formData.whatsappNumber}
+                  onChange={handleChange}
+                  error={!!errors.whatsappNumber}
+                />
+                {errors.whatsappNumber && <p className="mt-1 text-sm text-red-500">{errors.whatsappNumber}</p>}
+              </div>
 
-            {/* Project and Apartment Selection Section */}
-            <div className="col-span-2">
-              <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
-                Ajouter des biens
-              </h5>
-              <div className="flex flex-col gap-4 p-4 border rounded-lg">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="col-span-2">
-                    <Label>Projet</Label>
-                    <Select
-                      options={projects}
-                      name="projectId"
-                      placeholder="Sélectionner un projet"
-                      defaultValue={formData.projectId}
-                      onChange={(value, name) => handleSelectChange(value, name)}
-                    />
-                  </div>
-                  {formData.projectId && (
+              {/* Project and Apartment Selection Section */}
+              <div className="col-span-2">
+                <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
+                  Biens intéressés
+                </h5>
+                <div className="flex flex-col gap-4 p-4 border rounded-lg">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="col-span-2">
-                      <Label>
-                        Rechercher des biens <span className="text-red-500">*</span>
-                      </Label>
-                      <div className="relative">
+                      <Label>Projet</Label>
+                      <Select
+                        options={projects}
+                        name="projectId"
+                        placeholder="Sélectionner un projet"
+                        defaultValue={formData.projectId}
+                        onChange={(value, name) => handleSelectChange(value, name)}
+                      />
+                    </div>
+                    {formData.projectId && (
+                      <div className="col-span-2">
+                        <Label>Rechercher des biens</Label>
                         <div className="relative">
-                          <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            placeholder="Rechercher par type ou numéro..."
-                            className="w-full px-3 py-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          />
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                        </div>
-                        {searchQuery && filteredApartments.length > 0 && (
-                          <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
-                            {filteredApartments.map((apt) => (
-                              <div
-                                key={apt.value}
-                                className="px-3 py-2 cursor-pointer hover:bg-gray-100"
-                                onClick={() => {
-                                  if (!tempSelectedApartments.includes(apt.value)) {
-                                    setTempSelectedApartments([...tempSelectedApartments, apt.value])
-                                  }
-                                }}
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={searchQuery}
+                              onChange={handleSearchChange}
+                              placeholder="Rechercher par type ou numéro..."
+                              className="w-full px-3 py-2 pl-10 pr-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                            {searchQuery && (
+                              <button
+                                type="button"
+                                onClick={clearSearch}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                               >
-                                {apt.text}
-                              </div>
-                            ))}
+                                <X size={16} />
+                              </button>
+                            )}
+                          </div>
+                          {searchQuery && filteredApartments.length > 0 && (
+                            <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+                              {filteredApartments.map((apt) => (
+                                <div
+                                  key={apt.value}
+                                  className="px-3 py-2 cursor-pointer dark:text-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-800"
+                                  onClick={() => {
+                                    if (!tempSelectedApartments.includes(apt.value)) {
+                                      setTempSelectedApartments([...tempSelectedApartments, apt.value])
+                                    }
+                                  }}
+                                >
+                                  {apt.text}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        {tempSelectedApartments.length > 0 && (
+                          <div className="mt-2">
+                            <div className="flex flex-wrap gap-2">
+                              {tempSelectedApartments.map((id) => {
+                                const apt = currentProjectApartments.find((a) => a.value === id)
+                                return (
+                                  <div
+                                    key={id}
+                                    className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 dark:bg-blue-900 rounded-full"
+                                  >
+                                    <span>{apt?.text}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setTempSelectedApartments(tempSelectedApartments.filter(t => t !== id))}
+                                      className="text-blue-600 hover:text-blue-800"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
+                                )
+                              })}
+                            </div>
                           </div>
                         )}
                       </div>
-                      {tempSelectedApartments.length > 0 && (
-                        <div className="mt-2">
-                          <div className="flex flex-wrap gap-2">
-                            {tempSelectedApartments.map((id) => {
-                              const apt = currentProjectApartments.find((a) => a.value === id)
-                              return (
-                                <div
-                                  key={id}
-                                  className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-100 rounded-full"
-                                >
-                                  <span>{apt?.text}</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => setTempSelectedApartments(tempSelectedApartments.filter(t => t !== id))}
-                                    className="text-blue-600 hover:text-blue-800"
-                                  >
-                                    ×
-                                  </button>
-                                </div>
-                              )
-                            })}
-                          </div>
-                        </div>
-                      )}
+                    )}
+                  </div>
+
+                  {formData.projectId && tempSelectedApartments.length > 0 && (
+                    <div className="flex justify-end">
+                      <Button size="sm" onClick={handleAddApartments}>
+                        Ajouter les biens sélectionnés
+                      </Button>
                     </div>
                   )}
                 </div>
-
-                {formData.projectId && (
-                  <div className="flex justify-end">
-                    <Button size="sm" onClick={handleAddApartments} disabled={tempSelectedApartments.length === 0}>
-                      Ajouter les biens
-                    </Button>
-                  </div>
-                )}
               </div>
-            </div>
-            {/* Selected Apartments Display */}
-            {selectedApartments.length > 0 && (
-              <div className="col-span-2 mt-2">
-                <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">
-                  Biens sélectionnés
-                </h5>
-                <div className="p-4 border rounded-lg max-h-[300px] overflow-y-auto">
-                  {selectedApartments.map((project) => (
-                    <div key={project.projectId} className="mb-4">
-                      <h6 className="mb-2 font-medium">{project.projectName}</h6>
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {project.apartments.length === 0 && (
-                          <p className="text-sm text-gray-500">Aucun bien sélectionné</p>
-                        )}
-                        {project.apartments.map((apt) => (
-                          <div key={apt.id} className="flex items-center justify-between p-2 border rounded">
-                            <span className="text-sm truncate">{apt.name}</span>
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveApartment(project.projectId, apt.id)}
-                              className="p-1 text-red-500 hover:text-red-700"
-                              aria-label={`Remove ${apt.name}`}
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        ))}
+              {/* Selected Apartments Display */}
+              {selectedApartments.length > 0 && (
+                <div className="col-span-2 mt-2">
+                  <h5 className="mb-2 font-medium text-gray-800 dark:text-white/90">
+                    Biens sélectionnés
+                  </h5>
+                  <div className="p-4 border rounded-lg max-h-[300px] overflow-y-auto">
+                    {selectedApartments.map((project) => (
+                      <div key={project.projectId} className="mb-4">
+                        <h6 className="mb-2 font-medium">{project.projectName}</h6>
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          {project.apartments.length === 0 && (
+                            <p className="text-sm text-gray-500">Aucun bien sélectionné</p>
+                          )}
+                          {project.apartments.map((apt) => (
+                            <div key={apt.id} className="flex items-center justify-between p-2 border rounded">
+                              <span className="text-sm truncate">{apt.name}</span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveApartment(project.projectId, apt.id)}
+                                className="p-1 text-red-500 hover:text-red-700"
+                                aria-label={`Remove ${apt.name}`}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Password fields - only show when converting from PROSPECT to CLIENT */}
-            {formData.status === "CLIENT" && clientData.status === "PROSPECT" && (
-              <>
-                <div className="col-span-1 sm:col-span-2">
-                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <h6 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
-                      Création du compte client
-                    </h6>
-                    <p className="text-sm text-blue-600 dark:text-blue-300 mb-4">
-                      En changeant le statut vers "Client", un compte utilisateur sera créé pour permettre l'accès au portail client.
-                    </p>
-
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <div>
-                        <Label>
-                          Mot de passe <span className="text-red-500">*</span>
-                        </Label>
-                        <Input
-                          name="password"
-                          type="password"
-                          placeholder="Minimum 6 caractères"
-                          onChange={handleChange}
-                          value={formData.password}
-                        />
-                        {errors.password && (
-                          <p className="text-sm text-red-500 mt-1">{errors.password}</p>
-                        )}
-                      </div>
-                      <div>
-                        <Label>
-                          Confirmer le mot de passe <span className="text-red-500">*</span>
-                        </Label>
-                        <Input
-                          name="confirmPassword"
-                          type="password"
-                          placeholder="Confirmer le mot de passe"
-                          onChange={handleChange}
-                          value={formData.confirmPassword}
-                        />
-                        {errors.confirmPassword && (
-                          <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
-                        )}
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
-              </>
-            )}
-
-            <div className="col-span-1 sm:col-span-2">
-              <Label>
-                Comment nous avez-vous connu ? <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                name="provenance"
-                type="text"
-                placeholder="ex: Google, Recommandation"
-                onChange={handleChange}
-                defaultValue={formData.provenance}
-              />
-              {errors.provenance && (
-                <p className="text-sm text-red-500 mt-1">{errors.provenance}</p>
               )}
-            </div>
-            <div className="col-span-1 sm:col-span-2">
-              <Label>Notes</Label>
-              <CustomTextarea
-                rows={3}
-                name="notes"
-                placeholder="ex: Notes concernant le client"
-                onChange={handleTextareaChange}
-                defaultValue={formData.notes}
-              />
-            </div>
-          </div>
 
-          <div className="flex items-center justify-end w-full gap-3 mt-6">
-            <Button size="sm" variant="outline" onClick={closeModal}>
-              Annuler
-            </Button>
-            <Button
-              size="sm"
-              onClick={handleSave}
-              disabled={
-                selectedApartments.length === 0 ||
-                (formData.status === "CLIENT" && clientData.status === "PROSPECT" &&
-                 (!formData.password.trim() || formData.password !== formData.confirmPassword))
-              }
-            >
-              {formData.status === "CLIENT" && clientData.status === "PROSPECT"
-                ? "Créer le compte client"
-                : "Mettre à jour"}
-            </Button>
-          </div>
-        </form>
+              {/* Provenance */}
+              <div className="col-span-2">
+                <Label>
+                  Comment nous avez-vous connu ? <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  name="provenance"
+                  type="text"
+                  placeholder="ex: Google, Recommandation"
+                  value={formData.provenance}
+                  onChange={handleChange}
+                  error={!!errors.provenance}
+                />
+                {errors.provenance && <p className="mt-1 text-sm text-red-500">{errors.provenance}</p>}
+              </div>
+
+              {/* Identity Type */}
+              {formData.status === "CLIENT" && (
+                <> 
+                <div className="col-span-2 sm:col-span-1">
+                  <Label>
+                    Type de pièce d'identité <span className="text-red-500">*</span>
+                  </Label>
+                  <Select
+                    options={IdentityType}
+                    name="identityType"
+                    placeholder="Sélectionner un type"
+                    defaultValue={formData.identityType}
+                    onChange={(value, name) => handleSelectChange(value, name)}
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <Label>
+                    Numéro de pièce d'identité <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    name="identityNumber"
+                    type="text"
+                    placeholder="ex: AB234567890"
+                    value={formData.identityNumber}
+                    onChange={handleChange}
+                    error={!!errors.identityNumber}
+                  />
+                  {errors.identityNumber && <p className="mt-1 text-sm text-red-500">{errors.identityNumber}</p>}
+                </div>
+                </>
+              )}
+
+              {/* Identity Document Upload Section */}
+              {formData.status === "CLIENT" && formData.identityType && (
+                <div className="col-span-2">
+                  <h5 className="mb-3 font-medium text-gray-800 dark:text-white/90">
+                    Pièce d'identité <span className="text-red-500">*</span>
+                  </h5>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {formData.identityType === "Passport" ? (
+                      // Single file input for passport
+                      <div className="col-span-1 sm:col-span-2">
+                        <Label>
+                          Passport <span className="text-red-500">*</span>
+                        </Label>
+                        <FileInput
+                          name="identityRecto"
+                          onChange={(e) => handleFileChange(e, 'recto')}
+                          placeholder="Sélectionnez le passport"
+                        />
+                        {identityRecto && (
+                          <p className="mt-1 text-sm text-green-600">
+                            ✓ {identityRecto.name}
+                          </p>
+                        )}
+                        {clientData.identityRecto && !identityRecto && (
+                          <p className="mt-1 text-sm text-blue-600">
+                            ✓ Document existant
+                          </p>
+                        )}
+                        {errors.identityRecto && <p className="mt-1 text-sm text-red-500">{errors.identityRecto}</p>}
+                      </div>
+                    ) : (
+                      // Two file inputs for carte d'identité
+                      <>
+                        <div className="col-span-2 sm:col-span-1">
+                          <Label>
+                            Recto <span className="text-red-500">*</span>
+                          </Label>
+                          <FileInput
+                            name="identityRecto"
+                            onChange={(e) => handleFileChange(e, 'recto')}
+                            placeholder="Sélectionnez le recto"
+                          />
+                          {identityRecto && (
+                            <p className="mt-1 text-sm text-green-600">
+                              ✓ {identityRecto.name}
+                            </p>
+                          )}
+                          {clientData.identityRecto && !identityRecto && (
+                            <p className="mt-1 text-sm text-blue-600">
+                              ✓ Document existant
+                            </p>
+                          )}
+                          {errors.identityRecto && <p className="mt-1 text-sm text-red-500">{errors.identityRecto}</p>}
+                        </div>
+
+                        <div className="col-span-2 sm:col-span-1">
+                          <Label>
+                            Verso <span className="text-red-500">*</span>
+                          </Label>
+                          <FileInput
+                            name="identityVerso"
+                            onChange={(e) => handleFileChange(e, 'verso')}
+                            placeholder="Sélectionnez le verso"
+                          />
+                          {identityVerso && (
+                            <p className="mt-1 text-sm text-green-600">
+                              ✓ {identityVerso.name}
+                            </p>
+                          )}
+                          {clientData.identityVerso && !identityVerso && (
+                            <p className="mt-1 text-sm text-blue-600">
+                              ✓ Document existant
+                            </p>
+                          )}
+                          {errors.identityVerso && <p className="mt-1 text-sm text-red-500">{errors.identityVerso}</p>}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <p className="mt-2 text-xs text-gray-500">
+                    Formats acceptés : JPG, PNG, GIF. Taille maximale : 5MB par fichier.
+                  </p>
+                </div>
+              )}
+
+              <div className="col-span-2">
+                <Label>Notes</Label>
+                <Textarea
+                  rows={3}
+                  name="notes"
+                  placeholder="ex: Notes concernant le client"
+                  value={formData.notes}
+                  onChange={handleTextareaChange}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end w-full gap-3 mt-6">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={closeModal}
+                disabled={isSubmitting}
+              >
+                Annuler
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={
+                  isSubmitting || 
+                  selectedApartments.length === 0 || 
+                  (formData.status === "CLIENT" && !identityRecto && !clientData.identityRecto) || 
+                  (formData.status === "CLIENT" && formData.identityType === "Carte d'identité" && !identityVerso && !clientData.identityVerso)
+                }
+              >
+                {isSubmitting ? 'Mise à jour...' : 'Mettre à jour'}
+              </Button>
+            </div>
+          </form>
+        </div>
       </Modal>
     </>
   )

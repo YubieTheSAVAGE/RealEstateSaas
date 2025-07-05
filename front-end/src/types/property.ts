@@ -1,11 +1,8 @@
 import { Client } from "./client";
 import { Project } from "./project";
+import { PaymentPlan } from "./Payment";
 
-export type PropertyType =
-  | "APARTMENT" | "DUPLEX" | "VILLA" | "PENTHOUSE" | "STUDIO" | "LOFT" | "TOWNHOUSE"
-  | "STORE" | "OFFICE" | "WAREHOUSE"
-  | "LAND"
-  | "GARAGE" | "PARKING";
+export type PropertyType = "APARTMENT" | "DUPLEX" | "VILLA" | "STORE" | "LAND";
 export type ApartmentStatus = "AVAILABLE" | "RESERVED" | "SOLD";
 
 export interface Property {
@@ -14,36 +11,49 @@ export interface Property {
   number: string;
   type: PropertyType;
   status: ApartmentStatus;
-
+  
   // Location and structural information
-  floor?: number | null;
-  zone?: string | null;
-  area?: number | null;
-
+  floor?: number;
+  zone?: string;
+  
   // Media and documentation
   image?: string | null;
   notes?: string | null;
-  threeDViewUrl?: string | null;
-
-  // Backend pricing fields (matching Prisma schema)
-  price: number;              // Backend field name
-  pricePerM2?: number | null; // Backend field name
-  prixType?: "FIXE" | "M2" | null;
-
+  
   // Relationships
   project: Project;
-  projectId: number;
   client?: Client | null;
-  clientId?: number | null;
   userId?: number | null;
-  interestedClients?: Client[] | null;
-
+  interestedClients?: Client[] | null; // List of clients interested in this property
+  
   // Timestamps
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-
-  // Legacy frontend fields (for backward compatibility)
-  // These are calculated/derived fields, not stored in backend
-  prixTotal?: number; // Calculated from price
-  prixM2?: number;    // Calculated from pricePerM2
+  updatedAt?: Date | string | undefined; // Use Date for consistency, can be string if coming from API
+  
+  // Surface measurements for Villa, Apartment, Duplex
+  habitable?: number; // Surface habitable in m²
+  balcon?: number; // Surface balcon in m²
+  terrasse?: number; // Surface terrasse in m²
+  piscine?: number; // Surface piscine in m²
+  
+  // Land and Store specific measurements
+  totalArea?: number; // Surface totale for Land and Store types
+  mezzanineArea?: number; // Surface mezzanine for Store type
+  mezzaninePrice?: number; // Prix mezzanine for Store type
+  
+  // Pricing configuration
+  prixType?: "FIXE" | "M2"; // Type de prix: fixe or per m²
+  prixTotal: number; // Prix total for FIXE type
+  commissionPerM2?: number;
+  prixM2?: number; // Prix par m² for M2 type
+  payments?: PaymentPlan;
+  
+  // Percentage-based pricing for annexes
+  prixBalconPct?: number; // Pourcentage du prix au m² pour balcon
+  prixTerrassePct?: number; // Pourcentage du prix au m² pour terrasse
+  prixPiscine?: number; // Prix piscine par m²
+  
+  // Parking configuration and pricing
+  parkingDisponible?: boolean; // Whether parking is available
+  parkingInclus?: boolean; // Whether parking is included in price
+  prixParking?: number; // Prix du parking
 }

@@ -2,8 +2,9 @@
 
 import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
-import ClientSidebar from "@/layout/ClientSidebar";
+import ClientAppSidebar from "@/layout/ClientAppSidebar";
 import Backdrop from "@/layout/Backdrop";
+import React from "react";
 
 export default function ClientLayout({
   children,
@@ -22,11 +23,11 @@ export default function ClientLayout({
   return (
     <div className="min-h-screen xl:flex">
       {/* Sidebar and Backdrop */}
-      <ClientSidebar />
+      <ClientAppSidebar />
       <Backdrop />
       {/* Main Content Area */}
       <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}
+        className={`flex-1 transition-all  duration-300 ease-in-out ${mainContentMargin}`}
       >
         {/* Header */}
         <AppHeader />

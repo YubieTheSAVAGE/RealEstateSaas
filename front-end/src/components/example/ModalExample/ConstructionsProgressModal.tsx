@@ -33,8 +33,11 @@ export default function ConstructionsProgressModal({ percentage, status }: Const
 
   return (
     <>
-      <DropdownItem onItemClick={openModal}>
-        Travaux 
+      <DropdownItem 
+        onItemClick={openModal}
+        className="text-gray-500 hover:text-success-600 dark:text-gray-400 dark:hover:text-success-500 cursor-pointer"
+      >
+        travaux
       </DropdownItem>
       <Modal
         isOpen={isOpen}
