@@ -28,9 +28,12 @@ model User {
 model Client {
   id                   Int          @id @default(autoincrement())
   name                 String
+  firstName          String?
+  lastName           String?
   email                String       @unique
   phoneNumber          String
   notes                String?
+  WhatsappNumber     String?
   provenance           String
   status               ClientStatus @default(PROSPECT)
   userId               Int?         @unique // Optional link to User account for CLIENT status
@@ -41,6 +44,7 @@ model Client {
   user                 User?        @relation("ClientUser", fields: [userId], references: [id])
   createdBy            User         @relation("CreatedClients", fields: [createdById], references: [id])
   interestedApartments Apartment[]  @relation("InterestedApartments")
+  
 }
 
 model Project {

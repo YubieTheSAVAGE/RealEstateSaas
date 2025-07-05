@@ -12,7 +12,6 @@ const activityRoutes = require('./routes/activity.routes');
 const static = require('@fastify/static');
 const path = require('path');
 
-
 const { jwtPlugin, corsPlugin } = require('./plugins');
 
 const app = Fastify({
@@ -38,9 +37,64 @@ app.register(static, {
 
 app.register(require('./middleware/auth.middleware'))
 
-// Swagger/OpenAPI documentation temporarily disabled
-console.log('📚 [Info] API documentation temporarily disabled');
-console.log('� [Info] API endpoints available without documentation');
+// Swagger/OpenAPI Configuration
+console.log('📚 [Swagger] Initializing API documentation...');
+
+const swaggerConfig = {
+  openapi: {
+    info: {
+      title: 'Real Estate SaaS API',
+      description: 'Comprehensive API for Real Estate SaaS platform with authentication, client management, project management, property management, and more.',
+      version: '1.0.0',
+      contact: {
+        name: 'Real Estate SaaS Team',
+        email: 'support@realestate-saas.com'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:3001',
+        description: 'Development server'
+      }
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'JWT token obtained from /auth/login endpoint'
+        }
+      }
+    },
+    tags: [
+      { name: 'Authentication', description: 'User authentication and authorization' },
+      { name: 'Clients', description: 'Client management (PROSPECT and CLIENT status)' },
+      { name: 'Projects', description: 'Real estate project management' },
+      { name: 'Properties', description: 'Property/apartment management within projects' },
+      { name: 'Users', description: 'User and agent management' },
+      { name: 'Tasks', description: 'Task management and tracking' },
+      { name: 'Activity', description: 'Activity tracking and analytics' }
+    ]
+  }
+};
+
+// Register Swagger
+app.register(require('@fastify/swagger'), swaggerConfig);
+
+// Register Swagger UI
+app.register(require('@fastify/swagger-ui'), {
+  routePrefix: '/docs',
+  uiConfig: {
+    docExpansion: 'list',
+    deepLinking: false
+  },
+  staticCSP: true,
+  transformSpecificationClone: true
+});
+
+console.log('✅ [Swagger] API documentation configured');
+console.log('📚 [Swagger] Documentation will be available at: http://localhost:3001/docs');
 
 app.register(multipart, {
   limits: { fileSize: 5 * 1024 * 1024 },
@@ -50,12 +104,10 @@ app.register(multipart, {
     part.value = {
       filename: part.filename, 
       mimetype: part.mimetype,
-      // encoding: part.encoding,
       buffer: await part.toBuffer(),     
     };
   }
 });
-
 
 app.register(jwtPlugin, { secret: process.env.JWT_SECRET });
 
@@ -84,7 +136,8 @@ for (const route of routes) {
       await fastify.register(route.module, { prefix: route.prefix });
       console.log(`✅ [Routes] ${route.name} routes registered successfully`);
     } catch (error) {
-      SwaggerErrorHandler.analyzeError(error, `${route.name} Routes Registration`);
+      console.error(`❌ [Routes] Failed to register ${route.name} routes:`);
+      console.error('   Error:', error.message);
       throw error;
     }
   });
