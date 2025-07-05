@@ -9,63 +9,85 @@ datasource db {
 }
 
 model User {
-  id           Int         @id @default(autoincrement())
-  name         String
-  email        String      @unique
-  phoneNumber  String
-  status       Status      @default(ACTIVE)
-  notes        String?
-  role         Role        @default(AGENT)
-  passwordHash String
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  apartments   Apartment[] @relation("UserApartments")
-  clients      Client[]
-  createdTasks Task[]      @relation("UserCreatedTasks")
+  id             Int         @id @default(autoincrement())
+  name           String
+  email          String      @unique
+  phoneNumber    String
+  status         Status      @default(ACTIVE)
+  notes          String?
+  role           Role        @default(AGENT)
+  passwordHash   String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  apartments     Apartment[] @relation("UserApartments")
+  clientProfile  Client?     @relation("ClientUser")
+  createdClients Client[]    @relation("CreatedClients")
+  createdTasks   Task[]      @relation("UserCreatedTasks")
 }
 
 model Client {
   id                   Int          @id @default(autoincrement())
   name                 String
+  firstName          String?
+  lastName           String?
   email                String       @unique
   phoneNumber          String
   notes                String?
+  WhatsappNumber     String?
   provenance           String
-  status               ClientStatus @default(LEAD)
+  status               ClientStatus @default(PROSPECT)
+  userId               Int?         @unique // Optional link to User account for CLIENT status
   createdById          Int
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
   apartments           Apartment[]
-  createdBy            User         @relation(fields: [createdById], references: [id])
+  user                 User?        @relation("ClientUser", fields: [userId], references: [id])
+  createdBy            User         @relation("CreatedClients", fields: [createdById], references: [id])
   interestedApartments Apartment[]  @relation("InterestedApartments")
+  
 }
 
 model Project {
-  id                 Int         @id @default(autoincrement())
+  id                 Int           @id @default(autoincrement())
   name               String
   image              String?
   address            String
   totalSurface       Int
   numberOfApartments Int
   notes              String?
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+
+  // Enhanced fields for frontend compatibility
+  latitude           Float?
+  longitude          Float?
+  folderFees         Float?
+  commissionPerM2    Float?
+  totalSales         Float?
+  status             ProjectStatus @default(PLANIFICATION)
+  progress           Int           @default(0)
+  constructionPhotos String[]      @default([])
+
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
   apartments         Apartment[]
 }
 
 model Apartment {
   id                Int             @id @default(autoincrement())
   number            String
-  floor             Int
+  floor             Int?
   type              PropertyType    @default(APARTMENT)
-  area              Float
+  area              Float?
   threeDViewUrl     String?
-  price             Float
-  pricePerM2        Float
-  zone              String
+  price             Float           // This maps to prixTotal in frontend
+  pricePerM2        Float?          // This maps to prixM2 in frontend
+  zone              String?
   image             String?
   status            ApartmentStatus @default(AVAILABLE)
   notes             String?
+
+  // Enhanced fields for better frontend compatibility
+  prixType          PriceType?      @default(FIXE)
+
   projectId         Int
   clientId          Int?
   userId            Int?
@@ -110,14 +132,34 @@ model monthlyTarget {
 enum Role {
   ADMIN
   AGENT
+  CLIENT
 }
 
 enum PropertyType {
   APARTMENT
   DUPLEX
   VILLA
+  PENTHOUSE
+  STUDIO
+  LOFT
+  TOWNHOUSE
   STORE
+  OFFICE
+  WAREHOUSE
   LAND
+  GARAGE
+  PARKING
+}
+
+enum PriceType {
+  FIXE
+  M2
+}
+
+enum ProjectStatus {
+  PLANIFICATION
+  CONSTRUCTION
+  DONE
 }
 
 enum ApartmentStatus {
@@ -127,7 +169,7 @@ enum ApartmentStatus {
 }
 
 enum ClientStatus {
-  LEAD
+  PROSPECT
   CLIENT
 }
 

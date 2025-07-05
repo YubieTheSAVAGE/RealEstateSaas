@@ -46,19 +46,32 @@ async function create(projectId, data) {
     throw err;
   }
   
+  // Validate required fields
+  if (!data.price || isNaN(parseFloat(data.price))) {
+    const err = new Error("Price is required and must be a valid number");
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // Define property types that can have floors
+  const typesWithFloor = [
+    "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+    "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+  ];
+
   // Prepare the apartment data
   const apartmentData = {
     number: data.number,
-    floor: parseInt(data.floor, 10),
+    floor: typesWithFloor.includes(data.type) && data.floor ? parseInt(data.floor, 10) : null,
     type: data.type,
-    area: parseFloat(data.area),
-    threeDViewUrl: data.threeDViewUrl,
+    area: data.area ? parseFloat(data.area) : null,
+    threeDViewUrl: data.threeDViewUrl || null,
     price: parseFloat(data.price),
     status: data.status,
-    notes: data.notes,
-    pricePerM2: parseFloat(data.pricePerM2),
-    zone: data.zone,
-    image: data.image,
+    notes: data.notes || null,
+    pricePerM2: data.pricePerM2 ? parseFloat(data.pricePerM2) : null,
+    zone: data.zone || null,
+    image: data.image || null,
     project: {
       connect: { id: projectId }
     }

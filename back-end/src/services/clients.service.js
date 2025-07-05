@@ -1,10 +1,22 @@
 const prisma = require("../utils/prisma");
+const bcrypt = require("bcryptjs");
+
+const SALT_ROUNDS = 10;
 
 async function findAllClients(user) {
   return prisma.client.findMany({
     include: {
       createdBy: {
         select: { id: true, name: true, email: true },
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          status: true
+        }
       },
       apartments: {
         include: {
@@ -29,6 +41,15 @@ async function findClientById(clientId, user) {
     where: { id: clientId },
     include: {
       createdBy: { select: { id: true, name: true, email: true } },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          status: true
+        }
+      },
       interestedApartments: {
         include: {
           project: {
@@ -54,24 +75,110 @@ async function findClientById(clientId, user) {
 }
 
 async function addNewClient(data, user) {
+  console.log("🎯 [Service] addNewClient called");
+  console.log("📋 [Service] Data received:", { ...data, password: data.password ? "[REDACTED]" : undefined });
+  console.log("👤 [Service] Created by user:", { id: user.id, email: user.email });
+
+  // Debug: Check what enum values are available in the database
+  try {
+    const enumQuery = await prisma.$queryRaw`
+      SELECT unnest(enum_range(NULL::ClientStatus)) as status_value;
+    `;
+    console.log("🔍 [Service] Available ClientStatus enum values:", enumQuery);
+  } catch (enumError) {
+    console.error("⚠️ [Service] Error checking enum values:", enumError);
+  }
+
+  console.log("🔍 [Service] Checking for existing client with email:", data.email);
+
+  // First, let's try to query existing clients to see if the database connection works
+  try {
+    const existingClients = await prisma.client.findMany({
+      take: 1,
+      select: { id: true, status: true }
+    });
+    console.log("📊 [Service] Sample existing clients:", existingClients);
+  } catch (queryError) {
+    console.error("⚠️ [Service] Error querying existing clients:", queryError);
+  }
+
   const existing = await prisma.client.findUnique({
     where: { email: data.email },
   });
   if (existing) {
+    console.log("❌ [Service] Email already in use by existing client:", existing.id);
     throw new Error("Email already in use");
   }
-  
+
+  // Check if email is already used by a User
+  console.log("🔍 [Service] Checking for existing user with email:", data.email);
+  const existingUser = await prisma.user.findUnique({
+    where: { email: data.email },
+  });
+  if (existingUser) {
+    console.log("❌ [Service] Email already in use by existing user:", existingUser.id);
+    throw new Error("Email already in use by another user");
+  }
+
+  let createdUser = null;
+
+  // If creating a CLIENT (not PROSPECT), create a User account
+  if (data.status === "CLIENT" && data.password) {
+    console.log("🔐 [Service] Creating User account for CLIENT status");
+    const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
+    console.log("🔐 [Service] Password hashed successfully");
+
+    createdUser = await prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        role: "CLIENT",
+        passwordHash,
+        status: "ACTIVE"
+      }
+    });
+    console.log("✅ [Service] User account created:", { id: createdUser.id, email: createdUser.email, role: createdUser.role });
+  } else {
+    console.log("ℹ️ [Service] Skipping User account creation (PROSPECT status or no password)");
+  }
+
   // Prepare data for client creation
+  let statusValue = data.status || "PROSPECT";
+  console.log("🔍 [Service] Status value being used:", statusValue, "Type:", typeof statusValue);
+
+  // Validate and normalize status value to ensure it matches database enum
+  const validStatuses = ["PROSPECT", "CLIENT"];
+  if (!validStatuses.includes(statusValue)) {
+    console.log("⚠️ [Service] Invalid status value, defaulting to PROSPECT:", statusValue);
+    statusValue = "PROSPECT";
+  }
+
+  // Try to query the database to check if the enum values are correct
+  try {
+    console.log("🔍 [Service] Testing database enum values...");
+    const testQuery = await prisma.$queryRaw`
+      SELECT enumlabel FROM pg_enum
+      WHERE enumtypid = (SELECT oid FROM pg_type WHERE typname = 'ClientStatus')
+      ORDER BY enumsortorder;
+    `;
+    console.log("🔍 [Service] Database ClientStatus enum values:", testQuery);
+  } catch (enumError) {
+    console.error("⚠️ [Service] Error checking database enum values:", enumError);
+  }
+
   const clientData = {
     name: data.name,
     email: data.email,
     phoneNumber: data.phoneNumber,
-    status: data.status || "CLIENT",
+    status: statusValue,
     notes: data.notes,
     provenance: data.provenance,
     createdById: user.id,
-
+    userId: createdUser ? createdUser.id : null, // Link to User if created
   };
+
+  console.log("📋 [Service] Client data prepared:", { ...clientData, userId: clientData.userId || "null" });
 
   // Handle the apartment connection if an apartmentId is provided
   // if (data.apartmentId) {
@@ -81,47 +188,118 @@ async function addNewClient(data, user) {
   // }
 
   // Process interested apartments
-  console.log("Interested apartments data:", data.interestedApartments);
+  console.log("🏠 [Service] Processing interested apartments:", data.interestedApartments);
   if (data.interestedApartments) {
     try {
       const interestedApartments = data.interestedApartments;
       if (Array.isArray(interestedApartments) && interestedApartments.length > 0) {
+        console.log("🏠 [Service] Connecting multiple apartments:", interestedApartments);
         clientData.interestedApartments = {
           connect: interestedApartments.map(apt => ({ id: parseInt(apt) }))
         };
-      }else
-      {
+      } else {
+        console.log("🏠 [Service] Connecting single apartment:", interestedApartments);
         clientData.interestedApartments = {
           connect: interestedApartments ? [{ id: parseInt(interestedApartments) }] : [],
         };
       }
     } catch (err) {
-      console.error("Error parsing interestedApartments:", err);
+      console.error("💥 [Service] Error parsing interestedApartments:", err);
     }
+  } else {
+    console.log("ℹ️ [Service] No interested apartments provided");
   }
   
   // Create client with all related data
-  const client = await prisma.client.create({
-    data: clientData,
-    include: {
-      apartments: true,
-      interestedApartments: {
-        include: {
-          project: {
-            select: { id: true, name: true }
+  console.log("💾 [Service] Creating client in database...");
+  console.log("💾 [Service] Client data being sent to database:", JSON.stringify(clientData, null, 2));
+
+  let client;
+  try {
+    client = await prisma.client.create({
+      data: clientData,
+      include: {
+        apartments: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            status: true
           }
-        }
-      },
+        },
+        interestedApartments: {
+          include: {
+            project: {
+              select: { id: true, name: true }
+            }
+          }
+        },
+      }
+    });
+  } catch (createError) {
+    console.error("💥 [Service] Error creating client with status:", statusValue);
+    console.error("💥 [Service] Error details:", createError);
+
+    // If the error is related to enum values, try with CLIENT status instead
+    if (createError.message.includes('invalid input value for enum') && statusValue === "PROSPECT") {
+      console.log("🔄 [Service] Retrying with CLIENT status instead of PROSPECT...");
+      const fallbackClientData = { ...clientData, status: "CLIENT" };
+
+      try {
+        client = await prisma.client.create({
+          data: fallbackClientData,
+          include: {
+            apartments: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                role: true,
+                status: true
+              }
+            },
+            interestedApartments: {
+              include: {
+                project: {
+                  select: { id: true, name: true }
+                }
+              }
+            },
+          }
+        });
+        console.log("✅ [Service] Client created successfully with CLIENT status as fallback");
+      } catch (fallbackError) {
+        console.error("💥 [Service] Fallback also failed:", fallbackError);
+        throw fallbackError;
+      }
+    } else {
+      throw createError;
     }
+  }
+
+  console.log("✅ [Service] Client created successfully:", {
+    id: client.id,
+    name: client.name,
+    email: client.email,
+    status: client.status,
+    hasUser: !!client.user,
+    interestedApartmentsCount: client.interestedApartments?.length || 0
   });
-  
+
   return client;
 }
 
 async function updateClient(clientId, data, user) {
+  console.log("🎯 [Service] updateClient called");
+  console.log("📋 [Service] Data received:", { ...data, password: data.password ? "[REDACTED]" : undefined });
+  console.log("👤 [Service] Updated by user:", { id: user.id, email: user.email });
+
   const existing = await prisma.client.findUnique({
     where: { id: clientId },
-    select: { id: true, email: true, createdById: true },
+    select: { id: true, email: true, createdById: true, status: true, userId: true },
   });
   if (!existing) {
     const err = new Error("Client not found");
@@ -134,6 +312,8 @@ async function updateClient(clientId, data, user) {
     throw err;
   }
 
+  console.log("📋 [Service] Existing client:", existing);
+
   if (data.email && data.email !== existing.email) {
     const emailTaken = await prisma.client.findUnique({
       where: { email: data.email },
@@ -145,13 +325,42 @@ async function updateClient(clientId, data, user) {
     }
   }
 
+  // Handle PROSPECT to CLIENT conversion
+  let createdUser = null;
+  if (data.status === "CLIENT" && existing.status === "PROSPECT" && !existing.userId) {
+    console.log("🔄 [Service] Converting PROSPECT to CLIENT - creating User account");
+
+    if (!data.password) {
+      const err = new Error("Password is required when converting PROSPECT to CLIENT");
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
+    console.log("🔐 [Service] Password hashed successfully");
+
+    createdUser = await prisma.user.create({
+      data: {
+        name: data.name || existing.name,
+        email: data.email || existing.email,
+        phoneNumber: data.phoneNumber || existing.phoneNumber,
+        role: "CLIENT",
+        passwordHash,
+        status: "ACTIVE"
+      }
+    });
+    console.log("✅ [Service] User account created for CLIENT conversion:", { id: createdUser.id, email: createdUser.email, role: createdUser.role });
+  }
+
   const clientData = {
     name: data.name,
     email: data.email,
     phoneNumber: data.phoneNumber,
-    status: data.status || "CLIENT",
+    status: data.status || "PROSPECT",
     notes: data.notes,
     provenance: data.provenance,
+    // Link to User if created during PROSPECT to CLIENT conversion
+    userId: createdUser ? createdUser.id : existing.userId,
   };
 
   console.log("Interested apartments data:", data.interestedApartments);
@@ -181,6 +390,15 @@ async function updateClient(clientId, data, user) {
     data: clientData,
     include: {
       apartments: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          status: true
+        }
+      },
       interestedApartments: {
         include: {
           project: {

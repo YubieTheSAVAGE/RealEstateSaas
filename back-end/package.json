@@ -14,7 +14,12 @@
         "migrate:deploy": "prisma migrate deploy",
         "migrate:status": "prisma migrate status",
         "generate": "prisma generate",
-        "create-admin": "node scripts/create-admin.js"
+        "create-admin": "node scripts/create-admin.js",
+        "validate-swagger": "node scripts/validate-swagger.js",
+        "debug-schemas": "node scripts/debug-schemas.js",
+        "fix-swagger-examples": "./scripts/fix-swagger-examples.sh",
+        "fix-swagger-refs": "./scripts/fix-swagger-refs.sh",
+        "swagger-debug": "npm run debug-schemas && npm run validate-swagger"
     },
     "keywords": [],
     "author": "",
