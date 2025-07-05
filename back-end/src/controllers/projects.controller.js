@@ -65,44 +65,83 @@ async function createProject(request, reply) {
     }
 
     // Validate numeric fields
-    if (!numberOfApartments || isNaN(parseInt(numberOfApartments, 10))) {
+    if (!numberOfApartments || isNaN(parseInt(numberOfApartments, 10)) || parseInt(numberOfApartments, 10) <= 0) {
       return reply
         .code(400)
-        .send({ error: "numberOfApartments is required and must be a valid number" });
+        .send({ error: "numberOfApartments is required and must be a positive integer" });
     }
 
-    if (!totalSurface || isNaN(parseInt(totalSurface, 10))) {
+    if (!totalSurface || isNaN(parseInt(totalSurface, 10)) || parseInt(totalSurface, 10) <= 0) {
       return reply
         .code(400)
-        .send({ error: "totalSurface is required and must be a valid number" });
+        .send({ error: "totalSurface is required and must be a positive integer" });
     }
 
     // Validate coordinates if provided
-    if (latitude !== undefined && (isNaN(parseFloat(latitude)) || parseFloat(latitude) < -90 || parseFloat(latitude) > 90)) {
-      return reply
-        .code(400)
-        .send({ error: "latitude must be a valid number between -90 and 90" });
+    if (latitude !== undefined && latitude !== null && latitude !== "") {
+      const latValue = parseFloat(latitude);
+      if (isNaN(latValue) || latValue < -90 || latValue > 90) {
+        return reply
+          .code(400)
+          .send({ error: "latitude must be a valid number between -90 and 90" });
+      }
     }
 
-    if (longitude !== undefined && (isNaN(parseFloat(longitude)) || parseFloat(longitude) < -180 || parseFloat(longitude) > 180)) {
-      return reply
-        .code(400)
-        .send({ error: "longitude must be a valid number between -180 and 180" });
+    if (longitude !== undefined && longitude !== null && longitude !== "") {
+      const lngValue = parseFloat(longitude);
+      if (isNaN(lngValue) || lngValue < -180 || lngValue > 180) {
+        return reply
+          .code(400)
+          .send({ error: "longitude must be a valid number between -180 and 180" });
+      }
     }
 
     // Validate progress if provided
-    if (progress !== undefined && (isNaN(parseInt(progress, 10)) || parseInt(progress, 10) < 0 || parseInt(progress, 10) > 100)) {
-      return reply
-        .code(400)
-        .send({ error: "progress must be a valid number between 0 and 100" });
+    if (progress !== undefined && progress !== null && progress !== "") {
+      const progressValue = parseInt(progress, 10);
+      if (isNaN(progressValue) || progressValue < 0 || progressValue > 100) {
+        return reply
+          .code(400)
+          .send({ error: "progress must be a valid number between 0 and 100" });
+      }
     }
 
     // Validate status if provided
     const validStatuses = ['PLANIFICATION', 'CONSTRUCTION', 'DONE'];
-    if (status !== undefined && !validStatuses.includes(status)) {
-      return reply
-        .code(400)
-        .send({ error: `status must be one of: ${validStatuses.join(', ')}` });
+    if (status !== undefined && status !== null && status !== "") {
+      if (!validStatuses.includes(status)) {
+        return reply
+          .code(400)
+          .send({ error: `status must be one of: ${validStatuses.join(', ')}` });
+      }
+    }
+
+    // Validate financial fields if provided
+    if (folderFees !== undefined && folderFees !== null && folderFees !== "") {
+      const feesValue = parseFloat(folderFees);
+      if (isNaN(feesValue) || feesValue < 0) {
+        return reply
+          .code(400)
+          .send({ error: "folderFees must be a valid non-negative number" });
+      }
+    }
+
+    if (commissionPerM2 !== undefined && commissionPerM2 !== null && commissionPerM2 !== "") {
+      const commissionValue = parseFloat(commissionPerM2);
+      if (isNaN(commissionValue) || commissionValue < 0) {
+        return reply
+          .code(400)
+          .send({ error: "commissionPerM2 must be a valid non-negative number" });
+      }
+    }
+
+    if (totalSales !== undefined && totalSales !== null && totalSales !== "") {
+      const salesValue = parseFloat(totalSales);
+      if (isNaN(salesValue) || salesValue < 0) {
+        return reply
+          .code(400)
+          .send({ error: "totalSales must be a valid non-negative number" });
+      }
     }
 
     let uploadedImage = null;
@@ -111,7 +150,7 @@ async function createProject(request, reply) {
       const { mimetype, buffer, filename } = image;
       const uniqueName = `project_${Date.now()}_${filename}`;
       if (!ALLOWED.includes(mimetype)) {
-        return reply.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+        return reply.status(400).send({ error: 'Only JPEG, PNG, JPG, or WEBP files are allowed.' });
       }
       const uploadsDir = path.join(__dirname, '../uploads');
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -131,14 +170,30 @@ async function createProject(request, reply) {
     };
 
     // Add optional enhanced fields if provided
-    if (latitude !== undefined) projectData.latitude = parseFloat(latitude);
-    if (longitude !== undefined) projectData.longitude = parseFloat(longitude);
-    if (folderFees !== undefined) projectData.folderFees = parseFloat(folderFees);
-    if (commissionPerM2 !== undefined) projectData.commissionPerM2 = parseFloat(commissionPerM2);
-    if (totalSales !== undefined) projectData.totalSales = parseFloat(totalSales);
-    if (status !== undefined) projectData.status = status;
-    if (progress !== undefined) projectData.progress = parseInt(progress, 10);
-    if (constructionPhotos !== undefined) projectData.constructionPhotos = constructionPhotos || [];
+    if (latitude !== undefined && latitude !== null && latitude !== "") {
+      projectData.latitude = parseFloat(latitude);
+    }
+    if (longitude !== undefined && longitude !== null && longitude !== "") {
+      projectData.longitude = parseFloat(longitude);
+    }
+    if (folderFees !== undefined && folderFees !== null && folderFees !== "") {
+      projectData.folderFees = parseFloat(folderFees);
+    }
+    if (commissionPerM2 !== undefined && commissionPerM2 !== null && commissionPerM2 !== "") {
+      projectData.commissionPerM2 = parseFloat(commissionPerM2);
+    }
+    if (totalSales !== undefined && totalSales !== null && totalSales !== "") {
+      projectData.totalSales = parseFloat(totalSales);
+    }
+    if (status !== undefined && status !== null && status !== "") {
+      projectData.status = status;
+    }
+    if (progress !== undefined && progress !== null && progress !== "") {
+      projectData.progress = parseInt(progress, 10);
+    }
+    if (constructionPhotos !== undefined) {
+      projectData.constructionPhotos = constructionPhotos || [];
+    }
 
     const project = await projectService.addNewProject(projectData);
 

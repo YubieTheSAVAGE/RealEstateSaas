@@ -30,8 +30,11 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     latitude: "",
     longitude: "",
     dossierFee: "",
+    progress: 0,
+    totalSales: 0,
+    commissionPerM2: 0,
+    status: "planification",
     image: null as File | null, // Store as File object instead of string
-    status: "",
   });
   // State for validation errors
   const [errors, setErrors] = useState({
@@ -44,6 +47,9 @@ export default function AddProjectModal({ onProjectAdded }: AddProjectModalProps
     dossierFee: "",
     image: "",
     status: "",
+    progress: 0,
+    totalSales: 0,
+    commissionPerM2: 0,
   });
   
   // State for API errors
@@ -135,11 +141,6 @@ const handleSave = async () => {
       test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0,
       message: "Les frais de dossier sont requis et doivent être un nombre positif"
     },
-    { 
-      field: 'commission', 
-      test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0,
-      message: "La commission est requise et doit être un nombre positif"
-    },
     {
       field: 'status',
       test: (v: string) => !v,
@@ -150,7 +151,7 @@ const handleSave = async () => {
   // Run validations
   validations.forEach(({ field, test, message }) => {
     if (test(formData[field as keyof typeof formData] as string)) {
-      newErrors[field as keyof typeof newErrors] = message;
+      newErrors[field as keyof typeof newErrors] = message as never;
       hasErrors = true;
     }
   });
@@ -160,15 +161,33 @@ const handleSave = async () => {
   const formDataToSend = new FormData();
   Object.entries(formData).forEach(([key, value]) => {
     if (value !== null && !(key === 'image' && !value)) {
-      formDataToSend.append(key, value as string | Blob);
+      // Map field names to match backend expectations
+      let backendKey = key;
+      let backendValue = value;
+      
+      // Convert dossierFee to folderFees for backend
+      if (key === 'dossierFee') {
+        backendKey = 'folderFees';
+      }
+      
+      // Convert status to uppercase for backend validation
+      if (key === 'status') {
+        backendValue = (value as string).toUpperCase();
+      }
+      
+      formDataToSend.append(backendKey, backendValue as string | Blob);
     }
   });
 
   try {
-    await addProject(formDataToSend);
-    setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", latitude: "", longitude: "", dossierFee: "", image: null, status: "" });
-    onProjectAdded?.();
-    closeModal();
+    const result = await addProject(formDataToSend);
+    if (result.error) {
+      setApiError(result.error);
+    } else {
+      setFormData({ name: "", numberOfApartments: "", notes: "", totalSurface: "", address: "", latitude: "", longitude: "", dossierFee: "", image: null, status: "planification", progress: 0, totalSales: 0, commissionPerM2: 0 });
+      onProjectAdded?.();
+      closeModal();
+    }
   } catch (error) {
     setApiError(error instanceof Error ? error.message : "Failed to add project");
   }
@@ -204,6 +223,21 @@ const handleSave = async () => {
   // Added logic to reset errors when the modal is closed
   const handleCloseModal = () => {
     closeModal();
+    setFormData({
+      name: "",
+      numberOfApartments: "",
+      notes: "",
+      totalSurface: "",
+      address: "",
+      latitude: "",
+      longitude: "",
+      dossierFee: "",
+      progress: 0,
+      totalSales: 0,
+      commissionPerM2: 0,
+      status: "planification",
+      image: null,
+    });
     setErrors({
       name: "",
       numberOfApartments: "",
@@ -214,6 +248,9 @@ const handleSave = async () => {
       dossierFee: "",
       image: "",
       status: "",
+      progress: 0,
+      totalSales: 0,
+      commissionPerM2: 0,
     });
     setApiError("");
   };

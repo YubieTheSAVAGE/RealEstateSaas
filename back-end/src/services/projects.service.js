@@ -31,13 +31,13 @@ async function addNewProject(data) {
   };
 
   // Add optional enhanced fields if provided
-  if (data.latitude !== undefined) projectData.latitude = data.latitude;
-  if (data.longitude !== undefined) projectData.longitude = data.longitude;
-  if (data.folderFees !== undefined) projectData.folderFees = data.folderFees;
-  if (data.commissionPerM2 !== undefined) projectData.commissionPerM2 = data.commissionPerM2;
-  if (data.totalSales !== undefined) projectData.totalSales = data.totalSales;
+  if (data.latitude !== undefined) projectData.latitude = parseFloat(data.latitude);
+  if (data.longitude !== undefined) projectData.longitude = parseFloat(data.longitude);
+  if (data.folderFees !== undefined) projectData.folderFees = parseFloat(data.folderFees);
+  if (data.commissionPerM2 !== undefined) projectData.commissionPerM2 = parseFloat(data.commissionPerM2);
+  if (data.totalSales !== undefined) projectData.totalSales = parseFloat(data.totalSales);
   if (data.status !== undefined) projectData.status = data.status;
-  if (data.progress !== undefined) projectData.progress = data.progress;
+  if (data.progress !== undefined) projectData.progress = parseInt(data.progress, 10);
   if (data.constructionPhotos !== undefined) projectData.constructionPhotos = data.constructionPhotos;
 
   const project = await prisma.project.create({
