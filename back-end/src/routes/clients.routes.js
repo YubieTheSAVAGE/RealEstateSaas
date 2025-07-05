@@ -17,9 +17,12 @@ module.exports = async function (fastify) {
             type: 'object',
             properties: {
               id: { type: 'integer', description: 'Client ID' },
-              name: { type: 'string', description: 'Client full name' },
+              firstName: { type: 'string', description: 'Client first name' },
+              lastName: { type: 'string', description: 'Client last name' },
+              name: { type: 'string', description: 'Client full name (computed from firstName + lastName)' },
               email: { type: 'string', description: 'Client email address' },
               phoneNumber: { type: 'string', description: 'Client phone number' },
+              whatsappNumber: { type: 'string', description: 'Client WhatsApp number (optional)' },
               status: {
                 type: 'string',
                 enum: ['PROSPECT', 'CLIENT'],
@@ -48,6 +51,24 @@ module.exports = async function (fastify) {
     }
   }, controller.getAllClients)
 
+  // HTML display endpoint for viewing all client data
+  fastify.get('/clients/display/all', {
+    onRequest: [fastify.authenticate],
+    preHandler: [fastify.isAgentOrAdmin],
+    schema: {
+      tags: ['Clients'],
+      summary: 'Display all clients in HTML format',
+      description: 'Generate an HTML page showing all client data in a readable format for database content review.',
+      security: [{ bearerAuth: [] }],
+      response: {
+        200: {
+          description: 'HTML page with all client data',
+          type: 'string'
+        }
+      }
+    }
+  }, controller.getClientsDisplay)
+
   fastify.get('/clients/:clientId', {
     onRequest: [fastify.authenticate],
     preHandler: [fastify.isAgentOrAdmin],
@@ -72,9 +93,12 @@ module.exports = async function (fastify) {
           type: 'object',
           properties: {
             id: { type: 'integer', description: 'Client ID' },
-            name: { type: 'string', description: 'Client full name' },
+            firstName: { type: 'string', description: 'Client first name' },
+            lastName: { type: 'string', description: 'Client last name' },
+            name: { type: 'string', description: 'Client full name (computed from firstName + lastName)' },
             email: { type: 'string', description: 'Client email address' },
             phoneNumber: { type: 'string', description: 'Client phone number' },
+            whatsappNumber: { type: 'string', description: 'Client WhatsApp number (optional)' },
             status: {
               type: 'string',
               enum: ['PROSPECT', 'CLIENT'],
@@ -117,12 +141,17 @@ module.exports = async function (fastify) {
       security: [{ bearerAuth: [] }],
       body: {
         type: 'object',
-        required: ['name', 'email', 'phoneNumber', 'provenance'],
+        required: ['firstName', 'lastName', 'email', 'phoneNumber', 'provenance'],
         properties: {
-          name: {
+          firstName: {
             type: 'string',
             minLength: 1,
-            description: 'Client full name'
+            description: 'Client first name'
+          },
+          lastName: {
+            type: 'string',
+            minLength: 1,
+            description: 'Client last name'
           },
           email: {
             type: 'string',
@@ -133,6 +162,11 @@ module.exports = async function (fastify) {
             type: 'string',
             pattern: '^[+\\d\\s\\-()]{7,20}$',
             description: 'Client phone number'
+          },
+          whatsappNumber: {
+            type: 'string',
+            pattern: '^[+\\d\\s\\-()]{7,20}$',
+            description: 'Client WhatsApp number (optional, can be different from phone)'
           },
           status: {
             type: 'string',
@@ -160,9 +194,12 @@ module.exports = async function (fastify) {
           type: 'object',
           properties: {
             id: { type: 'integer' },
+            firstName: { type: 'string' },
+            lastName: { type: 'string' },
             name: { type: 'string' },
             email: { type: 'string' },
             phoneNumber: { type: 'string' },
+            whatsappNumber: { type: 'string' },
             status: { type: 'string' },
             notes: { type: 'string' },
             provenance: { type: 'string' },
@@ -212,9 +249,13 @@ module.exports = async function (fastify) {
       body: {
         type: 'object',
         properties: {
-          name: {
+          firstName: {
             type: 'string',
-            description: 'Client full name'
+            description: 'Client first name'
+          },
+          lastName: {
+            type: 'string',
+            description: 'Client last name'
           },
           email: {
             type: 'string',
@@ -224,6 +265,10 @@ module.exports = async function (fastify) {
           phoneNumber: {
             type: 'string',
             description: 'Client phone number'
+          },
+          whatsappNumber: {
+            type: 'string',
+            description: 'Client WhatsApp number'
           },
           status: {
             type: 'string',
@@ -251,9 +296,12 @@ module.exports = async function (fastify) {
           type: 'object',
           properties: {
             id: { type: 'integer' },
+            firstName: { type: 'string' },
+            lastName: { type: 'string' },
             name: { type: 'string' },
             email: { type: 'string' },
             phoneNumber: { type: 'string' },
+            whatsappNumber: { type: 'string' },
             status: { type: 'string' },
             notes: { type: 'string' },
             provenance: { type: 'string' },

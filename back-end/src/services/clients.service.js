@@ -130,7 +130,7 @@ async function addNewClient(data, user) {
 
     createdUser = await prisma.user.create({
       data: {
-        name: data.name,
+        name: data.name || `${data.firstName} ${data.lastName}`,
         email: data.email,
         phoneNumber: data.phoneNumber,
         role: "CLIENT",
@@ -168,9 +168,12 @@ async function addNewClient(data, user) {
   }
 
   const clientData = {
-    name: data.name,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    name: data.name || `${data.firstName} ${data.lastName}`, // Computed name for backward compatibility
     email: data.email,
     phoneNumber: data.phoneNumber,
+    whatsappNumber: data.whatsappNumber || null,
     status: statusValue,
     notes: data.notes,
     provenance: data.provenance,
@@ -339,11 +342,17 @@ async function updateClient(clientId, data, user) {
     const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
     console.log("🔐 [Service] Password hashed successfully");
 
+    // Get current client data for User creation
+    const currentClient = await prisma.client.findUnique({
+      where: { id: clientId },
+      select: { firstName: true, lastName: true, name: true, email: true, phoneNumber: true }
+    });
+
     createdUser = await prisma.user.create({
       data: {
-        name: data.name || existing.name,
-        email: data.email || existing.email,
-        phoneNumber: data.phoneNumber || existing.phoneNumber,
+        name: data.name || currentClient.name || `${currentClient.firstName} ${currentClient.lastName}`,
+        email: data.email || currentClient.email,
+        phoneNumber: data.phoneNumber || currentClient.phoneNumber,
         role: "CLIENT",
         passwordHash,
         status: "ACTIVE"
@@ -352,16 +361,23 @@ async function updateClient(clientId, data, user) {
     console.log("✅ [Service] User account created for CLIENT conversion:", { id: createdUser.id, email: createdUser.email, role: createdUser.role });
   }
 
-  const clientData = {
-    name: data.name,
-    email: data.email,
-    phoneNumber: data.phoneNumber,
-    status: data.status || "PROSPECT",
-    notes: data.notes,
-    provenance: data.provenance,
-    // Link to User if created during PROSPECT to CLIENT conversion
-    userId: createdUser ? createdUser.id : existing.userId,
-  };
+  // Prepare update data - only include fields that are provided
+  const clientData = {};
+
+  if (data.firstName !== undefined) clientData.firstName = data.firstName;
+  if (data.lastName !== undefined) clientData.lastName = data.lastName;
+  if (data.name !== undefined) clientData.name = data.name;
+  if (data.email !== undefined) clientData.email = data.email;
+  if (data.phoneNumber !== undefined) clientData.phoneNumber = data.phoneNumber;
+  if (data.whatsappNumber !== undefined) clientData.whatsappNumber = data.whatsappNumber;
+  if (data.status !== undefined) clientData.status = data.status;
+  if (data.notes !== undefined) clientData.notes = data.notes;
+  if (data.provenance !== undefined) clientData.provenance = data.provenance;
+
+  // Link to User if created during PROSPECT to CLIENT conversion
+  if (createdUser) {
+    clientData.userId = createdUser.id;
+  }
 
   console.log("Interested apartments data:", data.interestedApartments);
   if (data.interestedApartments) {

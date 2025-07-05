@@ -5,6 +5,7 @@ services:
       context: ./front-end
       dockerfile: Dockerfile
       pull: false  # Use local cache to avoid credential issues
+    platform: linux/amd64
     volumes:
       - ./front-end:/app
       - /app/node_modules  # prevent overwriting node_modules with host
@@ -12,6 +13,8 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:3001
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
     command: npm run dev
     depends_on:
       - backend
@@ -35,7 +38,8 @@ services:
       - PORT=3001
       - JWT_SECRET=${JWT_SECRET:-your-secret-key-here}
       - NODE_ENV=development
-    command: sh -c "sleep 10 && npx prisma generate && npx prisma migrate deploy && npm run dev"
+      - BASE_URL=http://localhost:3001
+    command: sh -c "sleep 10 && npx prisma migrate deploy && npx prisma generate && npm run dev"
     depends_on:
       - db
     restart: unless-stopped
@@ -46,11 +50,13 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: mydb
+      POSTGRES_DB: mydb 
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Alternative: Use bind mount for direct access to data
+      # - ./postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s

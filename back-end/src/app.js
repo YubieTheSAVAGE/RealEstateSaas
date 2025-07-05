@@ -109,6 +109,7 @@ app.register(multipart, {
   }
 });
 
+
 app.register(jwtPlugin, { secret: process.env.JWT_SECRET });
 
 // Health check endpoint
