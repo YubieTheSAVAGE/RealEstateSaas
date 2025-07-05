@@ -27,13 +27,13 @@ model User {
 
 model Client {
   id                   Int          @id @default(autoincrement())
-  name                 String
-  firstName          String?
-  lastName           String?
+  firstName            String       // Required: Client's first name
+  lastName             String       // Required: Client's last name
+  name                 String       // Keep for backward compatibility (can be computed from firstName + lastName)
   email                String       @unique
   phoneNumber          String
+  whatsappNumber       String?      // Optional: WhatsApp number (can be different from phone)
   notes                String?
-  WhatsappNumber     String?
   provenance           String
   status               ClientStatus @default(PROSPECT)
   userId               Int?         @unique // Optional link to User account for CLIENT status
@@ -44,7 +44,6 @@ model Client {
   user                 User?        @relation("ClientUser", fields: [userId], references: [id])
   createdBy            User         @relation("CreatedClients", fields: [createdById], references: [id])
   interestedApartments Apartment[]  @relation("InterestedApartments")
-  
 }
 
 model Project {
@@ -60,7 +59,7 @@ model Project {
   latitude           Float?
   longitude          Float?
   folderFees         Float?
-  commissionPerM2    Float?
+  commissionPerM2    Float? // removed
   totalSales         Float?
   status             ProjectStatus @default(PLANIFICATION)
   progress           Int           @default(0)

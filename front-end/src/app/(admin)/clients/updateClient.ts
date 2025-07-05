@@ -6,12 +6,15 @@ import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
 
 interface UpdateClientData {
   id: string;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  status: "PROSPECT" | "CLIENT";
+  firstName?: string;
+  lastName?: string;
+  name?: string; // Optional for backward compatibility
+  email?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  status?: "PROSPECT" | "CLIENT";
   notes?: string;
-  provenance: string;
+  provenance?: string;
   apartmentId?: string[];
   password?: string;
 }

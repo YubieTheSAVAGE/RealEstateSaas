@@ -443,5 +443,5 @@ function formatCurrency(value: number): string {
     return `${(value / 1000).toFixed(0)}K MAD`;
   }
 
-  return `${value.toFixed(0)} MAD`;
+  return `MAD`;
 }

@@ -31,9 +31,12 @@ interface Apartment {
 }
 
 interface FormData {
-  name: string
+  firstName: string
+  lastName: string
+  name: string // Keep for backward compatibility
   email: string
   phoneNumber: string
+  whatsappNumber: string
   status: "PROSPECT" | "CLIENT"
   notes: string
   provenance: string
@@ -48,9 +51,12 @@ interface FormErrors {
 export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
   const { isOpen, openModal, closeModal } = useModal()
   const [formData, setFormData] = useState<FormData>({
+    firstName: "",
+    lastName: "",
     name: "",
     email: "",
     phoneNumber: "",
+    whatsappNumber: "",
     status: "PROSPECT",
     notes: "",
     provenance: "",
@@ -81,9 +87,12 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
   useEffect(() => {
     if (isOpen) {
       setFormData({
+        firstName: "",
+        lastName: "",
         name: "",
         email: "",
         phoneNumber: "",
+        whatsappNumber: "",
         status: "PROSPECT",
         notes: "",
         provenance: "",
@@ -166,8 +175,13 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
     let isValid = true
 
     // Required field validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Le nom complet est requis"
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "Le prénom est requis"
+      isValid = false
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Le nom de famille est requis"
       isValid = false
     }
 
@@ -181,6 +195,12 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
 
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "Le numéro de téléphone est requis"
+      isValid = false
+    }
+
+    // WhatsApp number validation (optional but must be valid if provided)
+    if (formData.whatsappNumber.trim() && !/^[+\d\s\-()]{7,20}$/.test(formData.whatsappNumber.trim())) {
+      newErrors.whatsappNumber = "Format de numéro WhatsApp invalide"
       isValid = false
     }
 
@@ -233,9 +253,11 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
 
     try {
       const clientData = {
-        name: formData.name.trim(),
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
         email: formData.email.trim(),
         phoneNumber: formData.phoneNumber.trim(),
+        whatsappNumber: formData.whatsappNumber.trim() || undefined,
         status: formData.status,
         notes: formData.notes.trim(),
         provenance: formData.provenance.trim(),
@@ -250,9 +272,12 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
 
       // Reset form and close modal
       setFormData({
+        firstName: "",
+        lastName: "",
         name: "",
         email: "",
         phoneNumber: "",
+        whatsappNumber: "",
         status: "PROSPECT",
         notes: "",
         provenance: "",
@@ -301,21 +326,39 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
         </div>
 
         <div className="space-y-4">
-          {/* Name */}
-          <div>
-            <Label htmlFor="name">
-              Nom complet <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Nom complet du client"
-              value={formData.name}
-              onChange={handleInputChange}
-              error={!!errors.name}
-            />
-            {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+          {/* First Name and Last Name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="firstName">
+                Prénom <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder="Prénom du client"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                error={!!errors.firstName}
+              />
+              {errors.firstName && <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="lastName">
+                Nom de famille <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder="Nom de famille du client"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                error={!!errors.lastName}
+              />
+              {errors.lastName && <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>}
+            </div>
           </div>
 
           {/* Email */}
@@ -335,21 +378,39 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
             {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
           </div>
 
-          {/* Phone Number */}
-          <div>
-            <Label htmlFor="phoneNumber">
-              Numéro de téléphone <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="phoneNumber"
-              name="phoneNumber"
-              type="tel"
-              placeholder="06-12-34-56-78"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              error={!!errors.phoneNumber}
-            />
-            {errors.phoneNumber && <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>}
+          {/* Phone Number and WhatsApp Number */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="phoneNumber">
+                Numéro de téléphone <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                placeholder="06-12-34-56-78"
+                value={formData.phoneNumber}
+                onChange={handleInputChange}
+                error={!!errors.phoneNumber}
+              />
+              {errors.phoneNumber && <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="whatsappNumber">
+                Numéro WhatsApp
+              </Label>
+              <Input
+                id="whatsappNumber"
+                name="whatsappNumber"
+                type="tel"
+                placeholder="06-12-34-56-78 (optionnel)"
+                value={formData.whatsappNumber}
+                onChange={handleInputChange}
+                error={!!errors.whatsappNumber}
+              />
+              {errors.whatsappNumber && <p className="mt-1 text-sm text-red-500">{errors.whatsappNumber}</p>}
+            </div>
           </div>
 
           {/* Status */}
@@ -507,7 +568,8 @@ export default function AddClientModal({ onClientAdded }: AddClientModalProps) {
               onClick={handleSubmit}
               disabled={
                 isSubmitting ||
-                !formData.name.trim() ||
+                !formData.firstName.trim() ||
+                !formData.lastName.trim() ||
                 !formData.email.trim() ||
                 !formData.phoneNumber.trim() ||
                 !formData.provenance.trim() ||

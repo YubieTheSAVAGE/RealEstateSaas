@@ -11,7 +11,7 @@ export interface Client {
   whatsappNumber?: string;
   notes?: string | null;
   provenance: string;
-  status: 'LEAD' | 'CLIENT';
+  status: 'PROSPECT' | 'CLIENT';
   createdById: number;
   apartments?: Property[];
   interestedApartments?: Property[];

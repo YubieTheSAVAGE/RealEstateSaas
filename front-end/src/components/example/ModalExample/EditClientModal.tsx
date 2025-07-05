@@ -64,9 +64,12 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   // State for form fields
   const [formData, setFormData] = useState({
     id: clientData.id || "",
+    firstName: clientData.firstName || "",
+    lastName: clientData.lastName || "",
     name: clientData.name || "",
     email: clientData.email || "",
     phoneNumber: clientData.phoneNumber || "",
+    whatsappNumber: clientData.whatsappNumber || "",
     status: clientData.status || "PROSPECT",
     notes: clientData.notes || "",
     provenance: clientData.provenance || "",
@@ -78,9 +81,12 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
 
   // State for validation errors
   const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
     name: "",
     email: "",
     phoneNumber: "",
+    whatsappNumber: "",
     provenance: "",
     password: "",
     confirmPassword: "",
@@ -185,8 +191,13 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     const newErrors = { ...errors };
 
     // Required field validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Le nom est requis";
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "Le prénom est requis";
+      valid = false;
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Le nom de famille est requis";
       valid = false;
     }
 
@@ -203,6 +214,12 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       valid = false;
     } else if (!/^[+\d\s\-()]{7,20}$/.test(formData.phoneNumber)) {
       newErrors.phoneNumber = "Veuillez entrer un numéro de téléphone valide";
+      valid = false;
+    }
+
+    // WhatsApp number validation (optional but must be valid if provided)
+    if (formData.whatsappNumber.trim() && !/^[+\d\s\-()]{7,20}$/.test(formData.whatsappNumber.trim())) {
+      newErrors.whatsappNumber = "Format de numéro WhatsApp invalide";
       valid = false;
     }
 
@@ -253,9 +270,11 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     // Prepare client data object
     const clientDataToSend = {
       id: formData.id,
-      name: formData.name.trim(),
+      firstName: formData.firstName.trim(),
+      lastName: formData.lastName.trim(),
       email: formData.email.trim(),
       phoneNumber: formData.phoneNumber.trim(),
+      whatsappNumber: formData.whatsappNumber.trim() || undefined,
       status: formData.status as "PROSPECT" | "CLIENT",
       notes: formData.notes.trim(),
       provenance: formData.provenance.trim(),
@@ -479,17 +498,32 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
             <div className="col-span-1">
               <Label>
-                Nom complet <span className="text-red-500">*</span>
+                Prénom <span className="text-red-500">*</span>
               </Label>
               <Input
-                name="name"
+                name="firstName"
                 type="text"
-                placeholder="ex: Jean Dupont"
+                placeholder="ex: Jean"
                 onChange={handleChange}
-                defaultValue={formData.name}
+                defaultValue={formData.firstName}
               />
-              {errors.name && (
-                <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+              {errors.firstName && (
+                <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>
+              )}
+            </div>
+            <div className="col-span-1">
+              <Label>
+                Nom de famille <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                name="lastName"
+                type="text"
+                placeholder="ex: Dupont"
+                onChange={handleChange}
+                defaultValue={formData.lastName}
+              />
+              {errors.lastName && (
+                <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>
               )}
             </div>
             <div className="col-span-1">
@@ -533,6 +567,22 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
               />
               {errors.phoneNumber && (
                 <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>
+              )}
+            </div>
+
+            <div className="col-span-1">
+              <Label>
+                Numéro WhatsApp
+              </Label>
+              <Input
+                name="whatsappNumber"
+                type="phone"
+                placeholder="ex: 06-12-34-56-78 (optionnel)"
+                onChange={handleChange}
+                defaultValue={formData.whatsappNumber}
+              />
+              {errors.whatsappNumber && (
+                <p className="text-sm text-red-500 mt-1">{errors.whatsappNumber}</p>
               )}
             </div>
 

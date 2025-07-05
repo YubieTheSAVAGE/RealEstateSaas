@@ -44,9 +44,12 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
 
           const formattedData: Client[] = clients.map((item: Client) => ({
               id: item.id,
-              name: item.name,
+              firstName: item.firstName || "",
+              lastName: item.lastName || "",
+              name: item.name || `${item.firstName || ""} ${item.lastName || ""}`.trim(),
               email: item.email,
               phoneNumber: item.phoneNumber,
+              whatsappNumber: item.whatsappNumber || "",
               status: item.status,
               provenance: item.provenance || "",
               createdById: typeof item.createdById === "number" ? item.createdById : Number(item.createdById) || 0,
@@ -210,9 +213,9 @@ export default function ClientsDataTable({clients, onClientAdded}: ClientsDataTa
             <TableHeader className="border-t border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 {[
-                  { key: "name", label: "Projet" },
+                  { key: "name", label: "Nom" },
                   { key: "email", label: "Email" },
-                  { key: "phoneNumber", label: "Numéro" },
+                  { key: "phoneNumber", label: "Téléphone" },
                   { key: "status", label: "Statut" },
                 ].map(({ key, label }) => (
                   <TableCell

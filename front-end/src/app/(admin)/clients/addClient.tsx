@@ -5,9 +5,12 @@ import { cookies } from "next/headers";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
 
 interface ClientData {
-  name: string;
+  firstName: string;
+  lastName: string;
+  name?: string; // Optional for backward compatibility
   email: string;
   phoneNumber: string;
+  whatsappNumber?: string;
   status: "PROSPECT" | "CLIENT";
   notes?: string;
   provenance: string;
