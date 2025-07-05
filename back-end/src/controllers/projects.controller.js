@@ -52,6 +52,7 @@ async function createProject(request, reply) {
     } = request.body;
 
     // Validate required fields
+    // Validate required fields
     if (typeof name !== "string" || name.trim() === "") {
       return reply
         .code(400)
@@ -111,7 +112,7 @@ async function createProject(request, reply) {
       const { mimetype, buffer, filename } = image;
       const uniqueName = `project_${Date.now()}_${filename}`;
       if (!ALLOWED.includes(mimetype)) {
-        return reply.status(400).send({ message: 'Only JPEG, PNG, JPG, or WEBP allowed.' });
+        return reply.status(400).send({ error: 'Only JPEG, PNG, JPG, or WEBP files are allowed.' });
       }
       const uploadsDir = path.join(__dirname, '../uploads');
       if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -158,7 +159,7 @@ async function updateProject(request, reply) {
         .send({ error: "projectId must be a positive integer" });
     }
 
-    const { name, numberOfApartments, totalSurface, address, notes, image } = request.body;
+    const { name, numberOfApartments, totalSurface, address, notes, image, latitude, longitude, folderFees, commissionPerM2, totalSales, status, progress } = request.body;
 
     if (typeof name !== "string" || name.trim() === "") {
       return reply
@@ -189,6 +190,13 @@ async function updateProject(request, reply) {
       numberOfApartments: parseInt(numberOfApartments, 10),
       totalSurface: parseInt(totalSurface, 10),
       address: address.trim(),
+      latitude: latitude ? parseFloat(latitude) : null,
+      longitude: longitude ? parseFloat(longitude) : null,
+      folderFees: folderFees ? parseFloat(folderFees) : null,
+      commissionPerM2: commissionPerM2 ? parseFloat(commissionPerM2) : null,
+      totalSales: totalSales ? parseFloat(totalSales) : null,
+      status: status ? status.toUpperCase() : null,
+      progress: progress ? parseInt(progress, 10) : null,
       notes: notes ? notes.trim() : null,
       image: uploadedImage,
     });

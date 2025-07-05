@@ -172,9 +172,11 @@ async function createClient(request, reply) {
     }
     if (!validateEmail(email)) {
       console.log("❌ [Backend] Validation failed: Invalid email format");
+      console.log("❌ [Backend] Validation failed: Invalid email format");
       return reply.code(400).send({ error: "Valid email is required" });
     }
     if (!validatePhoneNumber(phoneNumber)) {
+      console.log("❌ [Backend] Validation failed: Invalid phone number format");
       console.log("❌ [Backend] Validation failed: Invalid phone number format");
       return reply.code(400).send({ error: "Valid phoneNumber is required" });
     }
@@ -189,6 +191,7 @@ async function createClient(request, reply) {
 
     if (provenance !== undefined && typeof provenance !== "string") {
       console.log("❌ [Backend] Validation failed: Invalid provenance type");
+      console.log("❌ [Backend] Validation failed: Invalid provenance type");
       return reply
         .code(400)
         .send({ error: "provenance must be a string" });
@@ -200,12 +203,19 @@ async function createClient(request, reply) {
       console.log("🔍 [Backend] Allowed statuses:", ALLOWED_STATUSES);
       console.log("🔍 [Backend] Status check result:", ALLOWED_STATUSES.includes(status));
 
+      console.log("🔍 [Backend] Status received:", status, "Type:", typeof status, "Value:", JSON.stringify(status));
+      console.log("🔍 [Backend] Allowed statuses:", ALLOWED_STATUSES);
+      console.log("🔍 [Backend] Status check result:", ALLOWED_STATUSES.includes(status));
+
       if (!ALLOWED_STATUSES.includes(status)) {
+        console.log("❌ [Backend] Validation failed: Invalid status", status);
+        console.log("❌ [Backend] Full request body:", JSON.stringify(request.body, null, 2));
         console.log("❌ [Backend] Validation failed: Invalid status", status);
         console.log("❌ [Backend] Full request body:", JSON.stringify(request.body, null, 2));
         return reply
           .code(400)
           .send({
+            error: `Status must be one of: ${ALLOWED_STATUSES.join(", ")}. Received: "${status}" (${typeof status})`,
             error: `Status must be one of: ${ALLOWED_STATUSES.join(", ")}. Received: "${status}" (${typeof status})`,
           });
       }
@@ -249,8 +259,13 @@ async function createClient(request, reply) {
     );
 
     console.log("✅ [Backend] Client created successfully:", { id: client.id, email: client.email, status: client.status });
+
+    console.log("✅ [Backend] Client created successfully:", { id: client.id, email: client.email, status: client.status });
     return reply.code(201).send(client);
   } catch (err) {
+    console.error("💥 [Backend] Error in createClient:", err);
+    console.error("💥 [Backend] Error stack:", err.stack);
+    console.error("💥 [Backend] Request body that caused error:", request.body);
     console.error("💥 [Backend] Error in createClient:", err);
     console.error("💥 [Backend] Error stack:", err.stack);
     console.error("💥 [Backend] Request body that caused error:", request.body);

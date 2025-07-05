@@ -38,7 +38,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     name: "",
     email: "",
     phoneNumber: "",
-    status: "LEAD",
+    status: "PROSPECT",
     notes: "",
     provenance: "",
     projectId: "",
@@ -61,7 +61,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     name: "",
     email: "",
     phoneNumber: "",
-    status: "LEAD",
+    status: "PROSPECT",
     notes: "",
     provenance: "",
     projectId: "",
@@ -89,7 +89,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
   // Status options
   const status = [
     { value: "CLIENT", label: "Client" },
-    { value: "LEAD", label: "Prospect" },
+    { value: "PROSPECT", label: "Prospect" },
   ]
 
   // Update form field values
@@ -189,7 +189,7 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
         name: "",
         email: "",
         phoneNumber: "",
-        status: "LEAD",
+        status: "PROSPECT",
         notes: "",
         provenance: "",
         projectId: "",
@@ -221,11 +221,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
     const newErrors = { ...errors };
 
     // Required field validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Le nom est requis";
-      valid = false;
-    }
-
     if (!formData.firstName.trim()) {
       newErrors.firstName = "Le prénom est requis";
       valid = false;
@@ -254,11 +249,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
 
     if (!formData.provenance.trim()) {
       newErrors.provenance = "Ce champ est requis";
-      valid = false;
-    }
-
-    if (selectedApartments.length === 0) {
-      newErrors.apartmentId = ["Au moins un bien doit être sélectionné"];
       valid = false;
     }
 
@@ -851,7 +841,6 @@ export default function AddClientModal({ onClientAdded }: AddProjectModalProps) 
                 onClick={handleSave}
                 disabled={
                   isSubmitting || 
-                  selectedApartments.length === 0 || 
                   (formData.status === "CLIENT" && !identityRecto) || 
                   (formData.status === "CLIENT" && formData.identityType === "Carte d'identité" && !identityVerso)
                 }
