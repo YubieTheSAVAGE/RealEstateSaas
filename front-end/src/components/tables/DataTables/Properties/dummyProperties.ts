@@ -13,7 +13,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 1,
         name: "Résidence Les Palmiers",
-        numberOfProperties: 120,
+        numberOfApartments: 120,
         totalSurface: 12000,
         address: "123 Rue des Palmiers",
         latitude: 33.5779,
@@ -71,7 +71,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 2,
         name: "Tower Business Center",
-        numberOfProperties: 80,
+        numberOfApartments: 80,
         totalSurface: 8000,
         address: "456 Avenue Mohammed V",
         latitude: 33.5731,
@@ -113,7 +113,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 3,
         name: "Les Jardins de l'Atlas",
-        numberOfProperties: 200,
+        numberOfApartments: 200,
         totalSurface: 25000,
         address: "789 Boulevard Hassan II",
         latitude: 33.5952,
@@ -173,7 +173,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 4,
         name: "Villa Royale Complex",
-        numberOfProperties: 50,
+        numberOfApartments: 50,
         totalSurface: 15000,
         address: "321 Route de la Corniche",
         latitude: 33.6089,
@@ -215,7 +215,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 5,
         name: "Marina Bay Residence",
-        numberOfProperties: 75,
+        numberOfApartments: 75,
         totalSurface: 18000,
         address: "654 Corniche Ain Diab",
         latitude: 33.5917,
@@ -275,7 +275,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 6,
         name: "Palm Grove Villas",
-        numberOfProperties: 25,
+        numberOfApartments: 25,
         totalSurface: 50000,
         address: "987 Route de l'Université",
         latitude: 33.5731,
@@ -317,7 +317,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 7,
         name: "Modern Living Estates",
-        numberOfProperties: 15,
+        numberOfApartments: 15,
         totalSurface: 30000,
         address: "147 Avenue des Nations Unies",
         latitude: 33.5952,
@@ -377,7 +377,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 8,
         name: "Shopping Center Central",
-        numberOfProperties: 40,
+        numberOfApartments: 40,
         totalSurface: 8000,
         address: "258 Boulevard Mohammed V",
         latitude: 33.5731,
@@ -419,7 +419,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 9,
         name: "Business Plaza",
-        numberOfProperties: 60,
+        numberOfApartments: 60,
         totalSurface: 12000,
         address: "369 Avenue Hassan II",
         latitude: 33.5952,
@@ -479,7 +479,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 10,
         name: "Green Valley Development",
-        numberOfProperties: 100,
+        numberOfApartments: 100,
         totalSurface: 100000,
         address: "741 Route de l'Aéroport",
         latitude: 33.5731,
@@ -521,7 +521,7 @@ export const dummyProperties: Property[] = [
       project: {
         id: 11,
         name: "Agricultural Lands Project",
-        numberOfProperties: 50,
+        numberOfApartments: 50,
         totalSurface: 200000,
         address: "852 Route de la Campagne",
         latitude: 33.5952,

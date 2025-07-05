@@ -22,7 +22,7 @@ const dummyTemplate: ContractTemplate = {
     {
       id: 1,
       name: "Project 1",
-      numberOfProperties: 10,
+      numberOfApartments: 10,
       address: "123 Main St",
       totalSurface: 100,
       latitude: 33.5779,
@@ -34,7 +34,7 @@ const dummyTemplate: ContractTemplate = {
     {
       id: 2,
       name: "Project 2",
-      numberOfProperties: 20,
+      numberOfApartments: 20,
       address: "456 Main St",
       totalSurface: 200,
       latitude: 33.5779,
@@ -63,7 +63,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
   // Dummy data for preview (replace with real data as needed)
   const assignedProject = template.assignedProjects[0];
   const projectLocation = assignedProject?.address || "Casablanca";
-  const projectUnits = assignedProject?.numberOfProperties || 45;
+  const projectUnits = assignedProject?.numberOfApartments || 45;
   const contentPreview = template.content || "CONTRAT DE RÉSERVATION Entre les soussignés : D'une part, [nom_entreprise],"; 
 
   // Function to truncate content to 5 lines
@@ -133,7 +133,7 @@ export default function TemplateCard({ template }: TemplateCardProps) {
               <div className="font-bold text-lg text-gray-900 dark:text-white mb-1">{project.name}</div>
               <span className="text-gray-500 dark:text-gray-400 text-sm">·</span>
               <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
-                <FaBuilding className="mr-1" /> {project.numberOfProperties} unités
+                <FaBuilding className="mr-1" /> {project.numberOfApartments} unités
               </div>
             </div>
           ))}

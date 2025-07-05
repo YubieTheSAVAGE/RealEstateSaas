@@ -6,7 +6,7 @@ export interface Project {
   name: string;
   
   // Project specifications
-  numberOfProperties: number;
+  numberOfApartments: number;
   totalSurface: number;
   address: string;
   latitude: number;

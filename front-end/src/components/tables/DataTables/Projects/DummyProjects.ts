@@ -35,7 +35,7 @@ export const dummyProjects: Project[] = [
   {
     id: 1,
     name: "Résidence Atlas",
-    numberOfProperties: 50,
+    numberOfApartments: 50,
     totalSurface: 5000,
     address: "Casablanca, Quartier Maarif",
     latitude: 33.5731,
@@ -134,7 +134,7 @@ export const dummyProjects: Project[] = [
   {
     id: 2,
     name: "Ocean View Residence",
-    numberOfProperties: 80,
+    numberOfApartments: 80,
     totalSurface: 8000,
     address: "Mohammedia, Corniche",
     latitude: 33.6861,
@@ -229,7 +229,7 @@ export const dummyProjects: Project[] = [
   {
     id: 3,
     name: "Business Plaza",
-    numberOfProperties: 30,
+    numberOfApartments: 30,
     totalSurface: 3000,
     address: "Rabat, Agdal",
     latitude: 34.0209,
@@ -294,7 +294,7 @@ export const dummyProjects: Project[] = [
   {
     id: 4,
     name: "Garden Residence",
-    numberOfProperties: 120,
+    numberOfApartments: 120,
     totalSurface: 15000,
     address: "Marrakech, Palmeraie",
     latitude: 31.6295,
@@ -392,7 +392,7 @@ export const dummyProjects: Project[] = [
   {
     id: 5,
     name: "Luxury Towers",
-    numberOfProperties: 200,
+    numberOfApartments: 200,
     totalSurface: 25000,
     address: "Casablanca, Anfa",
     latitude: 33.5952,

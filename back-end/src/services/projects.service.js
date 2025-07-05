@@ -56,21 +56,52 @@ async function updateProject(projectId, data) {
     err.statusCode = 404;
     throw err;
   }
-  const apartmentData = {
+  
+  // Build the update data object with all fields
+  const updateData = {
     numberOfApartments: parseInt(data.numberOfApartments, 10),
     totalSurface: parseInt(data.totalSurface, 10),
     address: data.address,
     notes: data.notes,
-  }
+  };
+  
+  // Add optional fields if provided
   if (data.name) {
-    apartmentData.name = data.name;
+    updateData.name = data.name;
   }
   if (data.image) {
-    apartmentData.image = data.image;
+    updateData.image = data.image;
   }
+  
+  // Add enhanced fields if provided
+  if (data.latitude !== undefined && data.latitude !== null && data.latitude !== "") {
+    updateData.latitude = parseFloat(data.latitude);
+  }
+  if (data.longitude !== undefined && data.longitude !== null && data.longitude !== "") {
+    updateData.longitude = parseFloat(data.longitude);
+  }
+  if (data.folderFees !== undefined && data.folderFees !== null && data.folderFees !== "") {
+    updateData.folderFees = parseFloat(data.folderFees);
+  }
+  if (data.commissionPerM2 !== undefined && data.commissionPerM2 !== null && data.commissionPerM2 !== "") {
+    updateData.commissionPerM2 = parseFloat(data.commissionPerM2);
+  }
+  if (data.totalSales !== undefined && data.totalSales !== null && data.totalSales !== "") {
+    updateData.totalSales = parseFloat(data.totalSales);
+  }
+  if (data.status !== undefined && data.status !== null && data.status !== "") {
+    updateData.status = data.status;
+  }
+  if (data.progress !== undefined && data.progress !== null && data.progress !== "") {
+    updateData.progress = parseInt(data.progress, 10);
+  }
+  if (data.constructionPhotos !== undefined) {
+    updateData.constructionPhotos = data.constructionPhotos;
+  }
+  
   const updated = await prisma.project.update({
     where: { id: projectId },
-    data: apartmentData,
+    data: updateData,
   });
   return updated;
 }

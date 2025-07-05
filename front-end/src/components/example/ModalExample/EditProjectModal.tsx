@@ -29,26 +29,28 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
   const [formData, setFormData] = useState({
     id: ProjectData?.id || "",
     name: ProjectData?.name || "",
-    numberOfProperties: ProjectData?.numberOfProperties || "",
+    numberOfApartments: ProjectData?.numberOfApartments || "",
     notes: ProjectData?.notes || "",
     totalSurface: ProjectData?.totalSurface || "",
     address: ProjectData?.address || "",
     latitude: ProjectData?.latitude || "",
     longitude: ProjectData?.longitude || "",
-    folderFees: ProjectData?.folderFees || "",
+    dossierFee: ProjectData?.folderFees || "",
     image: ProjectData?.image || null as File | null,
-    status: ProjectData?.status || "",
+    status: ProjectData?.status?.toLowerCase() || "",
   });
+
+
 
   // State for validation errors
   const [errors, setErrors] = useState({
     name: "",
-    numberOfProperties: "",
+    numberOfApartments: "",
     totalSurface: "",
     address: "",
     latitude: "",
     longitude: "",
-    folderFees: "",
+    dossierFee: "",
     image: "",
     status: "",
   });
@@ -116,7 +118,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
         message: "le nom du projet est requis" 
       },
       { 
-        field: 'numberOfProperties', 
+        field: 'numberOfApartments', 
         test: (v: string) => !v || isNaN(Number(v)) || Number(v) <= 0,
         message: "le nombre de propriétés est requis et doit être un entier positif"
       },
@@ -132,17 +134,17 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
       },
       { 
         field: 'latitude', 
-        test: (v: string) => !v || isNaN(Number(v)),
-        message: "La latitude est requise et doit être un nombre"
+        test: (v: string) => !v || isNaN(Number(v)) || Number(v) < -90 || Number(v) > 90,
+        message: "La latitude est requise et doit être un nombre entre -90 et 90"
       },
       { 
         field: 'longitude', 
-        test: (v: string) => !v || isNaN(Number(v)),
-        message: "La longitude est requise et doit être un nombre"
+        test: (v: string) => !v || isNaN(Number(v)) || Number(v) < -180 || Number(v) > 180,
+        message: "La longitude est requise et doit être un nombre entre -180 et 180"
       },
       { 
-        field: 'folderFees', 
-        test: (v: string) => !v || isNaN(Number(v)) || Number(v) < 0,
+        field: 'dossierFee', 
+        test: (v: string) => v === "" || isNaN(Number(v)) || Number(v) < 0,
         message: "Les frais de dossier sont requis et doivent être un nombre positif"
       },
       {
@@ -155,7 +157,7 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
     // Run validations
     validations.forEach(({ field, test, message }) => {
       if (test(formData[field as keyof typeof formData] as string)) {
-        newErrors[field as keyof typeof newErrors] = message;
+        newErrors[field as keyof typeof newErrors] = message as never;
         hasErrors = true;
       }
     });
@@ -164,20 +166,47 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
 
     const formDataToSend = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null && !(key === 'image' && !value)) {
-        formDataToSend.append(key, value as string | Blob);
+      // Skip null values and empty images
+      if (value === null || (key === 'image' && !value)) {
+        return;
+      }
+      
+      // Map field names to match backend expectations
+      let backendKey = key;
+      let backendValue = value;
+      
+      // Convert dossierFee to folderFees for backend
+      if (key === 'dossierFee') {
+        backendKey = 'folderFees';
+      }
+      
+      // Convert status to uppercase for backend validation
+      if (key === 'status') {
+        backendValue = (value as string).toUpperCase();
+      }
+      
+      // Handle numeric fields - ensure they are sent as strings
+      if (['latitude', 'longitude', 'folderFees', 'numberOfApartments', 'totalSurface'].includes(backendKey)) {
+        backendValue = String(value);
+      }
+      
+      // Ensure all values are sent, including 0
+      if (value !== "" && value !== undefined) {
+        formDataToSend.append(backendKey, backendValue as string | Blob);
       }
     });
 
     try {
-      await editProject(formDataToSend);
-      
-      // Call the callback to refresh project list if provided
-      if (onRefresh) {
-        onRefresh();
+      const result = await editProject(formDataToSend);
+      if (result && 'error' in result) {
+        setApiError(result.error);
+      } else {
+        // Call the callback to refresh project list if provided
+        if (onRefresh) {
+          onRefresh();
+        }
+        closeModal();
       }
-      
-      closeModal();
     } catch (error) {
       setApiError(error instanceof Error ? error.message : "Failed to edit project");
     }
@@ -216,12 +245,12 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
     closeModal();
     setErrors({
       name: "",
-      numberOfProperties: "",
+      numberOfApartments: "",
       totalSurface: "",
       address: "",
       latitude: "",
       longitude: "",
-      folderFees: "",
+      dossierFee: "",
       image: "",
       status: "",
     });
@@ -296,14 +325,14 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
               <div className="col-span-1">
                 <Label>Nombre total de propriétés <span className="text-red-500">*</span></Label>
                 <Input
-                  name="numberOfProperties"
+                  name="numberOfApartments"
                   type="number"
                   placeholder="e.g. 240"
                   onChange={handleChange}
-                  value={formData.numberOfProperties}
+                  value={formData.numberOfApartments}
                 />
-                {errors.numberOfProperties && (
-                  <p className="text-sm text-red-500">{errors.numberOfProperties}</p>
+                {errors.numberOfApartments && (
+                  <p className="text-sm text-red-500">{errors.numberOfApartments}</p>
                 )}
               </div>
               <div className="col-span-1">
@@ -393,14 +422,14 @@ export default function EditProjectModal({ ProjectData, onRefresh, details }: Ed
               <div className="col-span-1">
                 <Label>Frais de dossier <span className="text-red-500">*</span></Label>
                 <Input
-                  name="folderFees"
+                  name="dossierFee"
                   type="number"
                   placeholder="e.g. 4500(MAD)"
                   onChange={handleChange}
-                  value={formData.folderFees}
+                  value={formData.dossierFee}
                 />
-                {errors.folderFees && (
-                  <p className="text-sm text-red-500 mt-1">{errors.folderFees}</p>
+                {errors.dossierFee && (
+                  <p className="text-sm text-red-500 mt-1">{errors.dossierFee}</p>
                 )}
               </div>
             </div>

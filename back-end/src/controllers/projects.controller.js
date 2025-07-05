@@ -213,7 +213,7 @@ async function updateProject(request, reply) {
         .send({ error: "projectId must be a positive integer" });
     }
 
-    const { name, numberOfApartments, totalSurface, address, notes, image } = request.body;
+    const { name, numberOfApartments, totalSurface, address, notes, image, latitude, longitude, folderFees, commissionPerM2, totalSales, status, progress } = request.body;
 
     if (typeof name !== "string" || name.trim() === "") {
       return reply
@@ -244,6 +244,13 @@ async function updateProject(request, reply) {
       numberOfApartments: parseInt(numberOfApartments, 10),
       totalSurface: parseInt(totalSurface, 10),
       address: address.trim(),
+      latitude: latitude ? parseFloat(latitude) : null,
+      longitude: longitude ? parseFloat(longitude) : null,
+      folderFees: folderFees ? parseFloat(folderFees) : null,
+      commissionPerM2: commissionPerM2 ? parseFloat(commissionPerM2) : null,
+      totalSales: totalSales ? parseFloat(totalSales) : null,
+      status: status ? status.toUpperCase() : null,
+      progress: progress ? parseInt(progress, 10) : null,
       notes: notes ? notes.trim() : null,
       image: uploadedImage,
     });
