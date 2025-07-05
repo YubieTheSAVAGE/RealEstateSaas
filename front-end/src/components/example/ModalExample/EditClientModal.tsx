@@ -67,11 +67,13 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     name: clientData.name || "",
     email: clientData.email || "",
     phoneNumber: clientData.phoneNumber || "",
-    status: clientData.status || "LEAD",
+    status: clientData.status || "PROSPECT",
     notes: clientData.notes || "",
     provenance: clientData.provenance || "",
     projectId: "",
     apartmentId: [] as string[],
+    password: "",
+    confirmPassword: "",
   })
 
   // State for validation errors
@@ -80,6 +82,8 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
     email: "",
     phoneNumber: "",
     provenance: "",
+    password: "",
+    confirmPassword: "",
   })
 
   // State for projects and their apartments
@@ -106,7 +110,7 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
   // Status options
   const status = [
     { value: "CLIENT", label: "Client" },
-    { value: "LEAD", label: "Prospect" },
+    { value: "PROSPECT", label: "Prospect" },
   ]
 
   // Initialize existing apartments from clientData
@@ -207,48 +211,76 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
       valid = false;
     }
 
+    // Validate password if changing from PROSPECT to CLIENT
+    if (formData.status === "CLIENT" && clientData.status === "PROSPECT") {
+      if (!formData.password.trim()) {
+        newErrors.password = "Le mot de passe est requis pour créer un compte client";
+        valid = false;
+      } else if (formData.password.length < 6) {
+        newErrors.password = "Le mot de passe doit contenir au moins 6 caractères";
+        valid = false;
+      }
+
+      if (!formData.confirmPassword.trim()) {
+        newErrors.confirmPassword = "Veuillez confirmer le mot de passe";
+        valid = false;
+      } else if (formData.password !== formData.confirmPassword) {
+        newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
+        valid = false;
+      }
+    }
+
     setErrors(newErrors);
     return valid;
   };
 
   const handleSave = async () => {
+    console.log("🎯 [EditModal] Save button clicked");
+    console.log("📝 [EditModal] Form data:", formData);
+    console.log("👤 [EditModal] Original client data:", clientData);
+
     // Validate required fields
     if (!validateForm()) {
+      console.log("❌ [EditModal] Form validation failed");
       return;
     }
+
+    console.log("✅ [EditModal] Form validation passed");
 
     // Flatten all selected apartments into a single array of IDs
     const allApartmentIds = selectedApartments.flatMap((project) => project.apartments.map((apt) => apt.id))
 
-    const formDataToSend = new FormData()
+    // Prepare client data object
+    const clientDataToSend = {
+      id: formData.id,
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phoneNumber: formData.phoneNumber.trim(),
+      status: formData.status as "PROSPECT" | "CLIENT",
+      notes: formData.notes.trim(),
+      provenance: formData.provenance.trim(),
+      apartmentId: allApartmentIds,
+      // Only include password if changing from PROSPECT to CLIENT
+      ...(formData.status === "CLIENT" && clientData.status === "PROSPECT" && {
+        password: formData.password
+      })
+    };
 
-    // Add client ID for update
-    formDataToSend.append("id", formData.id as string)
-
-    // Add all form fields except apartmentId
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "apartmentId" && key !== "projectId") {
-        formDataToSend.append(key, value as string)
-      }
-    })
-
-    // Add all apartment IDs
-    allApartmentIds.forEach((id) => {
-      formDataToSend.append("apartmentId", id)
-    })
-
-    console.log("Formulaire envoyé:", formDataToSend)
+    console.log("🚀 [EditModal] Sending client data to API...");
+    console.log("📋 [EditModal] Client data:", { ...clientDataToSend, password: clientDataToSend.password ? "[REDACTED]" : undefined });
 
     try {
-      await updateClient(formDataToSend)
+      await updateClient(clientDataToSend)
+      console.log("✅ [EditModal] Client updated successfully");
 
       if (onClientUpdated) {
+        console.log("🔄 [EditModal] Calling refresh callback");
         onClientUpdated() // Call the refresh callback to update the client list
       }
 
       closeModal()
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du client:", error)
+      console.error("💥 [EditModal] Error updating client:", error)
       // Handle error (could add error state and display to user)
     }
   }
@@ -456,6 +488,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
                 onChange={handleChange}
                 defaultValue={formData.name}
               />
+              {errors.name && (
+                <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+              )}
             </div>
             <div className="col-span-1">
               <Label>
@@ -480,6 +515,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
                 onChange={handleChange}
                 defaultValue={formData.email}
               />
+              {errors.email && (
+                <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+              )}
             </div>
 
             <div className="col-span-1">
@@ -493,6 +531,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
                 onChange={handleChange}
                 defaultValue={formData.phoneNumber}
               />
+              {errors.phoneNumber && (
+                <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>
+              )}
             </div>
 
             {/* Project and Apartment Selection Section */}
@@ -617,6 +658,55 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
               </div>
             )}
 
+            {/* Password fields - only show when converting from PROSPECT to CLIENT */}
+            {formData.status === "CLIENT" && clientData.status === "PROSPECT" && (
+              <>
+                <div className="col-span-1 sm:col-span-2">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h6 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+                      Création du compte client
+                    </h6>
+                    <p className="text-sm text-blue-600 dark:text-blue-300 mb-4">
+                      En changeant le statut vers "Client", un compte utilisateur sera créé pour permettre l'accès au portail client.
+                    </p>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <div>
+                        <Label>
+                          Mot de passe <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          name="password"
+                          type="password"
+                          placeholder="Minimum 6 caractères"
+                          onChange={handleChange}
+                          value={formData.password}
+                        />
+                        {errors.password && (
+                          <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+                        )}
+                      </div>
+                      <div>
+                        <Label>
+                          Confirmer le mot de passe <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          name="confirmPassword"
+                          type="password"
+                          placeholder="Confirmer le mot de passe"
+                          onChange={handleChange}
+                          value={formData.confirmPassword}
+                        />
+                        {errors.confirmPassword && (
+                          <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="col-span-1 sm:col-span-2">
               <Label>
                 Comment nous avez-vous connu ? <span className="text-red-500">*</span>
@@ -628,6 +718,9 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
                 onChange={handleChange}
                 defaultValue={formData.provenance}
               />
+              {errors.provenance && (
+                <p className="text-sm text-red-500 mt-1">{errors.provenance}</p>
+              )}
             </div>
             <div className="col-span-1 sm:col-span-2">
               <Label>Notes</Label>
@@ -645,8 +738,18 @@ export default function EditClientModal({ onClientUpdated, clientData, details }
             <Button size="sm" variant="outline" onClick={closeModal}>
               Annuler
             </Button>
-            <Button size="sm" onClick={handleSave} disabled={selectedApartments.length === 0}>
-              Mettre à jour
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={
+                selectedApartments.length === 0 ||
+                (formData.status === "CLIENT" && clientData.status === "PROSPECT" &&
+                 (!formData.password.trim() || formData.password !== formData.confirmPassword))
+              }
+            >
+              {formData.status === "CLIENT" && clientData.status === "PROSPECT"
+                ? "Créer le compte client"
+                : "Mettre à jour"}
             </Button>
           </div>
         </form>

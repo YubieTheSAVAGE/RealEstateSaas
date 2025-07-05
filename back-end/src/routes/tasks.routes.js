@@ -2,14 +2,10 @@ const controller = require("../controllers/task.controller");
 
 module.exports = async function (fastify) {
   // Task routes
-  fastify.get(
-    "/tasks",
-    {
-      onRequest: [fastify.authenticate],
-      preHandler: [fastify.isAgentOrAdmin],
-    },
-    controller.getAllTasks
-  );
+  fastify.get("/tasks", {
+    onRequest: [fastify.authenticate],
+    preHandler: [fastify.isAgentOrAdmin],
+  }, controller.getAllTasks);
 
   fastify.get(
     "/tasks/stats",

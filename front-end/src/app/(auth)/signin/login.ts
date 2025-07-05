@@ -33,7 +33,12 @@ export default async function login(_prevState: FormResponse, formData: FormData
       return { error: getErrorMessage(parsedRes) };
     }
     await setAuthCookie(parsedRes);
-    return { success: true, redirect: '/home' };
+
+    // Redirect based on user role
+    const userRole = await getUserRoleFromToken();
+    const redirectPath = userRole === 'CLIENT' ? '/dashboard' : '/home';
+
+    return { success: true, redirect: redirectPath };
   } catch (error) {
     console.error('Détails de l’erreur de connexion :', error);
     return { error: error instanceof Error ? error.message : 'Une erreur inattendue est survenue lors de la connexion' };

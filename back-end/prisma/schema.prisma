@@ -9,19 +9,20 @@ datasource db {
 }
 
 model User {
-  id           Int         @id @default(autoincrement())
-  name         String
-  email        String      @unique
-  phoneNumber  String
-  status       Status      @default(ACTIVE)
-  notes        String?
-  role         Role        @default(AGENT)
-  passwordHash String
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  apartments   Apartment[] @relation("UserApartments")
-  clients      Client[]
-  createdTasks Task[]      @relation("UserCreatedTasks")
+  id             Int         @id @default(autoincrement())
+  name           String
+  email          String      @unique
+  phoneNumber    String
+  status         Status      @default(ACTIVE)
+  notes          String?
+  role           Role        @default(AGENT)
+  passwordHash   String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  apartments     Apartment[] @relation("UserApartments")
+  clientProfile  Client?     @relation("ClientUser")
+  createdClients Client[]    @relation("CreatedClients")
+  createdTasks   Task[]      @relation("UserCreatedTasks")
 }
 
 model Client {
@@ -31,12 +32,14 @@ model Client {
   phoneNumber          String
   notes                String?
   provenance           String
-  status               ClientStatus @default(LEAD)
+  status               ClientStatus @default(PROSPECT)
+  userId               Int?         @unique // Optional link to User account for CLIENT status
   createdById          Int
   createdAt            DateTime     @default(now())
   updatedAt            DateTime     @updatedAt
   apartments           Apartment[]
-  createdBy            User         @relation(fields: [createdById], references: [id])
+  user                 User?        @relation("ClientUser", fields: [userId], references: [id])
+  createdBy            User         @relation("CreatedClients", fields: [createdById], references: [id])
   interestedApartments Apartment[]  @relation("InterestedApartments")
 }
 
@@ -125,6 +128,7 @@ model monthlyTarget {
 enum Role {
   ADMIN
   AGENT
+  CLIENT
 }
 
 enum PropertyType {
@@ -161,7 +165,7 @@ enum ApartmentStatus {
 }
 
 enum ClientStatus {
-  LEAD
+  PROSPECT
   CLIENT
 }
 

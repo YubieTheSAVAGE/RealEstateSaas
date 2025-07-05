@@ -13,7 +13,8 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:3001
-      - NEXT_FONT_GOOGLE_MOCKED_RESPONSES='[{"url":"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap","content":"/* mocked */"}]'
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
     command: npm run dev
     depends_on:
       - backend

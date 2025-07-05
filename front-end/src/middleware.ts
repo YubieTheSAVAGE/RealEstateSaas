@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { UnAuthenticatedRoutes, AgentRoutes } from "./app/common/constants/routes";
+import { UnAuthenticatedRoutes, AgentRoutes, ClientRoutes } from "./app/common/constants/routes";
 import { AUTHENTICATION_COOKIE } from "@/app/(auth)/auth-cookie";
 import { decodeToken } from "./utils/decodeToken";
 
@@ -8,6 +8,8 @@ function checkRoleAccess(pathname: string, role: string): boolean {
     return true;
   } else if (role === 'AGENT') {
     return AgentRoutes.some(route => pathname.startsWith(route));
+  } else if (role === 'CLIENT') {
+    return ClientRoutes.some(route => pathname.startsWith(route));
   }
   return false;
 }

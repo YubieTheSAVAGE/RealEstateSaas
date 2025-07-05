@@ -69,7 +69,7 @@ export default function HomePageContent() {
           </div>
         )}
         <div className="col-span-12">
-          <RecentActivity />
+          {/* <RecentActivity /> */}
         </div>
       </div>
       )}

@@ -1,34 +1,38 @@
 "use client";
-import React, {useCallback, useState, useEffect} from "react"
-import PropertiesDataTable from "@/components/tables/DataTables/Properties/PropertiesDataTable"
+import React, { useMemo } from "react"
+import dynamic from 'next/dynamic';
+import { useOptimizedData } from "@/hooks/useOptimizedData";
 import getApartements from "@/components/tables/DataTables/Properties/getApartements";
-import AddPropertyModal from "@/components/example/ModalExample/AddApartementsModal";
-import { FallingLines } from "react-loader-spinner";
 import { getUserRoleFromToken } from "@/app/(auth)/signin/login";
+import { FallingLines } from "react-loader-spinner";
+
+// Lazy load heavy components
+const PropertiesDataTable = dynamic(() => import("@/components/tables/DataTables/Properties/PropertiesDataTable"), {
+    loading: () => <div className="h-96 bg-gray-100 animate-pulse rounded-lg" />,
+    ssr: false
+});
+
+const AddPropertyModal = dynamic(() => import("@/components/example/ModalExample/AddApartementsModal"), {
+    loading: () => <div className="w-32 h-10 bg-blue-100 animate-pulse rounded" />,
+    ssr: false
+});
 
 export default function PropertiesPageContent() {
-    const [apartementsData, setApartementsData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    
-    const fetchApartements = useCallback(async () => {
-        setIsLoading(true);
-        const data = await getApartements();
-        setApartementsData(data);
-        setIsLoading(false);
-    }, []);
+    // Optimized data fetching with caching
+    const { data: apartementsData, isLoading, refetch } = useOptimizedData(
+        'apartments',
+        getApartements,
+        { staleTime: 2 * 60 * 1000 } // 2 minutes cache
+    );
 
-    useEffect(() => {
-        fetchApartements();
-    }, [fetchApartements]);
+    const { data: userRole } = useOptimizedData(
+        'userRole',
+        getUserRoleFromToken,
+        { staleTime: 10 * 60 * 1000 } // 10 minutes cache
+    );
 
-    const [userRole, setUserRole] = useState<string | null>(null);
-    useEffect(() => {
-        const fetchUserRole = async () => {
-            const role = await getUserRoleFromToken();
-            setUserRole(role as string);
-        };
-        fetchUserRole();
-    }, []);
+    // Memoize the refresh function to prevent unnecessary re-renders
+    const handleRefresh = useMemo(() => refetch, [refetch]);
     
     return (
         <>
@@ -40,7 +44,7 @@ export default function PropertiesPageContent() {
                     Propriétés
                 </h2>
                 {userRole === "ADMIN" && (
-                    <AddPropertyModal onApartementsAdded={fetchApartements}/>
+                    <AddPropertyModal onApartementsAdded={handleRefresh}/>
                 )}
             </div>
             {isLoading ? (
@@ -54,7 +58,7 @@ export default function PropertiesPageContent() {
                 </div>
             ) : (
                 <div className="col-span-12">
-                    <PropertiesDataTable apartmentsData={apartementsData} onRefresh={fetchApartements}/>
+                    <PropertiesDataTable apartmentsData={apartementsData || []} onRefresh={handleRefresh}/>
                 </div>
             )}
         </>
