@@ -14,7 +14,7 @@ const formatCurrency = (amount: number) =>
 const ClientPaymentOverview: React.FC<ClientPaymentOverviewProps> = ({ client }) => {
   // Aggregate all properties and payments
   const properties = client.apartments || [];
-  const totalAmount = properties.reduce((sum, prop) => sum + (prop.prixTotal || 0), 0);
+  const totalAmount = properties.reduce((sum, prop) => sum + (prop.price || 0), 0);
   const payments = client.payments || [];
   const paidPayments = payments.filter((p) => p.status === "PAID");
   const remainingPayments = payments.filter((p) => p.status !== "PAID");

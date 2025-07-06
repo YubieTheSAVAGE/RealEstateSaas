@@ -238,7 +238,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
   const [paymentDivisions, setPaymentDivisions] = useState(4);
 
   // Example data for sold property
-  property.prixTotal = 687500;
+  property.price = 687500;
   property.project.folderFees = 400;
   property.prixM2 = 13750;
   property.commissionPerM2 = 2750;
@@ -250,11 +250,11 @@ export default function ReservationProcessModal({ property, payments }: Reservat
   property.balcon = 5;
   // Calculate prixM2 based on total price and surface area
   const totalSurface = (property.habitable || 0) + (property.terrasse || 0) + (property.piscine || 0);
-  property.prixM2 = totalSurface > 0 ? Math.round(property.prixTotal / totalSurface) : 0;
+  property.prixM2 = totalSurface > 0 ? Math.round(property.price / totalSurface) : 0;
 
   // Calculate first payment breakdown when property or folder fees change
   useEffect(() => {
-    if (property && property.prixTotal) {
+    if (property && property.price) {
       const firstBreakdown = PaymentValidator.calculateFirstPaymentBreakdown(property, folderFees);
       const totalBreakdown = PaymentValidator.calculateTotalPaymentBreakdown(property, folderFees);
       setFirstPaymentBreakdown(firstBreakdown);
@@ -279,7 +279,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
 
   // Enhanced first payment handler with sold property validation
   const handleFirstPayment = () => {
-    if (!property || !property.prixTotal || !newDate) {
+    if (!property || !property.price || !newDate) {
       setValidationError("Please select a date for the first payment and ensure property has a valid price");
       return;
     }
@@ -304,7 +304,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
 
   // Enhanced add payment handler with sold property validation
   const handleAddEcheance = () => {
-    if (!newMontant || !newDate || !property || !property.prixTotal) {
+    if (!newMontant || !newDate || !property || !property.price) {
       setValidationError("Please fill in all required fields and ensure property has a valid price");
       return;
     }
@@ -346,13 +346,13 @@ export default function ReservationProcessModal({ property, payments }: Reservat
 
   // Enhanced generate default payment plan with sold property validation
   const handleGenerateDefaultPlan = () => {
-    if (!property || !property.prixTotal) {
+    if (!property || !property.price) {
       setValidationError("Property price is required to generate payment plan");
       return;
     }
     
     try {
-      const totalAmount = totalPaymentBreakdown?.totalPayment || property.prixTotal;
+      const totalAmount = totalPaymentBreakdown?.totalPayment || property.price;
       const defaultPlan = PaymentValidator.generateDefaultPaymentPlan(totalAmount, 4);
       const defaultPayments: Payment[] = defaultPlan.payments.map((payment, index) => ({
         id: Date.now() + index,
@@ -415,7 +415,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
             )}
 
             {/* Total Payment Breakdown */}
-            {totalPaymentBreakdown && property && property.prixTotal && (
+            {totalPaymentBreakdown && property && property.price && (
               <div className="mb-6 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700 rounded-lg">
                 <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-3">
                   Détail du paiement total
@@ -485,10 +485,10 @@ export default function ReservationProcessModal({ property, payments }: Reservat
               <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
                 Plan de paiement
               </h3>
-              {property && property.prixTotal ? (
+              {property && property.price ? (
                 <>
                   <p className="text-sm text-blue-700 dark:text-blue-300 mb-3">
-                    Total à payer: {totalPaymentBreakdown?.totalPayment.toLocaleString() || property.prixTotal.toLocaleString()} MAD
+                    Total à payer: {totalPaymentBreakdown?.totalPayment.toLocaleString() || property.price.toLocaleString()} MAD
                   </p>
                   <Button 
                     size="sm" 
@@ -539,7 +539,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                   <Button 
                     size="sm" 
                     onClick={handleAddEcheance}
-                    disabled={!newMontant || !newDate || !property || !property.prixTotal}
+                    disabled={!newMontant || !newDate || !property || !property.price}
                     className="flex items-center gap-2"
                   >
                     <AiOutlinePlus className="text-sm" />
@@ -556,7 +556,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
               )}
 
               {/* Payment Summary */}
-              {echeances.length > 0 && property && property.prixTotal && (
+              {echeances.length > 0 && property && property.price && (
                 <div className="mb-4 p-4 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
                   <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Résumé des paiements</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
@@ -564,7 +564,7 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                       <span className="font-medium">Total des paiements:</span> {echeances.reduce((sum, e) => sum + e.amount, 0).toLocaleString()} MAD
                     </div>
                     <div className="text-gray-700 dark:text-gray-200">
-                      <span className="font-medium">Prix de base:</span> {property.prixTotal.toLocaleString()} MAD
+                      <span className="font-medium">Prix de base:</span> {property.price.toLocaleString()} MAD
                     </div>
                     <div className="text-gray-700 dark:text-gray-200">
                       <span className="font-medium">Frais de dossier:</span> {folderFees.toLocaleString()} MAD
@@ -574,15 +574,15 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                     </div>
                     <div className="text-gray-700 dark:text-gray-200">
                       <span className="font-medium">Premier paiement:</span> {echeances[0]?.amount.toLocaleString()} MAD 
-                        ({echeances[0] ? ((echeances[0].amount / (totalPaymentBreakdown?.totalPayment || property.prixTotal)) * 100).toFixed(1) : 0}%)
+                        ({echeances[0] ? ((echeances[0].amount / (totalPaymentBreakdown?.totalPayment || property.price)) * 100).toFixed(1) : 0}%)
                     </div>
                     <div className="text-gray-700 dark:text-gray-200">
-                      <span className="font-medium">Reste à payer:</span> {((totalPaymentBreakdown?.totalPayment || property.prixTotal) - echeances.reduce((sum, e) => sum + e.amount, 0)).toLocaleString()} MAD
+                      <span className="font-medium">Reste à payer:</span> {((totalPaymentBreakdown?.totalPayment || property.price) - echeances.reduce((sum, e) => sum + e.amount, 0)).toLocaleString()} MAD
                     </div>
                   </div>
                   
                   {/* Additional warning for sold properties with incomplete payments */}
-                  {property.status === 'SOLD' && echeances.reduce((sum, e) => sum + e.amount, 0) < (totalPaymentBreakdown?.totalPayment || property.prixTotal) && (
+                  {property.status === 'SOLD' && echeances.reduce((sum, e) => sum + e.amount, 0) < (totalPaymentBreakdown?.totalPayment || property.price) && (
                     <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded">
                       <p className="text-yellow-700 dark:text-yellow-300 text-xs">
                         ⚠️ Pour une propriété vendue, le plan de paiement doit couvrir le montant total.
@@ -612,9 +612,9 @@ export default function ReservationProcessModal({ property, payments }: Reservat
                       <td className="py-2 text-gray-900 dark:text-white">{e.amount.toLocaleString()} MAD</td>
                       <td className="py-2 text-gray-900 dark:text-white">{e.dueDate.toLocaleDateString()}</td>
                       <td className="py-2">
-                        {property && property.prixTotal ? (
+                        {property && property.price ? (
                           <span className="px-2 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                            {((e.amount / (totalPaymentBreakdown?.totalPayment || property.prixTotal)) * 100).toFixed(1)}%
+                            {((e.amount / (totalPaymentBreakdown?.totalPayment || property.price)) * 100).toFixed(1)}%
                           </span>
                         ) : (
                           <span className="px-2 py-1 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">

@@ -21,7 +21,7 @@ import deleteApartement from "./deleteApartement";
 import { Property } from "@/types/property";
 import ReservationProcessModal from "@/components/example/ModalExample/ReservationProcessModal";
 
-type SortKey = "project" | "number" | "type" | "habitable" | "prixTotal" | "status" | "updatedAt" | "floor" | "zone" | "totalArea" | "superficie" | "price";
+type SortKey = "project" | "number" | "type" | "habitable" | "price" | "status" | "updatedAt" | "floor" | "zone" | "totalArea" | "superficie" | "price";
 type SortOrder = "asc" | "desc";
 
 
@@ -69,7 +69,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
         mezzanineArea: item.mezzanineArea ?? 0,
         mezzaninePrice: item.mezzaninePrice ?? 0,
         prixType: item.prixType ?? "FIXE",
-        prixTotal: item.prixTotal ?? 0,
+        price: item.price ?? 0,
         prixM2: item.prixM2 ?? 0,
         zone: item.zone ?? "",
         project: item.project ?? { id: "", name: "" },
@@ -147,11 +147,11 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
         return item.totalArea ?? 0;
       case "superficie":
         return getSuperficieValue(item);
-      case "prixTotal":
-        return item.prixTotal ?? 0;
       case "price":
-        // Alias for prixTotal to match the table header
-        return item.prixTotal ?? 0;
+        return item.price ?? 0;
+      case "price":
+        // Alias for price to match the table header
+        return item.price ?? 0;
       case "status":
         return status[item.status as keyof typeof status] || item.status;
       case "floor":
@@ -346,7 +346,7 @@ export default function PropertiesDataTable({ apartmentsData, onRefresh }: { apa
                     {item.habitable ? item.habitable + " m²" : item.totalArea ? item.totalArea + " m²" : "N/A"}
                   </TableCell>
                   <TableCell className="px-4 py-4 font-normal text-gray-800 border dark:border-white/[0.05] border-gray-100 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
-                    {item.prixTotal.toLocaleString("fr-FR", {
+                    {item.price.toLocaleString("fr-FR", {
                       style: "currency",
                       currency: "MAD",
                       minimumFractionDigits: 0,

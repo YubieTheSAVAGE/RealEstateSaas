@@ -263,7 +263,7 @@ export class PaymentValidator {
     property: any,
     folderFees: number = 0
   ): FirstPaymentCalculation {
-    if (!property || !property.prixTotal || property.prixTotal <= 0) {
+    if (!property || !property.price || property.price <= 0) {
       return {
         baseAmount: 0,
         folderFees: 0,
@@ -284,16 +284,16 @@ export class PaymentValidator {
     let totalFirstPayment: number;
 
     if (property.prixType === "FIXE") {
-      // Case "FIXE": prixTotal includes extras
-      baseAmount = property.prixTotal * 0.2;
+      // Case "FIXE": price includes extras
+      baseAmount = property.price * 0.2;
       totalFirstPayment = baseAmount + folderFees + commissionTotal;
     } else if (property.prixType === "M2") {
-      // Case "M2": prixTotal excludes commission, need to add extras separately
-      baseAmount = property.prixTotal * 0.2;
+      // Case "M2": price excludes commission, need to add extras separately
+      baseAmount = property.price * 0.2;
       totalFirstPayment = baseAmount + extrasTotal + folderFees + commissionTotal;
     } else {
       // Fallback for unknown pricing type
-      baseAmount = property.prixTotal * 0.2;
+      baseAmount = property.price * 0.2;
       totalFirstPayment = baseAmount + folderFees + commissionTotal;
     }
 
@@ -314,7 +314,7 @@ export class PaymentValidator {
     property: any,
     folderFees: number = 0
   ): TotalPaymentBreakdown {
-    if (!property || !property.prixTotal || property.prixTotal <= 0) {
+    if (!property || !property.price || property.price <= 0) {
       return {
         basePrice: 0,
         folderFees: 0,
@@ -347,10 +347,10 @@ export class PaymentValidator {
       : 0;
 
     // Calculate total payment
-    const totalPayment = property.prixTotal + folderFees + commissionTotal + parkingPrice;
+    const totalPayment = property.price + folderFees + commissionTotal + parkingPrice;
 
     return {
-      basePrice: property.prixTotal,
+      basePrice: property.price,
       folderFees,
       commissionTotal,
       parkingPrice,

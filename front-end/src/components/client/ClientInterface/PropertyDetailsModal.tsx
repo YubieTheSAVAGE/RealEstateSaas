@@ -409,7 +409,7 @@ const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                       <div>
                         <p className="text-sm text-gray-500 dark:text-gray-400">Prix total</p>
                         <p className="text-lg sm:text-xl font-bold text-green-600 dark:text-green-400">
-                          {formatCurrency(property.prixTotal)}
+                          {formatCurrency(property.price)}
                         </p>
                       </div>
                       {property.prixM2 && (
@@ -569,7 +569,7 @@ const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                     <div className="flex justify-between items-center py-3 border-b border-gray-100 dark:border-gray-700">
                       <span className="text-gray-600 dark:text-gray-300">Prix total</span>
                       <span className="text-xl sm:text-2xl font-bold text-green-600 dark:text-green-400">
-                        {formatCurrency(property.prixTotal)}
+                        {formatCurrency(property.price)}
                       </span>
                     </div>
                     

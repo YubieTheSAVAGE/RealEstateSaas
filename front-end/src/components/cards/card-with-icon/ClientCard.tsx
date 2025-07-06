@@ -31,7 +31,7 @@ export default function ClientCard({ client, onRefresh }: { client: Client, onRe
   };
 
   // Calculate total investment
-  const totalInvestment = client.apartments?.reduce((sum, property) => sum + (property.prixTotal || 0), 0) || 0;
+  const totalInvestment = client.apartments?.reduce((sum, property) => sum + (property.price || 0), 0) || 0;
   
   // Check identity document completion
   const hasIdentityDocs = client.status === 'CLIENT' && client.identityType && client.identityNumber;

@@ -123,7 +123,7 @@ const ClientProperties: React.FC<ClientPropertiesProps> = ({ client }) => {
       }
       
       acc[projectId].properties.push(property);
-      acc[projectId].totalValue += property.prixTotal;
+      acc[projectId].totalValue += property.price;
       acc[projectId].propertyCount++;
       
       return acc;
@@ -345,7 +345,7 @@ const ClientProperties: React.FC<ClientPropertiesProps> = ({ client }) => {
                             </span>
                             )}
                             <span className="flex items-center gap-1 font-semibold text-green-600 dark:text-green-400">
-                              {property.prixTotal.toLocaleString('fr-FR')} DH
+                              {property.price.toLocaleString('fr-FR')} DH
                             </span>
                           </div>
 

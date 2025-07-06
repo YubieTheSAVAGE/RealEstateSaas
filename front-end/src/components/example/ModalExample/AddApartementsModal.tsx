@@ -38,10 +38,10 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     number: "",
     type: "",
     area: "",
-    price: "",
+    price: 0,
     status: "AVAILABLE",
     notes: "",
-    pricePerM2: "",
+    pricePerM2: 0,
     image: null as File | null, // Store as File object instead of string
     zone: "",
     clientId: "",
@@ -68,7 +68,6 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     balcon: "",
     terrasse: "",
     piscine: "",
-    prixTotal: "",
     prixM2: "",
     totalArea: "",
     mezzanineArea: "",
@@ -96,7 +95,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
   const [prixType, setPrixType] = useState("FIXE"); // "FIXE" or "M2"
   const [prixM2, setPrixM2] = useState("");
-  const [prixTotal, setPrixTotal] = useState("");
+  const [price, setprice] = useState("");
   const [prixBalconPct, setPrixBalconPct] = useState("50");
   const [prixTerrassePct, setPrixTerrassePct] = useState("30");
   const [prixPiscine, setPrixPiscine] = useState("");
@@ -143,7 +142,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     let main = 0, balcon = 0, terrasse = 0, piscine = 0, parking = 0, mezzanine = 0, total = 0, commissionTotal = 0;
     
     if (prixType === "FIXE") {
-      total = Number(prixTotal) || 0;
+      total = Number(price) || 0;
       main = total;
       
       // Calculate commission for fixed price
@@ -193,7 +192,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       }
     }
     return { main, balcon, terrasse, piscine, parking, mezzanine, total, commissionTotal };
-  }, [surfaces, landStoreFields, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type, commissionPerM2]);
+  }, [surfaces, landStoreFields, prixType, prixM2, price, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type, commissionPerM2]);
 
   // Helper function to validate percentage input
   const validatePercentage = (value: string, fieldName: string) => {
@@ -354,10 +353,10 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       number: "",
       type: "",
       area: "",
-      price: "",
+      price: 0,
       status: "AVAILABLE",
       notes: "",
-      pricePerM2: "",
+      pricePerM2: 0,
       image: null,
       zone: "",
       clientId: "",
@@ -369,8 +368,8 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       type: "",
       area: "",
       price: "",
-      status: "",
       pricePerM2: "",
+      status: "",
       zone: "",
       image: "",
       clientId: "",
@@ -382,7 +381,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       balcon: "",
       terrasse: "",
       piscine: "",
-      prixTotal: "",
+      
       prixM2: "",
       totalArea: "",
       mezzanineArea: "",
@@ -403,7 +402,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     });
     setPrixType("FIXE");
     setPrixM2("");
-    setPrixTotal("");
+    setprice("");
     setPrixBalconPct("50");
     setPrixTerrassePct("30");
     setPrixPiscine("");
@@ -521,11 +520,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
     // Validate pricing for all property types
     if (prixType === "FIXE") {
-      if (!prixTotal || isNaN(Number(prixTotal)) || Number(prixTotal) <= 0) {
-        newErrors.prixTotal = "Le prix total doit être un nombre positif";
+      if (!price || isNaN(Number(price)) || Number(price) <= 0) {
+        newErrors.price = "Le prix total doit être un nombre positif";
         hasErrors = true;
       } else {
-        newErrors.prixTotal = "";
+        newErrors.price = "";
       }
     } else {
       if (!prixM2 || isNaN(Number(prixM2)) || Number(prixM2) <= 0) {
@@ -654,7 +653,7 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
 
     if (prixType === "FIXE") {
       // For fixed price, send the total price as 'price'
-      formDataToSend.append('price', prixTotal || calcSummary.total.toString());
+      formDataToSend.append('price', price || calcSummary.total.toString());
     } else {
       // For price per m², send both price per m² and calculated total
       formDataToSend.append('pricePerM2', prixM2);
@@ -1054,20 +1053,20 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
                   <div className="col-span-2 sm:col-span-1">
                     <Label>Prix total (DH) <span className="text-red-500">*</span></Label>
                     <Input 
-                      name="prixTotal" 
+                      name="price" 
                       type="number" 
                       placeholder="ex: 1000000" 
-                      value={prixTotal} 
+                      value={price} 
                       onChange={e => {
                         const value = e.target.value;
-                        setPrixTotal(value);
+                        setprice(value);
                         const error = validatePositiveNumber(value, "Le prix total");
-                        setErrors(prev => ({ ...prev, prixTotal: error }));
+                        setErrors(prev => ({ ...prev, price: error }));
                       }}
                       min="0.01"
                       step={0.01}
                     />
-                    {errors.prixTotal && <p className="text-sm text-red-500 mt-1">{errors.prixTotal}</p>}
+                    {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
                   </div>
                 ) : (
                   <>

@@ -155,9 +155,9 @@ export default function PaymentsTable({ payments }: PaymentsTableProps) {
                       {payment.amount} MAD
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {payment.property.prixTotal} MAD
+                      {payment.property.price} MAD
                       <p className="text-gray-500 text-theme-xs dark:text-gray-400">
-                        {((payment.amount / payment.property.prixTotal) * 100).toFixed(1)}% du prix total
+                        {((payment.amount / payment.property.price) * 100).toFixed(1)}% du prix total
                       </p>
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">

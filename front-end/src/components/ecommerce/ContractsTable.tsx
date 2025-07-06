@@ -167,7 +167,7 @@ export default function ContractsTable({ contracts }: ContractsTableProps) {
                       {contract.template.name}
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {contract.property.prixTotal} MAD
+                      {contract.property.price} MAD
                     </TableCell>
                     <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                       {formatDate(contract.createdAt)}

@@ -37,7 +37,7 @@ const testPayments: Payment[] = [
         status: "construction",
         progress: 60,
       },
-      prixTotal: 250000,
+      price: 250000,
       client: {
         id: 1,
         name: 'Ahmed Benali',
@@ -78,7 +78,7 @@ const testPayments: Payment[] = [
         status: "construction",
         progress: 60,
       },
-      prixTotal: 250000,
+      price: 250000,
       client: {
         id: 1,
         name: 'Ahmed Benali',
@@ -119,7 +119,7 @@ const testPayments: Payment[] = [
         status: "construction",
         progress: 60,
       },
-      prixTotal: 250000,
+      price: 250000,
       client: {
         id: 1,
         name: 'Ahmed Benali',
@@ -160,7 +160,7 @@ const testPayments: Payment[] = [
         status: "construction",
         progress: 60,
       },
-      prixTotal: 250000,
+      price: 250000,
       client: {
         id: 1,
         name: 'Ahmed Benali',
@@ -209,7 +209,7 @@ const paymentsForDifferentProperty: Payment[] = [
         status: "construction",
         progress: 60,
       },
-      prixTotal: 300000,
+      price: 300000,
       client: {
         id: 1,
         name: 'Ahmed Benali',
@@ -505,7 +505,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property, onRefresh }) => {
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500 dark:text-gray-400">Prix Total</span>
             <span className="text-green-600 dark:text-green-400 font-bold text-lg">
-              {property.prixTotal?.toLocaleString('fr-FR', { minimumFractionDigits: 0 })} MAD
+              {property.price?.toLocaleString('fr-FR', { minimumFractionDigits: 0 })} MAD
             </span>
           </div>
         </div>

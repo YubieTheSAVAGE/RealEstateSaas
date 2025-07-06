@@ -82,7 +82,7 @@ const dummyProperty: Property = {
     prixM2: 13750,
     prixType: 'M2',
     project: projectAtlas,
-    prixTotal: 550000,
+    price: 550000,
 };
 
 const dummyProperty2: Property = {
@@ -98,7 +98,7 @@ const dummyProperty2: Property = {
     prixM2: 14000,
     prixType: 'M2',
     project: projectAtlas,
-    prixTotal: 770000,
+    price: 770000,
     parkingDisponible: true,
     parkingInclus: true,
     prixParking: 200000,
@@ -117,7 +117,7 @@ const dummyProperty3: Property = {
     prixM2: 14500,
     prixType: 'M2',
     project: projectAtlas,
-    prixTotal: 942500,
+    price: 942500,
 };
 
 const dummyProperty4: Property = {
@@ -133,7 +133,7 @@ const dummyProperty4: Property = {
     prixM2: 15000,
     prixType: 'M2',
     project: projectAtlas,
-    prixTotal: 1125000,
+    price: 1125000,
 };
 
 const dummyProperty5: Property = {
@@ -149,7 +149,7 @@ const dummyProperty5: Property = {
     prixM2: 15500,
     prixType: 'M2',
     project: projectAtlas,
-    prixTotal: 1317500,
+    price: 1317500,
 };
 
 const dummyProperty6: Property = {
@@ -165,7 +165,7 @@ const dummyProperty6: Property = {
     prixM2: 18000,
     prixType: 'M2',
     project: projectOcean,
-    prixTotal: 2160000,
+    price: 2160000,
     parkingDisponible: true,
     parkingInclus: true,
     prixParking: 200000,
@@ -184,7 +184,7 @@ const dummyProperty7: Property = {
     prixM2: 19000,
     prixType: 'M2',
     project: projectOcean,
-    prixTotal: 2850000,
+    price: 2850000,
     parkingDisponible: true,
     parkingInclus: true,
     prixParking: 250000,
@@ -203,7 +203,7 @@ const dummyProperty8: Property = {
     prixM2: 20000,
     prixType: 'M2',
     project: projectOcean,
-    prixTotal: 4000000,
+    price: 4000000,
     parkingDisponible: true,
     parkingInclus: false,
     prixParking: 10000,
@@ -222,7 +222,7 @@ const dummyProperty9: Property = {
     prixM2: 16000,
     prixType: 'M2',
     project: projectGarden,
-    prixTotal: 1600000,
+    price: 1600000,
 };
 
 const dummyProperty10: Property = {
@@ -238,7 +238,7 @@ const dummyProperty10: Property = {
     prixM2: 16500,
     prixType: 'M2',
     project: projectGarden,
-    prixTotal: 1980000,
+    price: 1980000,
 };
 
 const dummyProperty11: Property = {
@@ -253,7 +253,7 @@ const dummyProperty11: Property = {
     prixM2: 12000,
     prixType: 'M2',
     project: projectBusiness,
-    prixTotal: 1800000,
+    price: 1800000,
 };
 
 const dummyProperty12: Property = {
@@ -268,7 +268,7 @@ const dummyProperty12: Property = {
     prixM2: 13000,
     prixType: 'M2',
     project: projectBusiness,
-    prixTotal: 2600000,
+    price: 2600000,
 };
 
 const dummyProperty13: Property = {
@@ -283,7 +283,7 @@ const dummyProperty13: Property = {
     prixM2: 11000,
     prixType: 'M2',
     project: projectBusiness,
-    prixTotal: 1100000,
+    price: 1100000,
 };
 
 const dummyProperty14: Property = {
@@ -294,7 +294,7 @@ const dummyProperty14: Property = {
     totalArea: 500,
     prixType: 'FIXE',
     project: projectGarden,
-    prixTotal: 2500000,
+    price: 2500000,
 };
 
 const dummyProperty15: Property = {
@@ -305,7 +305,7 @@ const dummyProperty15: Property = {
     totalArea: 800,
     prixType: 'FIXE',
     project: projectGarden,
-    prixTotal: 4000000,
+    price: 4000000,
 };
 
 const dummyProperty16: Property = {
@@ -316,7 +316,7 @@ const dummyProperty16: Property = {
     totalArea: 300,
     prixType: 'FIXE',
     project: projectGarden,
-    prixTotal: 1500000,
+    price: 1500000,
 };
 
 const dummyProperty17: Property = {
@@ -332,7 +332,7 @@ const dummyProperty17: Property = {
     prixM2: 16000,
     prixType: 'M2',
     project: projectLuxury,
-    prixTotal: 1520000,
+    price: 1520000,
 };
 
 const dummyProperty18: Property = {
@@ -348,7 +348,7 @@ const dummyProperty18: Property = {
     prixM2: 16500,
     prixType: 'M2',
     project: projectLuxury,
-    prixTotal: 1815000,
+    price: 1815000,
 };
 
 const dummyProperty19: Property = {
@@ -364,7 +364,7 @@ const dummyProperty19: Property = {
     prixM2: 17000,
     prixType: 'M2',
     project: projectLuxury,
-    prixTotal: 2125000,
+    price: 2125000,
 };
 
 const dummyProperty20: Property = {
@@ -380,7 +380,7 @@ const dummyProperty20: Property = {
     prixM2: 17500,
     prixType: 'M2',
     project: projectLuxury,
-    prixTotal: 2450000,
+    price: 2450000,
 };
 
 // Dummy payments

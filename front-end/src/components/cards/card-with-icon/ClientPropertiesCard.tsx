@@ -10,7 +10,7 @@ export default function ClientPropertiesCard({ ClientProperties }: { ClientPrope
   const router = useRouter();
   
   // Calculate total portfolio value
-  const totalPortfolioValue = ClientProperties.reduce((sum, property) => sum + (property.prixTotal || 0), 0);
+  const totalPortfolioValue = ClientProperties.reduce((sum, property) => sum + (property.price || 0), 0);
   
   // Group properties by type
   const propertyTypeCounts = ClientProperties.reduce((acc, property) => {
@@ -165,7 +165,7 @@ export default function ClientPropertiesCard({ ClientProperties }: { ClientPrope
                   {getTypeLabel(property.type)} - {property.number}
                 </span>
                 <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                  {property.prixTotal ? `${property.prixTotal.toLocaleString()} MAD` : "Prix non disponible"}
+                  {property.price ? `${property.price.toLocaleString()} MAD` : "Prix non disponible"}
                 </span>
               </div>
               

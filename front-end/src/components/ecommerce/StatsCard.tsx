@@ -26,7 +26,7 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
     const soldCount = soldProperties.length;
     
     // Calculate total sales amount
-    const totalSales = soldProperties.reduce((total, apt) => total + (apt.prixTotal || 0), 0);
+    const totalSales = soldProperties.reduce((total, apt) => total + (apt.price || 0), 0);
     
     // Get unique projects count
     const uniqueProjects = new Set(apartmentsArray.map(apt => apt.project.id));

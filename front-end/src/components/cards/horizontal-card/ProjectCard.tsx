@@ -82,7 +82,7 @@ export default function ProjectCard({ ProjectDetails, onRefresh }: ProjectCardPr
     // Calculate total revenue from sold apartments
     const totalRevenue = ProjectDetails.properties.reduce((acc: number, property: Property) => {
       if (property.status === "SOLD") {
-        return acc + property.prixTotal;
+        return acc + property.price;
       }
       return acc;
     }, 0);

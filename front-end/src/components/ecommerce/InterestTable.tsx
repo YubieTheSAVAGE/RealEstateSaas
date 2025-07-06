@@ -120,7 +120,7 @@ export default function InterestTable({ ProjectDetails }: { ProjectDetails: Prop
                     {typeMap[product.type as keyof typeof typeMap] || product.type || "Residential"}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {product.prixTotal ? `${product.prixTotal} MAD` : "N/A"}
+                    {product.price ? `${product.price} MAD` : "N/A"}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     <Badge

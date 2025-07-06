@@ -55,7 +55,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
 
   const [prixType, setPrixType] = useState(PropertyData?.prixType || "FIXE");
   const [prixM2, setPrixM2] = useState(PropertyData?.prixM2?.toString() || "");
-  const [prixTotal, setPrixTotal] = useState(PropertyData?.prixTotal?.toString() || "");
+  const [price, setprice] = useState(PropertyData?.price?.toString() || "");
   const [prixBalconPct, setPrixBalconPct] = useState(PropertyData?.prixBalconPct?.toString() || "50");
   const [prixTerrassePct, setPrixTerrassePct] = useState(PropertyData?.prixTerrassePct?.toString() || "30");
   const [prixPiscine, setPrixPiscine] = useState(PropertyData?.prixPiscine?.toString() || "");
@@ -132,7 +132,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     zone: "",
     image: "",
     clientId: "",
-    prixTotal: "",
+    price: "",
     prixBalconPct: "",
     prixTerrassePct: "",
     prixPiscine: "",
@@ -158,7 +158,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     image: File | null;
     zone: string;
     clientId: string;
-    prixTotal: string;
+    price: string;
     area: string;
     price: string;
     pricePerM2: string;
@@ -176,7 +176,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     image: null,
     zone: PropertyData?.zone || "",
     clientId: PropertyData?.client?.id ? String(PropertyData.client.id) : "",
-    prixTotal: PropertyData?.price?.toString() || "",
+    price: PropertyData?.price?.toString() || "",
     area: PropertyData?.area?.toString() || "",
     price: PropertyData?.price?.toString() || "",
     pricePerM2: PropertyData?.pricePerM2?.toString() || "",
@@ -222,7 +222,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
     let main = 0, balcon = 0, terrasse = 0, piscine = 0, parking = 0, mezzanine = 0, total = 0, commissionTotal = 0;
     
     if (prixType === "FIXE") {
-      total = Number(prixTotal) || 0;
+      total = Number(price) || 0;
       main = total;
       
       // Calculate commission for fixed price
@@ -266,7 +266,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
       }
     }
     return { main, balcon, terrasse, piscine, parking, mezzanine, total, commissionTotal };
-  }, [surfaces, landStoreFields, prixType, prixM2, prixTotal, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type, commissionPerM2]);
+  }, [surfaces, landStoreFields, prixType, prixM2, price, prixBalconPct, prixTerrassePct, prixPiscine, parkingDisponible, parkingInclus, prixParking, formData.type, commissionPerM2]);
 
   // Helper function to validate percentage input
   const validatePercentage = (value: string, fieldName: string) => {
@@ -380,7 +380,7 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
 
     if (prixType === "FIXE") {
       // For fixed price, send the total price as 'price'
-      formDataToSend.append('price', prixTotal || calcSummary.total.toString());
+      formDataToSend.append('price', price || calcSummary.total.toString());
     } else {
       // For price per m², send both price per m² and calculated total
       formDataToSend.append('pricePerM2', prixM2);
@@ -971,20 +971,20 @@ export default function EditPropertyModal({ PropertyData, onRefresh, details }: 
                   <div className="col-span-2 sm:col-span-1">
                     <Label>Prix total (DH) <span className="text-red-500">*</span></Label>
                     <Input 
-                      name="prixTotal" 
+                      name="price" 
                       type="number" 
                       placeholder="ex: 1000000" 
-                      value={prixTotal} 
+                      value={price} 
                       onChange={e => {
                         const value = e.target.value;
-                        setPrixTotal(value);
+                        setprice(value);
                         const error = validatePositiveNumber(value, "Le prix total");
-                        setErrors(prev => ({ ...prev, prixTotal: error }));
+                        setErrors(prev => ({ ...prev, price: error }));
                       }}
                       min="0.01"
                       step={0.01}
                     />
-                    {errors.prixTotal && <p className="text-sm text-red-500 mt-1">{errors.prixTotal}</p>}
+                    {errors.price && <p className="text-sm text-red-500 mt-1">{errors.price}</p>}
                   </div>
                 ) : (
                   <>

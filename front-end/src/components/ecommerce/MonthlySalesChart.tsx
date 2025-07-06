@@ -43,7 +43,7 @@ export default function MonthlySalesChart({ properties }: { properties: Property
           salesCountByMonth[month]++;
           
           // Add price to the total value for the month
-          salesValueByMonth[month] += property.prixTotal || 0;
+          salesValueByMonth[month] += property.price || 0;
         }
       }
     });
