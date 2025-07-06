@@ -144,6 +144,81 @@ module.exports = async function (fastify) {
             type: 'string',
             enum: ['AVAILABLE', 'RESERVED', 'SOLD'],
             description: 'Property status'
+          },
+          // Surface measurements for Villa, Apartment, Duplex
+          habitable: {
+            type: 'number',
+            minimum: 0,
+            description: 'Habitable surface in m²'
+          },
+          balcon: {
+            type: 'number',
+            minimum: 0,
+            description: 'Balcony surface in m²'
+          },
+          terrasse: {
+            type: 'number',
+            minimum: 0,
+            description: 'Terrace surface in m²'
+          },
+          piscine: {
+            type: 'number',
+            minimum: 0,
+            description: 'Pool surface in m²'
+          },
+          // Land and Store specific measurements
+          totalArea: {
+            type: 'number',
+            minimum: 0,
+            description: 'Total area for Land and Store types in m²'
+          },
+          mezzanineArea: {
+            type: 'number',
+            minimum: 0,
+            description: 'Mezzanine area for Store type in m²'
+          },
+          mezzaninePrice: {
+            type: 'number',
+            minimum: 0,
+            description: 'Mezzanine price for Store type'
+          },
+          // Commission
+          commissionPerM2: {
+            type: 'number',
+            minimum: 0,
+            description: 'Commission per m²'
+          },
+          // Percentage-based pricing for annexes
+          prixBalconPct: {
+            type: 'number',
+            minimum: 0,
+            maximum: 100,
+            description: 'Balcony price percentage of habitable m² price'
+          },
+          prixTerrassePct: {
+            type: 'number',
+            minimum: 0,
+            maximum: 100,
+            description: 'Terrace price percentage of habitable m² price'
+          },
+          prixPiscine: {
+            type: 'number',
+            minimum: 0,
+            description: 'Pool price per m²'
+          },
+          // Parking configuration and pricing
+          parkingDisponible: {
+            type: 'boolean',
+            description: 'Whether parking is available'
+          },
+          parkingInclus: {
+            type: 'boolean',
+            description: 'Whether parking is included in price'
+          },
+          prixParking: {
+            type: 'number',
+            minimum: 0,
+            description: 'Parking price'
           }
         }
       },
@@ -343,7 +418,26 @@ module.exports = async function (fastify) {
           zone: { type: 'string', description: 'Zone/location within project' },
           notes: { type: 'string', description: 'Additional notes' },
           prixType: { type: 'string', enum: ['FIXE', 'M2'], description: 'Price type' },
-          status: { type: 'string', enum: ['AVAILABLE', 'RESERVED', 'SOLD'], description: 'Property status' }
+          status: { type: 'string', enum: ['AVAILABLE', 'RESERVED', 'SOLD'], description: 'Property status' },
+          // Surface measurements for Villa, Apartment, Duplex
+          habitable: { type: 'number', minimum: 0, description: 'Habitable surface in m²' },
+          balcon: { type: 'number', minimum: 0, description: 'Balcony surface in m²' },
+          terrasse: { type: 'number', minimum: 0, description: 'Terrace surface in m²' },
+          piscine: { type: 'number', minimum: 0, description: 'Pool surface in m²' },
+          // Land and Store specific measurements
+          totalArea: { type: 'number', minimum: 0, description: 'Total area for Land and Store types in m²' },
+          mezzanineArea: { type: 'number', minimum: 0, description: 'Mezzanine area for Store type in m²' },
+          mezzaninePrice: { type: 'number', minimum: 0, description: 'Mezzanine price for Store type' },
+          // Commission
+          commissionPerM2: { type: 'number', minimum: 0, description: 'Commission per m²' },
+          // Percentage-based pricing for annexes
+          prixBalconPct: { type: 'number', minimum: 0, maximum: 100, description: 'Balcony price percentage of habitable m² price' },
+          prixTerrassePct: { type: 'number', minimum: 0, maximum: 100, description: 'Terrace price percentage of habitable m² price' },
+          prixPiscine: { type: 'number', minimum: 0, description: 'Pool price per m²' },
+          // Parking configuration and pricing
+          parkingDisponible: { type: 'boolean', description: 'Whether parking is available' },
+          parkingInclus: { type: 'boolean', description: 'Whether parking is included in price' },
+          prixParking: { type: 'number', minimum: 0, description: 'Parking price' }
         }
       },
       response: {

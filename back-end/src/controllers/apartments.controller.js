@@ -50,8 +50,19 @@ async function createApartment(request, reply) {
         .send({ error: "projectId must be a positive integer" });
     }
 
-    const { number, floor, type, area, threeDViewUrl, price, status, notes, pricePerM2, zone, image, clientId } =
-      request.body;
+    const {
+      number, floor, type, area, threeDViewUrl, price, status, notes, pricePerM2, zone, image, clientId, prixType,
+      // Surface measurements for Villa, Apartment, Duplex
+      habitable, balcon, terrasse, piscine,
+      // Land and Store specific measurements
+      totalArea, mezzanineArea, mezzaninePrice,
+      // Commission
+      commissionPerM2,
+      // Percentage-based pricing for annexes
+      prixBalconPct, prixTerrassePct, prixPiscine,
+      // Parking configuration and pricing
+      parkingDisponible, parkingInclus, prixParking
+    } = request.body;
 
     if (typeof type !== "string" || !ALLOWED_TYPES.includes(type)) {
       return reply.code(400).send({
@@ -82,6 +93,13 @@ async function createApartment(request, reply) {
         error: `status is required and must be one of: ${ALLOWED_STATUSES.join(
           ", "
         )}`,
+      });
+    }
+
+    // Validate prixType if provided
+    if (prixType && (typeof prixType !== "string" || !ALLOWED_PRICE_TYPES.includes(prixType))) {
+      return reply.code(400).send({
+        error: `prixType, if provided, must be one of: ${ALLOWED_PRICE_TYPES.join(", ")}`
       });
     }
 
@@ -150,10 +168,30 @@ async function createApartment(request, reply) {
       status,
       notes,
       pricePerM2: parseInt(pricePerM2, 10),
+      prixType: prixType || "FIXE", // Default to FIXE if not provided
       image: uploadedImage,
       clientId: parseInt(clientId, 10) || null,
       zone,
       user: request.user,
+      // Surface measurements for Villa, Apartment, Duplex
+      habitable: habitable ? parseFloat(habitable) : null,
+      balcon: balcon ? parseFloat(balcon) : null,
+      terrasse: terrasse ? parseFloat(terrasse) : null,
+      piscine: piscine ? parseFloat(piscine) : null,
+      // Land and Store specific measurements
+      totalArea: totalArea ? parseFloat(totalArea) : null,
+      mezzanineArea: mezzanineArea ? parseFloat(mezzanineArea) : null,
+      mezzaninePrice: mezzaninePrice ? parseFloat(mezzaninePrice) : null,
+      // Commission
+      commissionPerM2: commissionPerM2 ? parseFloat(commissionPerM2) : null,
+      // Percentage-based pricing for annexes
+      prixBalconPct: prixBalconPct ? parseFloat(prixBalconPct) : null,
+      prixTerrassePct: prixTerrassePct ? parseFloat(prixTerrassePct) : null,
+      prixPiscine: prixPiscine ? parseFloat(prixPiscine) : null,
+      // Parking configuration and pricing
+      parkingDisponible: parkingDisponible === 'true' || parkingDisponible === true,
+      parkingInclus: parkingInclus === 'true' || parkingInclus === true,
+      prixParking: prixParking ? parseFloat(prixParking) : null,
     });
     return reply.code(201).send(newApartment);
   } catch (err) {
@@ -181,10 +219,30 @@ async function updateApartment(request, reply) {
       "status",
       "notes",
       "pricePerM2",
+      "prixType",
       "zone",
       "clientId",
       "image",
-      "user"
+      "user",
+      // Surface measurements for Villa, Apartment, Duplex
+      "habitable",
+      "balcon",
+      "terrasse",
+      "piscine",
+      // Land and Store specific measurements
+      "totalArea",
+      "mezzanineArea",
+      "mezzaninePrice",
+      // Commission
+      "commissionPerM2",
+      // Percentage-based pricing for annexes
+      "prixBalconPct",
+      "prixTerrassePct",
+      "prixPiscine",
+      // Parking configuration and pricing
+      "parkingDisponible",
+      "parkingInclus",
+      "prixParking"
     ];
     const data = {};    
     for (const key of allowed) {
@@ -245,6 +303,15 @@ async function updateApartment(request, reply) {
       return reply.code(400).send({ error: "notes must be a string" });
     }
 
+    // Validate prixType if provided
+    if (data.prixType !== undefined) {
+      if (typeof data.prixType !== "string" || !ALLOWED_PRICE_TYPES.includes(data.prixType)) {
+        return reply.code(400).send({
+          error: `prixType must be one of: ${ALLOWED_PRICE_TYPES.join(", ")}`
+        });
+      }
+    }
+
     const updated = await apartmentService.update(apartmentId, {
       number :data.number,
       floor : parseInt(data.floor, 10),
@@ -255,10 +322,30 @@ async function updateApartment(request, reply) {
       status: data.status,
       notes: data.notes,
       pricePerM2: parseInt(data.pricePerM2, 10),
+      prixType: data.prixType,
       image: uploadedImage,
       zone : data.zone,
       clientId: parseInt(data.clientId, 10) || null,
       user: request.user,
+      // Surface measurements for Villa, Apartment, Duplex
+      habitable: data.habitable ? parseFloat(data.habitable) : null,
+      balcon: data.balcon ? parseFloat(data.balcon) : null,
+      terrasse: data.terrasse ? parseFloat(data.terrasse) : null,
+      piscine: data.piscine ? parseFloat(data.piscine) : null,
+      // Land and Store specific measurements
+      totalArea: data.totalArea ? parseFloat(data.totalArea) : null,
+      mezzanineArea: data.mezzanineArea ? parseFloat(data.mezzanineArea) : null,
+      mezzaninePrice: data.mezzaninePrice ? parseFloat(data.mezzaninePrice) : null,
+      // Commission
+      commissionPerM2: data.commissionPerM2 ? parseFloat(data.commissionPerM2) : null,
+      // Percentage-based pricing for annexes
+      prixBalconPct: data.prixBalconPct ? parseFloat(data.prixBalconPct) : null,
+      prixTerrassePct: data.prixTerrassePct ? parseFloat(data.prixTerrassePct) : null,
+      prixPiscine: data.prixPiscine ? parseFloat(data.prixPiscine) : null,
+      // Parking configuration and pricing
+      parkingDisponible: data.parkingDisponible === 'true' || data.parkingDisponible === true,
+      parkingInclus: data.parkingInclus === 'true' || data.parkingInclus === true,
+      prixParking: data.prixParking ? parseFloat(data.prixParking) : null,
     });
     // const updated = await apartmentService.update(apartmentId, data);
     return reply.send(updated);

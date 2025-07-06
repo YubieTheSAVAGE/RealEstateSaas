@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE "Apartment" ADD COLUMN     "balcon" DOUBLE PRECISION,
+ADD COLUMN     "commissionPerM2" DOUBLE PRECISION,
+ADD COLUMN     "habitable" DOUBLE PRECISION,
+ADD COLUMN     "mezzanineArea" DOUBLE PRECISION,
+ADD COLUMN     "mezzaninePrice" DOUBLE PRECISION,
+ADD COLUMN     "parkingDisponible" BOOLEAN DEFAULT false,
+ADD COLUMN     "parkingInclus" BOOLEAN DEFAULT false,
+ADD COLUMN     "piscine" DOUBLE PRECISION,
+ADD COLUMN     "prixBalconPct" DOUBLE PRECISION,
+ADD COLUMN     "prixParking" DOUBLE PRECISION,
+ADD COLUMN     "prixPiscine" DOUBLE PRECISION,
+ADD COLUMN     "prixTerrassePct" DOUBLE PRECISION,
+ADD COLUMN     "terrasse" DOUBLE PRECISION,
+ADD COLUMN     "totalArea" DOUBLE PRECISION;

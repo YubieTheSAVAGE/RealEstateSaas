@@ -111,7 +111,11 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
   };
 
   const needsFloorField = () => {
-    return formData.type === "APARTMENT";
+    const typesWithFloor = [
+      "APARTMENT", "DUPLEX", "VILLA", "PENTHOUSE",
+      "STUDIO", "LOFT", "TOWNHOUSE", "OFFICE", "WAREHOUSE"
+    ];
+    return typesWithFloor.includes(formData.type);
   };
 
   const isLandType = () => {
@@ -284,8 +288,16 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     { value: "APARTMENT", label: "Appartement" },
     { value: "DUPLEX", label: "Duplex" },
     { value: "VILLA", label: "Villa" },
+    { value: "PENTHOUSE", label: "Penthouse" },
+    { value: "STUDIO", label: "Studio" },
+    { value: "LOFT", label: "Loft" },
+    { value: "TOWNHOUSE", label: "Maison de ville" },
     { value: "STORE", label: "Magasin" },
+    { value: "OFFICE", label: "Bureau" },
+    { value: "WAREHOUSE", label: "Entrepôt" },
     { value: "LAND", label: "Terrain" },
+    { value: "GARAGE", label: "Garage" },
+    { value: "PARKING", label: "Parking" },
   ]
 
   const status = [
@@ -609,15 +621,24 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
     if (validateForm()) return; // Stop execution if there are validation errors
 
     const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null) {
-        if (value instanceof File) {
-          formDataToSend.append(key, value);
-        } else {
-          formDataToSend.append(key, String(value));
-        }
-      }
-    });
+
+    // Add basic form data with proper type conversion
+    formDataToSend.append('id', formData.id); // Project ID
+    formDataToSend.append('number', formData.number);
+    formDataToSend.append('type', formData.type);
+    formDataToSend.append('status', formData.status);
+
+    // Only add floor for property types that require it
+    if (needsFloorField() && formData.floor) {
+      formDataToSend.append('floor', formData.floor);
+    }
+
+    // Add optional fields if they have values
+    if (formData.area) formDataToSend.append('area', formData.area);
+    if (formData.zone) formDataToSend.append('zone', formData.zone);
+    if (formData.notes) formDataToSend.append('notes', formData.notes);
+    if (formData.clientId) formDataToSend.append('clientId', formData.clientId);
+    if (formData.image) formDataToSend.append('image', formData.image);
 
     // Add land/store specific fields if applicable
     if (isLandType() || isStoreType()) {
@@ -628,12 +649,18 @@ export default function AddPropertyModal({ onApartementsAdded }: AddPropertyModa
       }
     }
 
-    // Add surfaces and pricing data for all property types
+    // Add pricing data - backend expects 'price' and 'pricePerM2' fields
     formDataToSend.append('prixType', prixType);
+
     if (prixType === "FIXE") {
-      formDataToSend.append('prixTotal', prixTotal);
+      // For fixed price, send the total price as 'price'
+      formDataToSend.append('price', prixTotal || calcSummary.total.toString());
     } else {
-      formDataToSend.append('prixM2', prixM2);
+      // For price per m², send both price per m² and calculated total
+      formDataToSend.append('pricePerM2', prixM2);
+      formDataToSend.append('price', calcSummary.total.toString());
+
+      // Add additional pricing data for complex calculations
       if (shouldShowStandardFields() || formData.type === "VILLA" || formData.type === "DUPLEX") {
         formDataToSend.append('prixBalconPct', prixBalconPct);
         formDataToSend.append('prixTerrassePct', prixTerrassePct);

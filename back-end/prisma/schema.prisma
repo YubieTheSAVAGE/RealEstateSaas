@@ -87,6 +87,30 @@ model Apartment {
   // Enhanced fields for better frontend compatibility
   prixType          PriceType?      @default(FIXE)
 
+  // Surface measurements for Villa, Apartment, Duplex
+  habitable         Float?          // Surface habitable in m²
+  balcon            Float?          // Surface balcon in m²
+  terrasse          Float?          // Surface terrasse in m²
+  piscine           Float?          // Surface piscine in m²
+
+  // Land and Store specific measurements
+  totalArea         Float?          // Surface totale for Land and Store types
+  mezzanineArea     Float?          // Surface mezzanine for Store type
+  mezzaninePrice    Float?          // Prix mezzanine for Store type
+
+  // Commission
+  commissionPerM2   Float?          // Commission per m²
+
+  // Percentage-based pricing for annexes
+  prixBalconPct     Float?          // Pourcentage du prix au m² pour balcon
+  prixTerrassePct   Float?          // Pourcentage du prix au m² pour terrasse
+  prixPiscine       Float?          // Prix piscine par m²
+
+  // Parking configuration and pricing
+  parkingDisponible Boolean?        @default(false) // Whether parking is available
+  parkingInclus     Boolean?        @default(false) // Whether parking is included in price
+  prixParking       Float?          // Prix du parking
+
   projectId         Int
   clientId          Int?
   userId            Int?

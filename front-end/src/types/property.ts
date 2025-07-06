@@ -2,7 +2,7 @@ import { Client } from "./client";
 import { Project } from "./project";
 import { PaymentPlan } from "./Payment";
 
-export type PropertyType = "APARTMENT" | "DUPLEX" | "VILLA" | "STORE" | "LAND";
+export type PropertyType = "APARTMENT" | "DUPLEX" | "VILLA" | "PENTHOUSE" | "STUDIO" | "LOFT" | "TOWNHOUSE" | "STORE" | "OFFICE" | "WAREHOUSE" | "LAND" | "GARAGE" | "PARKING";
 export type ApartmentStatus = "AVAILABLE" | "RESERVED" | "SOLD";
 
 export interface Property {
@@ -13,7 +13,9 @@ export interface Property {
   status: ApartmentStatus;
   
   // Location and structural information
+  // for multi-story properties (not required for LAND, GARAGE, PARKING)
   floor?: number;
+  //for villa and apartments and duplex
   zone?: string;
   
   // Media and documentation

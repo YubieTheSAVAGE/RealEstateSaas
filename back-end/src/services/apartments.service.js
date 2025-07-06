@@ -70,8 +70,28 @@ async function create(projectId, data) {
     status: data.status,
     notes: data.notes || null,
     pricePerM2: data.pricePerM2 ? parseFloat(data.pricePerM2) : null,
+    prixType: data.prixType || "FIXE",
     zone: data.zone || null,
     image: data.image || null,
+    // Surface measurements for Villa, Apartment, Duplex
+    habitable: data.habitable ? parseFloat(data.habitable) : null,
+    balcon: data.balcon ? parseFloat(data.balcon) : null,
+    terrasse: data.terrasse ? parseFloat(data.terrasse) : null,
+    piscine: data.piscine ? parseFloat(data.piscine) : null,
+    // Land and Store specific measurements
+    totalArea: data.totalArea ? parseFloat(data.totalArea) : null,
+    mezzanineArea: data.mezzanineArea ? parseFloat(data.mezzanineArea) : null,
+    mezzaninePrice: data.mezzaninePrice ? parseFloat(data.mezzaninePrice) : null,
+    // Commission
+    commissionPerM2: data.commissionPerM2 ? parseFloat(data.commissionPerM2) : null,
+    // Percentage-based pricing for annexes
+    prixBalconPct: data.prixBalconPct ? parseFloat(data.prixBalconPct) : null,
+    prixTerrassePct: data.prixTerrassePct ? parseFloat(data.prixTerrassePct) : null,
+    prixPiscine: data.prixPiscine ? parseFloat(data.prixPiscine) : null,
+    // Parking configuration and pricing
+    parkingDisponible: data.parkingDisponible || false,
+    parkingInclus: data.parkingInclus || false,
+    prixParking: data.prixParking ? parseFloat(data.prixParking) : null,
     project: {
       connect: { id: projectId }
     }
@@ -122,8 +142,28 @@ async function update(apartmentId, data) {
     status: data.status || existing.status,
     notes: data.notes !== undefined ? data.notes : existing.notes,
     pricePerM2: data.pricePerM2 ? parseFloat(data.pricePerM2) : existing.pricePerM2,
+    prixType: data.prixType || existing.prixType,
     zone: data.zone || existing.zone,
     image: data.image || existing.image,
+    // Surface measurements for Villa, Apartment, Duplex
+    habitable: data.habitable !== undefined ? (data.habitable ? parseFloat(data.habitable) : null) : existing.habitable,
+    balcon: data.balcon !== undefined ? (data.balcon ? parseFloat(data.balcon) : null) : existing.balcon,
+    terrasse: data.terrasse !== undefined ? (data.terrasse ? parseFloat(data.terrasse) : null) : existing.terrasse,
+    piscine: data.piscine !== undefined ? (data.piscine ? parseFloat(data.piscine) : null) : existing.piscine,
+    // Land and Store specific measurements
+    totalArea: data.totalArea !== undefined ? (data.totalArea ? parseFloat(data.totalArea) : null) : existing.totalArea,
+    mezzanineArea: data.mezzanineArea !== undefined ? (data.mezzanineArea ? parseFloat(data.mezzanineArea) : null) : existing.mezzanineArea,
+    mezzaninePrice: data.mezzaninePrice !== undefined ? (data.mezzaninePrice ? parseFloat(data.mezzaninePrice) : null) : existing.mezzaninePrice,
+    // Commission
+    commissionPerM2: data.commissionPerM2 !== undefined ? (data.commissionPerM2 ? parseFloat(data.commissionPerM2) : null) : existing.commissionPerM2,
+    // Percentage-based pricing for annexes
+    prixBalconPct: data.prixBalconPct !== undefined ? (data.prixBalconPct ? parseFloat(data.prixBalconPct) : null) : existing.prixBalconPct,
+    prixTerrassePct: data.prixTerrassePct !== undefined ? (data.prixTerrassePct ? parseFloat(data.prixTerrassePct) : null) : existing.prixTerrassePct,
+    prixPiscine: data.prixPiscine !== undefined ? (data.prixPiscine ? parseFloat(data.prixPiscine) : null) : existing.prixPiscine,
+    // Parking configuration and pricing
+    parkingDisponible: data.parkingDisponible !== undefined ? data.parkingDisponible : existing.parkingDisponible,
+    parkingInclus: data.parkingInclus !== undefined ? data.parkingInclus : existing.parkingInclus,
+    prixParking: data.prixParking !== undefined ? (data.prixParking ? parseFloat(data.prixParking) : null) : existing.prixParking,
   };
 
   // Handle client association based on status
