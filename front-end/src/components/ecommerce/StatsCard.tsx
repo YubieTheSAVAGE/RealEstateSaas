@@ -29,8 +29,8 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
     const totalSales = soldProperties.reduce((total, apt) => total + (apt.price || 0), 0);
     
     // Get unique projects count
-    const uniqueProjects = new Set(apartmentsArray.map(apt => apt.project.id));
-    const projectsCount = uniqueProjects.size;
+    // const uniqueProjects = new Set(apartmentsArray.map(apt => apt.project.id));
+    const projectsCount = 1;
     
     // Calculate percentage change (comparing to previous period)
     // For demo purposes, let's assume a random percentage between -15 and +20
@@ -81,10 +81,10 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
               {stats.soldCount}
             </h4>
           </div>
-          <Badge color={stats.isPositiveChange ? "success" : "error"}>
+          {/* <Badge color={stats.isPositiveChange ? "success" : "error"}>
             {stats.isPositiveChange ? <ArrowUpIcon /> : <ArrowDownIcon />}
             {stats.soldPercentChange}%
-          </Badge>
+          </Badge> */}
         </div>
       </div>
       {/* <!-- Sold Properties Metric End --> */}
@@ -101,11 +101,11 @@ export const StatsCard = ({apartments}: {apartments: Property[]}) => {
               Valeur totale des ventes
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {stats.totalSales.toLocaleString("en-US", {
+              {/* {stats.totalSales.toLocaleString("en-US", {
                 style: "currency",
                 currency: "MAD",
                 maximumFractionDigits: 0
-              })}
+              })} */}
             </h4>
           </div>
           {/* <Badge color={stats.isPositiveChange ? "success" : "error"}>

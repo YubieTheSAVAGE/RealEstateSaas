@@ -51,6 +51,25 @@ module.exports = async function (fastify) {
                 enum: ['FIXE', 'M2'],
                 description: 'Price type - FIXE for fixed price, M2 for price per m²'
               },
+              // Surface measurements for Villa, Apartment, Duplex
+              habitable: { type: 'number', description: 'Habitable surface in m²' },
+              balcon: { type: 'number', description: 'Balcony surface in m²' },
+              terrasse: { type: 'number', description: 'Terrace surface in m²' },
+              piscine: { type: 'number', description: 'Pool surface in m²' },
+              // Land and Store specific measurements
+              totalArea: { type: 'number', description: 'Total area for Land and Store types in m²' },
+              mezzanineArea: { type: 'number', description: 'Mezzanine area for Store type in m²' },
+              mezzaninePrice: { type: 'number', description: 'Mezzanine price for Store type' },
+              // Commission
+              commissionPerM2: { type: 'number', description: 'Commission per m²' },
+              // Percentage-based pricing for annexes
+              prixBalconPct: { type: 'number', description: 'Balcony price percentage of habitable m² price' },
+              prixTerrassePct: { type: 'number', description: 'Terrace price percentage of habitable m² price' },
+              prixPiscine: { type: 'number', description: 'Pool price per m²' },
+              // Parking configuration and pricing
+              parkingDisponible: { type: 'boolean', description: 'Whether parking is available' },
+              parkingInclus: { type: 'boolean', description: 'Whether parking is included in price' },
+              prixParking: { type: 'number', description: 'Parking price' },
               projectId: { type: 'integer', description: 'Associated project ID' },
               clientId: { type: 'integer', description: 'Associated client ID (if reserved/sold)' },
               userId: { type: 'integer', description: 'Associated user ID' },
@@ -299,6 +318,25 @@ module.exports = async function (fastify) {
               status: { type: 'string', description: 'Property status' },
               notes: { type: 'string', description: 'Additional notes' },
               prixType: { type: 'string', description: 'Price type' },
+              // Surface measurements for Villa, Apartment, Duplex
+              habitable: { type: 'number', description: 'Habitable surface in m²' },
+              balcon: { type: 'number', description: 'Balcony surface in m²' },
+              terrasse: { type: 'number', description: 'Terrace surface in m²' },
+              piscine: { type: 'number', description: 'Pool surface in m²' },
+              // Land and Store specific measurements
+              totalArea: { type: 'number', description: 'Total area for Land and Store types in m²' },
+              mezzanineArea: { type: 'number', description: 'Mezzanine area for Store type in m²' },
+              mezzaninePrice: { type: 'number', description: 'Mezzanine price for Store type' },
+              // Commission
+              commissionPerM2: { type: 'number', description: 'Commission per m²' },
+              // Percentage-based pricing for annexes
+              prixBalconPct: { type: 'number', description: 'Balcony price percentage of habitable m² price' },
+              prixTerrassePct: { type: 'number', description: 'Terrace price percentage of habitable m² price' },
+              prixPiscine: { type: 'number', description: 'Pool price per m²' },
+              // Parking configuration and pricing
+              parkingDisponible: { type: 'boolean', description: 'Whether parking is available' },
+              parkingInclus: { type: 'boolean', description: 'Whether parking is included in price' },
+              prixParking: { type: 'number', description: 'Parking price' },
               projectId: { type: 'integer', description: 'Associated project ID' },
               clientId: { type: 'integer', description: 'Associated client ID' },
               userId: { type: 'integer', description: 'Associated user ID' },
@@ -357,6 +395,25 @@ module.exports = async function (fastify) {
             status: { type: 'string', description: 'Property status' },
             notes: { type: 'string', description: 'Additional notes' },
             prixType: { type: 'string', description: 'Price type' },
+            // Surface measurements for Villa, Apartment, Duplex
+            habitable: { type: 'number', description: 'Habitable surface in m²' },
+            balcon: { type: 'number', description: 'Balcony surface in m²' },
+            terrasse: { type: 'number', description: 'Terrace surface in m²' },
+            piscine: { type: 'number', description: 'Pool surface in m²' },
+            // Land and Store specific measurements
+            totalArea: { type: 'number', description: 'Total area for Land and Store types in m²' },
+            mezzanineArea: { type: 'number', description: 'Mezzanine area for Store type in m²' },
+            mezzaninePrice: { type: 'number', description: 'Mezzanine price for Store type' },
+            // Commission
+            commissionPerM2: { type: 'number', description: 'Commission per m²' },
+            // Percentage-based pricing for annexes
+            prixBalconPct: { type: 'number', description: 'Balcony price percentage of habitable m² price' },
+            prixTerrassePct: { type: 'number', description: 'Terrace price percentage of habitable m² price' },
+            prixPiscine: { type: 'number', description: 'Pool price per m²' },
+            // Parking configuration and pricing
+            parkingDisponible: { type: 'boolean', description: 'Whether parking is available' },
+            parkingInclus: { type: 'boolean', description: 'Whether parking is included in price' },
+            prixParking: { type: 'number', description: 'Parking price' },
             projectId: { type: 'integer', description: 'Associated project ID' },
             clientId: { type: 'integer', description: 'Associated client ID' },
             userId: { type: 'integer', description: 'Associated user ID' },

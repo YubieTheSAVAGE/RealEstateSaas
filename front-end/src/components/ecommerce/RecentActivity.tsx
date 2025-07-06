@@ -199,24 +199,24 @@ export default function RecentActivity() {
                           />
                         </div>
                       )} */}
-                      <div>
+                      {/* <div>
                         <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
                           {activity.project.name}
                         </p>
                         <span className="text-gray-500 text-theme-xs dark:text-gray-400">
                           {activity.client?.name || 'No client assigned'}
                         </span>
-                      </div>
+                      </div> */}
                     </div>
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                     {formatPropertyType(activity)}
                   </TableCell>
                   <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                    {activity.price.toLocaleString("en-US", {
+                    {/* {activity.price.toLocaleString("en-US", {
                       style: "currency",
                       currency: "MAD",
-                    })}
+                    })} */}
                   </TableCell>
                   <TableCell className=" py-4 font-normal text-gray-800 text-theme-sm dark:text-gray-400 whitespace-nowrap ">
                     <Badge

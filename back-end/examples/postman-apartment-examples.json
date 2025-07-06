@@ -1,0 +1,356 @@
+{
+  "info": {
+    "name": "Real Estate Properties API",
+    "description": "Enhanced property management with all surface and pricing fields",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Apartment (Complete)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "number",
+              "value": "A101",
+              "type": "text"
+            },
+            {
+              "key": "floor",
+              "value": "3",
+              "type": "text"
+            },
+            {
+              "key": "type",
+              "value": "APARTMENT",
+              "type": "text"
+            },
+            {
+              "key": "status",
+              "value": "AVAILABLE",
+              "type": "text"
+            },
+            {
+              "key": "zone",
+              "value": "Zone A",
+              "type": "text"
+            },
+            {
+              "key": "prixType",
+              "value": "M2",
+              "type": "text"
+            },
+            {
+              "key": "price",
+              "value": "850000",
+              "type": "text"
+            },
+            {
+              "key": "pricePerM2",
+              "value": "12000",
+              "type": "text"
+            },
+            {
+              "key": "habitable",
+              "value": "85.5",
+              "type": "text"
+            },
+            {
+              "key": "balcon",
+              "value": "12.0",
+              "type": "text"
+            },
+            {
+              "key": "terrasse",
+              "value": "15.0",
+              "type": "text"
+            },
+            {
+              "key": "piscine",
+              "value": "0",
+              "type": "text"
+            },
+            {
+              "key": "commissionPerM2",
+              "value": "500",
+              "type": "text"
+            },
+            {
+              "key": "prixBalconPct",
+              "value": "50",
+              "type": "text"
+            },
+            {
+              "key": "prixTerrassePct",
+              "value": "30",
+              "type": "text"
+            },
+            {
+              "key": "prixPiscine",
+              "value": "0",
+              "type": "text"
+            },
+            {
+              "key": "parkingDisponible",
+              "value": "true",
+              "type": "text"
+            },
+            {
+              "key": "parkingInclus",
+              "value": "false",
+              "type": "text"
+            },
+            {
+              "key": "prixParking",
+              "value": "80000",
+              "type": "text"
+            },
+            {
+              "key": "notes",
+              "value": "Appartement moderne avec vue sur mer",
+              "type": "text"
+            },
+            {
+              "key": "threeDViewUrl",
+              "value": "https://example.com/3d-view/a101",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/1/apartments",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "projects", "1", "apartments"]
+        }
+      }
+    },
+    {
+      "name": "Create Villa",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "number",
+              "value": "V001",
+              "type": "text"
+            },
+            {
+              "key": "floor",
+              "value": "2",
+              "type": "text"
+            },
+            {
+              "key": "type",
+              "value": "VILLA",
+              "type": "text"
+            },
+            {
+              "key": "status",
+              "value": "AVAILABLE",
+              "type": "text"
+            },
+            {
+              "key": "zone",
+              "value": "Zone Premium",
+              "type": "text"
+            },
+            {
+              "key": "prixType",
+              "value": "FIXE",
+              "type": "text"
+            },
+            {
+              "key": "price",
+              "value": "2500000",
+              "type": "text"
+            },
+            {
+              "key": "habitable",
+              "value": "250.0",
+              "type": "text"
+            },
+            {
+              "key": "terrasse",
+              "value": "45.0",
+              "type": "text"
+            },
+            {
+              "key": "piscine",
+              "value": "25.0",
+              "type": "text"
+            },
+            {
+              "key": "commissionPerM2",
+              "value": "800",
+              "type": "text"
+            },
+            {
+              "key": "prixTerrassePct",
+              "value": "25",
+              "type": "text"
+            },
+            {
+              "key": "prixPiscine",
+              "value": "15000",
+              "type": "text"
+            },
+            {
+              "key": "parkingDisponible",
+              "value": "true",
+              "type": "text"
+            },
+            {
+              "key": "parkingInclus",
+              "value": "true",
+              "type": "text"
+            },
+            {
+              "key": "notes",
+              "value": "Villa de luxe avec piscine privée",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/1/apartments",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "projects", "1", "apartments"]
+        }
+      }
+    },
+    {
+      "name": "Create Land",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "number",
+              "value": "T001",
+              "type": "text"
+            },
+            {
+              "key": "type",
+              "value": "LAND",
+              "type": "text"
+            },
+            {
+              "key": "status",
+              "value": "AVAILABLE",
+              "type": "text"
+            },
+            {
+              "key": "prixType",
+              "value": "M2",
+              "type": "text"
+            },
+            {
+              "key": "price",
+              "value": "1200000",
+              "type": "text"
+            },
+            {
+              "key": "pricePerM2",
+              "value": "3000",
+              "type": "text"
+            },
+            {
+              "key": "totalArea",
+              "value": "400.0",
+              "type": "text"
+            },
+            {
+              "key": "commissionPerM2",
+              "value": "200",
+              "type": "text"
+            },
+            {
+              "key": "notes",
+              "value": "Terrain constructible avec vue panoramique",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/projects/1/apartments",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "projects", "1", "apartments"]
+        }
+      }
+    },
+    {
+      "name": "Update Apartment",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "status",
+              "value": "RESERVED",
+              "type": "text"
+            },
+            {
+              "key": "price",
+              "value": "870000",
+              "type": "text"
+            },
+            {
+              "key": "notes",
+              "value": "Prix négocié - réservé pour client VIP",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/apartments/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "apartments", "1"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "token",
+      "value": "your-jwt-token-here"
+    }
+  ]
+}
